@@ -1,105 +1,237 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>vunno.eu - Greve Geral</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body { background-color: #DAE0E6; color: #1A1A1B; font-family: Arial, sans-serif; }
-        .reddit-border { border: 1px solid #ccc; }
-        .reddit-blue { background-color: #0079D3; }
-    </style>
-</head>
-<body class="min-h-screen flex flex-col">
+const supabaseUrl = 'https://swxyxseudukuaujmsua.supabase.co';
+const supabaseKey = 'sb_publishable_zjFFRlswNi8IajReRhtLfg_a_6ntgLo';
+const _sup = supabase.createClient(supabaseUrl, supabaseKey);
 
-    <header class="bg-white h-12 border-b border-gray-300 sticky top-0 z-50 flex items-center justify-between px-5 shadow-xs">
-        <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.reload()">
-            <span class="text-orange-500 text-2xl font-black tracking-tighter">v/</span>
-            <span class="font-bold text-lg tracking-tight">vunno</span>
+let user = null;
+let feedItems = [];
+let dbComentarios = [];
+let currentCreateType = 'text'; // 'text' ou 'poll'
+
+document.addEventListener("DOMContentLoaded", () => {
+    carregarFeed();
+    setupAvatarUploader();
+    setInterval(carregarFeed, 6000); // Sincronização global entre dispositivos
+});
+
+function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
+
+// ==========================================
+// CARREGAMENTO DE IMAGEM REAL (FILE READER)
+// ==========================================
+function setupAvatarUploader() {
+    const input = document.getElementById('avatar-file-input');
+    input.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const base64Img = event.target.result;
+            if (user) user.avatar = base64Img;
+            
+            const imgHTML = `<img src="${base64Img}" class="w-full h-full object-cover">`;
+            document.getElementById('avatar-preview-box').innerHTML = imgHTML;
+            document.getElementById('avatar-display-main').innerHTML = imgHTML;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function executarAuth() {
+    const name = document.getElementById('auth-username').value.trim();
+    const email = document.getElementById('auth-email').value.trim();
+    if (!name || !email) return alert("Preenche todos os campos.");
+
+    user = { name, email, avatar: '' };
+    toggleModal('auth-modal');
+    
+    document.getElementById('user-profile').innerHTML = `
+        <div class="flex items-center gap-2 cursor-pointer bg-gray-100 hover:bg-gray-200 py-1 px-3 rounded-full border border-gray-200" onclick="toggleModal('avatar-modal')">
+            <span class="text-xs font-bold text-gray-700">${user.name}</span>
+            <span class="text-2xs text-blue-500">⚙️ Perfil</span>
         </div>
-        <div id="user-profile">
-            <button onclick="toggleModal('auth-modal')" class="reddit-blue text-white text-sm font-bold h-8 px-5 rounded-full hover:opacity-90 transition-all">Entrar</button>
-        </div>
-    </header>
+    `;
+    toggleModal('avatar-modal');
+}
 
-    <div class="w-full h-36 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1555881400-74d7acaacd8b?q=80&w=1600');"></div>
+// ==========================================
+// GESTÃO DO FEED (POSTS E SONDAGENS)
+// ==========================================
+function abrirCriador(type) {
+    if (!user) return toggleModal('auth-modal');
+    currentCreateType = type;
+    document.getElementById('create-modal-title').innerText = type === 'text' ? 'Criar Post de Texto' : 'Criar Nova Votação (Poll)';
+    document.getElementById('post-content-input').style.display = type === 'text' ? 'block' : 'none';
+    document.getElementById('poll-options-setup').style.display = type === 'poll' ? 'block' : 'none';
+    toggleModal('create-modal');
+}
 
-    <div class="bg-white border-b border-gray-300 mb-5">
-        <div class="max-w-4xl mx-auto px-4 flex items-end justify-between pb-4 -mt-6">
-            <div class="flex items-end gap-4">
-                <div id="avatar-display-main" class="w-20 h-20 rounded-full border-4 border-white shadow-md bg-gray-200 overflow-hidden flex items-center justify-center text-3xl cursor-pointer" onclick="toggleModal('avatar-modal')">👤</div>
-                <div class="mb-1">
-                    <h1 class="text-2xl font-bold tracking-tight">Greve Geral: Comunidade</h1>
-                    <p class="text-xs text-gray-500">Espaço público de debate e sondagens em tempo real</p>
+async function publicarConteudo() {
+    const title = document.getElementById('post-title-input').value.trim();
+    if (!title) return alert("Insere um título!");
+
+    let payload = {
+        title: title,
+        type: currentCreateType,
+        autor: user.name,
+        avatar: user.avatar || '👤',
+        likes: 0
+    };
+
+    if (currentCreateType === 'text') {
+        payload.content = document.getElementById('post-content-input').value.trim();
+    } else {
+        const inputs = document.querySelectorAll('.poll-opt-input');
+        let options = [];
+        inputs.forEach((inp, idx) => {
+            const txt = inp.value.trim();
+            if (txt) options.push({ id: idx, text: txt, votes: 0 });
+        });
+        if (options.length < 2) return alert("Insere pelo menos 2 opções para a votação!");
+        payload.poll_options = options;
+    }
+
+    const { error } = await _sup.from('posts').insert([payload]);
+    if (error) return alert("Erro ao publicar: " + error.message);
+
+    // Limpar campos e fechar
+    document.getElementById('post-title-input').value = '';
+    document.getElementById('post-content-input').value = '';
+    document.querySelectorAll('.poll-opt-input').forEach(i => i.value = '');
+    toggleModal('create-modal');
+    carregarFeed();
+}
+
+async function carregarFeed() {
+    const { data: posts } = await _sup.from('posts').select('*').order('id', { ascending: false });
+    const { data: comments } = await _sup.from('comentarios').select('*').order('id', { ascending: true });
+    
+    if (posts) feedItems = posts;
+    if (comments) dbComentarios = comments;
+    renderizarFeed();
+}
+
+async function alterarLike(id, delta) {
+    const item = feedItems.find(p => p.id === id);
+    if (!item) return;
+    await _sup.from('posts').update({ likes: parseInt(item.likes) + delta }).eq('id', id);
+    carregarFeed();
+}
+
+async function votarPoll(postId, optionId) {
+    if (!user) return toggleModal('auth-modal');
+    const post = feedItems.find(p => p.id === postId);
+    if (!post) return;
+
+    // Atualizar os contadores dentro da estrutura JSONB
+    const novasOpcoes = post.poll_options.map(opt => {
+        if (opt.id === optionId) opt.votes = (opt.votes || 0) + 1;
+        return opt;
+    });
+
+    await _sup.from('posts').update({ poll_options: novasOpcoes }).eq('id', postId);
+    carregarFeed();
+}
+
+// ==========================================
+// RENDERIZAÇÃO COMPLETA DE INTERFACE
+// ==========================================
+function renderizarFeed() {
+    const feed = document.getElementById('main-feed');
+    if (feedItems.length === 0) {
+        feed.innerHTML = `<p class="text-center text-gray-400 py-12 bg-white reddit-border rounded">Nenhuma publicação criada na comunidade. Sê o primeiro!</p>`;
+        return;
+    }
+
+    feed.innerHTML = feedItems.map(item => {
+        let conteudoHTML = '';
+
+        if (item.type === 'text') {
+            conteudoHTML = `<p class="text-sm text-gray-700 mt-2 leading-relaxed">${item.content || ''}</p>`;
+        } else {
+            // Lógica de cálculo matemático das percentagens da Poll
+            const totalVotos = item.poll_options.reduce((acc, cur) => acc + (cur.votes || 0), 0);
+            conteudoHTML = `<div class="space-y-2 mt-3 max-w-md">` + item.poll_options.map(opt => {
+                const percent = totalVotos > 0 ? Math.round((opt.votes / totalVotos) * 100) : 0;
+                return `
+                    <button onclick="votarPoll(${item.id}, ${opt.id})" class="w-full bg-gray-50 hover:bg-gray-100 border border-gray-200 text-left text-xs font-semibold p-2.5 rounded-md relative flex justify-between items-center overflow-hidden transition-all">
+                        <div class="absolute top-0 left-0 bottom-0 bg-blue-100/60 z-0 transition-all" style="width: ${percent}%"></div>
+                        <span class="z-10 text-gray-800">${opt.text}</span>
+                        <span class="z-10 text-gray-500">${opt.votes || 0}v (${percent}%)</span>
+                    </button>
+                `;
+            }).join('') + `<span class="block text-3xs font-bold text-gray-400 uppercase mt-1">${totalVotos} votos totais</span></div>`;
+        }
+
+        const postComments = dbComentarios.filter(c => c.post_id === item.id && c.parent_id === null);
+        const avatarImg = item.avatar.startsWith('data:') ? `<img src="${item.avatar}" class="w-7 h-7 rounded-full object-cover">` : `<div class="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center text-xs">${item.avatar}</div>`;
+
+        return `
+            <div class="bg-white reddit-border rounded flex shadow-xs">
+                <div class="bg-gray-50/50 p-2 w-11 flex flex-col items-center border-r border-gray-100 pt-3 text-gray-400">
+                    <button onclick="alterarLike(${item.id}, 1)" class="hover:text-orange-500 font-bold text-sm">▲</button>
+                    <span class="text-xs font-bold my-1 text-gray-800">${item.likes}</span>
+                    <button onclick="alterarLike(${item.id}, -1)" class="hover:text-blue-500 font-bold text-sm">▼</button>
+                </div>
+                <div class="p-4 flex-1 space-y-2">
+                    <div class="flex items-center gap-2 text-3xs text-gray-500 font-semibold">
+                        ${avatarImg}
+                        <span class="text-gray-900 font-bold">${item.autor}</span>
+                        <span>•</span> Publicado em vunno.eu
+                    </div>
+                    <h2 class="text-base font-bold text-gray-900 tracking-tight">${item.title}</h2>
+                    ${conteudoHTML}
+                    
+                    <div class="pt-3 border-t border-gray-100 space-y-4">
+                        <div class="text-3xs font-bold text-gray-500 uppercase flex items-center gap-4">
+                            <span class="text-blue-600">💬 ${dbComentarios.filter(c => c.post_id === item.id).length} Comentários</span>
+                            <button onclick="document.getElementById('comment-box-${item.id}').classList.toggle('hidden')" class="hover:text-black">Escrever Comentário</button>
+                        </div>
+                        
+                        <div id="comment-box-${item.id}" class="hidden space-y-2">
+                            <textarea id="comment-input-${item.id}" rows="2" placeholder="O que tens a dizer sobre isto?" class="w-full bg-gray-50 border border-gray-200 rounded-md p-2 text-xs outline-none focus:bg-white focus:border-blue-500 resize-none"></textarea>
+                            <div class="flex justify-end"><button onclick="enviarComentario(${item.id}, null)" class="reddit-blue text-white text-3xs font-bold px-4 py-1.5 rounded-full">Comentar</button></div>
+                        </div>
+
+                        <div class="space-y-3 pt-2">${postComments.map(c => gerarHTMLComentario(c)).join('')}</div>
+                    </div>
                 </div>
             </div>
-            <div class="flex gap-2">
-                <button onclick="abrirCriador('text')" class="border border-blue-500 text-blue-500 text-xs font-bold h-9 px-4 rounded-full hover:bg-blue-50">Criar Post</button>
-                <button onclick="abrirCriador('poll')" class="reddit-blue text-white text-xs font-bold h-9 px-4 rounded-full hover:opacity-90">Criar Poll</button>
+        `;
+    }).join('');
+}
+
+function gerarHTMLComentario(c) {
+    const respostas = dbComentarios.filter(r => r.parent_id === c.id);
+    const cAvatar = c.avatar.startsWith('data:') ? `<img src="${c.avatar}" class="w-6 h-6 rounded-full object-cover">` : `<div class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-2xs">${c.avatar}</div>`;
+    
+    return `
+        <div class="bg-gray-50/60 p-2.5 rounded-md text-xs space-y-1 border border-gray-100">
+            <div class="flex items-center gap-2 text-3xs text-gray-500">
+                ${cAvatar}
+                <span class="font-bold text-gray-900">${c.autor}</span>
             </div>
+            <p class="text-gray-800 pl-1">${c.texto}</p>
+            <button onclick="document.getElementById('reply-box-${c.id}').classList.toggle('hidden')" class="text-3xs text-gray-400 font-bold uppercase hover:text-black block pl-1">💬 Responder</button>
+            
+            <div id="reply-box-${c.id}" class="hidden space-y-2 pt-1 pl-2 border-l-2 border-gray-200">
+                <input type="text" id="reply-input-${c.id}" placeholder="Escreve uma resposta pública..." class="w-full bg-white border border-gray-200 rounded p-1.5 text-2xs outline-none">
+                <div class="flex justify-end"><button onclick="enviarComentario(${c.post_id}, ${c.id})" class="reddit-blue text-white text-3xs font-bold px-3 py-1 rounded-full">Responder</button></div>
+            </div>
+            ${respostas.length > 0 ? `<div class="space-y-2 pt-2 pl-3 border-l border-gray-200 flex flex-col gap-1">${respostas.map(r => gerarHTMLComentario(r)).join('')}</div>` : ''}
         </div>
-    </div>
+    `;
+}
 
-    <main class="max-w-4xl w-full mx-auto px-4 flex-1 pb-12">
-        <div id="main-feed" class="space-y-4"></div>
-    </main>
+async function enviarComentario(postId, parentId = null) {
+    if (!user) return toggleModal('auth-modal');
+    const input = document.getElementById(parentId ? `reply-input-${parentId}` : `comment-input-${postId}`);
+    const texto = input.value.trim();
+    if (!texto) return;
 
-    <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-        <div class="bg-white rounded-xl w-full max-w-sm p-6 space-y-4 shadow-xl">
-            <h3 class="text-xl font-bold">Entrar na Comunidade</h3>
-            <div class="space-y-2 text-sm">
-                <label class="block font-semibold text-gray-600">Pseudónimo</label>
-                <input type="text" id="auth-username" placeholder="ex: Viajante77" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none focus:border-blue-500">
-                <label class="block font-semibold text-gray-600 mt-2">Email</label>
-                <input type="email" id="auth-email" placeholder="teu@email.com" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none focus:border-blue-500">
-            </div>
-            <div class="flex gap-2 justify-end pt-2">
-                <button onclick="toggleModal('auth-modal')" class="text-xs font-bold px-4 py-2 text-gray-500 hover:bg-gray-100 rounded-lg">Cancelar</button>
-                <button onclick="executarAuth()" class="reddit-blue text-white text-xs font-bold px-5 py-2 rounded-full">Entrar</button>
-            </div>
-        </div>
-    </div>
+    const { error } = await _sup.from('comentarios').insert([{
+        post_id: postId, parent_id: parentId, autor: user.name, avatar: user.avatar || '👤', texto: texto
+    }]);
 
-    <div id="avatar-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl w-full max-w-sm p-6 space-y-4 shadow-xl">
-            <h3 class="text-xl font-bold">Foto de Perfil</h3>
-            <p class="text-xs text-gray-500">Carrega uma imagem do teu computador para usar em todas as publicações.</p>
-            <div class="flex flex-col items-center gap-4 py-2">
-                <div id="avatar-preview-box" class="w-24 h-24 rounded-full bg-gray-100 border-2 border-gray-300 overflow-hidden flex items-center justify-center text-gray-400 text-3xl">👤</div>
-                <input type="file" id="avatar-file-input" accept="image/*" class="text-xs text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-            </div>
-            <div class="flex justify-end pt-2">
-                <button onclick="toggleModal('avatar-modal')" class="reddit-blue text-white text-xs font-bold h-9 px-6 rounded-full shadow">Concluído</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="create-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl w-full max-w-lg p-6 space-y-4 shadow-xl">
-            <h3 class="text-xl font-bold" id="create-modal-title">Nova Publicação</h3>
-            <div class="space-y-3 text-sm">
-                <input type="text" id="post-title-input" placeholder="Título da publicação" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none focus:border-blue-500 font-semibold">
-                
-                <textarea id="post-content-input" rows="4" placeholder="Texto do teu post (opcional)..." class="w-full border border-gray-300 rounded-lg p-2.5 outline-none focus:border-blue-500 resize-none"></textarea>
-                
-                <div id="poll-options-setup" class="hidden space-y-2">
-                    <span class="block text-xs font-bold text-gray-500 uppercase">Opções de Votação (Até 5)</span>
-                    <input type="text" class="poll-opt-input w-full border border-gray-300 rounded-md p-2 text-xs" placeholder="Opção 1">
-                    <input type="text" class="poll-opt-input w-full border border-gray-300 rounded-md p-2 text-xs" placeholder="Opção 2">
-                    <input type="text" class="poll-opt-input w-full border border-gray-300 rounded-md p-2 text-xs" placeholder="Opção 3 (Opcional)">
-                    <input type="text" class="poll-opt-input w-full border border-gray-300 rounded-md p-2 text-xs" placeholder="Opção 4 (Opcional)">
-                    <input type="text" class="poll-opt-input w-full border border-gray-300 rounded-md p-2 text-xs" placeholder="Opção 5 (Opcional)">
-                </div>
-            </div>
-            <div class="flex gap-2 justify-end pt-2">
-                <button onclick="toggleModal('create-modal')" class="text-xs font-bold px-4 py-2 text-gray-500 hover:bg-gray-100 rounded-lg">Cancelar</button>
-                <button onclick="publicarConteudo()" class="reddit-blue text-white text-xs font-bold px-6 py-2 rounded-full">Publicar</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="app.js"></script>
-</body>
-</html>
+    if (!error) { input.value = ''; carregarFeed(); }
+}
