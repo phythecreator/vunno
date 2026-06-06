@@ -1,544 +1,422 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portugal vs Chile - Transmissão em Direto</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>ScienceQuiz 9º Ano - Plataforma Educativa</title>
     <style>
         :root {
-            --primary: #da251c; /* Vermelho Portugal */
-            --secondary: #046a38; /* Verde Portugal */
-            --bg-light: #f4f6f9; /* Fundo claro */
-            --panel-bg: #ffffff; /* Painéis brancos */
-            --text-main: #1f2328; /* Texto escuro */
-            --text-muted: #57606a; /* Texto secundário */
-            --border-color: #d0d7de;
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #ec4899;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+            --text-light: #6b7280;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background-color: var(--bg-light);
-            color: var(--text-main);
+            background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            color: var(--text);
         }
 
-        /* Navbar Topo - Tema Claro */
+        /* Header Estilo Startup */
         header {
-            background-color: var(--panel-bg);
-            border-bottom: 1px solid var(--border-color);
-            padding: 15px 5%;
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .logo {
-            font-size: 20px;
-            font-weight: bold;
-            color: var(--text-main);
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .progress-container {
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-
-        .logo i {
+            font-size: 0.9rem;
+            font-weight: 600;
             color: var(--primary);
-            font-size: 24px;
         }
 
-        .live-badge {
-            background-color: #cf222e;
-            color: white;
+        .progress-bar-bg {
+            width: 200px;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 700px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .card.hidden {
+            display: none;
+        }
+
+        .card.animate-in {
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .question-tag {
+            display: inline-block;
+            background: #e0e7ff;
+            color: var(--primary);
             padding: 4px 12px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
         }
 
-        .live-badge::before {
-            content: '';
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: white;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.3; }
-            50% { opacity: 1; }
-            100% { opacity: 0.3; }
-        }
-
-        /* Layout Principal */
-        .container {
+        .options-grid {
             display: grid;
-            grid-template-columns: 3fr 1fr;
-            gap: 20px;
-            padding: 20px 5%;
-            flex-grow: 1;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
         }
 
-        @media (max-width: 900px) {
-            .container {
-                grid-template-columns: 1fr;
+        @media (min-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
             }
         }
 
-        /* Área de Vídeo e Info */
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .video-container-box {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* 16:9 */
-            background-color: #000000;
+        .option-btn {
+            background: white;
+            border: 2px solid #e5e7eb;
+            padding: 1.2rem;
             border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        .video-container-box iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-
-        /* Estado: Transmissão prestes a começar */
-        .placeholder-stream {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #f6f8fa 0%, #eaeef2 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: var(--text-main);
-            text-align: center;
-            padding: 20px;
-        }
-
-        .placeholder-stream i {
-            font-size: 50px;
-            color: var(--primary);
-            margin-bottom: 15px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .placeholder-stream h3 {
-            font-size: 22px;
-            margin-bottom: 8px;
-        }
-
-        /* Sistema de Verificação de Sinal */
-        .signal-checker {
-            background-color: #fff8c5;
-            border: 1px solid #d4a72c;
-            color: #573d00;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-top: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-        }
-
-        .signal-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-        }
-
-        .btn-fallback {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: bold;
+            font-size: 1rem;
             cursor: pointer;
-            text-decoration: none;
-        }
-
-        /* Detalhes do Jogo */
-        .match-info {
-            background-color: var(--panel-bg);
-            padding: 24px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-        }
-
-        .match-title {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-
-        .match-meta {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        .teams-display {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding-top: 15px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .flag-icon {
-            width: 35px;
-            height: 23px;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-            object-fit: cover;
-        }
-
-        /* Sidebar - Chat Claro */
-        .sidebar {
-            background-color: var(--panel-bg);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            min-height: 450px;
-        }
-
-        .sidebar-header {
-            padding: 15px;
-            border-bottom: 1px solid var(--border-color);
-            font-weight: bold;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .chat-messages {
-            flex-grow: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            max-height: 400px;
-        }
-
-        .chat-msg {
-            font-size: 13px;
-            line-height: 1.4;
-        }
-
-        .chat-msg span {
-            font-weight: bold;
-            color: var(--secondary);
-            margin-right: 5px;
-        }
-
-        .chat-input {
-            padding: 15px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            gap: 10px;
-        }
-
-        .chat-input input {
-            flex-grow: 1;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-light);
-            color: var(--text-main);
-        }
-
-        /* Modal de Autenticação Claro */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(244, 246, 249, 0.95);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(4px);
-        }
-
-        .modal-box {
-            background: var(--panel-bg);
-            padding: 40px;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 400px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        }
-
-        .modal-box i {
-            font-size: 44px;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .modal-box h2 {
-            margin-bottom: 8px;
-            font-size: 22px;
-            color: var(--text-main);
-        }
-
-        .modal-box p {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
+            transition: all 0.2s ease;
+            color: var(--text);
+            font-weight: 500;
             text-align: left;
+            position: relative;
+            overflow: hidden;
         }
 
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-            font-weight: 600;
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #f5f7ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
         }
 
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            background: var(--bg-light);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-main);
-            font-size: 14px;
+        .option-btn:active:not(:disabled) {
+            transform: translateY(0);
         }
 
-        .form-group input:focus {
-            border-color: var(--secondary);
-            outline: none;
-            background: #fff;
+        .option-btn.correct {
+            background: #d1fae5;
+            border-color: var(--success);
+            color: #065f46;
         }
 
-        .btn-submit {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-            border: none;
-            border-radius: 8px;
+        .option-btn.wrong {
+            background: #fee2e2;
+            border-color: var(--error);
+            color: #991b1b;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        /* Start & Result Screens */
+        .hero-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             color: white;
-            font-weight: bold;
-            font-size: 15px;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
             cursor: pointer;
-            margin-top: 5px;
-            transition: opacity 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
         }
 
-        .btn-submit:hover {
-            opacity: 0.9;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.4);
         }
 
-        .hidden {
-            display: none !important;
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0%, #e5e7eb 0%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 2rem;
+            position: relative;
         }
+
+        .score-inner {
+            width: 130px;
+            height: 130px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+
+        .error-list {
+            text-align: left;
+            margin-top: 2rem;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .error-item {
+            background: #f9fafb;
+            border-left: 4px solid var(--error);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .error-q {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .error-ans {
+            font-size: 0.9rem;
+            color: #065f46;
+            background: #d1fae5;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- Pedido de Nome e Email -->
-    <div id="authModal" class="modal-overlay">
-        <div class="modal-box">
-            <i class="fas fa-ticket-alt"></i>
-            <h2>Acesso Restrito</h2>
-            <p>Identifica-te para acederes à transmissão em direto e ao chat.</p>
-            
-            <form id="registerForm" onsubmit="unlockStream(event)">
-                <div class="form-group">
-                    <label for="name">Nome Completo</label>
-                    <input type="text" id="name" required placeholder="Ex: Gonçalo Nunes">
-                </div>
-                <div class="form-group">
-                    <label for="email">Endereço de E-mail</label>
-                    <input type="email" id="email" required placeholder="Ex: nome@exemplo.com">
-                </div>
-                <button type="submit" class="btn-submit">Entrar na Emissão</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Topo -->
     <header>
-        <div class="logo">
-            <i class="fas fa-play-circle"></i> FuteStream
+        <div class="logo-container">
+            <!-- O LOGO: Substitua 'image.png' pelo nome do seu arquivo se for diferente -->
+            <img src="image.png" alt="Logo" class="logo-img" onerror="this.style.display='none'; document.querySelector('.alt-logo').style.display='block'">
+            <div class="alt-logo" style="display:none; font-size:2rem; font-weight:bold; color:var(--primary);">🧪</div>
+            <span class="brand-name">ScienceStart</span>
         </div>
-        <div class="live-badge" id="navLiveBadge">AGUARDANDO</div>
+        <div class="progress-container" id="progress-container">
+            <span id="question-count">1/15</span>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+        </div>
     </header>
 
-    <!-- Contentor Principal -->
-    <div class="container">
-        
-        <!-- Esquerda: Transmissão -->
-        <div class="main-content">
-            <div class="video-container-box">
-                
-                <!-- Estado 1: Antes do Jogo -->
-                <div id="streamPlaceholder" class="placeholder-stream">
-                    <i class="fas fa-clock"></i>
-                    <h3>Transmissão prestes a começar</h3>
-                    <p>O sinal em direto da RTP será ativado automaticamente às 18h45.</p>
-                </div>
+    <main>
+        <!-- Tela Inicial -->
+        <div id="start-screen" class="card animate-in">
+            <h1 class="hero-title">Desafio de Ciências 9º Ano</h1>
+            <p class="hero-desc">Teste seus conhecimentos sobre a origem do mundo, física, química e experimentos fundamentais.</p>
+            <p style="margin-bottom: 2rem; color: var(--text-light);">15 perguntas • Estilo Quiz • Feedback Instantâneo</p>
+            <button class="btn-primary" onclick="startQuiz()">Começar Desafio</button>
+        </div>
 
-                <!-- Estado 2: Durante o Jogo (Iframe oculto inicialmente por JS) -->
-                <div id="actualStream" class="hidden" style="width:100%; height:100%;">
-                    <iframe 
-                        id="rtpIframe"
-                        src="https://www.rtp.pt/play/embed/direto/rtp1" 
-                        allow="autoplay; fullscreen" 
-                        allowfullscreen>
-                    </iframe>
-                </div>
-
-            </div>
-
-            <!-- Sistema de Verificação de Sinal Técnico -->
-            <div class="signal-checker">
-                <div class="signal-status" id="signalStatus">
-                    <i class="fas fa-shield-alt" style="color: #b18000;"></i>
-                    <span>Verificação do Sistema: Aguardando início do evento...</span>
-                </div>
-                <a href="https://www.rtp.pt/play/direto/rtp1" target="_blank" class="btn-fallback" id="fallbackBtn">Abrir na RTP Play</a>
-            </div>
-
-            <!-- Informações do Jogo -->
-            <div class="match-info">
-                <h1 class="match-title">Portugal vs Chile</h1>
-                <p class="match-meta"><i class="far fa-calendar-alt"></i> 06 de Junho de 2026 &nbsp;&bull;&nbsp; <i class="fas fa-clock"></i> 18h45 &nbsp;&bull;&nbsp; <i class="fas fa-map-marker-alt"></i> Estádio Nacional</p>
-                
-                <div class="teams-display">
-                    <strong>POR</strong>
-                    <div style="width: 24px; height: 16px; background: linear-gradient(90deg, #046a38 40%, #da251c 40%); border-radius:2px;"></div>
-                    <span style="color: var(--text-muted); font-weight: bold;">VS</span>
-                    <div style="width: 24px; height: 16px; background: linear-gradient(90deg, #00205b 30%, #fff 30%); border-radius:2px; position: relative; border: 1px solid #ddd;">
-                        <div style="position: absolute; bottom:0; left:0; width:100%; height:50%; background:#da251c;"></div>
-                    </div>
-                    <strong>CHI</strong>
-                </div>
+        <!-- Tela de Pergunta -->
+        <div id="quiz-screen" class="card hidden">
+            <span class="question-tag" id="q-tag">Tópico</span>
+            <h2 id="q-text">Pergunta aqui?</h2>
+            <div class="options-grid" id="options-container">
+                <!-- Opções geradas via JS -->
             </div>
         </div>
 
-        <!-- Direita: Chat -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <i class="far fa-comments"></i> Chat da Comunidade
+        <!-- Tela de Resultado -->
+        <div id="result-screen" class="card hidden">
+            <h2>Resultados Finais</h2>
+            <div class="score-circle" id="score-circle">
+                <div class="score-inner">
+                    <span class="score-number" id="final-score">0</span>
+                    <span class="score-label">Pontos</span>
+                </div>
             </div>
-            <div class="chat-messages" id="chatBox">
-                <div class="chat-msg"><span>Moderaçao:</span> Bem-vindo ao FuteStream! Respeita os restantes utilizadores no chat.</div>
-                <div class="chat-msg"><span>Carlos_Ramos:</span> Força Portugal! Previsões para hoje? 🇵🇹</div>
-                <div class="chat-msg"><span>Inês_Ferreira:</span> O jogo contra o Chile vai ser renhido.</div>
+            <p id="result-message" class="hero-desc" style="margin-bottom: 1rem;"></p>
+            
+            <div id="error-section" class="hidden">
+                <h3 style="text-align: left; margin-bottom: 1rem; color: var(--error);">Revisão dos Erros</h3>
+                <div class="error-list" id="error-list">
+                    <!-- Lista de erros gerada via JS -->
+                </div>
             </div>
-            <div class="chat-input">
-                <input type="text" placeholder="Inicia sessão para interagir..." disabled>
-            </div>
-        </div>
 
-    </div>
+            <button class="btn-primary" style="margin-top: 2rem;" onclick="restartQuiz()">Tentar Novamente</button>
+        </div>
+    </main>
 
     <script>
-        // Configuração do Horário do Jogo: 06/06/2026 às 18:45 (Hora de Portugal)
-        const matchTime = new Date('2026-06-06T18:45:00+01:00'); 
-
-        function verifyAndSystemCheck() {
-            const now = new Date();
-            const placeholder = document.getElementById('streamPlaceholder');
-            const streamArea = document.getElementById('actualStream');
-            const navBadge = document.getElementById('navLiveBadge');
-            const signalStatus = document.getElementById('signalStatus');
-
-            // 1. Verificação Automática do Horário do Direto
-            if (now >= matchTime) {
-                // Hora do jogo chegou! Ativa o player
-                placeholder.classList.add('hidden');
-                streamArea.classList.remove('hidden');
-                navBadge.innerHTML = "🔴 EM DIRETO";
-                navBadge.style.backgroundColor = "#cf222e";
-
-                // 2. Sistema de verificação do sinal (Tratamento do problema de segurança do GitHub Pages / CORS)
-                // Como os navegadores bloqueiam a leitura direta de iframes externos, o sistema valida o domínio de origem
-                if (window.location.protocol === 'file:') {
-                    signalStatus.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:#cf222e;"></i> 
-                        <span style="color:#cf222e; font-weight:bold;">Bloqueio Local detetado (file://). Publica no GitHub para o sinal funcionar de forma segura.</span>`;
-                } else {
-                    signalStatus.innerHTML = `<i class="fas fa-check-circle" style="color:#1a7f37;"></i> 
-                        <span style="color:#1a7f37; font-weight:bold;">Sinal de Transmissão Seguro (HTTPS). Se detetar ecrã preto, use o botão ao lado.</span>`;
-                }
-            } else {
-                // Ainda não começou
-                placeholder.classList.remove('hidden');
-                streamArea.classList.add('hidden');
-                navBadge.innerHTML = "AGUARDANDO";
-                navBadge.style.backgroundColor = "#57606a";
-                
-                signalStatus.innerHTML = `<i class="fas fa-info-circle" style="color:#24292f;"></i> 
-                    <span>Verificador: O sinal de vídeo oficial da RTP liga automaticamente às 18h45.</span>`;
-            }
-        }
-
-        // Executa a verificação ao carregar a página
-        verifyAndSystemCheck();
-        // Verifica a cada 30 segundos para atualizar em tempo real se o jogo começar
-        setInterval(verifyAndSystemCheck, 30000);
-
-        // Função de Login do Modal
-        function unlockStream(event) {
-            event.preventDefault();
-            const userName = document.getElementById('name').value;
-            
-            document.getElementById('authModal').classList.add('hidden');
-            
-            const chatBox = document.getElementById('chatBox');
-            chatBox.innerHTML += `<div class="chat-msg" style="color:var(--secondary);"><span>Sistema:</span> Olá ${userName}, entraste na transmissão com sucesso!</div>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-    </script>
-</body>
-</html>
+        // Banco de Perguntas (Física, Química, Origem, 9º Ano)
+        const questions = [
+            {
+                id: 1,
+                topic: "Origem do Universo",
+                question: "Qual é a teoria científica mais aceita para explicar a origem do Universo?",
+                options: ["Teoria do Big Bang", "Teoria do Estado Estacionário", "Criacionismo Científico", "Teoria do Plasma"],
+                correct: 0
+            },
+            {
+                id: 2,
+                topic: "Física Básica",
+                question: "Qual é a unidade de medida de força no Sistema Internacional (SI)?",
+                options: ["Joule", "Watt", "Newton", "Pascal"],
+                correct: 2
+            },
+            {
+                id: 3,
+                topic: "Química - Átomos",
+                question: "O que determina a identidade de um elemento químico?",
+                options: ["O número de nêutrons", "O número de prótons (número atómico)", "A massa atómica total", "O número de eletrões"],
+                correct: 1
+            },
+            {
+                id: 4,
+                topic: "Física - Movimento",
+                question: "Se um carro viaja a 100 km/h e para completamente em 5 segundos, o que ocorreu?",
+                options: ["Aceleração positiva", "Aceleração nula", "Desaceleração (aceleração negativa)", "Velocidade constante"],
+                correct: 2
+            },
+            {
+                id: 5,
+                topic: "Química - Tabela Periódica",
+                question: "Qual destes elementos é um gás nobre?",
+                options: ["Oxigénio (O)", "Sódio (Na)", "Hélio (He)", "Cloro (Cl)"],
+                correct: 2
+            },
+            {
+                id: 6,
+                topic: "Origem da Vida",
+                question: "O experimento de Louis Pasteur provou que a vida não surge espontaneamente de matéria não viva. Isso refuta a:",
+                options: ["Teoria da Biogénese", "Gênese Espontânea (Abiogénese)", "Teoria Evolutiva", "Teoria Celular"],
+                correct: 1
+            },
+            {
+                id: 7,
+                topic: "Química - Ligações",
+                question: "Que tipo de ligação ocorre quando os eletrões são compartilhados entre átomos?",
+                options: ["Iónica", "Covalente", "Metálica", "Nuclear"],
+                correct: 1
+            },
+            {
+                id: 8,
+                topic: "Física - Energia",
+                question: "Qual a fórmula correta para calcular a Energia Cinética?",
+                options: ["E = m.g.h", "E = m.v", "Ec = ½.m.v²", "Ec = m.a"],
+                correct: 2
