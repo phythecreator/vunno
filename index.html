@@ -3,47 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portugal vs Chipre - Transmissão em Direto</title>
+    <title>Portugal vs Chile - Transmissão em Direto</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --primary: #da251c; /* Vermelho Portugal */
             --secondary: #046a38; /* Verde Portugal */
-            --bg-dark: #0a0c10;
-            --panel-bg: #161b22;
-            --text-main: #e6edf3;
-            --text-muted: #8b949e;
+            --bg-light: #f4f6f9; /* Fundo claro */
+            --panel-bg: #ffffff; /* Painéis brancos */
+            --text-main: #1f2328; /* Texto escuro */
+            --text-muted: #57606a; /* Texto secundário */
+            --border-color: #d0d7de;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-light);
             color: var(--text-main);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
 
-        /* Navbar Topo */
+        /* Navbar Topo - Tema Claro */
         header {
-            background-color: #010409;
-            border-bottom: 1px solid #30363d;
+            background-color: var(--panel-bg);
+            border-bottom: 1px solid var(--border-color);
             padding: 15px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .logo {
             font-size: 20px;
             font-weight: bold;
-            color: white;
+            color: var(--text-main);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -55,19 +57,31 @@
         }
 
         .live-badge {
-            background-color: var(--primary);
+            background-color: #cf222e;
             color: white;
-            padding: 4px 10px;
-            border-radius: 4px;
+            padding: 4px 12px;
+            border-radius: 20px;
             font-size: 12px;
             font-weight: bold;
-            animation: pulse 2s infinite;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .live-badge::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: white;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(218, 37, 28, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(218, 37, 28, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(218, 37, 28, 0); }
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
         }
 
         /* Layout Principal */
@@ -92,18 +106,18 @@
             gap: 20px;
         }
 
-        .video-wrapper {
+        .video-container-box {
             position: relative;
             width: 100%;
             padding-bottom: 56.25%; /* 16:9 */
-            background-color: #000;
+            background-color: #000000;
             border-radius: 12px;
             overflow: hidden;
-            border: 1px solid #30363d;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
-        .video-wrapper iframe {
+        .video-container-box iframe {
             position: absolute;
             top: 0;
             left: 0;
@@ -112,52 +126,125 @@
             border: 0;
         }
 
+        /* Estado: Transmissão prestes a começar */
+        .placeholder-stream {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f6f8fa 0%, #eaeef2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .placeholder-stream i {
+            font-size: 50px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .placeholder-stream h3 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        /* Sistema de Verificação de Sinal */
+        .signal-checker {
+            background-color: #fff8c5;
+            border: 1px solid #d4a72c;
+            color: #573d00;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .signal-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .btn-fallback {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* Detalhes do Jogo */
         .match-info {
             background-color: var(--panel-bg);
-            padding: 20px;
+            padding: 24px;
             border-radius: 12px;
-            border: 1px solid #30363d;
+            border: 1px solid var(--border-color);
         }
 
         .match-title {
             font-size: 24px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+        }
+
+        .match-meta {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .teams-display {
             display: flex;
             align-items: center;
             gap: 15px;
-        }
-
-        .teams {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 15px;
             padding-top: 15px;
-            border-top: 1px solid #30363d;
+            border-top: 1px solid var(--border-color);
         }
 
-        .team-flag {
-            width: 30px;
-            height: 20px;
-            border-radius: 2px;
+        .flag-icon {
+            width: 35px;
+            height: 23px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
             object-fit: cover;
         }
 
-        /* Sidebar (Chat / Estatísticas Falsas) */
+        /* Sidebar - Chat Claro */
         .sidebar {
             background-color: var(--panel-bg);
             border-radius: 12px;
-            border: 1px solid #30363d;
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             height: 100%;
-            max-height: 600px;
+            min-height: 450px;
         }
 
         .sidebar-header {
             padding: 15px;
-            border-bottom: 1px solid #30363d;
+            border-bottom: 1px solid var(--border-color);
             font-weight: bold;
+            color: var(--text-main);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -169,22 +256,24 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            max-height: 400px;
         }
 
         .chat-msg {
-            font-size: 14px;
+            font-size: 13px;
+            line-height: 1.4;
         }
 
         .chat-msg span {
             font-weight: bold;
-            color: var(--text-muted);
+            color: var(--secondary);
             margin-right: 5px;
         }
 
         .chat-input {
             padding: 15px;
-            border-top: 1px solid #30363d;
+            border-top: 1px solid var(--border-color);
             display: flex;
             gap: 10px;
         }
@@ -193,33 +282,24 @@
             flex-grow: 1;
             padding: 10px;
             border-radius: 6px;
-            border: 1px solid #30363d;
-            background: var(--bg-dark);
-            color: white;
+            border: 1px solid var(--border-color);
+            background: var(--bg-light);
+            color: var(--text-main);
         }
 
-        .chat-input button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        /* Modal de Autenticação */
+        /* Modal de Autenticação Claro */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(10, 12, 16, 0.95);
+            background: rgba(244, 246, 249, 0.95);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(4px);
         }
 
         .modal-box {
@@ -228,20 +308,21 @@
             border-radius: 16px;
             width: 90%;
             max-width: 400px;
-            border: 1px solid #30363d;
+            border: 1px solid var(--border-color);
             text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
 
         .modal-box i {
-            font-size: 40px;
+            font-size: 44px;
             color: var(--primary);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .modal-box h2 {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-size: 22px;
+            color: var(--text-main);
         }
 
         .modal-box p {
@@ -251,7 +332,7 @@
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             text-align: left;
         }
 
@@ -259,41 +340,42 @@
             display: block;
             font-size: 12px;
             color: var(--text-muted);
-            margin-bottom: 5px;
-            text-transform: uppercase;
+            margin-bottom: 6px;
+            font-weight: 600;
         }
 
         .form-group input {
             width: 100%;
             padding: 12px;
-            background: var(--bg-dark);
-            border: 1px solid #30363d;
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            color: white;
+            color: var(--text-main);
             font-size: 14px;
         }
 
         .form-group input:focus {
-            border-color: var(--primary);
+            border-color: var(--secondary);
             outline: none;
+            background: #fff;
         }
 
         .btn-submit {
             width: 100%;
             padding: 14px;
-            background: var(--primary);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
             border: none;
             border-radius: 8px;
             color: white;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.3s;
+            margin-top: 5px;
+            transition: opacity 0.2s;
         }
 
         .btn-submit:hover {
-            background: #b91d16;
+            opacity: 0.9;
         }
 
         .hidden {
@@ -303,92 +385,158 @@
 </head>
 <body>
 
-    <!-- Pedido de Nome e Email (Sem Password) -->
+    <!-- Pedido de Nome e Email -->
     <div id="authModal" class="modal-overlay">
         <div class="modal-box">
-            <i class="fas fa-futbol"></i>
-            <h2>Acesso à Transmissão</h2>
-            <p>Insere o teu nome e e-mail para desbloquear a emissão em direto.</p>
+            <i class="fas fa-ticket-alt"></i>
+            <h2>Acesso Restrito</h2>
+            <p>Identifica-te para acederes à transmissão em direto e ao chat.</p>
             
             <form id="registerForm" onsubmit="unlockStream(event)">
                 <div class="form-group">
-                    <label for="name">Nome (Como queres ser chamado no chat)</label>
-                    <input type="text" id="name" required placeholder="O teu nome">
+                    <label for="name">Nome Completo</label>
+                    <input type="text" id="name" required placeholder="Ex: Gonçalo Nunes">
                 </div>
                 <div class="form-group">
-                    <label for="email">E-mail</label>
-                    <input type="email" id="email" required placeholder="O teu e-mail">
+                    <label for="email">Endereço de E-mail</label>
+                    <input type="email" id="email" required placeholder="Ex: nome@exemplo.com">
                 </div>
-                <button type="submit" class="btn-submit">Assistir Agora</button>
+                <button type="submit" class="btn-submit">Entrar na Emissão</button>
             </form>
         </div>
     </div>
 
-    <!-- Navegação Topo -->
+    <!-- Topo -->
     <header>
         <div class="logo">
             <i class="fas fa-play-circle"></i> FuteStream
         </div>
-        <div class="live-badge">🔴 EM DIRETO</div>
+        <div class="live-badge" id="navLiveBadge">AGUARDANDO</div>
     </header>
 
-    <!-- Conteúdo Central -->
+    <!-- Contentor Principal -->
     <div class="container">
-        <!-- Esquerda: Vídeo e Info -->
+        
+        <!-- Esquerda: Transmissão -->
         <div class="main-content">
-            <div class="video-wrapper">
-                <!-- Embed RTP Play -->
-                <iframe 
-                    src="https://www.rtp.pt/play/embed/direto/rtp1" 
-                    allow="autoplay; fullscreen" 
-                    allowfullscreen>
-                </iframe>
+            <div class="video-container-box">
+                
+                <!-- Estado 1: Antes do Jogo -->
+                <div id="streamPlaceholder" class="placeholder-stream">
+                    <i class="fas fa-clock"></i>
+                    <h3>Transmissão prestes a começar</h3>
+                    <p>O sinal em direto da RTP será ativado automaticamente às 18h45.</p>
+                </div>
+
+                <!-- Estado 2: Durante o Jogo (Iframe oculto inicialmente por JS) -->
+                <div id="actualStream" class="hidden" style="width:100%; height:100%;">
+                    <iframe 
+                        id="rtpIframe"
+                        src="https://www.rtp.pt/play/embed/direto/rtp1" 
+                        allow="autoplay; fullscreen" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+
             </div>
 
+            <!-- Sistema de Verificação de Sinal Técnico -->
+            <div class="signal-checker">
+                <div class="signal-status" id="signalStatus">
+                    <i class="fas fa-shield-alt" style="color: #b18000;"></i>
+                    <span>Verificação do Sistema: Aguardando início do evento...</span>
+                </div>
+                <a href="https://www.rtp.pt/play/direto/rtp1" target="_blank" class="btn-fallback" id="fallbackBtn">Abrir na RTP Play</a>
+            </div>
+
+            <!-- Informações do Jogo -->
             <div class="match-info">
-                <h1 class="match-title">Portugal vs Chipre <span style="color:var(--text-muted); font-size: 16px;">| Preparação Seleção A</span></h1>
-                <p style="color: var(--text-muted);"><i class="far fa-calendar-alt"></i> 05 de Junho de 2026 &nbsp;&bull;&nbsp; <i class="fas fa-map-marker-alt"></i> Estádio Nacional</p>
+                <h1 class="match-title">Portugal vs Chile</h1>
+                <p class="match-meta"><i class="far fa-calendar-alt"></i> 06 de Junho de 2026 &nbsp;&bull;&nbsp; <i class="fas fa-clock"></i> 18h45 &nbsp;&bull;&nbsp; <i class="fas fa-map-marker-alt"></i> Estádio Nacional</p>
                 
-                <div class="teams">
+                <div class="teams-display">
                     <strong>POR</strong>
-                    <div style="width: 20px; height: 15px; background: linear-gradient(90deg, green 40%, red 40%);"></div>
-                    <span style="margin: 0 10px; font-weight: bold; color: var(--text-muted);">VS</span>
-                    <div style="width: 20px; height: 15px; background: white; border: 1px solid #ccc; display: flex; align-items:center; justify-content:center;"><div style="width: 10px; height: 10px; background: orange; border-radius:50%;"></div></div>
+                    <div style="width: 24px; height: 16px; background: linear-gradient(90deg, #046a38 40%, #da251c 40%); border-radius:2px;"></div>
+                    <span style="color: var(--text-muted); font-weight: bold;">VS</span>
+                    <div style="width: 24px; height: 16px; background: linear-gradient(90deg, #00205b 30%, #fff 30%); border-radius:2px; position: relative; border: 1px solid #ddd;">
+                        <div style="position: absolute; bottom:0; left:0; width:100%; height:50%; background:#da251c;"></div>
+                    </div>
                     <strong>CHI</strong>
                 </div>
             </div>
         </div>
 
-        <!-- Direita: Chat Falso/Simulado para dar aspeto mais "pro" -->
+        <!-- Direita: Chat -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <i class="far fa-comments"></i> Chat em Direto
+                <i class="far fa-comments"></i> Chat da Comunidade
             </div>
             <div class="chat-messages" id="chatBox">
-                <div class="chat-msg"><span>Sistema:</span> Bem-vindo à emissão em direto!</div>
-                <div class="chat-msg"><span>TugaFan99:</span> Bora Portugal!! 🇵🇹</div>
-                <div class="chat-msg"><span>João_Silva:</span> Alguém sabe quem está no banco?</div>
+                <div class="chat-msg"><span>Moderaçao:</span> Bem-vindo ao FuteStream! Respeita os restantes utilizadores no chat.</div>
+                <div class="chat-msg"><span>Carlos_Ramos:</span> Força Portugal! Previsões para hoje? 🇵🇹</div>
+                <div class="chat-msg"><span>Inês_Ferreira:</span> O jogo contra o Chile vai ser renhido.</div>
             </div>
             <div class="chat-input">
-                <input type="text" placeholder="Escreve uma mensagem..." disabled>
-                <button disabled><i class="fas fa-paper-plane"></i></button>
+                <input type="text" placeholder="Inicia sessão para interagir..." disabled>
             </div>
         </div>
+
     </div>
 
     <script>
+        // Configuração do Horário do Jogo: 06/06/2026 às 18:45 (Hora de Portugal)
+        const matchTime = new Date('2026-06-06T18:45:00+01:00'); 
+
+        function verifyAndSystemCheck() {
+            const now = new Date();
+            const placeholder = document.getElementById('streamPlaceholder');
+            const streamArea = document.getElementById('actualStream');
+            const navBadge = document.getElementById('navLiveBadge');
+            const signalStatus = document.getElementById('signalStatus');
+
+            // 1. Verificação Automática do Horário do Direto
+            if (now >= matchTime) {
+                // Hora do jogo chegou! Ativa o player
+                placeholder.classList.add('hidden');
+                streamArea.classList.remove('hidden');
+                navBadge.innerHTML = "🔴 EM DIRETO";
+                navBadge.style.backgroundColor = "#cf222e";
+
+                // 2. Sistema de verificação do sinal (Tratamento do problema de segurança do GitHub Pages / CORS)
+                // Como os navegadores bloqueiam a leitura direta de iframes externos, o sistema valida o domínio de origem
+                if (window.location.protocol === 'file:') {
+                    signalStatus.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:#cf222e;"></i> 
+                        <span style="color:#cf222e; font-weight:bold;">Bloqueio Local detetado (file://). Publica no GitHub para o sinal funcionar de forma segura.</span>`;
+                } else {
+                    signalStatus.innerHTML = `<i class="fas fa-check-circle" style="color:#1a7f37;"></i> 
+                        <span style="color:#1a7f37; font-weight:bold;">Sinal de Transmissão Seguro (HTTPS). Se detetar ecrã preto, use o botão ao lado.</span>`;
+                }
+            } else {
+                // Ainda não começou
+                placeholder.classList.remove('hidden');
+                streamArea.classList.add('hidden');
+                navBadge.innerHTML = "AGUARDANDO";
+                navBadge.style.backgroundColor = "#57606a";
+                
+                signalStatus.innerHTML = `<i class="fas fa-info-circle" style="color:#24292f;"></i> 
+                    <span>Verificador: O sinal de vídeo oficial da RTP liga automaticamente às 18h45.</span>`;
+            }
+        }
+
+        // Executa a verificação ao carregar a página
+        verifyAndSystemCheck();
+        // Verifica a cada 30 segundos para atualizar em tempo real se o jogo começar
+        setInterval(verifyAndSystemCheck, 30000);
+
+        // Função de Login do Modal
         function unlockStream(event) {
-            event.preventDefault(); 
+            event.preventDefault();
             const userName = document.getElementById('name').value;
             
-            // Oculta a janela
             document.getElementById('authModal').classList.add('hidden');
             
-            // Adiciona mensagem de boas-vindas ao chat
             const chatBox = document.getElementById('chatBox');
-            chatBox.innerHTML += `<div class="chat-msg" style="color:var(--primary);"><span>Sistema:</span> Bem-vindo(a), ${userName}! A emissão foi desbloqueada.</div>`;
-            
-            // Faz scroll do chat para o fundo
+            chatBox.innerHTML += `<div class="chat-msg" style="color:var(--secondary);"><span>Sistema:</span> Olá ${userName}, entraste na transmissão com sucesso!</div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
         }
     </script>
