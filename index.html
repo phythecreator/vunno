@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo Portugal-Chipre 05/06/26</title>
+    <style>
+        /* Reset e Estilos Gerais */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f1115;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Cabeçalho */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 850px;
+        }
+        h1 {
+            font-size: 26px;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding-bottom: 12px;
+            position: relative;
+            display: inline-block;
+        }
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 4px;
+            background: linear-gradient(90deg, #da251c 0%, #046a38 100%);
+            border-radius: 2px;
+        }
+
+        /* Contentor do Vídeo (Proporção 16:9) */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 850px;
+            padding-bottom: 56.25%; /* Relação de aspeto 16:9 */
+            height: 0;
+            background-color: #000000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            border: 1px solid #1f242e;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Modal de Autenticação (Bloqueio) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 12, 16, 0.96);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .modal-box {
+            background: #1b1f27;
+            padding: 40px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            border: 1px solid #2c3240;
+            text-align: center;
+        }
+        .modal-box h2 {
+            font-size: 22px;
+            margin-bottom: 12px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .modal-box p {
+            font-size: 14px;
+            color: #a0a5b5;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        /* Formulário */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            color: #8a90a3;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            background: #0f1115;
+            border: 1px solid #2c3240;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .form-group input:focus {
+            border-color: #046a38;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(4, 106, 56, 0.2);
+        }
+
+        /* Botão de Submissão */
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #da251c 0%, #046a38 100%);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: opacity 0.2s ease, transform 0.1s ease;
+        }
+        .btn-submit:hover {
+            opacity: 0.95;
+        }
+        .btn-submit:active {
+            transform: scale(0.99);
+        }
+
+        /* Classe de Ocultação Gradual */
+        .modal-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Bloqueio de Ecrã: Pedido de Conta -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-box">
+            <h2>Cria a tua Conta Gratuita</h2>
+            <p>Para assistir à transmissão em direto do jogo de Portugal e aceder ao conteúdo, preenche os dados abaixo.</p>
+            
+            <form id="registerForm" onsubmit="unlockStream(event)">
+                <div class="form-group">
+                    <label for="name">Nome Completo</label>
+                    <input type="text" id="name" required placeholder="Ex: João Silva">
+                </div>
+                <div class="form-group">
+                    <label for="email">Endereço de E-mail</label>
+                    <input type="email" id="email" required placeholder="Ex: joao@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Palavra-passe</label>
+                    <input type="password" id="password" required placeholder="Cria uma senha segura">
+                </div>
+                <button type="submit" class="btn-submit">Criar Conta e Assistir</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal (Vídeo da RTP Play) -->
+    <header>
+        <h1>Jogo Portugal-Chipre 05/06/26</h1>
+    </header>
+
+    <main class="video-wrapper">
+        <!-- Embed Oficial e Direto da RTP Play (RTP 1) -->
+        <iframe 
+            src="https://www.rtp.pt/play/embed/direto/rtp1" 
+            allowfullscreen 
+            scrolling="no">
+        </iframe>
+    </main>
+
+    <script>
+        // Função que lida com o registo e liberta o ecrã
+        function unlockStream(event) {
+            event.preventDefault(); // Evita que a página faça refresh
+            
+            // Simulação de validação/registo concluído
+            const modal = document.getElementById('authModal');
+            modal.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
