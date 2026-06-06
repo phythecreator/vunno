@@ -3,67 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo Portugal-Chipre 05/06/26</title>
+    <title>Portugal vs Chipre - Transmissão em Direto</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Reset e Estilos Gerais */
+        :root {
+            --primary: #da251c; /* Vermelho Portugal */
+            --secondary: #046a38; /* Verde Portugal */
+            --bg-dark: #0a0c10;
+            --panel-bg: #161b22;
+            --text-main: #e6edf3;
+            --text-muted: #8b949e;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-        }
-        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0f1115;
-            color: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
             min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
         }
 
-        /* Cabeçalho */
+        /* Navbar Topo */
         header {
-            text-align: center;
-            margin-bottom: 30px;
-            width: 100%;
-            max-width: 850px;
-        }
-        h1 {
-            font-size: 26px;
-            color: #ffffff;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            padding-bottom: 12px;
-            position: relative;
-            display: inline-block;
-        }
-        h1::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 25%;
-            width: 50%;
-            height: 4px;
-            background: linear-gradient(90deg, #da251c 0%, #046a38 100%);
-            border-radius: 2px;
+            background-color: #010409;
+            border-bottom: 1px solid #30363d;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* Contentor do Vídeo (Proporção 16:9) */
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .live-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(218, 37, 28, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(218, 37, 28, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(218, 37, 28, 0); }
+        }
+
+        /* Layout Principal */
+        .container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 20px;
+            padding: 20px 5%;
+            flex-grow: 1;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Área de Vídeo e Info */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
         .video-wrapper {
             position: relative;
             width: 100%;
-            max-width: 850px;
-            padding-bottom: 56.25%; /* Relação de aspeto 16:9 */
-            height: 0;
-            background-color: #000000;
+            padding-bottom: 56.25%; /* 16:9 */
+            background-color: #000;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            border: 1px solid #1f242e;
+            border: 1px solid #30363d;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+
         .video-wrapper iframe {
             position: absolute;
             top: 0;
@@ -73,152 +112,284 @@
             border: 0;
         }
 
-        /* Modal de Autenticação (Bloqueio) */
+        .match-info {
+            background-color: var(--panel-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+        }
+
+        .match-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .teams {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #30363d;
+        }
+
+        .team-flag {
+            width: 30px;
+            height: 20px;
+            border-radius: 2px;
+            object-fit: cover;
+        }
+
+        /* Sidebar (Chat / Estatísticas Falsas) */
+        .sidebar {
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-height: 600px;
+        }
+
+        .sidebar-header {
+            padding: 15px;
+            border-bottom: 1px solid #30363d;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-msg {
+            font-size: 14px;
+        }
+
+        .chat-msg span {
+            font-weight: bold;
+            color: var(--text-muted);
+            margin-right: 5px;
+        }
+
+        .chat-input {
+            padding: 15px;
+            border-top: 1px solid #30363d;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            background: var(--bg-dark);
+            color: white;
+        }
+
+        .chat-input button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* Modal de Autenticação */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(10, 12, 16, 0.96);
+            background: rgba(10, 12, 16, 0.95);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
+            backdrop-filter: blur(5px);
         }
+
         .modal-box {
-            background: #1b1f27;
+            background: var(--panel-bg);
             padding: 40px;
             border-radius: 16px;
             width: 90%;
-            max-width: 420px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
-            border: 1px solid #2c3240;
+            max-width: 400px;
+            border: 1px solid #30363d;
             text-align: center;
-        }
-        .modal-box h2 {
-            font-size: 22px;
-            margin-bottom: 12px;
-            color: #ffffff;
-            font-weight: 600;
-        }
-        .modal-box p {
-            font-size: 14px;
-            color: #a0a5b5;
-            margin-bottom: 30px;
-            line-height: 1.5;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
-        /* Formulário */
-        .form-group {
+        .modal-box i {
+            font-size: 40px;
+            color: var(--primary);
             margin-bottom: 20px;
+        }
+
+        .modal-box h2 {
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+
+        .modal-box p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
             text-align: left;
         }
+
         .form-group label {
             display: block;
-            font-size: 11px;
-            color: #8a90a3;
-            margin-bottom: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 600;
         }
+
         .form-group input {
             width: 100%;
-            padding: 14px;
-            background: #0f1115;
-            border: 1px solid #2c3240;
+            padding: 12px;
+            background: var(--bg-dark);
+            border: 1px solid #30363d;
             border-radius: 8px;
-            color: #ffffff;
+            color: white;
             font-size: 14px;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        .form-group input:focus {
-            border-color: #046a38;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(4, 106, 56, 0.2);
         }
 
-        /* Botão de Submissão */
+        .form-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
         .btn-submit {
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #da251c 0%, #046a38 100%);
+            padding: 14px;
+            background: var(--primary);
             border: none;
             border-radius: 8px;
-            color: #ffffff;
-            font-size: 15px;
+            color: white;
             font-weight: bold;
+            font-size: 16px;
             cursor: pointer;
             margin-top: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: opacity 0.2s ease, transform 0.1s ease;
-        }
-        .btn-submit:hover {
-            opacity: 0.95;
-        }
-        .btn-submit:active {
-            transform: scale(0.99);
+            transition: background 0.3s;
         }
 
-        /* Classe de Ocultação Gradual */
-        .modal-overlay.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
+        .btn-submit:hover {
+            background: #b91d16;
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
 
-    <!-- Bloqueio de Ecrã: Pedido de Conta -->
+    <!-- Pedido de Nome e Email (Sem Password) -->
     <div id="authModal" class="modal-overlay">
         <div class="modal-box">
-            <h2>Cria a tua Conta Gratuita</h2>
-            <p>Para assistir à transmissão em direto do jogo de Portugal e aceder ao conteúdo, preenche os dados abaixo.</p>
+            <i class="fas fa-futbol"></i>
+            <h2>Acesso à Transmissão</h2>
+            <p>Insere o teu nome e e-mail para desbloquear a emissão em direto.</p>
             
             <form id="registerForm" onsubmit="unlockStream(event)">
                 <div class="form-group">
-                    <label for="name">Nome Completo</label>
-                    <input type="text" id="name" required placeholder="Ex: João Silva">
+                    <label for="name">Nome (Como queres ser chamado no chat)</label>
+                    <input type="text" id="name" required placeholder="O teu nome">
                 </div>
                 <div class="form-group">
-                    <label for="email">Endereço de E-mail</label>
-                    <input type="email" id="email" required placeholder="Ex: joao@email.com">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" required placeholder="O teu e-mail">
                 </div>
-                <div class="form-group">
-                    <label for="password">Palavra-passe</label>
-                    <input type="password" id="password" required placeholder="Cria uma senha segura">
-                </div>
-                <button type="submit" class="btn-submit">Criar Conta e Assistir</button>
+                <button type="submit" class="btn-submit">Assistir Agora</button>
             </form>
         </div>
     </div>
 
-    <!-- Conteúdo Principal (Vídeo da RTP Play) -->
+    <!-- Navegação Topo -->
     <header>
-        <h1>Jogo Portugal-Chipre 05/06/26</h1>
+        <div class="logo">
+            <i class="fas fa-play-circle"></i> FuteStream
+        </div>
+        <div class="live-badge">🔴 EM DIRETO</div>
     </header>
 
-    <main class="video-wrapper">
-        <!-- Embed Oficial e Direto da RTP Play (RTP 1) -->
-        <iframe 
-            src="https://www.rtp.pt/play/embed/direto/rtp1" 
-            allowfullscreen 
-            scrolling="no">
-        </iframe>
-    </main>
+    <!-- Conteúdo Central -->
+    <div class="container">
+        <!-- Esquerda: Vídeo e Info -->
+        <div class="main-content">
+            <div class="video-wrapper">
+                <!-- Embed RTP Play -->
+                <iframe 
+                    src="https://www.rtp.pt/play/embed/direto/rtp1" 
+                    allow="autoplay; fullscreen" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="match-info">
+                <h1 class="match-title">Portugal vs Chipre <span style="color:var(--text-muted); font-size: 16px;">| Preparação Seleção A</span></h1>
+                <p style="color: var(--text-muted);"><i class="far fa-calendar-alt"></i> 05 de Junho de 2026 &nbsp;&bull;&nbsp; <i class="fas fa-map-marker-alt"></i> Estádio Nacional</p>
+                
+                <div class="teams">
+                    <strong>POR</strong>
+                    <div style="width: 20px; height: 15px; background: linear-gradient(90deg, green 40%, red 40%);"></div>
+                    <span style="margin: 0 10px; font-weight: bold; color: var(--text-muted);">VS</span>
+                    <div style="width: 20px; height: 15px; background: white; border: 1px solid #ccc; display: flex; align-items:center; justify-content:center;"><div style="width: 10px; height: 10px; background: orange; border-radius:50%;"></div></div>
+                    <strong>CHI</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direita: Chat Falso/Simulado para dar aspeto mais "pro" -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i class="far fa-comments"></i> Chat em Direto
+            </div>
+            <div class="chat-messages" id="chatBox">
+                <div class="chat-msg"><span>Sistema:</span> Bem-vindo à emissão em direto!</div>
+                <div class="chat-msg"><span>TugaFan99:</span> Bora Portugal!! 🇵🇹</div>
+                <div class="chat-msg"><span>João_Silva:</span> Alguém sabe quem está no banco?</div>
+            </div>
+            <div class="chat-input">
+                <input type="text" placeholder="Escreve uma mensagem..." disabled>
+                <button disabled><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Função que lida com o registo e liberta o ecrã
         function unlockStream(event) {
-            event.preventDefault(); // Evita que a página faça refresh
+            event.preventDefault(); 
+            const userName = document.getElementById('name').value;
             
-            // Simulação de validação/registo concluído
-            const modal = document.getElementById('authModal');
-            modal.classList.add('hidden');
+            // Oculta a janela
+            document.getElementById('authModal').classList.add('hidden');
+            
+            // Adiciona mensagem de boas-vindas ao chat
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML += `<div class="chat-msg" style="color:var(--primary);"><span>Sistema:</span> Bem-vindo(a), ${userName}! A emissão foi desbloqueada.</div>`;
+            
+            // Faz scroll do chat para o fundo
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
     </script>
 </body>
