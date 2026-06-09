@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F1 Master Quiz — Premium Light Edition</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>F1 Master Quiz — Premium Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -46,7 +44,6 @@
             padding: 20px;
         }
 
-        /* Deck/Container Geral */
         .quiz-deck {
             width: 100%;
             max-width: 760px;
@@ -59,7 +56,6 @@
             padding: 50px 40px;
         }
 
-        /* Top Bar com Logo e Meta-info */
         .top-navigation {
             display: flex;
             justify-content: space-between;
@@ -90,7 +86,6 @@
             text-transform: uppercase;
         }
 
-        /* Linha de Progresso Minimalista */
         .progress-timeline {
             position: absolute;
             top: 0;
@@ -104,16 +99,13 @@
             height: 100%;
             width: 0%;
             background: var(--primary);
-            transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: width 0.4s ease;
         }
 
-        /* Estrutura de Ecrãs */
-        .screen {
-            display: none;
-        }
+        .screen { display: none; }
         .screen.active {
             display: block;
-            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: slideUp 0.4s ease;
         }
 
         @keyframes slideUp {
@@ -121,31 +113,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Tipografia */
-        h1 {
-            font-size: 36px;
-            font-weight: 700;
-            letter-spacing: -1px;
-            line-height: 1.15;
-            margin-bottom: 16px;
-        }
+        h1 { font-size: 36px; font-weight: 700; letter-spacing: -1px; line-height: 1.15; margin-bottom: 16px; }
+        p.subtitle { color: var(--text-muted); font-size: 16px; line-height: 1.6; margin-bottom: 32px; }
+        .question-title { font-size: 22px; font-weight: 600; line-height: 1.4; margin-bottom: 28px; }
 
-        p.subtitle {
-            color: var(--text-muted);
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 32px;
-        }
-
-        .question-title {
-            font-size: 22px;
-            font-weight: 600;
-            line-height: 1.4;
-            letter-spacing: -0.5px;
-            margin-bottom: 28px;
-        }
-
-        /* Badges de Dificuldade */
         .badge {
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
@@ -161,54 +132,45 @@
         .badge.medium { background: #fffbeb; color: #92400e; border-color: #fde68a; }
         .badge.hard { background: #fef2f2; color: #991b1b; border-color: #fca5a5; }
 
-        /* Grelha de Opções Modernas */
-        .options-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
+        .options-stack { display: flex; flex-direction: column; gap: 12px; }
+        
         .option-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 18px 24px;
+            padding: 16px 20px;
             font-size: 16px;
-            font-weight: 400;
             color: var(--text-main);
-            text-align: left;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
+        .option-card:hover:not(.disabled) { border-color: var(--border-hover); background: #fafafa; }
+        .option-card.disabled { cursor: default; opacity: 0.6; }
+        
+        .option-card.correct-state { border-color: var(--correct) !important; background: var(--correct-bg) !important; color: #065f46; font-weight: 500; opacity: 1; }
+        .option-card.wrong-state { border-color: var(--wrong) !important; background: var(--wrong-bg) !important; color: #991b1b; opacity: 1; }
 
-        .option-card:hover {
-            border-color: var(--border-hover);
-            background: #fafafa;
+        /* Caixa de Feedback (Aparece após responder) */
+        .feedback-box {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.5;
+            display: none;
+            animation: slideUp 0.3s ease;
         }
+        .feedback-box.correct { background: var(--correct-bg); color: #065f46; border: 1px solid #bbf7d0; display: block; }
+        .feedback-box.wrong { background: var(--wrong-bg); color: #991b1b; border: 1px solid #fca5a5; display: block; }
 
-        /* Estados de Resposta */
-        .option-card.correct-state {
-            border-color: var(--correct) !important;
-            background: var(--correct-bg) !important;
-            color: #065f46;
-            font-weight: 500;
-        }
-
-        .option-card.wrong-state {
-            border-color: var(--wrong) !important;
-            background: var(--wrong-bg) !important;
-            color: #991b1b;
-        }
-
-        /* Botões de Ação Principais */
         .action-btn {
             background: var(--primary);
             color: #ffffff;
             border: none;
-            padding: 16px 32px;
+            padding: 14px 28px;
             font-size: 15px;
             font-weight: 500;
             border-radius: 8px;
@@ -217,153 +179,93 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-        }
-
-        .action-btn:hover {
-            background: var(--primary-hover);
-        }
-
-        .action-btn.whatsapp-style {
-            background: #000000;
-            border: 1px solid var(--border);
-        }
-        .action-btn.whatsapp-style:hover {
-            background: #111111;
-        }
-
-        .action-btn.secondary-style {
-            background: transparent;
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            margin-left: 10px;
-        }
-        .action-btn.secondary-style:hover {
-            background: #f5f5f5;
-            color: var(--text-main);
-        }
-
-        /* Ecrã de Resultados Minimalista */
-        .results-hero {
-            display: flex;
-            align-items: center;
-            gap: 40px;
             margin-top: 20px;
         }
+        .action-btn:hover { background: var(--primary-hover); }
+        .action-btn.whatsapp-style { background: #25D366; color: white; }
+        .action-btn.whatsapp-style:hover { background: #1ebe5d; }
+        .action-btn.secondary-style { background: transparent; color: var(--text-main); border: 1px solid var(--border); }
+        .action-btn.secondary-style:hover { background: #f5f5f5; }
 
-        .score-display {
-            font-size: 84px;
-            font-weight: 700;
-            letter-spacing: -4px;
-            line-height: 1;
-            color: var(--primary);
-        }
+        .score-display { font-size: 84px; font-weight: 700; letter-spacing: -4px; color: var(--primary); margin-bottom: 20px;}
+        
+        /* Listagem Final */
+        .summary-list { margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px; max-height: 300px; overflow-y: auto; }
+        .summary-item { padding: 12px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+        .summary-item:last-child { border-bottom: none; }
+        .summary-q { font-weight: 600; margin-bottom: 4px; }
+        .summary-status.correct { color: var(--correct); font-weight: 500; }
+        .summary-status.wrong { color: var(--wrong); font-weight: 500; }
 
-        /* Lista de Erros para o Link de Partilha */
-        .review-section {
-            margin-top: 40px;
-            border-top: 1px solid var(--border);
-            padding-top: 30px;
-        }
-
-        .review-item {
-            padding: 20px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .review-item:last-child { border-bottom: none; }
-
-        .review-q { font-weight: 600; font-size: 16px; margin-bottom: 8px; }
-        .review-wrong { color: var(--wrong); font-size: 14px; margin-bottom: 4px; }
-        .review-correct { color: var(--correct); font-size: 14px; font-weight: 500; }
-
-        /* Timer de Canto */
-        .live-timer {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            color: var(--text-muted);
-            background: #eee;
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
-
-        @media (max-width: 640px) {
-            .results-hero { flex-direction: column; align-items: flex-start; gap: 20px; }
-            .quiz-deck { padding: 30px 20px; }
-        }
+        #next-btn-container { text-align: right; display: none; }
     </style>
 </head>
 <body>
 
     <div class="quiz-deck">
-        <div class="progress-timeline">
-            <div class="progress-line-fill" id="timeline-fill"></div>
-        </div>
+        <div class="progress-timeline"><div class="progress-line-fill" id="timeline-fill"></div></div>
 
         <div class="top-navigation">
             <div class="logo-area">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/F1.svg" alt="F1 Academy">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/F1.svg" alt="F1 Logo">
                 <span>QUIZ_PLATFORM</span>
             </div>
             <div class="telemetry-status" id="header-status">STATUS // IDLE</div>
         </div>
 
         <div id="start-screen" class="screen active">
-            <div class="badge easy">Briefing Inicial</div>
+            <div class="badge easy" style="color: #10b981; background: #e6f7f0; border: 1px solid #a7f3d0;">BRIEFING INICIAL</div>
             <h1>Simulador de Performance<br>Fórmula 1.</h1>
             <p class="subtitle">Avaliação técnica com base exclusiva nos teus slides corporativos. 15 questões estruturadas de nível linear.</p>
             <button class="action-btn" onclick="startQuiz()">
-                Iniciar Quiz <i class="fa-solid fa-arrow-right"></i>
+                Iniciar Quiz &rarr;
             </button>
         </div>
 
         <div id="quiz-screen" class="screen">
-            <div style="display:flex; justify-content:between; align-items:center; margin-bottom:10px;">
-                <div class="badge" id="difficulty-badge">NÍVEL</div>
-                <div id="countdown-wrapper" style="margin-left:auto; display:none;">
-                    <span class="live-timer" id="timer-text">20.0s</span>
-                </div>
+            <div class="badge" id="difficulty-badge">NÍVEL</div>
+            <div class="question-title" id="question-text">Carregando pergunta...</div>
+            <div class="options-stack" id="options-container"></div>
+            
+            <div id="feedback-container"></div>
+            
+            <div id="next-btn-container">
+                <button class="action-btn" onclick="nextQuestion()">Próxima Pergunta &rarr;</button>
             </div>
-            <div class="question-title" id="question-text">Carregando dados da telemetria...</div>
-            <div class="options-stack" id="options-container">
-                </div>
         </div>
 
         <div id="results-screen" class="screen">
-            <div class="badge hard">Relatório de Fim de Corrida</div>
-            <div class="results-hero">
-                <div class="score-display" id="final-score-val">0%</div>
-                <div>
-                    <h2 style="font-size:24px; font-weight:600; margin-bottom:6px;" id="ranking-title">Análise Completa</h2>
-                    <p style="color:var(--text-muted); font-size:15px; line-height:1.5;" id="ranking-desc">Dados gravados com sucesso no sistema local.</p>
-                </div>
-            </div>
-            <div style="margin-top: 35px;">
+            <div class="badge hard" id="final-badge">RELATÓRIO DE FIM DE CORRIDA</div>
+            <div class="score-display" id="final-score-val">0/100</div>
+            <h2 style="font-size:24px; font-weight:600; margin-bottom:6px;" id="ranking-title">Análise</h2>
+            <p style="color:var(--text-muted); font-size:15px; line-height:1.5;" id="ranking-desc">Aqui está o resumo da tua prestação em pista.</p>
+            
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px;">
                 <button class="action-btn whatsapp-style" onclick="shareToWhatsApp()">
-                    <i class="fa-brands fa-whatsapp"></i> Partilhar no WhatsApp
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                </button>
+                <button class="action-btn secondary-style" onclick="copyLink()">
+                    <i class="fa-solid fa-link"></i> Copiar Link
                 </button>
                 <button class="action-btn secondary-style" onclick="location.reload()">
-                    Reiniciar
+                    <i class="fa-solid fa-rotate-right"></i> Reiniciar
                 </button>
             </div>
+
+            <div class="summary-list" id="summary-container"></div>
         </div>
 
         <div id="review-screen" class="screen">
-            <div class="badge medium">Telemetry Review</div>
+            <div class="badge medium">TELEMETRIA PARTILHADA</div>
             <h1>Resultados do teu amigo</h1>
-            <p class="subtitle">O teu colega concluiu o circuito com a pontuação abaixo. Vê abaixo as análises e falhas detetadas.</p>
+            <p class="subtitle">O teu colega fez este quiz e obteve a nota abaixo. Vê onde ele acertou e errou!</p>
             
-            <div class="results-hero" style="margin-bottom: 40px;">
-                <div class="score-display" id="friend-score-val">0%</div>
-                <div>
-                    <h2 style="font-size:20px; font-weight:600;">Mapeamento de Erros</h2>
-                    <p style="color:var(--text-muted); font-size:14px;">Lista detalhada dos setores onde houve perda de tempo.</p>
-                </div>
-            </div>
+            <div class="score-display" id="friend-score-val" style="font-size: 64px;">0/100</div>
 
-            <div class="review-section" id="review-list-container">
-                </div>
+            <div class="summary-list" id="review-list-container"></div>
 
-            <button class="action-btn" style="margin-top:30px; width:100%; justify-content:center;" onclick="window.location.href=window.location.pathname">
-                Superar esta pontuação <i class="fa-solid fa-gauge-high"></i>
+            <button class="action-btn" style="margin-top:30px;" onclick="window.location.href=window.location.pathname">
+                Tentar Bater a Pontuação &rarr;
             </button>
         </div>
 
@@ -371,200 +273,188 @@
 
     <script>
         const quizData = [
-            { diff: 'easy', q: "Se um piloto vir uma Bandeira Vermelha na pista, o que significa e o que deve fazer?", options: ["A pista está limpa e a corrida total está autorizada.", "A corrida foi interrompida devido a perigo grave ou chuva extrema; todos devem ir para as boxes.", "Significa que o Safety Car entrou na pista e é proibido ultrapassar.", "Indica que o piloto foi desqualificado da corrida."], ans: 1 },
-            { diff: 'easy', q: "Quais são as três cores dos pneus Pirelli para pista seca explicados no curso?", options: ["Azul, Verde e Preto.", "Roxo, Laranja e Amarelo.", "Vermelho (Soft), Amarelo (Medium) e Branco (Hard).", "Vermelho, Verde e Rosa."], ans: 2 },
-            { diff: 'easy', q: "Quais são as quatro principais equipas mencionadas no slide do Grid?", options: ["Ferrari, Mercedes, Red Bull e McLaren.", "Alpine, Williams, Haas e Aston Martin.", "Ferrari, Porsche, Audi e BMW.", "Mercedes, Red Bull, Renault e AlphaTauri."], ans: 0 },
-            { diff: 'medium', q: "O que significa quando aparece a cor ROXA num tempo ou setor no ecrã da televisão?", options: ["É a melhor marca pessoal do piloto naquela sessão.", "É a marca mais rápida de toda a sessão/corrida.", "Significa que o piloto está atualmente nas boxes.", "Significa que o piloto está a andar mais lento que o tempo anterior."], ans: 1 },
-            { diff: 'medium', q: "Qual é a regra para um piloto poder ativar o DRS (Asa Móvel)?", options: ["Pode usar sempre que quiser para ganhar velocidade nas curvas.", "Só pode usar se estiver a menos de 1 segundo do carro da frente em zonas específicas.", "Só pode ser ativado quando está a chover na pista.", "Só pode usar nas primeiras 3 voltas da corrida."], ans: 1 },
-            { diff: 'medium', q: "Para que serve a Bandeira Azul, que aparece constantemente na transmissão?", options: ["Indica que a pista está escorregadia devido a óleo ou detritos.", "Avisa um piloto lento que o líder vem atrás e que ele tem 3 curvas para dar passagem.", "Avisa que a corrida terminou e que devem celebrar.", "É um aviso oficial por mau comportamento em pista."], ans: 1 },
-            { diff: 'medium', q: "Na qualificação de sábado, o que acontece na fase 'Q3'?", options: ["Todos os 20 carros vão para a pista e eliminam-se os 5 mais lentos.", "Os 15 carros restantes correm para definir quem ganha pontos ao sábado.", "Sobram apenas os 10 carros mais rápidos que lutam pela Pole Position (1º lugar).", "Os Introitos fazem uma simulação de paragem nas boxes."], ans: 2 },
-            { diff: 'medium', q: "No campeonato de F1, quantos pilotos ganham pontos numa corrida de domingo e qual é a nota importante sobre a volta mais rápida?", options: ["Apenas os 3 que sobem ao pódio ganham pontos.", "Os 10 primeiros classificados ganham pontos, e o ponto extra da volta mais rápida foi abolido.", "Todos os 20 pilotos ganham pontos se terminarem a corrida.", "Os 5 primeiros classificados ganham pontos e quem fizer a volta rápida ganha 5 pontos extra."], ans: 1 },
-            { diff: 'medium', q: "Que dois pilotos foram destacados no curso para representar a transição entre a lenda e o prodígio da Mercedes?", options: ["Ayrton Senna e Max Verstappen.", "Michael Schumacher e Charles Leclerc.", "Lewis Hamilton e Kimi Antonelli.", "Fernando Alonso e Lando Norris."], ans: 2 },
-            { diff: 'medium', q: "O que significa o termo 'GAP' na tabela de tempos do ecrã?", options: ["A velocidade máxima que o carro atingiu na reta.", "O número de paragens nas boxes que o piloto já fez.", "A diferença de tempo (em segundos) para o carro da frente ou líder.", "O número de voltas que faltam para acabar a corrida."], ans: 2 },
-            { diff: 'hard', q: "Porque é que fazer uma paragem nas boxes sob regime de Safety Car custa apenas cerca de 10-12 segundos (metade do tempo normal)?", options: ["Porque os mecânicos trabalham o dobro da velocidade sob Safety Car.", "Porque a Pit Lane fica com o limite de velocidade livre.", "Porque os rivais na pista também são obrigados a abrandar, reduzindo a perda de tempo relativa.", "Porque a FIA dá um bónus de tempo a quem parar nessa altura."], ans: 2 },
-            { diff: 'hard', q: "Na estratégia de boxes, qual é a diferença entre o Undercut e o Overcut?", options: ["Undercut é parar antes para ganhar tempo com pneus novos; Overcut é ficar em pista mais tempo com pneus velhos.", "Undercut serve para pneus de chuva; Overcut serve para pneus secos.", "Undercut é ultrapassar por dentro; Overcut é ultrapassar por fora na curva.", "Undercut é mexer na asa traseira; Overcut é mexer na asa dianteira."], ans: 0 },
-            { diff: 'hard', q: "O que dita a regra do 'Parc Fermé' (Parque Fechado) que começa na Qualificação?", options: ["Os pilotos não podem falar com os engenheiros até ao fim da corrida.", "As equipas ficam proibidas de fazer grandes alterações técnicas/mecânicas no carro desde a qualificação até ao fim da corrida.", "Os carros têm de ser guardados num camião fora do circuito.", "Os mecânicos só podem trabalhar no carro com as luzes apagadas."], ans: 1 },
-            { diff: 'hard', q: "Porque é que o circuito de Mónaco é uma grande exceção e porque é que a Qualificação lá decide 90% da corrida?", options: ["Porque é uma pista oval e é muito fácil bater nos muros.", "Porque tem menos de 305 km de distância e as ruas estreitas tornam quase impossível ultrapassar, valendo tudo a posição de sábado.", "Porque a corrida é feita à sexta-feira e ninguém corre ao domingo.", "Porque os carros correm com metade da potência do motor."], ans: 1 },
-            { diff: 'hard', q: "Qual é a diferença entre o Campeonato de Pilotos e o Campeonato de Construtores?", options: ["O de Pilotos conta os pontos de sábado e o de Construtores os pontos de domingo.", "O de Pilotos é para os mecânicos e o de Construtores é para os chefes de equipa.", "O de Pilotos é a glória individual do piloto; o de Construtores soma os pontos dos dois carros da equipa e define o dinheiro recebido no fim do ano.", "Não há diferença, são dois nomes para o mesmo troféu."], ans: 2 ]
+            { diff: 'easy', q: "Se um piloto vir uma Bandeira Vermelha na pista, o que significa e o que deve fazer?", options: ["A pista está limpa e a corrida total está autorizada.", "A corrida foi interrompida devido a perigo grave; ir para as boxes.", "Significa que o Safety Car entrou na pista.", "Indica que o piloto foi desqualificado."], ans: 1, exp: "A bandeira vermelha suspende a sessão por questões de segurança (acidentes graves ou clima extremo), obrigando todos a voltar às boxes devagar." },
+            { diff: 'easy', q: "Quais são as três cores dos pneus Pirelli para pista seca?", options: ["Azul, Verde e Preto.", "Roxo, Laranja e Amarelo.", "Vermelho (Soft), Amarelo (Medium) e Branco (Hard).", "Vermelho, Verde e Rosa."], ans: 2, exp: "A Pirelli define os pneus de piso seco nestas 3 cores: Vermelho para o mais macio e rápido, Amarelo para o médio, e Branco para o mais duro e resistente." },
+            { diff: 'easy', q: "Quais são as quatro principais equipas mencionadas no slide do Grid?", options: ["Ferrari, Mercedes, Red Bull e McLaren.", "Alpine, Williams, Haas e Aston Martin.", "Ferrari, Porsche, Audi e BMW.", "Mercedes, Red Bull, Renault e AlphaTauri."], ans: 0, exp: "Estas quatro equipas representam a elite histórica e atual da Fórmula 1, lutando constantemente por vitórias." },
+            { diff: 'medium', q: "O que significa quando aparece a cor ROXA num tempo ou setor no ecrã?", options: ["É a melhor marca pessoal do piloto naquela sessão.", "É a marca mais rápida de toda a sessão/corrida.", "Significa que o piloto está atualmente nas boxes.", "Significa que o piloto está a andar mais lento."], ans: 1, exp: "A cor roxa (Purple Sector) é o indicador máximo de velocidade: significa o recorde absoluto da sessão para aquele trecho." },
+            { diff: 'medium', q: "Qual é a regra para um piloto poder ativar o DRS (Asa Móvel)?", options: ["Pode usar sempre que quiser para ganhar velocidade nas curvas.", "Só pode usar se estiver a menos de 1 segundo do carro da frente.", "Só pode ser ativado quando está a chover.", "Só pode usar nas primeiras 3 voltas da corrida."], ans: 1, exp: "O DRS foi criado para facilitar ultrapassagens, por isso só é permitido nestas zonas específicas se o piloto estiver a colar ao da frente (< 1 segundo)." },
+            { diff: 'medium', q: "Para que serve a Bandeira Azul?", options: ["Indica pista escorregadia.", "Avisa um piloto lento que o líder vem atrás e deve dar passagem.", "Avisa que a corrida terminou.", "É um aviso oficial por mau comportamento."], ans: 1, exp: "Retardatários (que levam voltas de avanço) recebem bandeiras azuis para não atrapalharem a corrida dos líderes." },
+            { diff: 'medium', q: "Na qualificação de sábado, o que acontece na fase 'Q3'?", options: ["Todos os 20 carros correm e eliminam-se 5.", "Os 15 restantes correm por pontos.", "Sobram apenas os 10 carros mais rápidos que lutam pela Pole Position.", "Fazem simulação de paragem nas boxes."], ans: 2, exp: "A Qualificação é a eliminar. A Q3 é a terceira e última fase, reservada apenas aos 10 melhores para definir o 1º lugar (Pole Position)." },
+            { diff: 'medium', q: "Quantos pilotos ganham pontos numa corrida de domingo?", options: ["Apenas os 3 do pódio.", "Os 10 primeiros classificados ganham pontos.", "Todos os 20 pilotos ganham.", "Os 5 primeiros classificados."], ans: 1, exp: "Apenas metade da grelha (Top 10) pontua. O sistema atual dá 25 pontos ao 1º e desce até 1 ponto para o 10º classificado." },
+            { diff: 'medium', q: "Que dois pilotos representam a transição entre lenda e prodígio da Mercedes no curso?", options: ["Ayrton Senna e Max Verstappen.", "Michael Schumacher e Charles Leclerc.", "Lewis Hamilton e Kimi Antonelli.", "Fernando Alonso e Lando Norris."], ans: 2, exp: "O slide destacava Hamilton como o heptacampeão consolidado e Kimi Antonelli como o jovem prodígio promovido para o seu lugar." },
+            { diff: 'medium', q: "O que significa o termo 'GAP' na televisão?", options: ["A velocidade máxima.", "Paragens nas boxes.", "A diferença de tempo (em segundos) para o carro da frente.", "Número de voltas a faltar."], ans: 2, exp: "GAP é o jargão em inglês para 'intervalo' ou 'distância', medido em segundos entre dois pilotos na pista." },
+            { diff: 'hard', q: "Porque é que fazer uma paragem nas boxes sob Safety Car custa menos tempo?", options: ["Trabalham o dobro da velocidade.", "A Pit Lane não tem limite.", "Os rivais na pista são obrigados a abrandar, reduzindo a perda de tempo relativa.", "A FIA dá um bónus de tempo."], ans: 2, exp: "Como os carros em pista estão a andar muito devagar atrás do Safety Car, tu não perdes tanta distância para eles enquanto estás parado nas boxes." },
+            { diff: 'hard', q: "Qual é a diferença entre o Undercut e o Overcut?", options: ["Undercut: parar antes; Overcut: parar depois (ficar em pista).", "Undercut: pneus chuva; Overcut: pneus secos.", "Undercut: ultrapassar por dentro; Overcut: ultrapassar por fora.", "Ambos são configurações aerodinâmicas."], ans: 0, exp: "Undercut é a arte de parar primeiro para usar pneus novos e fazer uma volta muito rápida. Overcut é ficar mais tempo na pista para ter pneus mais frescos no fim." },
+            { diff: 'hard', q: "O que dita a regra do 'Parque Fechado' (Parc Fermé)?", options: ["Proibido falar nas boxes.", "Proibido fazer grandes alterações técnicas/mecânicas no carro desde a qualificação.", "Carros são guardados num camião.", "Correr sem luzes."], ans: 1, exp: "Isto impede as equipas de construírem um carro específico para ser rápido 1 volta no sábado e trocarem tudo para a corrida no domingo." },
+            { diff: 'hard', q: "Porque é que em Mónaco a Qualificação decide 90% da corrida?", options: ["Porque é uma pista oval.", "As ruas estreitas tornam quase impossível ultrapassar, valendo a posição de sábado.", "Ninguém corre ao domingo.", "Usam metade da potência."], ans: 1, exp: "Mónaco é um circuito de rua extremamente apertado sem longas retas. Quem larga na frente, se não errar, raramente é ultrapassado." },
+            { diff: 'hard', q: "Diferença entre Campeonato de Pilotos e Construtores?", options: ["Sábado vs Domingo.", "Mecânicos vs Chefes.", "Pilotos: glória individual. Construtores: soma dos pontos da equipa (dinheiro).", "São o mesmo troféu."], ans: 2, exp: "O de Pilotos é o título mundial do atleta. O de Construtores é o título da marca (ex: Ferrari, McLaren), soma os pontos dos dois carros e dita os milhões de prémio no fim de ano." }
         ];
 
-        let currentQuestion = 0;
+        let currentQ = 0;
         let score = 0;
-        let selectedAnswers = [];
-        let clock;
-        let secondsLeft = 20;
+        let userAnswers = [];
 
         window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const rawSharedData = urlParams.get('telemetry');
-            if(rawSharedData) {
+            const params = new URLSearchParams(window.location.search);
+            const data = params.get('data');
+            if(data) {
                 try {
-                    const parsed = JSON.parse(atob(rawSharedData));
-                    renderSharedReview(parsed);
-                } catch(e) {
-                    navigate('start-screen');
-                }
+                    renderSharedReview(JSON.parse(atob(data)));
+                } catch(e) { document.getElementById('start-screen').classList.add('active'); }
+            } else {
+                document.getElementById('start-screen').classList.add('active');
             }
         };
 
-        function navigate(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-        }
-
         function startQuiz() {
-            currentQuestion = 0;
+            currentQ = 0;
             score = 0;
-            selectedAnswers = [];
-            navigate('quiz-screen');
+            userAnswers = [];
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('quiz-screen').classList.add('active');
             loadQuestion();
         }
 
         function loadQuestion() {
-            if(currentQuestion >= quizData.length) {
-                endQuiz();
-                return;
-            }
-
-            const data = quizData[currentQuestion];
-            document.getElementById('header-status').innerText = `RACE // PERGUNTA ${currentQuestion + 1} DE ${quizData.length}`;
+            const qData = quizData[currentQ];
+            document.getElementById('header-status').innerText = `PERGUNTA ${currentQ + 1} DE ${quizData.length}`;
+            document.getElementById('timeline-fill').style.width = `${(currentQ / quizData.length) * 100}%`;
             
-            // Atualizar Linha de Progresso superior
-            const progressPct = (currentQuestion / quizData.length) * 100;
-            document.getElementById('timeline-fill').style.width = `${progressPct}%`;
-
-            // Configurar Badge Dificuldade
             const badge = document.getElementById('difficulty-badge');
-            badge.className = `badge ${data.diff}`;
-            badge.innerText = `${data.diff} mode`;
+            badge.className = `badge ${qData.diff}`;
+            badge.innerText = `NÍVEL: ${qData.diff.toUpperCase()}`;
 
-            document.getElementById('question-text').innerText = data.q;
+            document.getElementById('question-text').innerText = qData.q;
 
             const container = document.getElementById('options-container');
             container.innerHTML = '';
+            
+            // Esconder feedback e botão Next
+            document.getElementById('feedback-container').innerHTML = '';
+            document.getElementById('feedback-container').className = 'feedback-box';
+            document.getElementById('next-btn-container').style.display = 'none';
 
-            data.options.forEach((opt, idx) => {
+            qData.options.forEach((opt, idx) => {
                 const card = document.createElement('div');
                 card.className = 'option-card';
-                card.innerHTML = `<span>${opt}</span><i class="fa-regular fa-circle" style="color:var(--border-hover);"></i>`;
-                card.onclick = () => validateSelection(idx, card);
+                card.innerHTML = `<span>${opt}</span><i class="fa-regular fa-circle"></i>`;
+                card.onclick = () => selectOption(idx, card);
                 container.appendChild(card);
             });
-
-            initTimer();
         }
 
-        function initTimer() {
-            clearInterval(clock);
-            secondsLeft = 20;
-            document.getElementById('countdown-wrapper').style.display = 'block';
-            document.getElementById('timer-text').innerText = `${secondsLeft.toFixed(1)}s`;
-
-            clock = setInterval(() => {
-                secondsLeft -= 0.1;
-                if(secondsLeft <= 0) {
-                    secondsLeft = 0;
-                    document.getElementById('timer-text').innerText = `0.0s`;
-                    validateSelection(-1, null);
-                } else {
-                    document.getElementById('timer-text').innerText = `${secondsLeft.toFixed(1)}s`;
-                }
-            }, 1000000); // Mantenha um tempo confortável ou remova para livre escolha se preferir
-            clearInterval(clock); // Desativado travamento rígido para focar na fluidez do clique limpo
-            document.getElementById('countdown-wrapper').style.display = 'none';
-        }
-
-        function validateSelection(chosenIdx, element) {
-            const correctIdx = quizData[currentQuestion].ans;
-            selectedAnswers.push(chosenIdx);
-
+        function selectOption(chosenIdx, element) {
             const allCards = document.querySelectorAll('.option-card');
-            allCards.forEach(c => c.onclick = null); // Bloquear múltiplos cliques
+            // Bloquear cliques duplos
+            if(allCards[0].classList.contains('disabled')) return;
+            
+            const correctIdx = quizData[currentQ].ans;
+            const explanation = quizData[currentQ].exp;
+            userAnswers.push(chosenIdx);
+
+            allCards.forEach(c => c.classList.add('disabled'));
+
+            const feedbackDiv = document.getElementById('feedback-container');
 
             if(chosenIdx === correctIdx) {
                 score++;
-                if(element) {
-                    element.classList.add('correct-state');
-                    element.querySelector('i').className = 'fa-solid fa-circle-check';
-                }
+                element.classList.add('correct-state');
+                element.querySelector('i').className = 'fa-solid fa-circle-check';
+                
+                feedbackDiv.innerHTML = `<strong>✅ Correto!</strong> Parabéns.`;
+                feedbackDiv.className = 'feedback-box correct';
             } else {
-                if(element) {
-                    element.classList.add('wrong-state');
-                    element.querySelector('i').className = 'fa-solid fa-circle-xmark';
-                }
+                element.classList.add('wrong-state');
+                element.querySelector('i').className = 'fa-solid fa-circle-xmark';
+                
                 allCards[correctIdx].classList.add('correct-state');
                 allCards[correctIdx].querySelector('i').className = 'fa-solid fa-circle-check';
+
+                feedbackDiv.innerHTML = `<strong>❌ Errado.</strong> A resposta correta era a indicada acima.<br><br><strong>Porquê?</strong> ${explanation}`;
+                feedbackDiv.className = 'feedback-box wrong';
             }
 
-            setTimeout(() => {
-                currentQuestion++;
-                loadQuestion();
-            }, 1000);
+            document.getElementById('next-btn-container').style.display = 'block';
         }
 
-        function endQuiz() {
-            document.getElementById('timeline-fill').style.width = `100%`;
-            document.getElementById('header-status').innerText = `STATUS // FINISHED`;
-            navigate('results-screen');
-
-            const finalPct = Math.round((score / quizData.length) * 100);
-            document.getElementById('final-score-val').innerText = `${finalPct}%`;
-
-            const rankTitle = document.getElementById('ranking-title');
-            const rankDesc = document.getElementById('ranking-desc');
-
-            if(finalPct >= 80) {
-                rankTitle.innerText = "Piloto Elite F1";
-                rankDesc.innerText = "Desempenho perfeito de engenharia. Telemetria sem falhas.";
-            } else if(finalPct >= 50) {
-                rankTitle.innerText = "Piloto Pro";
-                rankDesc.innerText = "Bons conhecimentos gerais, mas com margem de otimização nas paragens.";
+        function nextQuestion() {
+            currentQ++;
+            if(currentQ < quizData.length) {
+                loadQuestion();
             } else {
-                rankTitle.innerText = "Piloto de Testes";
-                rankDesc.innerText = "Necessita revisão completa do manual técnico dos pneus e regras.";
+                finishQuiz();
             }
+        }
+
+        function finishQuiz() {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('results-screen').classList.add('active');
+            document.getElementById('header-status').innerText = `STATUS // CONCLUÍDO`;
+            document.getElementById('timeline-fill').style.width = `100%`;
+
+            const mathScore = Math.round((score / quizData.length) * 100);
+            document.getElementById('final-score-val').innerText = `${mathScore}/100`;
+
+            const summary = document.getElementById('summary-container');
+            summary.innerHTML = '';
+
+            quizData.forEach((q, i) => {
+                const userAns = userAnswers[i];
+                const isCorrect = userAns === q.ans;
+                
+                summary.innerHTML += `
+                    <div class="summary-item">
+                        <div class="summary-q">${i+1}. ${q.q}</div>
+                        <div class="summary-status ${isCorrect ? 'correct' : 'wrong'}">
+                            ${isCorrect ? '✅ Acertaste' : `❌ Erraste. A certa era: ${q.options[q.ans]}`}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function getShareUrl() {
+            const mathScore = Math.round((score / quizData.length) * 100);
+            const payload = btoa(JSON.stringify({ score: mathScore, ans: userAnswers }));
+            return window.location.href.split('?')[0] + "?data=" + payload;
         }
 
         function shareToWhatsApp() {
-            const finalPct = Math.round((score / quizData.length) * 100);
-            const baseUri = window.location.href.split('?')[0];
-            
-            // Empacotar os erros de forma inteligente
-            const packageData = btoa(JSON.stringify({ pct: finalPct, ans: selectedAnswers }));
-            const sharedUrl = `${baseUri}?telemetry=${packageData}`;
-
-            const textMessage = `Concluí o Quiz de Performance de F1 com ${finalPct}%! 🏎️ Achas que consegues analisar onde errei e ter melhor pontuação? Vê os meus erros aqui: ${sharedUrl}`;
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textMessage)}`, '_blank');
+            const mathScore = Math.round((score / quizData.length) * 100);
+            const url = getShareUrl();
+            const text = `Fiz o Simulador de F1 e a minha nota foi ${mathScore}/100! 🏎️ Vê as perguntas que acertei e errei, e tenta bater a minha nota: ${url}`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
         }
 
-        function renderSharedReview(parsedData) {
-            navigate('review-screen');
-            document.getElementById('header-status').innerText = `METRICS // REVIEW MODE`;
-            document.getElementById('friend-score-val').innerText = `${parsedData.pct}%`;
-
-            const container = document.getElementById('review-list-container');
-            container.innerHTML = '';
-
-            let totalMistakes = 0;
-
-            parsedData.ans.forEach((userChoice, idx) => {
-                const targetQuestion = quizData[idx];
-                if(userChoice !== targetQuestion.ans) {
-                    totalMistakes++;
-                    const item = document.createElement('div');
-                    item.className = 'review-item';
-                    item.innerHTML = `
-                        <div class="review-q">${idx + 1}. ${targetQuestion.q}</div>
-                        <div class="review-wrong">❌ Resposta dele: ${targetQuestion.options[userChoice] || "Tempo Excedido"}</div>
-                        <div class="review-correct">✅ Resposta Correta: ${targetQuestion.options[targetQuestion.ans]}</div>
-                    `;
-                    container.appendChild(item);
-                }
+        function copyLink() {
+            const url = getShareUrl();
+            navigator.clipboard.writeText(url).then(() => {
+                alert("Link copiado com sucesso! Podes colar onde quiseres.");
             });
+        }
 
-            if(totalMistakes === 0) {
-                container.innerHTML = `<p style="color:var(--correct); font-weight:500;">Incrível! Ele não falhou nenhum setor da pista.</p>`;
-            }
+        function renderSharedReview(parsed) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('review-screen').classList.add('active');
+            
+            document.getElementById('friend-score-val').innerText = `${parsed.score}/100`;
+
+            const summary = document.getElementById('review-list-container');
+            summary.innerHTML = '';
+
+            quizData.forEach((q, i) => {
+                const friendAns = parsed.ans[i];
+                const isCorrect = friendAns === q.ans;
+                
+                summary.innerHTML += `
+                    <div class="summary-item">
+                        <div class="summary-q">${i+1}. ${q.q}</div>
+                        <div class="summary-status ${isCorrect ? 'correct' : 'wrong'}">
+                            ${isCorrect ? '✅ Respondeu Certo' : `❌ Errou. Ele escolheu: "${q.options[friendAns]}". A certa era: "${q.options[q.ans]}"`}
+                        </div>
+                    </div>
+                `;
+            });
         }
     </script>
 </body>
