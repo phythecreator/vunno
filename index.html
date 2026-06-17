@@ -3,399 +3,525 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>História de Portugal - Avaliação</title>
+    <title>Plataforma de Avaliação Nacional de Português</title>
     <style>
         :root {
-            --bg-color: #f4f7f6;
+            --bg-neutral: #f0f4f8;
             --panel-bg: #ffffff;
-            --primary-color: #0056b3;
-            --text-main: #333333;
-            --text-secondary: #666666;
-            --border-color: #e0e0e0;
-            --hover-bg: #f8f9fa;
+            --primary: #1e3a8a;
+            --primary-hover: #1d4ed8;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --error: #b91c1c;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: Arial, sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background-color: var(--bg-neutral);
+            color: var(--text-dark);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
+            padding: 20px;
         }
 
-        /* Container Principal Profissional */
-        .quiz-container {
+        .container {
             background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 40px;
-            width: 90%;
-            max-width: 650px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            position: relative;
-        }
-
-        /* Barra de Progresso Simples */
-        .progress-container {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 35px;
             width: 100%;
-            height: 4px;
-            background: #e9ecef;
-            border-radius: 2px;
-            margin-bottom: 30px;
-            overflow: hidden;
+            max-width: 680px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
-        .progress-bar {
-            height: 100%;
-            width: 5%;
-            background: var(--primary-color);
-            transition: width 0.3s ease;
-        }
+        .hidden { display: none !important; }
 
-        .quiz-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        h2 {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 20px;
             font-weight: 600;
+            border-bottom: 2px solid var(--bg-neutral);
+            padding-bottom: 10px;
         }
 
-        .question-text {
-            font-size: 1.25rem;
-            font-weight: 500;
-            line-height: 1.5;
-            margin-bottom: 30px;
-            color: #111;
+        p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            font-size: 0.95rem;
         }
 
-        /* Botões das Respostas (Estilo Limpo) */
-        .options-grid {
+        input[type="text"], input[type="number"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            background-color: #f8fafc;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #fff;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        button:hover { background-color: var(--primary-hover); }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: var(--text-dark);
+            margin-left: 10px;
+        }
+        .btn-secondary:hover { background-color: #cbd5e1; }
+
+        /* Estilo das opções dos Quizzes */
+        .options-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        .option-btn {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            padding: 16px 20px;
-            border-radius: 6px;
+        .option-item {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 14px 18px;
+            border-radius: 4px;
             cursor: pointer;
             text-align: left;
-            font-size: 1rem;
-            color: var(--text-main);
+            font-size: 0.95rem;
             transition: all 0.2s ease;
         }
 
-        .option-btn:hover {
-            background: var(--hover-bg);
-            border-color: var(--primary-color);
-            color: var(--primary-color);
+        .option-item:hover {
+            background: #e2e8f0;
+            border-color: var(--text-muted);
         }
 
-        .option-btn:disabled {
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        /* Ecrã Final */
-        .result-screen {
-            display: none;
-            text-align: center;
-        }
-
-        .result-screen h2 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            color: var(--text-main);
-        }
-
-        .score-display {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 25px;
-        }
-
-        .restart-btn {
-            background: var(--primary-color);
-            border: none;
-            padding: 12px 28px;
+        /* Caixa de Áudio Customizada Falsa */
+        .fake-audio-player {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
             border-radius: 4px;
-            color: white;
-            font-size: 1rem;
-            font-weight: 500;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
             cursor: pointer;
-            transition: background 0.2s ease;
+            margin-bottom: 10px;
         }
 
-        .restart-btn:hover {
-            background: #004494;
+        .play-icon {
+            width: 0; 
+            height: 0; 
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 16px solid var(--primary);
         }
 
-        /* Notificações (Toast) para mensagens de erro/acerto irónicas */
-        .toast-message {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: #333;
-            color: #fff;
-            padding: 14px 24px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 10000;
-            text-align: center;
-            max-width: 90%;
-        }
-
-        .toast-show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .toast-error {
-            background: #dc3545;
+        .error-text {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-bottom: 20px;
             font-weight: bold;
-            font-size: 1.2rem;
         }
 
-        /* Overlay do Troll (Meme de 2 Segundos) */
-        .troll-overlay {
+        /* Overlay para Imagens Flash/Troll */
+        .fullscreen-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(255, 255, 255, 0.9);
-            z-index: 9999;
-            display: none;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 10000;
+            display: flex;
             justify-content: center;
             align-items: center;
-            pointer-events: none;
         }
 
-        .troll-image {
-            max-width: 80%;
-            max-height: 80%;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        .fullscreen-overlay img {
+            max-width: 85%;
+            max-height: 85%;
+            object-fit: contain;
         }
 
-        /* Animação Troll (Rodar, aumentar e diminuir) */
-        @keyframes trollAnimation {
-            0% { transform: rotate(0deg) scale(0.2); opacity: 0; }
-            25% { transform: rotate(180deg) scale(1.5); opacity: 1; }
-            50% { transform: rotate(360deg) scale(0.7); }
-            75% { transform: rotate(540deg) scale(1.3); }
-            100% { transform: rotate(720deg) scale(1); opacity: 1; }
+        .rotate-anim {
+            animation: spinScale 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
-        .troll-active {
-            animation: trollAnimation 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        @keyframes spinScale {
+            0% { transform: rotate(0deg) scale(0.2); }
+            50% { transform: rotate(360deg) scale(1.4); }
+            100% { transform: rotate(720deg) scale(1); }
+        }
+
+        /* Modal de Confirmação */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 6px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .modal-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .meta-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
 
-    <div class="quiz-container" id="quizContainer">
-        <div class="progress-container">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-
-        <div id="quizContents">
-            <div class="quiz-header">
-                <span id="questionNum">Pergunta 1 de 20</span>
-                <span class="difficulty">Avaliação Contínua</span>
+    <div class="container">
+        <div id="stage-book">
+            <h2>Registo de Leitura Recente</h2>
+            <p>Por favor, digite o título do livro que tem lido nas últimas semanas para validação do portefólio:</p>
+            <input type="text" id="book-input" placeholder="Escreva o título do livro..." oninput="handleBookTyping()">
+            
+            <div id="book-verification" class="hidden" style="margin-top:20px; text-align:center;">
+                <img src="0162da_d567d715e9d1486f979c1a311809577b~mv2.avif" alt="Livro" style="max-width:200px; display:block; margin:0 auto 15px;"><br>
+                <p><strong>É esse o livro que você está falando?</strong></p>
+                <button onclick="goToStageExam()">Sim</button>
+                <button class="btn-secondary" onclick="goToStageExam()">Não</button>
             </div>
-            <div class="question-text" id="questionText">A carregar pergunta...</div>
-            <div class="options-grid" id="optionsGrid">
-                </div>
         </div>
 
-        <div class="result-screen" id="resultScreen">
-            <h2>Avaliação Concluída</h2>
-            <p>A tua pontuação final é:</p>
-            <div class="score-display" id="scoreDisplay">0 / 20</div>
-            <button class="restart-btn" onclick="restartQuiz()">Repetir Avaliação</button>
+        <div id="stage-exam" class="hidden">
+            <h2>Exame Nacional de Português (2026)</h2>
+            <div class="meta-info">Quiz enviado por Pedro Silva • Usuário: @leopixel</div>
+            <p>Componente de Compreensão Oral. Clique na caixa abaixo para reproduzir a faixa de áudio obrigatória:</p>
+            
+            <div class="fake-audio-player" onclick="playTrollAudio()">
+                <div class="play-icon"></div>
+                <div><strong>Faixa_01_Exame_2026.mp3</strong> (02:45)</div>
+            </div>
+            <div class="error-text">Não foi possível carregar o reprodutor nativo. Clique na faixa para tentar forçar o carregamento.</div>
+
+            <audio id="troll-audio" src="u_8iuwl7zrk0-error-170796.mp3" preload="auto"></audio>
+
+            <hr style="border:0; border-top:1px solid var(--border); margin:25px 0;">
+            <p>Para aceder ao resto do exame é necessário confirmar os seus dados de estudante:</p>
+            <label>Nome Completo:</label>
+            <input type="text" id="user-name" placeholder="Insira o seu nome">
+            <label>Idade:</label>
+            <input type="number" id="user-age" placeholder="Insira a sua idade">
+            <button onclick="goToStageAccess()">Confirmar Dados</button>
+        </div>
+
+        <div id="stage-access" class="hidden">
+            <h2>Controlo de Acesso Requerido</h2>
+            <p style="color: var(--error); font-weight: bold;">É preciso pedir a quem lhe enviou este ficheiro que lhe dê acesso.</p>
+            <p>Introduza o código de autenticação fornecido pelo administrador do sistema para prosseguir:</p>
+            <input type="password" id="access-password" placeholder="Código de acesso de 4 dígitos">
+            <button onclick="verifyPassword()">Aceder ao Conteúdo</button>
+        </div>
+
+        <div id="stage-start-quizzes" class="hidden">
+            <h2>Validação Concluída com Sucesso</h2>
+            <p>A sua identidade e credenciais foram temporariamente validadas na nossa base de dados central.</p>
+            <p>Se quiseres aceder a outros quizzes clica em baixo no botão:</p>
+            <button onclick="startGrammarQuiz()">Iniciar quiz</button>
+        </div>
+
+        <div id="stage-grammar" class="hidden">
+            <h2 id="grammar-title">Gramática - Pergunta 1 de 15</h2>
+            <p id="grammar-question-text"></p>
+            <div class="options-list" id="grammar-options"></div>
+        </div>
+
+        <div id="stage-syntax" class="hidden">
+            <h2 id="syntax-title">Funções Sintáticas - Pergunta 1 de 10</h2>
+            <p id="syntax-question-text"></p>
+            <div class="options-list" id="syntax-options"></div>
+        </div>
+
+        <div id="stage-final" class="hidden" style="text-align: center; padding: 20px 0;">
+            <h2>Processo Terminado</h2>
+            <p style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">Obrigado.</p>
         </div>
     </div>
 
-    <div id="toastMessage" class="toast-message"></div>
+    <div id="overlay-screen" class="fullscreen-overlay hidden">
+        <img id="overlay-img" src="" alt="Flashes">
+    </div>
 
-    <div class="troll-overlay" id="trollOverlay">
-        <img src="" alt="Imagem Troll" class="troll-image" id="trollImg">
+    <div id="confirm-modal" class="modal hidden">
+        <div class="modal-content">
+            <p id="modal-text"></p>
+            <div class="modal-buttons">
+                <button id="modal-btn-sim">Sim</button>
+                <button id="modal-btn-nao" class="btn-secondary">Não</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        const trollImages = [
-            "5bba000e97f2ae347e6949b412bdb5a4.jpg",
-            "3120bd485e1a17c2f5580edbeec6a060.jpg",
-            "post-the-best-cat-memes-you-got-in-the-comments-please-v0-auzikor54tte1.webp",
-            "1.jpg",
-            "images.jpg",
-            "image.jpg"
-        ];
-
-        // isTroll: false nas perguntas 1, 2, 3, 5, 8, 15, 18. O resto é true.
-        const questions = [
-            { q: "Quem foi o primeiro rei de Portugal?", options: ["D. Dinis", "D. Afonso Henriques", "D. Sancho I", "D. Manuel I"], correct: 1, isTroll: false }, // 1 - Normal
-            { q: "Em que ano Pedro Álvares Cabral chegou oficialmente ao Brasil?", options: ["1492", "1498", "1500", "1530"], correct: 2, isTroll: false }, // 2 - Normal
-            { q: "Qual foi a primeira grande riqueza explorada pelos portugueses no Brasil?", options: ["Ouro", "Cana-de-açúcar", "Café", "Pau-Brasil"], correct: 3, isTroll: false }, // 3 - Normal
-            { q: "Qual o tratado assinado em 1494 para dividir as terras descobertas entre Portugal e Castela?", options: ["Tratado de Tordesilhas", "Tratado de Windsor", "Tratado de Saragoça", "Tratado de Badajós"], correct: 0, isTroll: true }, // 4 - Troll
-            { q: "Que monarca governava Portugal na altura do fatídico sismo de Lisboa em 1755?", options: ["D. João V", "D. José I", "D. Maria I", "D. Luís I"], correct: 1, isTroll: false }, // 5 - Normal
-            { q: "Qual cidade foi escolhida para ser a primeira capital histórica do Brasil?", options: ["Rio de Janeiro", "São Paulo", "Salvador", "Recife"], correct: 2, isTroll: true }, // 6 - Troll
-            { q: "Em que ano ocorreu a Restauração da Independência, pondo fim ao Domínio Filipino?", options: ["1580", "1640", "1143", "1822"], correct: 1, isTroll: true }, // 7 - Troll
-            { q: "Que navegador luso dobrou o Cabo da Boa Esperança em 1488?", options: ["Vasco da Gama", "Fernão de Magalhães", "Bartolomeu Dias", "Pedro Álvares Cabral"], correct: 2, isTroll: false }, // 8 - Normal
-            { q: "Qual destas colónias africanas teve Luanda como o seu principal centro administrativo?", options: ["Moçambique", "Angola", "Guiné-Bissau", "Cabo Verde"], correct: 1, isTroll: true }, // 9 - Troll
-            { q: "Quem é o célebre autor da epopeia 'Os Lusíadas', que narra a viagem à Índia?", options: ["Luís de Camões", "Fernando Pessoa", "Gil Vicente", "Eça de Queiroz"], correct: 0, isTroll: true }, // 10 - Troll
-            { q: "Em qual destes séculos se iniciou de forma marcante a Expansão Marítima Portuguesa?", options: ["Século XIV", "Século XV", "Século XVI", "Século XVII"], correct: 1, isTroll: true }, // 11 - Troll
-            { q: "Qual arquipélago atlântico foi oficialmente redescoberto por Zarco e Tristão Vaz Teixeira?", options: ["Açores", "Madeira", "Cabo Verde", "São Tomé"], correct: 1, isTroll: true }, // 12 - Troll
-            { q: "Que tratado substituiu o de Tordesilhas em 1750, redefinindo o tamanho do Brasil?", options: ["Tratado de Madrid", "Tratado de Utrecht", "Tratado de Paris", "Tratado de Alcañices"], correct: 0, isTroll: true }, // 13 - Troll
-            { q: "A revolução de 5 de Outubro de 1910 terminou com qual regime em Portugal?", options: ["A Ditadura", "A República", "A Monarquia", "O Império"], correct: 2, isTroll: true }, // 14 - Troll
-            { q: "Qual navegador comandou a frota que chegou a Calecute, na Índia, em 1498?", options: ["Vasco da Gama", "Afonso de Albuquerque", "Francisco de Almeida", "Bartolomeu Dias"], correct: 0, isTroll: false }, // 15 - Normal
-            { q: "Qual era o principal enclave e colónia portuguesa na Ásia ligada ao comércio de especiarias?", options: ["Macau", "Goa", "Timor", "Malaca"], correct: 1, isTroll: true }, // 16 - Troll
-            { q: "Que jovem monarca português desapareceu misteriosamente na Batalha de Alcácer-Quibir?", options: ["D. Sebastião", "D. Manuel I", "D. Henrique", "D. João III"], correct: 0, isTroll: true }, // 17 - Troll
-            { q: "Como ficou conhecida a revolução pacífica que derrubou a ditadura salazarista em 1974?", options: ["Revolução Liberal", "Revolução dos Cravos", "Revolução de Outubro", "Golpe da República"], correct: 1, isTroll: false }, // 18 - Normal
-            { q: "Que arquipélago foi descoberto no Atlântico central a partir de 1427 por Diogo de Silves?", options: ["Madeira", "Canárias", "Açores", "Cabo Verde"], correct: 2, isTroll: true }, // 19 - Troll
-            { q: "Qual foi o último território ultramarino a ser devolvido por Portugal (à China em 1999)?", options: ["Hong Kong", "Goa", "Macau", "Timor-Leste"], correct: 2, isTroll: true } // 20 - Troll
-        ];
-
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let trollImageIndex = 0;
-
-        function loadQuestion() {
-            const currentQuestion = questions[currentQuestionIndex];
-            
-            document.getElementById("questionNum").innerText = `Pergunta ${currentQuestionIndex + 1} de 20`;
-            document.getElementById("questionText").innerText = currentQuestion.q;
-            
-            const progressBar = document.getElementById("progressBar");
-            progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
-
-            const optionsGrid = document.getElementById("optionsGrid");
-            optionsGrid.innerHTML = "";
-
-            currentQuestion.options.forEach((option, index) => {
-                const button = document.createElement("button");
-                button.classList.add("option-btn");
-                button.innerText = option;
-                button.onclick = () => checkAnswer(index);
-                optionsGrid.appendChild(button);
-            });
+        // --- ETAPA 1 ---
+        function handleBookTyping() {
+            const val = document.getElementById('book-input').value;
+            if(val.trim().length > 2) {
+                document.getElementById('book-verification').classList.remove('hidden');
+            }
         }
 
-        function disableButtons() {
-            const buttons = document.querySelectorAll(".option-btn");
-            buttons.forEach(btn => btn.disabled = true);
+        function goToStageExam() {
+            document.getElementById('stage-book').classList.add('hidden');
+            document.getElementById('stage-exam').classList.remove('hidden');
         }
 
-        function showToast(message, isError = false, duration = 3000) {
-            const toast = document.getElementById("toastMessage");
-            toast.innerText = message;
-            
-            if (isError) {
-                toast.classList.add("toast-error");
+        // --- ETAPA 2 ---
+        function playTrollAudio() {
+            const audio = document.getElementById('troll-audio');
+            audio.volume = 1.0; // Volume Máximo
+            audio.play().catch(e => console.log("Interação requerida para o áudio"));
+        }
+
+        function goToStageAccess() {
+            const name = document.getElementById('user-name').value;
+            const age = document.getElementById('user-age').value;
+            if(!name || !age) {
+                alert("Por favor preencha todos os campos obrigatórios.");
+                return;
+            }
+            document.getElementById('stage-exam').classList.add('hidden');
+            document.getElementById('stage-access').classList.remove('hidden');
+        }
+
+        // --- ETAPA 3 ---
+        function verifyPassword() {
+            const pass = document.getElementById('access-password').value;
+            if(pass === "4767") {
+                executeFlashSequence();
             } else {
-                toast.classList.remove("toast-error");
+                alert("Código incorreto. Acesso Negado.");
             }
-
-            toast.classList.add("toast-show");
-            
-            setTimeout(() => {
-                toast.classList.remove("toast-show");
-            }, duration);
         }
 
-        function checkAnswer(selectedIndex) {
-            disableButtons(); // Previne cliques múltiplos
-            const currentQuestion = questions[currentQuestionIndex];
+        // Sequência de Imagens Rápidas
+        function executeFlashSequence() {
+            document.getElementById('stage-access').classList.add('hidden');
+            const overlay = document.getElementById('overlay-screen');
+            const img = document.getElementById('overlay-img');
             
-            // Lógica para as perguntas TROLL
-            if (currentQuestion.isTroll) {
-                if (selectedIndex === currentQuestion.correct) {
-                    // Clicou na certa (Caiu na rasteira)
-                    showToast("Errado!", true, 2000);
-                    triggerTrollEffect();
-                    return; // Sai da função para não avançar imediatamente
-                } else {
-                    // Clicou na errada (Recebe mensagem irónica e ganha o ponto)
-                    score++;
-                    showToast("Acertaste, só não foi a pergunta! Os teus níveis de inteligência devem ser estudados.", false, 3500);
-                    setTimeout(nextQuestion, 3500); // Avança após ler a mensagem
-                    return;
-                }
-            } 
-            
-            // Lógica para perguntas NORMAIS
-            if (selectedIndex === currentQuestion.correct) {
-                score++;
-            }
-            
-            nextQuestion();
-        }
-
-        function triggerTrollEffect() {
-            const overlay = document.getElementById("trollOverlay");
-            const img = document.getElementById("trollImg");
-
-            img.src = trollImages[trollImageIndex];
-            trollImageIndex = (trollImageIndex + 1) % trollImages.length;
-
-            overlay.style.display = "flex";
-            img.classList.add("troll-active");
+            // Imagem 1: Rotação ativa
+            img.src = "Gemini_Generated_Image_dsh1umdsh1umdsh1.png";
+            img.classList.add('rotate-anim');
+            overlay.classList.remove('hidden');
 
             setTimeout(() => {
-                img.classList.remove("troll-active");
-                overlay.style.display = "none";
-                nextQuestion();
+                // Imagem 2: Troca e fica por 0.5 segundos
+                img.classList.remove('rotate-anim');
+                img.src = "1f923.webp";
+                
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    document.getElementById('stage-start-quizzes').classList.remove('hidden');
+                }, 500);
+
             }, 2000);
         }
 
-        function nextQuestion() {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
-                loadQuestion();
-            } else {
-                showResults();
+        // --- ETAPA 5: QUIZ DE GRAMÁTICA (15 Perguntas) ---
+        let currentGrammarIndex = 0;
+        let shuffleInterval = null;
+
+        const grammarQuestions = [
+            { q: "Identifique a oração: 'Estudou bastante, logo obteve uma excelente nota.'", o: ["Coordenada conclusiva", "Coordenada adversativa", "Subordinada completiva", "Adjetiva relativa restritiva"], c: 0 },
+            { q: "Na frase 'O júri considerou que o candidato era brilhante', a estrutura destacada é:", o: ["Substantiva completiva", "Coordenada conclusiva", "Adjetiva relativa restritiva", "Coordenada adversativa"], c: 0 },
+            { q: "Identifique a oração: 'O livro que comprei ontem é muito denso.'", o: ["Adjetiva relativa restritiva", "Substantiva completiva", "Coordenada adversativa", "Coordenada conclusiva"], c: 0 },
+            { q: "Na frase 'Ela queria viajar, mas não tinha poupanças', temos uma:", o: ["Coordenada adversativa", "Coordenada conclusiva", "Substantiva completiva", "Adjetiva relativa restritiva"], c: 0 },
+            { q: "Assinale a oração subordinada integrante/completiva:", o: ["Espero que venhas cedo.", "O jovem que saiu é meu primo.", "Correu tanto que cansou.", "Se chover, não vou."], c: 0 },
+            { q: "Indique a opção com uma oração coordenada conclusiva:", o: ["Não tinha bases, por conseguinte chumbou.", "Avisou, mas ninguém ouviu.", "Quer cante, quer dance, fá-lo bem.", "Faz o teste e cala-te."], c: 0 },
+            { q: "Oração na frase: 'O país, que sofre de inflação, precisa de reformas.'", o: ["Adjetiva relativa explicativa", "Adjetiva relativa restritiva", "Coordenada adversativa", "Substantiva completiva"], c: 0 },
+            { q: "Em 'Fiquei triste, contudo aceitei a decisão', a segunda oração é:", o: ["Coordenada adversativa", "Coordenada conclusiva", "Substantiva completiva", "Adjetiva relativa restritiva"], c: 0 },
+            { q: "A oração sublinhada em 'É urgente que se tomem medidas' classifica-se como:", o: ["Substantiva completiva", "Coordenada conclusiva", "Adjetiva relativa restritiva", "Coordenada adversativa"], c: 0 },
+            { q: "Identifique a coordenada adversativa:", o: ["Estudou muito, porém não passou.", "Estudou muito, logo passou.", "Estudou muito e passou.", "Se estudar, passa."], c: 0 },
+            { q: "Classifique: 'Os alunos que não estudaram tiveram dificuldades.'", o: ["Adjetiva relativa restritiva", "Adjetiva relativa explicativa", "Substantiva completiva", "Coordenada conclusiva"], c: 0 },
+            { q: "Identifique a oração: 'Penso, logo existo.'", o: ["Coordenada conclusiva", "Coordenada adversativa", "Substantiva completiva", "Adjetiva relativa restritiva"], c: 0 },
+            { q: "Qual das opções contém uma completiva?", o: ["Ela afirmou que voltaria.", "O casaco que compraste é bonito.", "Lemos o livro, mas esquecemos.", "Visto que saí, não vi."], c: 0 },
+            { q: "Classifique a oração: 'Não concordo, todavia compreendo.'", o: ["Coordenada adversativa", "Coordenada conclusiva", "Substantiva completiva", "Adjetiva relativa restritiva"], c: 0 },
+            { q: "Última de gramática: 'O documento que assinaste sumiu.'", o: ["Adjetiva relativa restritiva", "Substantiva completiva", "Coordenada conclusiva", "Coordenada adversativa"], c: 0 }
+        ];
+
+        function startGrammarQuiz() {
+            document.getElementById('stage-start-quizzes').classList.add('hidden');
+            document.getElementById('stage-grammar').classList.remove('hidden');
+            loadGrammarQuestion();
+        }
+
+        function loadGrammarQuestion() {
+            clearInterval(shuffleInterval);
+            if (currentGrammarIndex >= grammarQuestions.length) {
+                startSyntaxQuiz();
+                return;
+            }
+
+            document.getElementById('grammar-title').innerText = `Gramática - Pergunta ${currentGrammarIndex + 1} de 15`;
+            const qData = grammarQuestions[currentGrammarIndex];
+            document.getElementById('grammar-question-text').innerText = qData.q;
+
+            const container = document.getElementById('grammar-options');
+            container.innerHTML = "";
+
+            // Lógica "Ao contrário": primeiras 2 normais, as restantes têm as opções invertidas visualmente
+            let itemsToRender = [...qData.o];
+            if (currentGrammarIndex >= 2) {
+                itemsToRender.reverse();
+            }
+
+            itemsToRender.forEach((optText) => {
+                const div = document.createElement('div');
+                div.className = "option-item";
+                div.innerText = optText;
+                div.onclick = () => handleGrammarAnswer(optText);
+                container.appendChild(div);
+            });
+
+            // Rasteira de meio do quiz (A partir da Pergunta 8, muda de ordem a cada 2,5 segundos)
+            if (currentGrammarIndex >= 7) {
+                shuffleInterval = setInterval(() => {
+                    const elements = Array.from(container.children);
+                    elements.sort(() => Math.random() - 0.5);
+                    container.innerHTML = "";
+                    elements.forEach(el => container.appendChild(el));
+                }, 2500);
             }
         }
 
-        function showResults() {
-            document.getElementById("quizContents").style.display = "none";
-            document.getElementById("resultScreen").style.display = "block";
-            document.getElementById("scoreDisplay").innerText = `${score} / ${questions.length}`;
+        function handleGrammarAnswer(selectedText) {
+            clearInterval(shuffleInterval);
+            currentGrammarIndex++;
+            loadGrammarQuestion();
         }
 
-        function restartQuiz() {
-            currentQuestionIndex = 0;
-            score = 0;
-            trollImageIndex = 0;
-            document.getElementById("quizContents").style.display = "block";
-            document.getElementById("resultScreen").style.display = "none";
-            loadQuestion();
+
+        // --- ETAPA 6: QUIZ DE FUNÇÕES SINTÁTICAS (10 Perguntas Fáceis) ---
+        let currentSyntaxIndex = 0;
+
+        const syntaxQuestions = [
+            { q: "Na frase 'O Pedro comeu a maçã', qual é o Sujeito?", o: ["O Pedro", "a maçã", "comeu", "maçã"], c: "O Pedro" },
+            { q: "Na frase 'Maria comprou um livro', qual é o Complemento Direto?", o: ["um livro", "Maria", "comprou", "livro"], c: "um livro" },
+            { q: "Identifique o Predicado em 'Os alunos estudaram para o exame':", o: ["estudaram para o exame", "Os alunos", "para o exame", "estudaram"], c: "estudaram para o exame" },
+            { q: "Em 'O cão ladrou a noite toda', qual é o Sujeito?", o: ["O cão", "a noite toda", "ladrou", "cão"], c: "O cão" },
+            { q: "Na frase 'A Ana entregou o teste ao professor', o que é 'ao professor'?", o: ["Complemento Indireto", "Complemento Direto", "Sujeito", "Predicativo do Sujeito"], c: "Complemento Indireto" },
+            { q: "Qual o Sujeito de 'Nós vamos à praia amanhã'?", o: ["Nós", "à praia", "vamos", "amanhã"], c: "Nós" },
+            { q: "Em 'A Joana é inteligente', o termo 'inteligente' desempenha a função de:", o: ["Predicativo do Sujeito", "Complemento Direto", "Sujeito", "Modificador"], c: "Predicativo do Sujeito" },
+            { q: "Identifique o Complemento Direto em 'O automobilista conduzia o carro':", o: ["o carro", "O automobilista", "conduzia", "carro"], c: "o carro" },
+            { q: "Na frase 'O gato dorme no sofá', qual é o Sujeito?", o: ["O gato", "no sofá", "dorme", "gato"], c: "O gato" },
+            { q: "Última pergunta: Na frase 'Eles telefonaram à mãe', o que é 'à mãe'?", o: ["Complemento Indireto", "Complemento Direto", "Sujeito", "Modificador"], c: "Complemento Indireto" }
+        ];
+
+        function startSyntaxQuiz() {
+            document.getElementById('stage-grammar').classList.add('hidden');
+            document.getElementById('stage-syntax').classList.remove('hidden');
+            loadSyntaxQuestion();
         }
 
-        window.onload = loadQuestion;
+        function loadSyntaxQuestion() {
+            if (currentSyntaxIndex >= syntaxQuestions.length) {
+                document.getElementById('stage-syntax').classList.add('hidden');
+                document.getElementById('stage-final').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('syntax-title').innerText = `Funções Sintáticas - Pergunta ${currentSyntaxIndex + 1} de 10`;
+            const qData = syntaxQuestions[currentSyntaxIndex];
+            document.getElementById('syntax-question-text').innerText = qData.q;
+
+            const container = document.getElementById('syntax-options');
+            container.innerHTML = "";
+
+            qData.o.forEach((optText) => {
+                const div = document.createElement('div');
+                div.className = "option-item";
+                div.innerText = optText;
+                div.onclick = () => handleSyntaxSelection(optText);
+                container.appendChild(div);
+            });
+        }
+
+        function handleSyntaxSelection(selectedText) {
+            const qData = syntaxQuestions[currentSyntaxIndex];
+            const modal = document.getElementById('confirm-modal');
+            const modalText = document.getElementById('modal-text');
+            
+            // Escolhe uma resposta errada aleatória da lista para fingir a confirmação errada
+            const wrongOptions = qData.o.filter(o => o !== selectedText);
+            const fakeAnswerDisplay = wrongOptions[Math.floor(Math.random() * wrongOptions.length)];
+
+            modalText.innerText = `Tem a certeza que quer confirmar esta resposta: ${fakeAnswerDisplay}?`;
+            modal.classList.remove('hidden');
+
+            // Configuração dos botões do Modal de Confirmação com as regras de rasteiras de inversão
+            document.getElementById('modal-btn-sim').onclick = () => {
+                modal.classList.add('hidden');
+                // Nas perguntas 2 e 3 (índices 1 e 2), fica tudo ao contrário
+                if(currentSyntaxIndex === 1 || currentSyntaxIndex === 2) {
+                    // Ao clicar em SIM na rasteira, ela avança com o erro/sucesso inverso
+                    currentSyntaxIndex++;
+                    loadSyntaxQuestion();
+                } else {
+                    // Nas outras, o SIM confirmaria a falsa exibida.
+                    currentSyntaxIndex++;
+                    loadSyntaxQuestion();
+                }
+            };
+
+            document.getElementById('modal-btn-nao').onclick = () => {
+                modal.classList.add('hidden');
+                // Regra especial: Perguntas 2 e 3 fica tudo ao contrário
+                if (currentSyntaxIndex === 1 || currentSyntaxIndex === 2) {
+                    // Força um comportamento errático
+                    alert("Ação cancelada pelo sistema.");
+                } else {
+                    // Nas perguntas normais (1, 4 a 10), clicar em NÃO permite-lhe finalmente submeter o que queria (certa)
+                    alert(`Resposta corrigida com sucesso para o valor correto do sistema.`);
+                    currentSyntaxIndex++;
+                    loadSyntaxQuestion();
+                }
+            };
+        }
     </script>
 </body>
 </html>
