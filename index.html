@@ -3,245 +3,434 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F1 Master Quiz — Premium Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+    <title>Quiz: Física, Big Bang e a Formação da Terra</title>
     <style>
         :root {
-            --bg: #fafafa;
+            --bg-color: #f0f2f5;
             --card-bg: #ffffff;
-            --text-main: #111111;
-            --text-muted: #666666;
-            --text-ghost: #8e8e93;
-            --primary: #000000;
-            --primary-hover: #222222;
-            --border: #e5e5e5;
-            --border-hover: #b5b5b5;
-            --correct: #10b981;
-            --correct-bg: #f0fdf4;
-            --wrong: #ef4444;
-            --wrong-bg: #fef2f2;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
-            --radius: 12px;
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --text-color: #1f2937;
+            --text-light: #6b7280;
+            --correct-color: #10b981;
+            --wrong-color: #ef4444;
+            --border-radius: 12px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Geist', sans-serif; -webkit-font-smoothing: antialiased; user-select: none; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-        body { background-color: var(--bg); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .quiz-container {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            box-sizing: border-box;
+        }
 
-        .quiz-deck { width: 100%; max-width: 760px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); position: relative; overflow: hidden; padding: 50px 40px; }
+        .screen {
+            display: none;
+        }
 
-        .top-navigation { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+        .screen.active {
+            display: block;
+        }
 
-        .logo-area { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; letter-spacing: -0.3px; }
-        .logo-area img { height: 22px; object-fit: contain; }
+        h1, h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-top: 0;
+        }
 
-        .telemetry-status { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-ghost); text-transform: uppercase; }
+        .quiz-img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            margin: 20px auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
 
-        .progress-timeline { position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--border); }
-        .progress-line-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.4s ease; }
+        p.description {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
 
-        .screen { display: none; }
-        .screen.active { display: block; animation: slideUp 0.4s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .btn {
+            display: block;
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background 0.2s ease;
+            text-align: center;
+            margin-top: 20px;
+        }
 
-        h1 { font-size: 36px; font-weight: 700; letter-spacing: -1px; line-height: 1.15; margin-bottom: 16px; }
-        p.subtitle { color: var(--text-muted); font-size: 16px; line-height: 1.6; margin-bottom: 32px; }
-        .question-title { font-size: 22px; font-weight: 600; line-height: 1.4; margin-bottom: 28px; }
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
 
-        .badge { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 16px; border: 1px solid transparent; }
-        .badge.easy { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
-        .badge.medium { background: #fffbeb; color: #92400e; border-color: #fde68a; }
-        .badge.hard { background: #fef2f2; color: #991b1b; border-color: #fca5a5; }
+        .progress-bar {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            text-align: right;
+        }
 
-        .options-stack { display: flex; flex-direction: column; gap: 12px; }
-        .option-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; font-size: 16px; color: var(--text-main); cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: space-between; }
-        .option-card:hover:not(.disabled) { border-color: var(--border-hover); background: #fafafa; }
-        .option-card.disabled { cursor: default; opacity: 0.6; }
-        .option-card.correct-state { border-color: var(--correct) !important; background: var(--correct-bg) !important; color: #065f46; font-weight: 500; opacity: 1; }
-        .option-card.wrong-state { border-color: var(--wrong) !important; background: var(--wrong-bg) !important; color: #991b1b; opacity: 1; }
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
 
-        .feedback-box { margin-top: 20px; padding: 16px; border-radius: 8px; font-size: 15px; line-height: 1.5; display: none; animation: slideUp 0.3s ease; }
-        .feedback-box.correct { background: var(--correct-bg); color: #065f46; border: 1px solid #bbf7d0; display: block; }
-        .feedback-box.wrong { background: var(--wrong-bg); color: #991b1b; border: 1px solid #fca5a5; display: block; }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
-        .action-btn { background: var(--primary); color: #ffffff; border: none; padding: 14px 28px; font-size: 15px; font-weight: 500; border-radius: 8px; cursor: pointer; transition: background 0.2s ease; display: inline-flex; align-items: center; gap: 10px; margin-top: 20px; }
-        .action-btn:hover { background: var(--primary-hover); }
-        .action-btn.whatsapp-style { background: #25D366; color: white; }
-        .action-btn.whatsapp-style:hover { background: #1ebe5d; }
-        .action-btn.secondary-style { background: transparent; color: var(--text-main); border: 1px solid var(--border); }
-        .action-btn.secondary-style:hover { background: #f5f5f5; }
+        .option-btn {
+            background-color: #f9fafb;
+            border: 2px solid #e5e7eb;
+            padding: 14px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            text-align: left;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
 
-        .score-display { font-size: 84px; font-weight: 700; letter-spacing: -4px; color: var(--primary); margin-bottom: 20px;}
-        .summary-list { margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px; max-height: 300px; overflow-y: auto; }
-        .summary-item { padding: 12px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
-        #next-btn-container { text-align: right; display: none; }
-        #timer-display { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--wrong); }
+        .option-btn:hover {
+            background-color: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .option-btn.selected {
+            background-color: #eef2ff;
+            border-color: var(--primary-color);
+        }
+
+        .results-summary {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .review-section {
+            margin-top: 20px;
+            border-top: 2px solid #f3f4f6;
+            padding-top: 20px;
+        }
+
+        .review-item {
+            background-color: #fff5f5;
+            border-left: 4px solid var(--wrong-color);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .review-item h4 {
+            margin: 0 0 8px 0;
+            color: var(--text-color);
+        }
+
+        .review-item p {
+            margin: 4px 0;
+            font-size: 0.95rem;
+        }
+
+        .text-correct {
+            color: var(--correct-color);
+            font-weight: 600;
+        }
+
+        .text-wrong {
+            color: var(--wrong-color);
+            font-weight: 600;
+        }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-    <div class="quiz-deck">
-        <div class="progress-timeline"><div class="progress-line-fill" id="timeline-fill"></div></div>
-
-        <div class="top-navigation">
-            <div class="logo-area">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/F1.svg" alt="F1 Logo">
-                <span>QUIZ_PLATFORM</span>
-            </div>
-            <div class="telemetry-status" id="header-status">STATUS // IDLE</div>
-        </div>
-
-        <div id="start-screen" class="screen active">
-            <div class="badge easy" style="color: #10b981; background: #e6f7f0; border: 1px solid #a7f3d0;">BRIEFING INICIAL</div>
-            <h1>Simulador de Performance<br>Fórmula 1.</h1>
-            <p class="subtitle">Modo de Segurança Ativo. Precisas de aceitar o Ecrã Inteiro para iniciar.</p>
-            <button class="action-btn" onclick="startQuiz()">
-                Iniciar Quiz &rarr;
-            </button>
-        </div>
-
-        <div id="quiz-screen" class="screen">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div class="badge" id="difficulty-badge">NÍVEL</div>
-                <div id="timer-display">20s</div>
-            </div>
-            <div class="question-title" id="question-text">Carregando...</div>
-            <div class="options-stack" id="options-container"></div>
-            
-            <div id="feedback-container"></div>
-            
-            <div id="next-btn-container">
-                <button class="action-btn" onclick="nextQuestion()">Próxima Pergunta &rarr;</button>
-            </div>
-        </div>
-
-        <div id="results-screen" class="screen">
-            <div class="badge hard">RELATÓRIO DE FIM DE CORRIDA</div>
-            <div class="score-display" id="final-score-val">0/100</div>
-            <h2 style="font-size:24px; font-weight:600; margin-bottom:6px;">Análise</h2>
-            <p style="color:var(--text-muted); font-size:15px; line-height:1.5;">Aqui está o resumo da tua prestação em pista.</p>
-            <div class="summary-list" id="summary-container"></div>
-        </div>
+<div class="quiz-container">
+    
+    <div id="start-screen" class="screen active">
+        <h1>Quiz de Ciência</h1>
+        <p class="description">Testa os teus conhecimentos básicos sobre Física, o Big Bang e a Formação da Terra!</p>
+        <img src="original-image-behind-the-nikola-tesla-and-albert-einstein-v0-4idb4ivtu04g1.webp" alt="Imagem de Introdução" class="quiz-img">
+        <button class="btn" onclick="startQuiz()">Começar Quiz</button>
     </div>
 
-    <script>
-        const rawQuizData = [
-            { diff: 'easy', q: "De acordo com o resumo, como se divide a temporada de 24 Grandes Prémios?", options: ["Começa na Austrália e termina em Abu Dhali.", "Começa em Singapura e termina em Las Vegas.", "Começa no Mónaco e termina em Spa.", "Começa em Spa e termina na Austrália."], ans: 0 },
-            { diff: 'easy', q: "Qual é a regra mencionada no curso sobre a distância total que cada circuito deve perfazer?", options: ["Cada circuito tem de ter exatamente 50 voltas.", "Cada circuito tem de ter 305 km, variando o número de voltas.", "Cada circuito tem de ter 500 km.", "A distância é irrelevante."], ans: 1 },
-            { diff: 'easy', q: "Qual é a cor da bandeira que indica 'perigo' e obriga o piloto a abrandar?", options: ["Verde.", "Azul.", "Amarela.", "Vermelha."], ans: 2 },
-            { diff: 'easy', q: "Segundo o curso, qual é a equipa conhecida pela sua 'incrível engenharia'?", options: ["Ferrari.", "Mercedes.", "Red Bull.", "McLaren."], ans: 1 },
-            { diff: 'medium', q: "Qual é a diferença entre o Vácuo (Slipstream) e o Ar Sujo descrita no resumo?", options: ["O Vácuo ganha velocidade; o Ar Sujo faz perder aderência.", "O Ar Sujo ajuda a ganhar velocidade.", "Ambos funcionam da mesma forma.", "O Vácuo é proibido pela FIA."], ans: 0 },
-            { diff: 'medium', q: "De acordo com o texto, qual é o composto de pneu 'Muito rápido, mas dura poucas voltas'?", options: ["Médio (Amarelo).", "Duro (Branco).", "Macio (Soft/Vermelho).", "Intermédio (Azul/Verde)."], ans: 2 },
-            { diff: 'medium', q: "O que é que o resumo diz sobre a velocidade na Pit Lane?", options: ["É livre.", "É limitada a 80km/h (ou 60km/h no Mónaco).", "É limitada a 100km/h.", "É igual à velocidade da reta principal."], ans: 1 },
-            { diff: 'medium', q: "Qual é a principal característica do circuito do Mónaco mencionada no resumo?", options: ["Pista de alta velocidade.", "Circuito urbano e tem limites de velocidade reduzidos na pitlane.", "O teto orçamental não se aplica.", "Única pista onde o Safety Car não entra."], ans: 1 },
-            { diff: 'medium', q: "Quem é o piloto de 18 anos que substitui Hamilton na Mercedes em 2025?", options: ["Max Verstappen.", "Kimi Antonelli.", "Charles Leclerc.", "Fernando Alonso."], ans: 1 },
-            { diff: 'medium', q: "O que significa a Bandeira Azul segundo o resumo?", options: ["Mau comportamento.", "Aviso para dar passagem ao líder.", "Corrida interrompida.", "Pista livre."], ans: 1 },
-            { diff: 'medium', q: "Qual é a cor da equipa McLaren descrita no resumo?", options: ["Vermelho.", "Azul escuro.", "Laranja papaya.", "Preto e prata."], ans: 2 },
-            { diff: 'medium', q: "O que acontece na paragem sob Safety Car mencionada no texto?", options: ["O piloto perde 25 segundos.", "O piloto perde apenas 10-12 segundos (pit stop grátis).", "A paragem é proibida.", "O piloto ganha uma volta de avanço."], ans: 1 },
-            { diff: 'hard', q: "Por que as zonas de travagem são os melhores locais de ultrapassagem?", options: ["Porque é onde o DRS é obrigatório.", "Porque é onde os carros reduzem drasticamente a velocidade.", "Porque é onde os pneus duram mais.", "Porque a FIA não fiscaliza."], ans: 1 },
-            { diff: 'hard', q: "Como é que o resumo explica a estratégia de 'Undercut'?", options: ["Fica em pista com pneus velhos.", "Para antes do rival para trocar de pneus.", "Ultrapassa por fora da curva.", "Espera que o rival seja desqualificado."], ans: 1 },
-            { diff: 'hard', q: "Qual é o papel da FIA na questão dos carros dobrados durante o Safety Car?", options: ["Impede que ultrapassem.", "Permite que passem para limpar o trânsito.", "Obriga-os a sair da corrida.", "Dá-lhes penalização."], ans: 1 },
-            { diff: 'hard', q: "Segundo o resumo, o que é que o Hamilton alcançou em termos de recordes?", options: ["Vitórias e Pole Position.", "Paragens nas boxes.", "Multas na pitlane.", "Voltas rápidas."], ans: 0 },
-            { diff: 'hard', q: "O que é que o resumo diz que um erro no semáforo das boxes pode causar?", options: ["Uma multa da FIA.", "Deitar tudo a perder, pela perda de tempo.", "O carro ter de trocar de motor.", "Desclassificação do campeonato."], ans: 1 }
-        ];
+    <div id="quiz-screen" class="screen">
+        <div class="progress-bar" id="progress">Pergunta 1 de 20</div>
+        <div id="question-image-container"></div>
+        <div class="question-text" id="question-text">Aqui fica a pergunta.</div>
+        <div class="options-container" id="options-container">
+            </div>
+        <button class="btn" id="next-btn" onclick="nextQuestion()" style="display: none;">Seguinte</button>
+    </div>
 
-        let currentQ = 0, score = 0, userAnswers = [], timeLeft = 20, timer = null, quizData = [];
+    <div id="result-screen" class="screen">
+        <h1>Resultados do Quiz</h1>
+        <div class="results-summary" id="score-text"></div>
+        
+        <div id="review-container" class="review-section">
+            <h3>Perguntas que erraste:</h3>
+            <div id="wrong-answers-list"></div>
+        </div>
+        
+        <button class="btn" onclick="restartQuiz()">Tentar Novamente</button>
+    </div>
 
-        function shuffleArray(array) { return array.sort(() => Math.random() - 0.5); }
+</div>
 
-        function startQuiz() {
-            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-            // Baralhar perguntas e opções
-            quizData = rawQuizData.map(q => {
-                let options = q.options.map((text, idx) => ({ text, isCorrect: idx === q.ans }));
-                shuffleArray(options);
-                return { ...q, shuffledOptions: options };
-            });
-            shuffleArray(quizData);
-            
-            currentQ = 0; score = 0; userAnswers = [];
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('quiz-screen').classList.add('active');
-            loadQuestion();
+<script>
+    // Lista de 20 perguntas sobre Física, Big Bang e Formação da Terra
+    const quizData = [
+        {
+            question: "O que foi o Big Bang?",
+            options: ["Uma explosão de dinamite no espaço", "A grande expansão que deu origem ao universo", "O colapso de uma estrela gigante", "O choque entre dois planetas"],
+            correct: 1
+        },
+        {
+            question: "Há aproximadamente quantos anos ocorreu o Big Bang?",
+            options: ["4.5 mil milhões de anos", "10 mil anos", "13.8 mil milhões de anos", "100 mil milhões de anos"],
+            correct: 2
+        },
+        {
+            question: "Qual é o elemento químico mais abundante no universo pós-Big Bang?",
+            options: ["Oxigénio", "Hidrogénio", "Ferro", "Carbono"],
+            correct: 1
+        },
+        {
+            question: "O que aconteceu à temperatura do universo logo após o Big Bang?",
+            options: ["Aumentou drasticamente", "Manteve-se congelada", "Diminuiu à medida que o universo se expandia", "Ficou instável sem nunca mudar"],
+            correct: 2
+        },
+        {
+            question: "Quem propôs inicialmente a teoria do átomo primordial, que deu origem à teoria do Big Bang?",
+            options: ["Albert Einstein", "Isaac Newton", "Georges Lemaître", "Stephen Hawking"],
+            correct: 2
+        },
+        {
+            question: "Há quantos anos, aproximadamente, se formou o planeta Terra?",
+            options: ["4.5 mil milhões de anos", "13.8 mil milhões de anos", "500 milhões de anos", "2 mil milhões de anos"],
+            correct: 0
+        },
+        {
+            question: "A Terra formou-se a partir de que tipo de estrutura no espaço?",
+            options: ["Uma colisão de galáxias", "Uma nébula solar de poeira e gás", "Um buraco negro que arrefeceu", "Pedaços de cometas antigos"],
+            correct: 1
+        },
+        {
+            question: "Qual é a camada mais interna, quente e densa do nosso planeta?",
+            options: ["A crosta terrestre", "O manto", "A atmosfera", "O núcleo"],
+            correct: 3
+        },
+        {
+            question: "Como se chamava o supercontinente que unia quase todas as terras emersas há milhões de anos?",
+            options: ["Atlântida", "Pangeia", "Gondwana", "Laurásia"],
+            correct: 1
+        },
+        {
+            question: "Qual destes gases era muito abundante na atmosfera primitiva da Terra devido à atividade vulcânica?",
+            options: ["Oxigénio puro", "Vapor de água e dióxido de carbono", "Hélio", "Árgon"],
+            correct: 1
+        },
+        {
+            question: "Qual é a força invisível que atrai os objetos em direção ao centro da Terra?",
+            options: ["Força Magnética", "Força de Atrito", "Gravidade", "Força Centrífuga"],
+            correct: 2
+        },
+        {
+            question: "Quem formulou as três leis do movimento e a lei da gravitação universal?",
+            options: ["Galileu Galilei", "Isaac Newton", "Albert Einstein", "Marie Curie"],
+            correct: 1
+        },
+        {
+            question: "Segundo a física moderna, qual é a velocidade máxima permitida no universo?",
+            options: ["A velocidade do som", "A velocidade da luz", "A velocidade de rotação da Terra", "A velocidade de um foguetão espacial"],
+            correct: 1
+        },
+        {
+            question: "O que estuda principalmente a área da Óptica dentro da Física?",
+            options: ["Os sons e as ondas sonoras", "A eletricidade e os ímanes", "A luz e os seus fenómenos", "O movimento dos planetas"],
+            correct: 2
+        },
+        {
+            question: "Qual é a unidade de medida oficial da força no Sistema Internacional (SI)?",
+            options: ["Quilo (kg)", "Newton (N)", "Joule (J)", "Metros por segundo (m/s)"],
+            correct: 1
+        },
+        {
+            question: "Que partícula tem carga elétrica negativa e move-se à volta do núcleo de um átomo?",
+            options: ["Eletrão", "Protão", "Neutrão", "Fotão"],
+            correct: 0
+        },
+        {
+            question: "O som consegue propagar-se no vácuo do espaço sideral?",
+            options: ["Sim, mas viaja muito devagar", "Não, porque o som precisa de um meio material para se propagar", "Sim, exatamente igual à Terra", "Apenas perto do Sol"],
+            correct: 1
+        },
+        {
+            question: "Em qual destes estados da matéria as partículas têm mais liberdade de movimento e estão mais afastadas?",
+            options: ["Sólido", "Líquido", "Gasoso", "Condensado"],
+            correct: 2
+        },
+        {
+            question: "Qual é a principal fonte externa de energia térmica e luminosa para o planeta Terra?",
+            options: ["O núcleo da Terra", "A Lua", "O Sol", "A Via Láctea"],
+            correct: 2
+        },
+        {
+            question: "O que mede fundamentalmente um termómetro?",
+            options: ["A massa de um corpo", "A pressão do ar", "A temperatura (grau de agitação das partículas)", "A velocidade do vento"],
+            correct: 2
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let userAnswers = [];
+
+    function startQuiz() {
+        document.getElementById('start-screen').classList.remove('active');
+        document.getElementById('quiz-screen').classList.add('active');
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const currentQuestion = quizData[currentQuestionIndex];
+        
+        // Atualizar barra de progresso
+        document.getElementById('progress').innerText = `Pergunta ${currentQuestionIndex + 1} de ${quizData.length}`;
+        
+        // Inserir imagem a meio do quiz (pergunta 11, índice 10)
+        const imgContainer = document.getElementById('question-image-container');
+        if (currentQuestionIndex === 10) {
+            imgContainer.innerHTML = `<img src="images.jpg" alt="Imagem do meio do quiz" class="quiz-img">`;
+        } else {
+            imgContainer.innerHTML = '';
         }
 
-        function loadQuestion() {
-            clearInterval(timer);
-            timeLeft = 20;
-            document.getElementById('timer-display').innerText = timeLeft + 's';
-            
-            const qData = quizData[currentQ];
-            document.getElementById('header-status').innerText = `PERGUNTA ${currentQ + 1} DE ${quizData.length}`;
-            document.getElementById('timeline-fill').style.width = `${(currentQ / quizData.length) * 100}%`;
-            document.getElementById('difficulty-badge').className = `badge ${qData.diff}`;
-            document.getElementById('difficulty-badge').innerText = `NÍVEL: ${qData.diff.toUpperCase()}`;
-            document.getElementById('question-text').innerText = qData.q;
-
-            const container = document.getElementById('options-container');
-            container.innerHTML = '';
-            document.getElementById('feedback-container').className = 'feedback-box';
-            document.getElementById('next-btn-container').style.display = 'none';
-
-            qData.shuffledOptions.forEach((opt, idx) => {
-                const card = document.createElement('div');
-                card.className = 'option-card';
-                card.innerHTML = `<span>${opt.text}</span><i class="fa-regular fa-circle"></i>`;
-                card.onclick = () => selectOption(opt.isCorrect, card);
-                container.appendChild(card);
-            });
-
-            timer = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer-display').innerText = timeLeft + 's';
-                if(timeLeft <= 0) selectOption(false, null);
-            }, 1000);
-        }
-
-        function selectOption(isCorrect, element) {
-            clearInterval(timer);
-            const allCards = document.querySelectorAll('.option-card');
-            if(allCards[0].classList.contains('disabled')) return;
-            allCards.forEach(c => c.classList.add('disabled'));
-
-            if(isCorrect) {
-                score++;
-                if(element) {
-                    element.classList.add('correct-state');
-                    element.querySelector('i').className = 'fa-solid fa-circle-check';
-                }
-                const feedbackDiv = document.getElementById('feedback-container');
-                feedbackDiv.innerHTML = `<strong>✅ Correto!</strong>`;
-                feedbackDiv.className = 'feedback-box correct';
-            } else {
-                if(element) {
-                    element.classList.add('wrong-state');
-                    element.querySelector('i').className = 'fa-solid fa-circle-xmark';
-                }
-                const feedbackDiv = document.getElementById('feedback-container');
-                feedbackDiv.innerHTML = `<strong>❌ Tempo esgotado ou incorreto.</strong>`;
-                feedbackDiv.className = 'feedback-box wrong';
-            }
-            document.getElementById('next-btn-container').style.display = 'block';
-        }
-
-        function nextQuestion() {
-            currentQ++;
-            if(currentQ < quizData.length) loadQuestion();
-            else finishQuiz();
-        }
-
-        function finishQuiz() {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('results-screen').classList.add('active');
-            document.getElementById('timeline-fill').style.width = `100%`;
-            document.getElementById('final-score-val').innerText = `${Math.round((score / quizData.length) * 100)}/100`;
-        }
-
-        document.addEventListener("visibilitychange", () => {
-            if (document.hidden) alert("PENALIZAÇÃO: Saíste da pista! Foca-te no ecrã.");
+        // Definir texto da pergunta
+        document.getElementById('question-text').innerText = currentQuestion.question;
+        
+        // Limpar e gerar opções
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+        
+        currentQuestion.options.forEach((option, index) => {
+            const button = document.createElement('button');
+            button.classList.add('option-btn');
+            button.innerText = option;
+            button.onclick = () => selectOption(index);
+            optionsContainer.appendChild(button);
         });
-    </script>
+
+        // Esconder o botão seguinte até haver seleção
+        document.getElementById('next-btn').style.display = 'none';
+    }
+
+    function selectOption(selectedIndex) {
+        userAnswers[currentQuestionIndex] = selectedIndex;
+        
+        // Destacar o botão selecionado
+        const buttons = document.querySelectorAll('.option-btn');
+        buttons.forEach((btn, idx) => {
+            if (idx === selectedIndex) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+
+        // Mostrar o botão de avançar
+        document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+        if (userAnswers[currentQuestionIndex] === quizData[currentQuestionIndex].correct) {
+            score++;
+        }
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < quizData.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        document.getElementById('quiz-screen').classList.remove('active');
+        document.getElementById('result-screen').classList.add('active');
+        
+        // Mostrar pontuação
+        document.getElementById('score-text').innerHTML = `Acertaste em <span class="text-correct">${score}</span> de ${quizData.length} perguntas.`;
+        
+        const wrongAnswersList = document.getElementById('wrong-answers-list');
+        wrongAnswersList.innerHTML = '';
+        
+        let mistakesCount = 0;
+
+        // Verificar erros
+        quizData.forEach((question, index) => {
+            const userAnswer = userAnswers[index];
+            if (userAnswer !== question.correct) {
+                mistakesCount++;
+                const reviewItem = document.createElement('div');
+                reviewItem.classList.add('review-item');
+                
+                reviewItem.innerHTML = `
+                    <h4>${index + 1}. ${question.question}</h4>
+                    <p>A tua resposta: <span class="text-wrong">${question.options[userAnswer]}</span></p>
+                    <p>Resposta correta: <span class="text-correct">${question.options[question.correct]}</span></p>
+                `;
+                wrongAnswersList.appendChild(reviewItem);
+            }
+        });
+
+        // Se não houver erros, esconde a secção de revisão ou mostra mensagem de parabéns
+        const reviewSection = document.getElementById('review-container');
+        if (mistakesCount === 0) {
+            reviewSection.innerHTML = `<h3>Parabéns! Acertaste todas as perguntas! 🌟</h3>`;
+        } else {
+            // Repor o título original caso tenham jogado outra vez
+            reviewSection.querySelector('h3').innerText = "Perguntas que erraste:";
+        }
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        userAnswers = [];
+        document.getElementById('result-screen').classList.remove('active');
+        document.getElementById('start-screen').classList.add('active');
+    }
+</script>
+
 </body>
 </html>
