@@ -3,59 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>História de Portugal - Neo Quiz</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>História de Portugal - Avaliação</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            --panel-bg: rgba(30, 41, 59, 0.7);
-            --accent-neon: #38bdf8;
-            --accent-gold: #f59e0b;
-            --text-main: #f8fafc;
-            --btn-hover: rgba(56, 189, 248, 0.2);
+            --bg-color: #f4f7f6;
+            --panel-bg: #ffffff;
+            --primary-color: #0056b3;
+            --text-main: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --hover-bg: #f8f9fa;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Poppins', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background: var(--bg-gradient);
+            background-color: var(--bg-color);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow-x: hidden;
-            perspective: 1000px;
         }
 
-        /* Container Principal Flutuante */
+        /* Container Principal Profissional */
         .quiz-container {
             background: var(--panel-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             padding: 40px;
             width: 90%;
             max-width: 650px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 
-                        0 0 40px rgba(56, 189, 248, 0.1);
-            transform: translateZ(0);
-            transition: all 0.4s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             position: relative;
         }
 
-        /* Barra de Progresso Moderna */
+        /* Barra de Progresso Simples */
         .progress-container {
             width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
             margin-bottom: 30px;
             overflow: hidden;
         }
@@ -63,70 +57,58 @@
         .progress-bar {
             height: 100%;
             width: 5%;
-            background: linear-gradient(90deg, var(--accent-neon), var(--accent-gold));
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--primary-color);
+            transition: width 0.3s ease;
         }
 
         .quiz-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.9rem;
-            color: #94a3b8;
-            margin-bottom: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .difficulty {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--accent-gold);
-            padding: 4px 12px;
-            border-radius: 20px;
+            letter-spacing: 0.5px;
             font-weight: 600;
-            font-size: 0.8rem;
         }
 
         .question-text {
-            font-size: 1.4rem;
-            font-weight: 600;
+            font-size: 1.25rem;
+            font-weight: 500;
             line-height: 1.5;
-            margin-bottom: 35px;
-            color: #ffffff;
+            margin-bottom: 30px;
+            color: #111;
         }
 
-        /* Botões das Respostas (Estilo Flutuante / Neumórfico Moderno) */
+        /* Botões das Respostas (Estilo Limpo) */
         .options-grid {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
         }
 
         .option-btn {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 18px 24px;
-            border-radius: 14px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            padding: 16px 20px;
+            border-radius: 6px;
             cursor: pointer;
             text-align: left;
             font-size: 1rem;
-            color: #cbd5e1;
-            transition: transform 0.2s, cubic-bezier(0.2, 0.8, 0.2, 1), background 0.3s, box-shadow 0.3s;
-            position: relative;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            color: var(--text-main);
+            transition: all 0.2s ease;
         }
 
         .option-btn:hover {
-            transform: translateY(-4px) scale(1.02);
-            background: var(--btn-hover);
-            border-color: var(--accent-neon);
-            color: #fff;
-            box-shadow: 0 10px 20px -5px rgba(56, 189, 248, 0.3),
-                        0 0 15px rgba(56, 189, 248, 0.1);
+            background: var(--hover-bg);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
         }
 
-        .option-btn:active {
-            transform: translateY(-1px);
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
         }
 
         /* Ecrã Final */
@@ -136,36 +118,64 @@
         }
 
         .result-screen h2 {
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            background: linear-gradient(90deg, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--text-main);
         }
 
         .score-display {
-            font-size: 4rem;
-            font-weight: 800;
-            color: var(--accent-neon);
-            margin-bottom: 30px;
-            text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 25px;
         }
 
         .restart-btn {
-            background: linear-gradient(135deg, var(--accent-neon), #0284c7);
+            background: var(--primary-color);
             border: none;
-            padding: 16px 32px;
-            border-radius: 12px;
+            padding: 12px 28px;
+            border-radius: 4px;
             color: white;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: 500;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
-            transition: all 0.3s ease;
+            transition: background 0.2s ease;
         }
 
         .restart-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.6);
+            background: #004494;
+        }
+
+        /* Notificações (Toast) para mensagens de erro/acerto irónicas */
+        .toast-message {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #333;
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 10000;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .toast-show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast-error {
+            background: #dc3545;
+            font-weight: bold;
+            font-size: 1.2rem;
         }
 
         /* Overlay do Troll (Meme de 2 Segundos) */
@@ -175,8 +185,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
             z-index: 9999;
             display: none;
             justify-content: center;
@@ -187,31 +196,17 @@
         .troll-image {
             max-width: 80%;
             max-height: 80%;
-            border-radius: 20px;
-            box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
-            transform: translateZ(0);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
 
-        /* Animação Troll pedido: Rodar, aumentar e diminuir de tamanho */
+        /* Animação Troll (Rodar, aumentar e diminuir) */
         @keyframes trollAnimation {
-            0% {
-                transform: rotate(0deg) scale(0.2);
-                opacity: 0;
-            }
-            25% {
-                transform: rotate(180deg) scale(1.5);
-                opacity: 1;
-            }
-            50% {
-                transform: rotate(360deg) scale(0.7);
-            }
-            75% {
-                transform: rotate(540deg) scale(1.3);
-            }
-            100% {
-                transform: rotate(720deg) scale(1);
-                opacity: 1;
-            }
+            0% { transform: rotate(0deg) scale(0.2); opacity: 0; }
+            25% { transform: rotate(180deg) scale(1.5); opacity: 1; }
+            50% { transform: rotate(360deg) scale(0.7); }
+            75% { transform: rotate(540deg) scale(1.3); }
+            100% { transform: rotate(720deg) scale(1); opacity: 1; }
         }
 
         .troll-active {
@@ -229,7 +224,7 @@
         <div id="quizContents">
             <div class="quiz-header">
                 <span id="questionNum">Pergunta 1 de 20</span>
-                <span class="difficulty">Dificuldade: 4/10</span>
+                <span class="difficulty">Avaliação Contínua</span>
             </div>
             <div class="question-text" id="questionText">A carregar pergunta...</div>
             <div class="options-grid" id="optionsGrid">
@@ -237,19 +232,20 @@
         </div>
 
         <div class="result-screen" id="resultScreen">
-            <h2>Quiz Concluído!</h2>
-            <p>A tua pontuação final foi de:</p>
+            <h2>Avaliação Concluída</h2>
+            <p>A tua pontuação final é:</p>
             <div class="score-display" id="scoreDisplay">0 / 20</div>
-            <button class="restart-btn" onclick="restartQuiz()">Tentar Novamente</button>
+            <button class="restart-btn" onclick="restartQuiz()">Repetir Avaliação</button>
         </div>
     </div>
 
+    <div id="toastMessage" class="toast-message"></div>
+
     <div class="troll-overlay" id="trollOverlay">
-        <img src="" alt="Troll'd" class="troll-image" id="trollImg">
+        <img src="" alt="Imagem Troll" class="troll-image" id="trollImg">
     </div>
 
     <script>
-        // Imagens fornecidas para alternar no troll
         const trollImages = [
             "5bba000e97f2ae347e6949b412bdb5a4.jpg",
             "3120bd485e1a17c2f5580edbeec6a060.jpg",
@@ -259,29 +255,28 @@
             "image.jpg"
         ];
 
-        // Banco de perguntas focadas na História de Portugal, Brasil e Colónias
-        // isTroll: true significa que se responderes à correta real, ativa a rasteira do troll.
+        // isTroll: false nas perguntas 1, 2, 3, 5, 8, 15, 18. O resto é true.
         const questions = [
-            { q: "Quem foi o primeiro rei de Portugal?", options: ["D. Dinis", "D. Afonso Henriques", "D. Sancho I", "D. Manuel I"], correct: 1, isTroll: false }, // Q1 - Certa
-            { q: "Em que ano Pedro Álvares Cabral chegou oficialmente ao Brasil?", options: ["1492", "1498", "1500", "1530"], correct: 2, isTroll: false }, // Q2 - Certa
-            { q: "Qual foi a primeira grande riqueza explorada pelos portugueses no Brasil?", options: ["Ouro", "Cana-de-açúcar", "Café", "Pau-Brasil"], correct: 3, isTroll: false }, // Q3 - Certa
-            { q: "Qual o tratado assinado em 1494 para dividir as terras descobertas entre Portugal e Castela?", options: ["Tratado de Tordesilhas", "Tratado de Windsor", "Tratado de Saragoça", "Tratado de Badajós"], correct: 0, isTroll: true }, // Q4 - Troll
-            { q: "Que monarca governava Portugal na altura do fatídico sismo de Lisboa em 1755?", options: ["D. João V", "D. José I", "D. Maria I", "D. Luís I"], correct: 1, isTroll: false }, // Q5 - Certa
-            { q: "Qual cidade foi escolhida para ser a primeira capital histórica do Brasil?", options: ["Rio de Janeiro", "São Paulo", "Salvador", "Recife"], correct: 2, isTroll: true }, // Q6 - Troll
-            { q: "Em que ano ocorreu a Restauração da Independência, pondo fim ao Domínio Filipino?", options: ["1580", "1640", "1143", "1822"], correct: 1, isTroll: true }, // Q7 - Troll
-            { q: "Que navegador luso dobrou o Cabo da Boa Esperança em 1488?", options: ["Vasco da Gama", "Fernão de Magalhães", "Bartolomeu Dias", "Pedro Álvares Cabral"], correct: 2, isTroll: false }, // Q8 - Certa
-            { q: "Qual destas colónias africanas teve Luanda como o seu principal centro administrativo?", options: ["Moçambique", "Angola", "Guiné-Bissau", "Cabo Verde"], correct: 1, isTroll: true }, // Q9 - Troll
-            { q: "Quem é o célebre autor da epopeia 'Os Lusíadas', que narra a viagem à Índia?", options: ["Luís de Camões", "Fernando Pessoa", "Gil Vicente", "Eça de Queiroz"], correct: 0, isTroll: true }, // Q10 - Troll
-            { q: "Em qual destes séculos se iniciou de forma marcante a Expansão Marítima Portuguesa?", options: ["Século XIV", "Século XV", "Século XVI", "Século XVII"], correct: 1, isTroll: true }, // Q11 - Troll
-            { q: "Qual arquipélago atlântico foi oficialmente redescoberto por Zarco e Tristão Vaz Teixeira?", options: ["Açores", "Madeira", "Cabo Verde", "São Tomé"], correct: 1, isTroll: true }, // Q12 - Troll
-            { q: "Que tratado substituiu o de Tordesilhas em 1750, redefinindo o tamanho do Brasil?", options: ["Tratado de Madrid", "Tratado de Utrecht", "Tratado de Paris", "Tratado de Alcañices"], correct: 0, isTroll: true }, // Q13 - Troll
-            { q: "A revolução de 5 de Outubro de 1910 terminou com qual regime em Portugal?", options: ["A Ditadura", "A República", "A Monarquia", "O Império"], correct: 2, isTroll: true }, // Q14 - Troll
-            { q: "Qual navegador comandou a frota que chegou a Calecute, na Índia, em 1498?", options: ["Vasco da Gama", "Afonso de Albuquerque", "Francisco de Almeida", "Bartolomeu Dias"], correct: 0, isTroll: false }, // Q15 - Certa
-            { q: "Qual era o principal enclave e colónia portuguesa na Ásia ligada ao comércio de especiarias?", options: ["Macau", "Goa", "Timor", "Malaca"], correct: 1, isTroll: true }, // Q16 - Troll
-            { q: "Que jovem monarca português desapareceu misteriosamente na Batalha de Alcácer-Quibir?", options: ["D. Sebastião", "D. Manuel I", "D. Henrique", "D. João III"], correct: 0, isTroll: true }, // Q17 - Troll
-            { q: "Como ficou conhecida a revolução pacífica que derrubou a ditadura salazarista em 1974?", options: ["Revolução Liberal", "Revolução dos Cravos", "Revolução de Outubro", "Golpe da República"], correct: 1, isTroll: false }, // Q18 - Certa
-            { q: "Que arquipélago foi descoberto no Atlântico central a partir de 1427 por Diogo de Silves?", options: ["Madeira", "Canárias", "Açores", "Cabo Verde"], correct: 2, isTroll: true }, // Q19 - Troll
-            { q: "Qual foi o último território ultramarino a ser devolvido por Portugal (à China em 1999)?", options: ["Hong Kong", "Goa", "Macau", "Timor-Leste"], correct: 2, isTroll: true } // Q20 - Troll
+            { q: "Quem foi o primeiro rei de Portugal?", options: ["D. Dinis", "D. Afonso Henriques", "D. Sancho I", "D. Manuel I"], correct: 1, isTroll: false }, // 1 - Normal
+            { q: "Em que ano Pedro Álvares Cabral chegou oficialmente ao Brasil?", options: ["1492", "1498", "1500", "1530"], correct: 2, isTroll: false }, // 2 - Normal
+            { q: "Qual foi a primeira grande riqueza explorada pelos portugueses no Brasil?", options: ["Ouro", "Cana-de-açúcar", "Café", "Pau-Brasil"], correct: 3, isTroll: false }, // 3 - Normal
+            { q: "Qual o tratado assinado em 1494 para dividir as terras descobertas entre Portugal e Castela?", options: ["Tratado de Tordesilhas", "Tratado de Windsor", "Tratado de Saragoça", "Tratado de Badajós"], correct: 0, isTroll: true }, // 4 - Troll
+            { q: "Que monarca governava Portugal na altura do fatídico sismo de Lisboa em 1755?", options: ["D. João V", "D. José I", "D. Maria I", "D. Luís I"], correct: 1, isTroll: false }, // 5 - Normal
+            { q: "Qual cidade foi escolhida para ser a primeira capital histórica do Brasil?", options: ["Rio de Janeiro", "São Paulo", "Salvador", "Recife"], correct: 2, isTroll: true }, // 6 - Troll
+            { q: "Em que ano ocorreu a Restauração da Independência, pondo fim ao Domínio Filipino?", options: ["1580", "1640", "1143", "1822"], correct: 1, isTroll: true }, // 7 - Troll
+            { q: "Que navegador luso dobrou o Cabo da Boa Esperança em 1488?", options: ["Vasco da Gama", "Fernão de Magalhães", "Bartolomeu Dias", "Pedro Álvares Cabral"], correct: 2, isTroll: false }, // 8 - Normal
+            { q: "Qual destas colónias africanas teve Luanda como o seu principal centro administrativo?", options: ["Moçambique", "Angola", "Guiné-Bissau", "Cabo Verde"], correct: 1, isTroll: true }, // 9 - Troll
+            { q: "Quem é o célebre autor da epopeia 'Os Lusíadas', que narra a viagem à Índia?", options: ["Luís de Camões", "Fernando Pessoa", "Gil Vicente", "Eça de Queiroz"], correct: 0, isTroll: true }, // 10 - Troll
+            { q: "Em qual destes séculos se iniciou de forma marcante a Expansão Marítima Portuguesa?", options: ["Século XIV", "Século XV", "Século XVI", "Século XVII"], correct: 1, isTroll: true }, // 11 - Troll
+            { q: "Qual arquipélago atlântico foi oficialmente redescoberto por Zarco e Tristão Vaz Teixeira?", options: ["Açores", "Madeira", "Cabo Verde", "São Tomé"], correct: 1, isTroll: true }, // 12 - Troll
+            { q: "Que tratado substituiu o de Tordesilhas em 1750, redefinindo o tamanho do Brasil?", options: ["Tratado de Madrid", "Tratado de Utrecht", "Tratado de Paris", "Tratado de Alcañices"], correct: 0, isTroll: true }, // 13 - Troll
+            { q: "A revolução de 5 de Outubro de 1910 terminou com qual regime em Portugal?", options: ["A Ditadura", "A República", "A Monarquia", "O Império"], correct: 2, isTroll: true }, // 14 - Troll
+            { q: "Qual navegador comandou a frota que chegou a Calecute, na Índia, em 1498?", options: ["Vasco da Gama", "Afonso de Albuquerque", "Francisco de Almeida", "Bartolomeu Dias"], correct: 0, isTroll: false }, // 15 - Normal
+            { q: "Qual era o principal enclave e colónia portuguesa na Ásia ligada ao comércio de especiarias?", options: ["Macau", "Goa", "Timor", "Malaca"], correct: 1, isTroll: true }, // 16 - Troll
+            { q: "Que jovem monarca português desapareceu misteriosamente na Batalha de Alcácer-Quibir?", options: ["D. Sebastião", "D. Manuel I", "D. Henrique", "D. João III"], correct: 0, isTroll: true }, // 17 - Troll
+            { q: "Como ficou conhecida a revolução pacífica que derrubou a ditadura salazarista em 1974?", options: ["Revolução Liberal", "Revolução dos Cravos", "Revolução de Outubro", "Golpe da República"], correct: 1, isTroll: false }, // 18 - Normal
+            { q: "Que arquipélago foi descoberto no Atlântico central a partir de 1427 por Diogo de Silves?", options: ["Madeira", "Canárias", "Açores", "Cabo Verde"], correct: 2, isTroll: true }, // 19 - Troll
+            { q: "Qual foi o último território ultramarino a ser devolvido por Portugal (à China em 1999)?", options: ["Hong Kong", "Goa", "Macau", "Timor-Leste"], correct: 2, isTroll: true } // 20 - Troll
         ];
 
         let currentQuestionIndex = 0;
@@ -291,14 +286,12 @@
         function loadQuestion() {
             const currentQuestion = questions[currentQuestionIndex];
             
-            // Atualizar contadores e interface
             document.getElementById("questionNum").innerText = `Pergunta ${currentQuestionIndex + 1} de 20`;
             document.getElementById("questionText").innerText = currentQuestion.q;
             
             const progressBar = document.getElementById("progressBar");
             progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
 
-            // Limpar e injetar novas opções com efeito flutuante
             const optionsGrid = document.getElementById("optionsGrid");
             optionsGrid.innerHTML = "";
 
@@ -311,23 +304,53 @@
             });
         }
 
-        function checkAnswer(selectedIndex) {
-            const currentQuestion = questions[currentQuestionIndex];
+        function disableButtons() {
+            const buttons = document.querySelectorAll(".option-btn");
+            buttons.forEach(btn => btn.disabled = true);
+        }
+
+        function showToast(message, isError = false, duration = 3000) {
+            const toast = document.getElementById("toastMessage");
+            toast.innerText = message;
             
-            // Se for uma pergunta Troll e o jogador carregar na resposta historicamente "Certa"
-            if (currentQuestion.isTroll && selectedIndex === currentQuestion.correct) {
-                triggerTrollEffect();
-                return; // Impede ganho de pontos e lida com o avanço no temporizador do troll
-            } 
-            
-            // Logica normal para perguntas não-troll ou se escolheu uma "errada" nas perguntas trocadas
-            if (selectedIndex === currentQuestion.correct) {
-                score++;
-            } else if (currentQuestion.isTroll && selectedIndex !== currentQuestion.correct) {
-                // Nas trocadas, clicar na errada dá o ponto e safa o utilizador do troll!
-                score++;
+            if (isError) {
+                toast.classList.add("toast-error");
+            } else {
+                toast.classList.remove("toast-error");
             }
 
+            toast.classList.add("toast-show");
+            
+            setTimeout(() => {
+                toast.classList.remove("toast-show");
+            }, duration);
+        }
+
+        function checkAnswer(selectedIndex) {
+            disableButtons(); // Previne cliques múltiplos
+            const currentQuestion = questions[currentQuestionIndex];
+            
+            // Lógica para as perguntas TROLL
+            if (currentQuestion.isTroll) {
+                if (selectedIndex === currentQuestion.correct) {
+                    // Clicou na certa (Caiu na rasteira)
+                    showToast("Errado!", true, 2000);
+                    triggerTrollEffect();
+                    return; // Sai da função para não avançar imediatamente
+                } else {
+                    // Clicou na errada (Recebe mensagem irónica e ganha o ponto)
+                    score++;
+                    showToast("Acertaste, só não foi a pergunta! Os teus níveis de inteligência devem ser estudados.", false, 3500);
+                    setTimeout(nextQuestion, 3500); // Avança após ler a mensagem
+                    return;
+                }
+            } 
+            
+            // Lógica para perguntas NORMAIS
+            if (selectedIndex === currentQuestion.correct) {
+                score++;
+            }
+            
             nextQuestion();
         }
 
@@ -335,19 +358,16 @@
             const overlay = document.getElementById("trollOverlay");
             const img = document.getElementById("trollImg");
 
-            // Define e roda a lista de imagens de memes fornecida
             img.src = trollImages[trollImageIndex];
             trollImageIndex = (trollImageIndex + 1) % trollImages.length;
 
-            // Ativa o display e a animação CSS customizada de 2 segundos
             overlay.style.display = "flex";
             img.classList.add("troll-active");
 
-            // Bloqueia o ecrã por exatamente 2000 milissegundos (2 segundos)
             setTimeout(() => {
                 img.classList.remove("troll-active");
                 overlay.style.display = "none";
-                nextQuestion(); // Avança após o susto do troll
+                nextQuestion();
             }, 2000);
         }
 
@@ -375,7 +395,6 @@
             loadQuestion();
         }
 
-        // Inicializar o Quiz ao carregar a página
         window.onload = loadQuestion;
     </script>
 </body>
