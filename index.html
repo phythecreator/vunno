@@ -1,436 +1,382 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz: Física, Big Bang e a Formação da Terra</title>
+    <title>História de Portugal - Neo Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f0f2f5;
-            --card-bg: #ffffff;
-            --primary-color: #4f46e5;
-            --primary-hover: #4338ca;
-            --text-color: #1f2937;
-            --text-light: #6b7280;
-            --correct-color: #10b981;
-            --wrong-color: #ef4444;
-            --border-radius: 12px;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --panel-bg: rgba(30, 41, 59, 0.7);
+            --accent-neon: #38bdf8;
+            --accent-gold: #f59e0b;
+            --text-main: #f8fafc;
+            --btn-hover: rgba(56, 189, 248, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            overflow-x: hidden;
+            perspective: 1000px;
         }
 
+        /* Container Principal Flutuante */
         .quiz-container {
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            width: 90%;
+            max-width: 650px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 
+                        0 0 40px rgba(56, 189, 248, 0.1);
+            transform: translateZ(0);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        /* Barra de Progresso Moderna */
+        .progress-container {
             width: 100%;
-            max-width: 600px;
-            padding: 30px;
-            box-sizing: border-box;
-        }
-
-        .screen {
-            display: none;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        h1, h2 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-top: 0;
-        }
-
-        .quiz-img {
-            display: block;
-            max-width: 100%;
-            height: auto;
-            border-radius: var(--border-radius);
-            margin: 20px auto;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        p.description {
-            text-align: center;
-            color: var(--text-light);
-            font-size: 1.1rem;
-            line-height: 1.5;
-        }
-
-        .btn {
-            display: block;
-            width: 100%;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 14px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: background 0.2s ease;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .btn:hover {
-            background-color: var(--primary-hover);
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
         }
 
         .progress-bar {
+            height: 100%;
+            width: 5%;
+            background: linear-gradient(90deg, var(--accent-neon), var(--accent-gold));
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-size: 0.9rem;
-            color: var(--text-light);
+            color: #94a3b8;
             margin-bottom: 10px;
-            text-align: right;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .difficulty {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-gold);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
         }
 
         .question-text {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: 600;
-            margin-bottom: 20px;
+            line-height: 1.5;
+            margin-bottom: 35px;
+            color: #ffffff;
         }
 
-        .options-container {
+        /* Botões das Respostas (Estilo Flutuante / Neumórfico Moderno) */
+        .options-grid {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
         }
 
         .option-btn {
-            background-color: #f9fafb;
-            border: 2px solid #e5e7eb;
-            padding: 14px;
-            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 18px 24px;
+            border-radius: 14px;
             cursor: pointer;
             text-align: left;
             font-size: 1rem;
-            transition: all 0.2s ease;
+            color: #cbd5e1;
+            transition: transform 0.2s, cubic-bezier(0.2, 0.8, 0.2, 1), background 0.3s, box-shadow 0.3s;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
         }
 
         .option-btn:hover {
-            background-color: #f3f4f6;
-            border-color: #d1d5db;
+            transform: translateY(-4px) scale(1.02);
+            background: var(--btn-hover);
+            border-color: var(--accent-neon);
+            color: #fff;
+            box-shadow: 0 10px 20px -5px rgba(56, 189, 248, 0.3),
+                        0 0 15px rgba(56, 189, 248, 0.1);
         }
 
-        .option-btn.selected {
-            background-color: #eef2ff;
-            border-color: var(--primary-color);
+        .option-btn:active {
+            transform: translateY(-1px);
         }
 
-        .results-summary {
+        /* Ecrã Final */
+        .result-screen {
+            display: none;
             text-align: center;
-            font-size: 1.3rem;
+        }
+
+        .result-screen h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--accent-neon);
             margin-bottom: 30px;
-            font-weight: bold;
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
         }
 
-        .review-section {
-            margin-top: 20px;
-            border-top: 2px solid #f3f4f6;
-            padding-top: 20px;
-        }
-
-        .review-item {
-            background-color: #fff5f5;
-            border-left: 4px solid var(--wrong-color);
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-
-        .review-item h4 {
-            margin: 0 0 8px 0;
-            color: var(--text-color);
-        }
-
-        .review-item p {
-            margin: 4px 0;
-            font-size: 0.95rem;
-        }
-
-        .text-correct {
-            color: var(--correct-color);
+        .restart-btn {
+            background: linear-gradient(135deg, var(--accent-neon), #0284c7);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            color: white;
             font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+            transition: all 0.3s ease;
         }
 
-        .text-wrong {
-            color: var(--wrong-color);
-            font-weight: 600;
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.6);
+        }
+
+        /* Overlay do Troll (Meme de 2 Segundos) */
+        .troll-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .troll-image {
+            max-width: 80%;
+            max-height: 80%;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
+            transform: translateZ(0);
+        }
+
+        /* Animação Troll pedido: Rodar, aumentar e diminuir de tamanho */
+        @keyframes trollAnimation {
+            0% {
+                transform: rotate(0deg) scale(0.2);
+                opacity: 0;
+            }
+            25% {
+                transform: rotate(180deg) scale(1.5);
+                opacity: 1;
+            }
+            50% {
+                transform: rotate(360deg) scale(0.7);
+            }
+            75% {
+                transform: rotate(540deg) scale(1.3);
+            }
+            100% {
+                transform: rotate(720deg) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .troll-active {
+            animation: trollAnimation 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
     </style>
 </head>
 <body>
 
-<div class="quiz-container">
-    
-    <div id="start-screen" class="screen active">
-        <h1>Quiz de Ciência</h1>
-        <p class="description">Testa os teus conhecimentos básicos sobre Física, o Big Bang e a Formação da Terra!</p>
-        <img src="original-image-behind-the-nikola-tesla-and-albert-einstein-v0-4idb4ivtu04g1.webp" alt="Imagem de Introdução" class="quiz-img">
-        <button class="btn" onclick="startQuiz()">Começar Quiz</button>
-    </div>
-
-    <div id="quiz-screen" class="screen">
-        <div class="progress-bar" id="progress">Pergunta 1 de 20</div>
-        <div id="question-image-container"></div>
-        <div class="question-text" id="question-text">Aqui fica a pergunta.</div>
-        <div class="options-container" id="options-container">
-            </div>
-        <button class="btn" id="next-btn" onclick="nextQuestion()" style="display: none;">Seguinte</button>
-    </div>
-
-    <div id="result-screen" class="screen">
-        <h1>Resultados do Quiz</h1>
-        <div class="results-summary" id="score-text"></div>
-        
-        <div id="review-container" class="review-section">
-            <h3>Perguntas que erraste:</h3>
-            <div id="wrong-answers-list"></div>
+    <div class="quiz-container" id="quizContainer">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
         </div>
-        
-        <button class="btn" onclick="restartQuiz()">Tentar Novamente</button>
+
+        <div id="quizContents">
+            <div class="quiz-header">
+                <span id="questionNum">Pergunta 1 de 20</span>
+                <span class="difficulty">Dificuldade: 4/10</span>
+            </div>
+            <div class="question-text" id="questionText">A carregar pergunta...</div>
+            <div class="options-grid" id="optionsGrid">
+                </div>
+        </div>
+
+        <div class="result-screen" id="resultScreen">
+            <h2>Quiz Concluído!</h2>
+            <p>A tua pontuação final foi de:</p>
+            <div class="score-display" id="scoreDisplay">0 / 20</div>
+            <button class="restart-btn" onclick="restartQuiz()">Tentar Novamente</button>
+        </div>
     </div>
 
-</div>
+    <div class="troll-overlay" id="trollOverlay">
+        <img src="" alt="Troll'd" class="troll-image" id="trollImg">
+    </div>
 
-<script>
-    // Lista de 20 perguntas sobre Física, Big Bang e Formação da Terra
-    const quizData = [
-        {
-            question: "O que foi o Big Bang?",
-            options: ["Uma explosão de dinamite no espaço", "A grande expansão que deu origem ao universo", "O colapso de uma estrela gigante", "O choque entre dois planetas"],
-            correct: 1
-        },
-        {
-            question: "Há aproximadamente quantos anos ocorreu o Big Bang?",
-            options: ["4.5 mil milhões de anos", "10 mil anos", "13.8 mil milhões de anos", "100 mil milhões de anos"],
-            correct: 2
-        },
-        {
-            question: "Qual é o elemento químico mais abundante no universo pós-Big Bang?",
-            options: ["Oxigénio", "Hidrogénio", "Ferro", "Carbono"],
-            correct: 1
-        },
-        {
-            question: "O que aconteceu à temperatura do universo logo após o Big Bang?",
-            options: ["Aumentou drasticamente", "Manteve-se congelada", "Diminuiu à medida que o universo se expandia", "Ficou instável sem nunca mudar"],
-            correct: 2
-        },
-        {
-            question: "Quem propôs inicialmente a teoria do átomo primordial, que deu origem à teoria do Big Bang?",
-            options: ["Albert Einstein", "Isaac Newton", "Georges Lemaître", "Stephen Hawking"],
-            correct: 2
-        },
-        {
-            question: "Há quantos anos, aproximadamente, se formou o planeta Terra?",
-            options: ["4.5 mil milhões de anos", "13.8 mil milhões de anos", "500 milhões de anos", "2 mil milhões de anos"],
-            correct: 0
-        },
-        {
-            question: "A Terra formou-se a partir de que tipo de estrutura no espaço?",
-            options: ["Uma colisão de galáxias", "Uma nébula solar de poeira e gás", "Um buraco negro que arrefeceu", "Pedaços de cometas antigos"],
-            correct: 1
-        },
-        {
-            question: "Qual é a camada mais interna, quente e densa do nosso planeta?",
-            options: ["A crosta terrestre", "O manto", "A atmosfera", "O núcleo"],
-            correct: 3
-        },
-        {
-            question: "Como se chamava o supercontinente que unia quase todas as terras emersas há milhões de anos?",
-            options: ["Atlântida", "Pangeia", "Gondwana", "Laurásia"],
-            correct: 1
-        },
-        {
-            question: "Qual destes gases era muito abundante na atmosfera primitiva da Terra devido à atividade vulcânica?",
-            options: ["Oxigénio puro", "Vapor de água e dióxido de carbono", "Hélio", "Árgon"],
-            correct: 1
-        },
-        {
-            question: "Qual é a força invisível que atrai os objetos em direção ao centro da Terra?",
-            options: ["Força Magnética", "Força de Atrito", "Gravidade", "Força Centrífuga"],
-            correct: 2
-        },
-        {
-            question: "Quem formulou as três leis do movimento e a lei da gravitação universal?",
-            options: ["Galileu Galilei", "Isaac Newton", "Albert Einstein", "Marie Curie"],
-            correct: 1
-        },
-        {
-            question: "Segundo a física moderna, qual é a velocidade máxima permitida no universo?",
-            options: ["A velocidade do som", "A velocidade da luz", "A velocidade de rotação da Terra", "A velocidade de um foguetão espacial"],
-            correct: 1
-        },
-        {
-            question: "O que estuda principalmente a área da Óptica dentro da Física?",
-            options: ["Os sons e as ondas sonoras", "A eletricidade e os ímanes", "A luz e os seus fenómenos", "O movimento dos planetas"],
-            correct: 2
-        },
-        {
-            question: "Qual é a unidade de medida oficial da força no Sistema Internacional (SI)?",
-            options: ["Quilo (kg)", "Newton (N)", "Joule (J)", "Metros por segundo (m/s)"],
-            correct: 1
-        },
-        {
-            question: "Que partícula tem carga elétrica negativa e move-se à volta do núcleo de um átomo?",
-            options: ["Eletrão", "Protão", "Neutrão", "Fotão"],
-            correct: 0
-        },
-        {
-            question: "O som consegue propagar-se no vácuo do espaço sideral?",
-            options: ["Sim, mas viaja muito devagar", "Não, porque o som precisa de um meio material para se propagar", "Sim, exatamente igual à Terra", "Apenas perto do Sol"],
-            correct: 1
-        },
-        {
-            question: "Em qual destes estados da matéria as partículas têm mais liberdade de movimento e estão mais afastadas?",
-            options: ["Sólido", "Líquido", "Gasoso", "Condensado"],
-            correct: 2
-        },
-        {
-            question: "Qual é a principal fonte externa de energia térmica e luminosa para o planeta Terra?",
-            options: ["O núcleo da Terra", "A Lua", "O Sol", "A Via Láctea"],
-            correct: 2
-        },
-        {
-            question: "O que mede fundamentalmente um termómetro?",
-            options: ["A massa de um corpo", "A pressão do ar", "A temperatura (grau de agitação das partículas)", "A velocidade do vento"],
-            correct: 2
-        }
-    ];
+    <script>
+        // Imagens fornecidas para alternar no troll
+        const trollImages = [
+            "5bba000e97f2ae347e6949b412bdb5a4.jpg",
+            "3120bd485e1a17c2f5580edbeec6a060.jpg",
+            "post-the-best-cat-memes-you-got-in-the-comments-please-v0-auzikor54tte1.webp",
+            "1.jpg",
+            "images.jpg",
+            "image.jpg"
+        ];
 
-    let currentQuestionIndex = 0;
-    let score = 0;
-    let userAnswers = [];
+        // Banco de perguntas focadas na História de Portugal, Brasil e Colónias
+        // isTroll: true significa que se responderes à correta real, ativa a rasteira do troll.
+        const questions = [
+            { q: "Quem foi o primeiro rei de Portugal?", options: ["D. Dinis", "D. Afonso Henriques", "D. Sancho I", "D. Manuel I"], correct: 1, isTroll: false }, // Q1 - Certa
+            { q: "Em que ano Pedro Álvares Cabral chegou oficialmente ao Brasil?", options: ["1492", "1498", "1500", "1530"], correct: 2, isTroll: false }, // Q2 - Certa
+            { q: "Qual foi a primeira grande riqueza explorada pelos portugueses no Brasil?", options: ["Ouro", "Cana-de-açúcar", "Café", "Pau-Brasil"], correct: 3, isTroll: false }, // Q3 - Certa
+            { q: "Qual o tratado assinado em 1494 para dividir as terras descobertas entre Portugal e Castela?", options: ["Tratado de Tordesilhas", "Tratado de Windsor", "Tratado de Saragoça", "Tratado de Badajós"], correct: 0, isTroll: true }, // Q4 - Troll
+            { q: "Que monarca governava Portugal na altura do fatídico sismo de Lisboa em 1755?", options: ["D. João V", "D. José I", "D. Maria I", "D. Luís I"], correct: 1, isTroll: false }, // Q5 - Certa
+            { q: "Qual cidade foi escolhida para ser a primeira capital histórica do Brasil?", options: ["Rio de Janeiro", "São Paulo", "Salvador", "Recife"], correct: 2, isTroll: true }, // Q6 - Troll
+            { q: "Em que ano ocorreu a Restauração da Independência, pondo fim ao Domínio Filipino?", options: ["1580", "1640", "1143", "1822"], correct: 1, isTroll: true }, // Q7 - Troll
+            { q: "Que navegador luso dobrou o Cabo da Boa Esperança em 1488?", options: ["Vasco da Gama", "Fernão de Magalhães", "Bartolomeu Dias", "Pedro Álvares Cabral"], correct: 2, isTroll: false }, // Q8 - Certa
+            { q: "Qual destas colónias africanas teve Luanda como o seu principal centro administrativo?", options: ["Moçambique", "Angola", "Guiné-Bissau", "Cabo Verde"], correct: 1, isTroll: true }, // Q9 - Troll
+            { q: "Quem é o célebre autor da epopeia 'Os Lusíadas', que narra a viagem à Índia?", options: ["Luís de Camões", "Fernando Pessoa", "Gil Vicente", "Eça de Queiroz"], correct: 0, isTroll: true }, // Q10 - Troll
+            { q: "Em qual destes séculos se iniciou de forma marcante a Expansão Marítima Portuguesa?", options: ["Século XIV", "Século XV", "Século XVI", "Século XVII"], correct: 1, isTroll: true }, // Q11 - Troll
+            { q: "Qual arquipélago atlântico foi oficialmente redescoberto por Zarco e Tristão Vaz Teixeira?", options: ["Açores", "Madeira", "Cabo Verde", "São Tomé"], correct: 1, isTroll: true }, // Q12 - Troll
+            { q: "Que tratado substituiu o de Tordesilhas em 1750, redefinindo o tamanho do Brasil?", options: ["Tratado de Madrid", "Tratado de Utrecht", "Tratado de Paris", "Tratado de Alcañices"], correct: 0, isTroll: true }, // Q13 - Troll
+            { q: "A revolução de 5 de Outubro de 1910 terminou com qual regime em Portugal?", options: ["A Ditadura", "A República", "A Monarquia", "O Império"], correct: 2, isTroll: true }, // Q14 - Troll
+            { q: "Qual navegador comandou a frota que chegou a Calecute, na Índia, em 1498?", options: ["Vasco da Gama", "Afonso de Albuquerque", "Francisco de Almeida", "Bartolomeu Dias"], correct: 0, isTroll: false }, // Q15 - Certa
+            { q: "Qual era o principal enclave e colónia portuguesa na Ásia ligada ao comércio de especiarias?", options: ["Macau", "Goa", "Timor", "Malaca"], correct: 1, isTroll: true }, // Q16 - Troll
+            { q: "Que jovem monarca português desapareceu misteriosamente na Batalha de Alcácer-Quibir?", options: ["D. Sebastião", "D. Manuel I", "D. Henrique", "D. João III"], correct: 0, isTroll: true }, // Q17 - Troll
+            { q: "Como ficou conhecida a revolução pacífica que derrubou a ditadura salazarista em 1974?", options: ["Revolução Liberal", "Revolução dos Cravos", "Revolução de Outubro", "Golpe da República"], correct: 1, isTroll: false }, // Q18 - Certa
+            { q: "Que arquipélago foi descoberto no Atlântico central a partir de 1427 por Diogo de Silves?", options: ["Madeira", "Canárias", "Açores", "Cabo Verde"], correct: 2, isTroll: true }, // Q19 - Troll
+            { q: "Qual foi o último território ultramarino a ser devolvido por Portugal (à China em 1999)?", options: ["Hong Kong", "Goa", "Macau", "Timor-Leste"], correct: 2, isTroll: true } // Q20 - Troll
+        ];
 
-    function startQuiz() {
-        document.getElementById('start-screen').classList.remove('active');
-        document.getElementById('quiz-screen').classList.add('active');
-        showQuestion();
-    }
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let trollImageIndex = 0;
 
-    function showQuestion() {
-        const currentQuestion = quizData[currentQuestionIndex];
-        
-        // Atualizar barra de progresso
-        document.getElementById('progress').innerText = `Pergunta ${currentQuestionIndex + 1} de ${quizData.length}`;
-        
-        // Inserir imagem a meio do quiz (pergunta 11, índice 10)
-        const imgContainer = document.getElementById('question-image-container');
-        if (currentQuestionIndex === 10) {
-            imgContainer.innerHTML = `<img src="images.jpg" alt="Imagem do meio do quiz" class="quiz-img">`;
-        } else {
-            imgContainer.innerHTML = '';
+        function loadQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            
+            // Atualizar contadores e interface
+            document.getElementById("questionNum").innerText = `Pergunta ${currentQuestionIndex + 1} de 20`;
+            document.getElementById("questionText").innerText = currentQuestion.q;
+            
+            const progressBar = document.getElementById("progressBar");
+            progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+
+            // Limpar e injetar novas opções com efeito flutuante
+            const optionsGrid = document.getElementById("optionsGrid");
+            optionsGrid.innerHTML = "";
+
+            currentQuestion.options.forEach((option, index) => {
+                const button = document.createElement("button");
+                button.classList.add("option-btn");
+                button.innerText = option;
+                button.onclick = () => checkAnswer(index);
+                optionsGrid.appendChild(button);
+            });
         }
 
-        // Definir texto da pergunta
-        document.getElementById('question-text').innerText = currentQuestion.question;
-        
-        // Limpar e gerar opções
-        const optionsContainer = document.getElementById('options-container');
-        optionsContainer.innerHTML = '';
-        
-        currentQuestion.options.forEach((option, index) => {
-            const button = document.createElement('button');
-            button.classList.add('option-btn');
-            button.innerText = option;
-            button.onclick = () => selectOption(index);
-            optionsContainer.appendChild(button);
-        });
+        function checkAnswer(selectedIndex) {
+            const currentQuestion = questions[currentQuestionIndex];
+            
+            // Se for uma pergunta Troll e o jogador carregar na resposta historicamente "Certa"
+            if (currentQuestion.isTroll && selectedIndex === currentQuestion.correct) {
+                triggerTrollEffect();
+                return; // Impede ganho de pontos e lida com o avanço no temporizador do troll
+            } 
+            
+            // Logica normal para perguntas não-troll ou se escolheu uma "errada" nas perguntas trocadas
+            if (selectedIndex === currentQuestion.correct) {
+                score++;
+            } else if (currentQuestion.isTroll && selectedIndex !== currentQuestion.correct) {
+                // Nas trocadas, clicar na errada dá o ponto e safa o utilizador do troll!
+                score++;
+            }
 
-        // Esconder o botão seguinte até haver seleção
-        document.getElementById('next-btn').style.display = 'none';
-    }
+            nextQuestion();
+        }
 
-    function selectOption(selectedIndex) {
-        userAnswers[currentQuestionIndex] = selectedIndex;
-        
-        // Destacar o botão selecionado
-        const buttons = document.querySelectorAll('.option-btn');
-        buttons.forEach((btn, idx) => {
-            if (idx === selectedIndex) {
-                btn.classList.add('selected');
+        function triggerTrollEffect() {
+            const overlay = document.getElementById("trollOverlay");
+            const img = document.getElementById("trollImg");
+
+            // Define e roda a lista de imagens de memes fornecida
+            img.src = trollImages[trollImageIndex];
+            trollImageIndex = (trollImageIndex + 1) % trollImages.length;
+
+            // Ativa o display e a animação CSS customizada de 2 segundos
+            overlay.style.display = "flex";
+            img.classList.add("troll-active");
+
+            // Bloqueia o ecrã por exatamente 2000 milissegundos (2 segundos)
+            setTimeout(() => {
+                img.classList.remove("troll-active");
+                overlay.style.display = "none";
+                nextQuestion(); // Avança após o susto do troll
+            }, 2000);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
             } else {
-                btn.classList.remove('selected');
+                showResults();
             }
-        });
-
-        // Mostrar o botão de avançar
-        document.getElementById('next-btn').style.display = 'block';
-    }
-
-    function nextQuestion() {
-        if (userAnswers[currentQuestionIndex] === quizData[currentQuestionIndex].correct) {
-            score++;
         }
 
-        currentQuestionIndex++;
-
-        if (currentQuestionIndex < quizData.length) {
-            showQuestion();
-        } else {
-            showResults();
+        function showResults() {
+            document.getElementById("quizContents").style.display = "none";
+            document.getElementById("resultScreen").style.display = "block";
+            document.getElementById("scoreDisplay").innerText = `${score} / ${questions.length}`;
         }
-    }
 
-    function showResults() {
-        document.getElementById('quiz-screen').classList.remove('active');
-        document.getElementById('result-screen').classList.add('active');
-        
-        // Mostrar pontuação
-        document.getElementById('score-text').innerHTML = `Acertaste em <span class="text-correct">${score}</span> de ${quizData.length} perguntas.`;
-        
-        const wrongAnswersList = document.getElementById('wrong-answers-list');
-        wrongAnswersList.innerHTML = '';
-        
-        let mistakesCount = 0;
-
-        // Verificar erros
-        quizData.forEach((question, index) => {
-            const userAnswer = userAnswers[index];
-            if (userAnswer !== question.correct) {
-                mistakesCount++;
-                const reviewItem = document.createElement('div');
-                reviewItem.classList.add('review-item');
-                
-                reviewItem.innerHTML = `
-                    <h4>${index + 1}. ${question.question}</h4>
-                    <p>A tua resposta: <span class="text-wrong">${question.options[userAnswer]}</span></p>
-                    <p>Resposta correta: <span class="text-correct">${question.options[question.correct]}</span></p>
-                `;
-                wrongAnswersList.appendChild(reviewItem);
-            }
-        });
-
-        // Se não houver erros, esconde a secção de revisão ou mostra mensagem de parabéns
-        const reviewSection = document.getElementById('review-container');
-        if (mistakesCount === 0) {
-            reviewSection.innerHTML = `<h3>Parabéns! Acertaste todas as perguntas! 🌟</h3>`;
-        } else {
-            // Repor o título original caso tenham jogado outra vez
-            reviewSection.querySelector('h3').innerText = "Perguntas que erraste:";
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            trollImageIndex = 0;
+            document.getElementById("quizContents").style.display = "block";
+            document.getElementById("resultScreen").style.display = "none";
+            loadQuestion();
         }
-    }
 
-    function restartQuiz() {
-        currentQuestionIndex = 0;
-        score = 0;
-        userAnswers = [];
-        document.getElementById('result-screen').classList.remove('active');
-        document.getElementById('start-screen').classList.add('active');
-    }
-</script>
-
+        // Inicializar o Quiz ao carregar a página
+        window.onload = loadQuestion;
+    </script>
 </body>
 </html>
