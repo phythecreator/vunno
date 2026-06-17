@@ -5,710 +5,1283 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plataforma de Avaliação Nacional</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap');
 
         :root {
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            --panel-bg: rgba(30, 41, 59, 0.7);
-            --primary: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            --primary-hover: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
-            --text-dark: #f8fafc;
+            --bg: #0f172a;
+            --bg2: #1e293b;
+            --bg3: #334155;
+            --panel: #1e293b;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --accent: #22d3ee;
+            --accent2: #f472b6;
+            --text: #f1f5f9;
             --text-muted: #94a3b8;
-            --border: rgba(255, 255, 255, 0.1);
-            --error: #ef4444;
+            --border: #334155;
             --success: #10b981;
-            --glow: rgba(99, 102, 241, 0.15);
+            --error: #ef4444;
+            --warning: #f59e0b;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background: var(--bg-gradient);
-            color: var(--text-dark);
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            overflow-x: hidden;
-            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-
-        /* Classes de Troll de Ecrã */
-        body.troll-flip {
-            transform: rotate(180deg);
-        }
-
-        body.troll-shake {
-            animation: shake 0.3s infinite;
-        }
-
-        @keyframes shake {
-            0% { transform: translate(2px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(0px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(2px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(2px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.08) 0%, transparent 50%),
+                              radial-gradient(ellipse at 80% 20%, rgba(34,211,238,0.06) 0%, transparent 50%);
         }
 
         .container {
-            background: var(--panel-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: var(--panel);
             border: 1px solid var(--border);
-            border-radius: 24px;
+            border-radius: 16px;
             padding: 40px;
             width: 100%;
-            max-width: 650px;
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 50px 0 var(--glow);
+            max-width: 700px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(99,102,241,0.1);
             position: relative;
             overflow: hidden;
         }
 
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--accent2));
+            border-radius: 16px 16px 0 0;
+        }
+
         .hidden { display: none !important; }
 
+        .stage-header {
+            margin-bottom: 28px;
+        }
+
+        .stage-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(99,102,241,0.15);
+            border: 1px solid rgba(99,102,241,0.3);
+            color: var(--accent);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 14px;
+        }
+
         h2 {
-            font-size: 1.8rem;
-            color: #ffffff;
-            margin-bottom: 18px;
-            font-weight: 800;
-            letter-spacing: -0.025em;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7rem;
+            color: var(--text);
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 8px;
+            line-height: 1.6;
         }
 
         p {
-            margin-bottom: 24px;
-            line-height: 1.6;
-            font-size: 1rem;
+            margin-bottom: 16px;
+            line-height: 1.7;
+            font-size: 0.95rem;
             color: var(--text-muted);
         }
 
-        input {
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"], input[type="number"], input[type="password"] {
             width: 100%;
-            padding: 16px;
+            padding: 14px 16px;
+            background: var(--bg);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            margin-bottom: 24px;
+            border-radius: 10px;
+            color: var(--text);
             font-size: 1rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(15, 23, 42, 0.6);
-            color: white;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
         }
 
         input:focus {
             outline: none;
-            border-color: #6366f1;
-            background: rgba(15, 23, 42, 0.8);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
         }
 
-        button {
-            background: var(--primary);
+        input::placeholder { color: var(--bg3); }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
             color: white;
             border: none;
-            padding: 16px 32px;
-            border-radius: 12px;
-            font-size: 1rem;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 0.95rem;
             cursor: pointer;
-            font-weight: 700;
-            transition: all 0.2s ease;
-            display: inline-block;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(99,102,241,0.3);
         }
 
-        button:hover {
-            background: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99,102,241,0.4);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: #ffffff;
-            border: 1px solid var(--border);
+            background: var(--bg3);
+            color: var(--text);
             box-shadow: none;
-            margin-left: 10px;
         }
-        .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
 
+        .btn-secondary:hover {
+            background: var(--border);
+            box-shadow: none;
+            transform: none;
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent), #0891b2);
+            box-shadow: 0 4px 15px rgba(34,211,238,0.25);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        /* Book verification */
+        .book-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .book-card img {
+            max-width: 160px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        /* Audio Player */
+        .fake-audio-player {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+
+        .fake-audio-player:hover {
+            border-color: var(--primary);
+            background: rgba(99,102,241,0.05);
+        }
+
+        .play-btn-circle {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .play-icon-inner {
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 13px solid white;
+            margin-left: 3px;
+        }
+
+        .audio-info strong { display: block; color: var(--text); font-size: 0.95rem; }
+        .audio-info span { font-size: 0.8rem; color: var(--text-muted); }
+
+        .waveform {
+            flex: 1;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .wave-bar {
+            width: 3px;
+            background: var(--border);
+            border-radius: 2px;
+            animation: wave 1.2s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { height: 4px; }
+            50% { height: 20px; }
+        }
+
+        .error-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: #fca5a5;
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Options */
         .options-list {
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            margin-top: 24px;
+            gap: 10px;
+            margin-top: 20px;
         }
 
         .option-item {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--bg);
             border: 1px solid var(--border);
-            padding: 18px;
-            border-radius: 14px;
+            padding: 16px 20px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.95rem;
+            color: var(--text);
+            transition: all 0.18s;
             display: flex;
             align-items: center;
+            gap: 12px;
+        }
+
+        .option-item::before {
+            content: '';
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            flex-shrink: 0;
+            transition: all 0.18s;
         }
 
         .option-item:hover {
-            border-color: #6366f1;
-            background: rgba(99, 102, 241, 0.1);
-            color: #818cf8;
-            transform: translateX(6px);
+            background: rgba(99,102,241,0.08);
+            border-color: var(--primary);
+            transform: translateX(4px);
         }
 
-        .fake-audio-player {
-            background: rgba(15, 23, 42, 0.4);
-            border: 2px dashed rgba(239, 68, 68, 0.4);
-            border-radius: 14px;
-            padding: 24px;
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            cursor: pointer;
+        .option-item:hover::before {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .option-item.correct {
+            background: rgba(16,185,129,0.1);
+            border-color: var(--success);
+            color: #6ee7b7;
+        }
+
+        .option-item.wrong {
+            background: rgba(239,68,68,0.1);
+            border-color: var(--error);
+            color: #fca5a5;
+        }
+
+        /* Progress bar */
+        .progress-bar-wrap {
+            background: var(--bg);
+            border-radius: 8px;
+            height: 6px;
             margin-bottom: 24px;
-            transition: background 0.3s;
+            overflow: hidden;
         }
-        .fake-audio-player:hover { background: rgba(15, 23, 42, 0.7); }
-        .play-icon { width: 0; height: 0; border-top: 12px solid transparent; border-bottom: 12px solid transparent; border-left: 18px solid var(--error); }
 
-        .toast {
-            position: fixed; top: 20px; right: 20px;
-            padding: 18px 30px; border-radius: 14px;
-            color: white; font-weight: 700; font-size: 1rem;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
-            transform: translateX(150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 10000;
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 8px;
+            transition: width 0.4s ease;
         }
-        .toast.show { transform: translateX(0); }
-        .toast.success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-        .toast.error { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
 
-        .fullscreen-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000; z-index: 99999; display: flex;
-            justify-content: center; align-items: center;
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 600;
         }
-        .fullscreen-overlay img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(15, 23, 42, 0.8); display: flex;
-            justify-content: center; align-items: center; z-index: 9999;
-            backdrop-filter: blur(8px);
-        }
-        .modal-content {
-            background: #1e293b; padding: 40px; border-radius: 24px;
+        /* Meta info */
+        .meta-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg);
             border: 1px solid var(--border);
-            width: 90%; max-width: 450px; text-align: center;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-bottom: 20px;
         }
 
-        .loading-bar-container {
-            width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 6px; margin-top: 24px; overflow: hidden;
+        /* Divider */
+        .divider {
+            border: 0;
+            border-top: 1px solid var(--border);
+            margin: 24px 0;
         }
-        .loading-bar { width: 0%; height: 100%; background: var(--primary); transition: width 3.5s linear; }
+
+        /* Overlay */
+        .fullscreen-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.92);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .fullscreen-overlay img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .rotate-anim {
+            animation: spinScale 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes spinScale {
+            0% { transform: rotate(0deg) scale(0.2); }
+            50% { transform: rotate(360deg) scale(1.4); }
+            100% { transform: rotate(720deg) scale(1); }
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 36px;
+            border-radius: 16px;
+            max-width: 460px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .modal-content p {
+            color: var(--text);
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+
+        .modal-buttons {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        /* Feedback box */
+        .feedback-box {
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin-top: 14px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .feedback-box.correct {
+            background: rgba(16,185,129,0.12);
+            border: 1px solid rgba(16,185,129,0.4);
+            color: #6ee7b7;
+        }
+
+        .feedback-box.wrong {
+            background: rgba(239,68,68,0.12);
+            border: 1px solid rgba(239,68,68,0.4);
+            color: #fca5a5;
+        }
+
+        /* Number guess */
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .number-btn {
+            padding: 20px 10px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        /* Final screen */
+        .final-content {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .final-icon {
+            font-size: 3.5rem;
+            margin-bottom: 16px;
+        }
+
+        .more-quizzes-btn {
+            margin-top: 24px;
+            width: 100%;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--accent2), #db2777);
+            box-shadow: 0 4px 15px rgba(244,114,182,0.3);
+        }
+
+        /* Shake animation for wrong PIN */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+
+        .shake { animation: shake 0.6s ease; }
+
+        /* Screen shake */
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0, 0) rotate(0); }
+            10% { transform: translate(-4px, -4px) rotate(-0.5deg); }
+            20% { transform: translate(4px, -4px) rotate(0.5deg); }
+            30% { transform: translate(-4px, 4px) rotate(-0.5deg); }
+            40% { transform: translate(4px, 4px) rotate(0.5deg); }
+            50% { transform: translate(-4px, -4px) rotate(-0.5deg); }
+            60% { transform: translate(4px, -4px) rotate(0.5deg); }
+            70% { transform: translate(-4px, 4px) rotate(-0.5deg); }
+            80% { transform: translate(4px, 4px) rotate(0.5deg); }
+            90% { transform: translate(-4px, -4px) rotate(-0.5deg); }
+        }
+
+        .screen-shake { animation: screenShake 0.8s ease; }
+
+        /* Cursor gone troll */
+        .cursor-gone { cursor: none !important; }
+
+        /* Moving button troll */
+        .runaway-btn {
+            position: fixed;
+            transition: top 0.1s, left 0.1s;
+            z-index: 99999;
+        }
+
+        /* History quiz pin */
+        .pin-display {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: 0.3em;
+            text-align: center;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
 
-    <div class="toast" id="toastMsg">Mensagem</div>
+<div class="container" id="main-container">
 
-    <div class="container" id="main-container">
-        
-        <div id="stage-book">
-            <h2>Registo de Leitura Digital</h2>
-            <p>Escreva o título do livro que tem lido nas últimas semanas para validação das metas curriculares:</p>
-            <input type="text" id="book-input" placeholder="Título da obra literária..." oninput="handleBookTyping()">
-            
-            <div id="book-verification" class="hidden" style="text-align:center; margin-top:30px;">
-                <img src="0162da_d567d715e9d1486f979c1a311809577b~mv2.avif" alt="Livro" style="max-width:200px; border-radius:12px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); margin-bottom:20px;">
-                <h3 style="margin-bottom:20px; font-weight:700;">Confirmamos o rastreio. É exatamente este o livro de que está a falar?</h3>
-                <button onclick="goToStageExam()">Sim, Avançar</button>
-                <button id="btn-nao-fugitivo" class="btn-secondary" onmouseover="fugirBotao()">Não</button>
-            </div>
+    <!-- STAGE 1: Livro -->
+    <div id="stage-book">
+        <div class="stage-header">
+            <div class="stage-badge">📚 Portefólio Digital</div>
+            <h2>Registo de Leitura</h2>
+            <p class="subtitle">Insere o título do livro que tens lido nas últimas semanas para validar o teu portefólio de leitura obrigatória.</p>
         </div>
-
-        <div id="stage-exam" class="hidden">
-            <div style="font-size: 0.75rem; color: #818cf8; text-transform: uppercase; margin-bottom: 6px; font-weight: 800; letter-spacing: 0.05em;">Exame de Estado</div>
-            <h2>Compreensão de Texto Oral</h2>
-            <p style="font-size: 0.85rem; color: #a5b4fc; background: rgba(99, 102, 241, 0.1); padding: 12px; border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.2);">Quiz enviado por Pedro Silva • Usuário: @leopixel</p>
-            <p>Clique na caixa abaixo para reproduzir a faixa de áudio oficial de interpretação:</p>
-            
-            <div class="fake-audio-player" onclick="playLoudAudio()">
-                <div class="play-icon"></div>
-                <div><strong>u_8iuwl7zrk0-error-170796.mp3</strong><br><span style="font-size: 0.8rem; color:var(--error); font-weight:600;">Falha de Codec (Clique para forçar reprodução do sistema)</span></div>
-            </div>
-
-            <audio id="troll-audio" src="u_8iuwl7zrk0-error-170796.mp3"></audio>
-
-            <div id="form-dados" class="hidden">
-                <hr style="margin: 24px 0; border: 0; border-top: 1px solid var(--border);">
-                <p>Para desbloquear as perguntas do exame, verifique a sua identidade:</p>
-                <input type="text" id="user-name" placeholder="Nome Completo">
-                <input type="number" id="user-age" placeholder="Idade">
-                <button onclick="goToStageAccess()">Confirmar Credenciais</button>
-            </div>
+        <div class="form-group">
+            <label>Título do Livro</label>
+            <input type="text" id="book-input" placeholder="Ex: Os Maias, Fernando Pessoa..." oninput="handleBookTyping()">
         </div>
-
-        <div id="stage-access" class="hidden">
-            <h2>Acesso Restrito do Ministério</h2>
-            <p style="color: var(--error); font-weight: 700;">Aviso: Ficheiro encriptado. Peça o código PIN de verificação ao seu supervisor.</p>
-            <p>Insira a chave numérica de 4 dígitos:</p>
-            <input type="password" id="access-password" placeholder="Chave PIN">
-            <button onclick="verifyPassword()">Aceder ao Painel</button>
-        </div>
-
-        <div id="stage-quizzes-hub" class="hidden" style="text-align: center;">
-            <h2>Módulos Disponíveis</h2>
-            <p>Selecione a vertente para iniciar a sua prova oficial:</p>
-            <button onclick="startGrammarQuiz()">Iniciar Bloco de Gramática</button>
-            <br><br>
-            <button class="btn-secondary" onclick="startLoadingMaisQuizzes()">Carregar Mais Disciplinas</button>
-
-            <div id="fake-loading" class="hidden">
-                <div class="loading-bar-container"><div class="loading-bar" id="l-bar"></div></div>
-                <p id="loading-txt" style="margin-top:14px; font-weight:700; color:#818cf8;">A sincronizar base de dados nacional (99%)...</p>
-            </div>
-        </div>
-
-        <div id="stage-number-troll" class="hidden" style="text-align: center;">
-            <h2>Verificação Extra Anti-Bot</h2>
-            <p>Para provar que é humano, adivinhe o número secreto de 1 a 5 gerado pelo servidor:</p>
-            <input type="number" id="pin-troll-input" placeholder="Número?">
-            <button onclick="verifyNumberTroll()">Submeter Resposta</button>
-        </div>
-
-        <div id="stage-history" class="hidden">
-            <div style="font-size: 0.75rem; color: #f59e0b; text-transform: uppercase; margin-bottom: 6px; font-weight: 800;">Bónus de Classificação</div>
-            <h2 id="history-title">História - Pergunta 1</h2>
-            <p id="history-q-text"></p>
-            <div class="options-list" id="history-options"></div>
-        </div>
-
-        <div id="stage-grammar" class="hidden">
-            <h2 id="grammar-title">Gramática - P1</h2>
-            <p id="grammar-q-text"></p>
-            <div class="options-list" id="grammar-options"></div>
-        </div>
-
-        <div id="stage-syntax" class="hidden">
-            <h2 id="syntax-title">Sintaxe - P1</h2>
-            <p id="syntax-q-text"></p>
-            <div class="options-list" id="syntax-options"></div>
-        </div>
-
-        <div id="stage-final" class="hidden" style="text-align: center;">
-            <h2 style="font-size: 3.5rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Obrigado.</h2>
-            <p style="margin-top: 10px;">A tua nota foi submetida com sucesso (ou talvez não!).</p>
-        </div>
-    </div>
-
-    <div id="overlay-flash" class="fullscreen-overlay hidden">
-        <img id="overlay-img" src="">
-    </div>
-
-    <div id="confirm-modal" class="modal hidden">
-        <div class="modal-content">
-            <h3 style="margin-bottom: 15px; color: var(--error); font-size: 1.4rem; font-weight: 800;">Tem a absoluta certeza?</h3>
-            <p id="modal-text"></p>
-            <div style="margin-top:25px;">
-                <button id="modal-btn-sim">Sim, de certeza</button>
-                <button id="modal-btn-nao" class="btn-secondary">Não, mudar</button>
+        <div id="book-verification" class="hidden">
+            <div class="book-card">
+                <img src="0162da_d567d715e9d1486f979c1a311809577b~mv2.avif" alt="Livro">
+                <p style="color:var(--text); font-weight:600; font-size:1rem;">É este o livro que mencionaste?</p>
+                <div class="btn-row" style="justify-content:center; margin-top:16px;">
+                    <button class="btn" onclick="goToStageExam()">✓ Sim, é este</button>
+                    <button class="btn btn-secondary" onclick="goToStageExam()">Não é este</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Utilitário Toast Moderno
-        function showToast(msg, type='success') {
-            const toast = document.getElementById('toastMsg');
-            toast.innerText = msg;
-            toast.className = `toast show ${type}`;
-            setTimeout(() => toast.className = 'toast', 2500);
-        }
+    <!-- STAGE 2: Exame / Áudio -->
+    <div id="stage-exam" class="hidden">
+        <div class="stage-header">
+            <div class="stage-badge">🎧 Compreensão Oral</div>
+            <h2>Exame Nacional de Português 2026</h2>
+        </div>
+        <div class="meta-chip">👤 Enviado por Pedro Silva &nbsp;•&nbsp; @leopixel</div>
+        <p>Componente de Compreensão Oral. Carrega na faixa abaixo para reproduzir o áudio obrigatório antes de prosseguires:</p>
+        <div class="fake-audio-player" onclick="playTrollAudio()">
+            <div class="play-btn-circle"><div class="play-icon-inner"></div></div>
+            <div class="audio-info">
+                <strong>Faixa_01_Exame_2026.mp3</strong>
+                <span>02:45 • Obrigatório</span>
+            </div>
+            <div class="waveform" id="waveform">
+                <div class="wave-bar" style="height:4px; animation-delay:0s"></div>
+                <div class="wave-bar" style="height:4px; animation-delay:0.1s"></div>
+                <div class="wave-bar" style="height:4px; animation-delay:0.2s"></div>
+                <div class="wave-bar" style="height:4px; animation-delay:0.3s"></div>
+                <div class="wave-bar" style="height:4px; animation-delay:0.4s"></div>
+                <div class="wave-bar" style="height:4px; animation-delay:0.5s"></div>
+                <div class="wave-bar" style="height:4px; animation-delay:0.6s"></div>
+                <div class="wave-bar" style="height:4px; animation-delay:0.7s"></div>
+                <div class="wave-bar" style="height:4px; animation-delay:0.8s"></div>
+                <div class="wave-bar" style="height:4px; animation-delay:0.9s"></div>
+            </div>
+        </div>
+        <div class="error-chip">⚠ Erro no reprodutor nativo — clica na faixa para forçar o carregamento</div>
 
-        // Banco de Dados de Questões Reais (Sem Repetição)
-        const historyQs = [
-            { q: "Em que ano se deu a célebre Batalha de Aljubarrota?", o: ["1385", "1143", "1580", "1415"], c: 0 },
-            { q: "Quem foi aclamado o primeiro Rei de Portugal?", o: ["D. Afonso Henriques", "D. Dinis", "D. João I", "D. Manuel I"], c: 0 },
-            { q: "Qual destes navegadores dobrou o Cabo da Boa Esperança em 1488?", o: ["Bartolomeu Dias", "Vasco da Gama", "Pedro Álvares Cabral", "Gil Eanes"], c: 0 },
-            { q: "Em que ano chegou a armada de Vasco da Gama a Calecute, na Índia?", o: ["1498", "1492", "1500", "1543"], c: 0 },
-            { q: "O que desencadeou o início da Dinastia Filipina em Portugal?", o: ["A crise de sucessão de 1580", "A Batalha de Toro", "O Tratado de Tordesilhas", "O Regicídio de 1908"], c: 0 },
-            { q: "Em que trágico dia e ano ocorreu o Grande Terramoto de Lisboa?", o: ["1 de Novembro de 1755", "25 de Abril de 1755", "1 de Dezembro de 1640", "5 de Outubro de 1910"], c: 0 },
-            { q: "Quem foi o responsável pela reconstrução de Lisboa após o sismo de 1755?", o: ["Marquês de Pombal", "Duque de Palmela", "Fontes Pereira de Melo", "Passos Manuel"], c: 0 },
-            { q: "Qual a data da Proclamação da República Portuguesa?", o: ["5 de Outubro de 1910", "25 de Abril de 1974", "1 de Dezembro de 1640", "28 de Maio de 1926"], c: 0 },
-            { q: "Que nome ficou historicamente associado à revolução democrática de 25 de Abril de 1974?", o: ["Revolução dos Cravos", "Revolução Liberal", "Revolução de Setembro", "Primavera Marcelista"], c: 0 },
-            { q: "Que tratado dividiu as terras descobertas e por descobrir entre Portugal e Castela em 1494?", o: ["Tratado de Tordesilhas", "Tratado de Alcanizes", "Tratado de Windsor", "Tratado de Badajoz"], c: 0 },
-            { q: "Quem é o autor do poema épico 'Os Lusíadas', publicado em 1572?", o: ["Luís Vaz de Camões", "Fernando Pessoa", "Eça de Queirós", "José Saramago"], c: 0 },
-            { q: "Em que ano foi assinado o Tratado de Zamora que reconheceu a independência de Portugal?", o: ["1143", "1139", "1128", "1179"], c: 0 },
-            { q: "Como se chamava o regime ditatorial liderado por António de Oliveira Salazar?", o: ["Estado Novo", "Monarquia do Norte", "Ditadura Nacional", "União Nacional"], c: 0 },
-            { q: "Que monarca português desapareceu misteriosamente na Batalha de Alcácer-Quibir?", o: ["D. Sebastião", "D. Henrique", "D. Manuel I", "D. João V"], c: 0 },
-            { q: "O Tratado de Alcanizes (1297) definiu essencialmente o quê?", o: ["As fronteiras terrestres de Portugal", "A paz com a Santa Sé", "O casamento de D. Dinis", "A cedência de Ceuta"], c: 0 }
+        <audio id="troll-audio" src="u_8iuwl7zrk0-error-170796.mp3" preload="auto"></audio>
+
+        <hr class="divider">
+        <p>Para acederes ao exame confirma os teus dados de estudante:</p>
+        <div class="form-group">
+            <label>Nome Completo</label>
+            <input type="text" id="user-name" placeholder="Insere o teu nome completo">
+        </div>
+        <div class="form-group">
+            <label>Idade</label>
+            <input type="number" id="user-age" placeholder="Insere a tua idade" min="10" max="99">
+        </div>
+        <button class="btn" onclick="goToStageAccess()">Confirmar e Continuar →</button>
+    </div>
+
+    <!-- STAGE 3: PIN de Acesso -->
+    <div id="stage-access" class="hidden">
+        <div class="stage-header">
+            <div class="stage-badge">🔒 Autenticação</div>
+            <h2>Controlo de Acesso</h2>
+        </div>
+        <div style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.3); border-radius:10px; padding:16px; margin-bottom:20px;">
+            <p style="color:#fca5a5; font-weight:600; margin:0;">⛔ Acesso restrito — Pede o código de acesso a quem te enviou este ficheiro.</p>
+        </div>
+        <div class="form-group">
+            <label>Código de Acesso (4 dígitos)</label>
+            <input type="password" id="access-password" placeholder="••••" maxlength="4">
+        </div>
+        <audio id="bomb-audio" src="wings_of_freedom-bomb-explosion-469038.mp3" preload="auto"></audio>
+        <button class="btn" onclick="verifyPassword()">Aceder ao Conteúdo →</button>
+    </div>
+
+    <!-- STAGE 4: Validação / Início Quizzes -->
+    <div id="stage-start-quizzes" class="hidden">
+        <div class="stage-header">
+            <div class="stage-badge">✅ Validado</div>
+            <h2>Identidade Confirmada</h2>
+        </div>
+        <p>Os teus dados foram temporariamente validados na base de dados central do sistema. Podes agora aceder aos módulos de avaliação.</p>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:24px;">
+            <p style="color:var(--text); font-weight:600; margin-bottom:8px;">📝 Módulo Disponível</p>
+            <p style="margin:0;">Quiz de Gramática e Funções Sintáticas — 15 perguntas</p>
+        </div>
+        <button class="btn" onclick="startGrammarQuiz()">Iniciar Quiz de Português →</button>
+    </div>
+
+    <!-- STAGE 5: Gramática -->
+    <div id="stage-grammar" class="hidden">
+        <div class="stage-header">
+            <div class="stage-badge">📖 Português</div>
+            <h2 id="grammar-title">Gramática — Pergunta 1 de 15</h2>
+        </div>
+        <div class="progress-label">
+            <span id="grammar-progress-label">Pergunta 1</span>
+            <span id="grammar-progress-pct">0%</span>
+        </div>
+        <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="grammar-progress-bar" style="width:0%"></div>
+        </div>
+        <p id="grammar-question-text" style="color:var(--text); font-size:1rem; font-weight:500;"></p>
+        <div class="options-list" id="grammar-options"></div>
+        <div class="feedback-box" id="grammar-feedback"></div>
+    </div>
+
+    <!-- STAGE 6: Funções Sintáticas -->
+    <div id="stage-syntax" class="hidden">
+        <div class="stage-header">
+            <div class="stage-badge">🔤 Sintaxe</div>
+            <h2 id="syntax-title">Funções Sintáticas — Pergunta 1 de 2</h2>
+        </div>
+        <div class="progress-label">
+            <span id="syntax-progress-label">Pergunta 1</span>
+            <span id="syntax-progress-pct">0%</span>
+        </div>
+        <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="syntax-progress-bar" style="width:0%"></div>
+        </div>
+        <p id="syntax-question-text" style="color:var(--text); font-size:1rem; font-weight:500;"></p>
+        <div class="options-list" id="syntax-options"></div>
+    </div>
+
+    <!-- STAGE 7: Final com "Mais Quizzes" -->
+    <div id="stage-final" class="hidden">
+        <div class="final-content">
+            <div class="final-icon">🏆</div>
+            <div class="stage-badge" style="margin:0 auto 16px;">Módulo Concluído</div>
+            <h2>Quiz de Português Terminado</h2>
+            <p style="margin-top:12px;">Completaste todos os exercícios deste módulo. O teu desempenho foi registado.</p>
+            <button class="btn more-quizzes-btn" onclick="goToHistoryQuiz()">🗺 Mais Quizzes — Explorar História de Portugal →</button>
+        </div>
+    </div>
+
+    <!-- STAGE 8: Início Quiz de História -->
+    <div id="stage-history-intro" class="hidden">
+        <div class="stage-header">
+            <div class="stage-badge">🏰 História de Portugal</div>
+            <h2>Quiz de História Nacional</h2>
+        </div>
+        <p>Testa os teus conhecimentos sobre a História de Portugal. 15 perguntas sobre os momentos mais marcantes da nossa nação.</p>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:24px;">
+            <p style="color:var(--text); font-weight:600; margin-bottom:4px;">⏱ Regras</p>
+            <p style="margin:0; font-size:0.88rem;">Lê cada pergunta com atenção. Seleciona a resposta correta. Boa sorte!</p>
+        </div>
+        <button class="btn btn-accent" onclick="startHistoryQuiz()">Iniciar Quiz de História →</button>
+    </div>
+
+    <!-- STAGE 9: Quiz de História -->
+    <div id="stage-history" class="hidden">
+        <div class="stage-header">
+            <div class="stage-badge">🏰 História</div>
+            <h2 id="history-title">História — Pergunta 1 de 15</h2>
+        </div>
+        <div class="progress-label">
+            <span id="history-progress-label">Pergunta 1</span>
+            <span id="history-progress-pct">0%</span>
+        </div>
+        <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="history-progress-bar" style="width:0%"></div>
+        </div>
+        <p id="history-question-text" style="color:var(--text); font-size:1rem; font-weight:500;"></p>
+        <div class="options-list" id="history-options"></div>
+        <div class="feedback-box" id="history-feedback"></div>
+    </div>
+
+    <!-- STAGE 10: Adivinhar Número -->
+    <div id="stage-number-guess" class="hidden">
+        <div class="stage-header">
+            <div class="stage-badge">🎲 Desafio Bónus</div>
+            <h2>Adivinha o Número!</h2>
+        </div>
+        <p>Para desbloqueares o certificado final, adivinha o número que estou a pensar. Está entre <strong style="color:var(--accent);">1 e 5</strong>.</p>
+        <div class="number-grid">
+            <button class="btn number-btn" onclick="guessNumber(1)">1</button>
+            <button class="btn number-btn" onclick="guessNumber(2)">2</button>
+            <button class="btn number-btn" onclick="guessNumber(3)">3</button>
+            <button class="btn number-btn" onclick="guessNumber(4)">4</button>
+            <button class="btn number-btn" onclick="guessNumber(5)">5</button>
+        </div>
+        <div class="feedback-box" id="guess-feedback"></div>
+    </div>
+
+    <!-- STAGE 11: PIN História -->
+    <div id="stage-history-pin" class="hidden">
+        <div class="stage-header">
+            <div class="stage-badge">🔐 Acesso ao Certificado</div>
+            <h2>PIN de Certificação</h2>
+        </div>
+        <p>Para gerares o teu certificado final, introduz o PIN de acesso que o teu professor te enviou:</p>
+        <div class="form-group">
+            <label>PIN (1 dígito)</label>
+            <input type="password" id="history-pin" placeholder="•" maxlength="1">
+        </div>
+        <audio id="bomb-audio-2" src="wings_of_freedom-bomb-explosion-469038.mp3" preload="auto"></audio>
+        <button class="btn" onclick="verifyHistoryPin()">Verificar PIN →</button>
+        <div class="feedback-box" id="pin-feedback" style="margin-top:12px;"></div>
+    </div>
+
+    <!-- STAGE 12: Ecrã Final Absoluto -->
+    <div id="stage-absolute-final" class="hidden">
+        <div class="final-content">
+            <div class="final-icon">🎉</div>
+            <div class="stage-badge" style="margin:0 auto 16px;">Concluído</div>
+            <h2>Processo Terminado</h2>
+            <p style="margin-top:12px; color:var(--accent); font-weight:700; font-size:1.1rem;">Obrigado pela participação!</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- Overlay para imagens flash -->
+<div id="overlay-screen" class="fullscreen-overlay hidden">
+    <img id="overlay-img" src="" alt="">
+</div>
+
+<!-- Modal de confirmação (Sintaxe) -->
+<div id="confirm-modal" class="modal hidden">
+    <div class="modal-content">
+        <div style="font-size:2rem; margin-bottom:12px;">🤔</div>
+        <p id="modal-text" style="font-size:1rem; line-height:1.6;"></p>
+        <div class="modal-buttons">
+            <button class="btn" id="modal-btn-sim">Sim, confirmar</button>
+            <button class="btn btn-secondary" id="modal-btn-nao">Não, alterar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===================== ÁUDIOS =====================
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playBufferedAudio(src, gainValue) {
+    fetch(src)
+        .then(r => r.arrayBuffer())
+        .then(buf => audioCtx.decodeAudioData(buf))
+        .then(decoded => {
+            const source = audioCtx.createBufferSource();
+            const gainNode = audioCtx.createGain();
+            gainNode.gain.value = gainValue;
+            source.buffer = decoded;
+            source.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            source.start(0);
+        })
+        .catch(() => {
+            // fallback simples
+            const a = new Audio(src);
+            a.volume = 1.0;
+            a.play().catch(() => {});
+        });
+}
+
+// ===================== ETAPA 1: Livro =====================
+function handleBookTyping() {
+    const val = document.getElementById('book-input').value;
+    if (val.trim().length > 2) {
+        document.getElementById('book-verification').classList.remove('hidden');
+    }
+}
+
+function goToStageExam() {
+    show('stage-exam');
+    hide('stage-book');
+}
+
+// ===================== ETAPA 2: Áudio + Dados =====================
+let audioPlayed = false;
+function playTrollAudio() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    // Volume brutal — gain de 15 (muito acima de 1.0 normal)
+    playBufferedAudio('u_8iuwl7zrk0-error-170796.mp3', 15);
+    audioPlayed = true;
+    // Animar waveform
+    document.querySelectorAll('.wave-bar').forEach((b, i) => {
+        b.style.animation = `wave ${0.5 + Math.random() * 0.5}s ease-in-out infinite`;
+        b.style.background = 'var(--primary)';
+        b.style.height = (4 + Math.random() * 24) + 'px';
+    });
+}
+
+function goToStageAccess() {
+    const name = document.getElementById('user-name').value.trim();
+    const age = document.getElementById('user-age').value.trim();
+    if (!name || !age) {
+        alert("⚠ Por favor preenche todos os campos obrigatórios.");
+        return;
+    }
+    hide('stage-exam');
+    show('stage-access');
+}
+
+// ===================== ETAPA 3: PIN =====================
+function verifyPassword() {
+    const pass = document.getElementById('access-password').value;
+    if (pass === "4767") {
+        executeFlashSequence();
+    } else {
+        // Explosão sonora com volume máximo
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        playBufferedAudio('wings_of_freedom-bomb-explosion-469038.mp3', 20);
+        // Shake no ecrã
+        document.getElementById('main-container').classList.add('screen-shake');
+        setTimeout(() => document.getElementById('main-container').classList.remove('screen-shake'), 800);
+        // Shake no input
+        const inp = document.getElementById('access-password');
+        inp.classList.add('shake');
+        setTimeout(() => inp.classList.remove('shake'), 600);
+        // Flash vermelho
+        document.body.style.backgroundColor = '#450a0a';
+        setTimeout(() => document.body.style.backgroundColor = '', 300);
+        alert("💥 CÓDIGO INCORRETO — Acesso Negado!");
+        inp.value = '';
+    }
+}
+
+// ===================== FLASH SEQUENCE =====================
+function executeFlashSequence() {
+    hide('stage-access');
+    const overlay = document.getElementById('overlay-screen');
+    const img = document.getElementById('overlay-img');
+
+    img.src = "image.png";
+    img.classList.add('rotate-anim');
+    overlay.classList.remove('hidden');
+
+    setTimeout(() => {
+        img.classList.remove('rotate-anim');
+        img.src = "1f923.webp";
+
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+            show('stage-start-quizzes');
+        }, 600);
+    }, 2000);
+}
+
+// ===================== TROLL 1: Cursor Desaparecido =====================
+// Ativa quando entra no quiz de gramática — o cursor desaparece por 8 segundos
+function activateCursorTroll() {
+    document.body.style.cursor = 'none';
+    setTimeout(() => { document.body.style.cursor = ''; }, 8000);
+}
+
+// ===================== TROLL 2: Ecrã Vira de Cabeça para Baixo =====================
+let upsideDown = false;
+function activateUpsideDownTroll() {
+    if (upsideDown) return;
+    upsideDown = true;
+    document.body.style.transform = 'rotate(180deg)';
+    document.body.style.transition = 'transform 0.5s';
+    setTimeout(() => {
+        document.body.style.transform = '';
+        upsideDown = false;
+    }, 4000);
+}
+
+// ===================== ETAPA 5: GRAMÁTICA =====================
+let currentGrammarIndex = 0;
+let shuffleInterval = null;
+let feedbackTimeout = null;
+
+const grammarQuestions = [
+    { q: "Qual a função sintática da expressão sublinhada: 'A Ana estudou [muito].?", o: ["Modificador do grupo verbal", "Complemento Direto", "Predicativo do Sujeito", "Sujeito"], c: 0 },
+    { q: "Em 'O Miguel leu o livro inteiro', qual é o Complemento Direto?", o: ["o livro inteiro", "O Miguel", "leu", "inteiro"], c: 0 },
+    { q: "Identifica a classe de palavras de 'rapidamente' em 'Ela correu rapidamente':", o: ["Advérbio de modo", "Adjetivo", "Nome", "Determinante"], c: 0 },
+    { q: "Na frase 'Embora chovesse, saíram', a oração 'Embora chovesse' é:", o: ["Subordinada adverbial concessiva", "Coordenada adversativa", "Subordinada completiva", "Coordenada conclusiva"], c: 0 },
+    { q: "Qual o valor aspetual do verbo em 'Estou a ler o romance'?", o: ["Progressivo", "Pontual", "Habitual", "Conclusivo"], c: 0 },
+    { q: "Identifica a figura de estilo: 'O sol abraçou a cidade.'", o: ["Personificação", "Metáfora", "Comparação", "Hipérbole"], c: 0 },
+    { q: "Em 'Os alunos que chegaram tarde ficaram de fora', classifica a subordinada:", o: ["Adjetiva relativa restritiva", "Adjetiva relativa explicativa", "Completiva", "Concessiva"], c: 0 },
+    { q: "Qual o modo verbal dominante num texto injuntivo?", o: ["Imperativo", "Indicativo", "Conjuntivo", "Condicional"], c: 0 },
+    { q: "A frase 'Que linda tarde de verão!' é do tipo:", o: ["Exclamativa", "Interrogativa", "Imperativa", "Declarativa"], c: 0 },
+    { q: "Em 'Pedro, o melhor aluno, ganhou o prémio', 'o melhor aluno' é:", o: ["Aposto", "Vocativo", "Complemento Indireto", "Modificador"], c: 0 },
+    { q: "Qual o processo de formação de 'impossível'?", o: ["Prefixação", "Sufixação", "Composição", "Conversão"], c: 0 },
+    { q: "O conector 'portanto' estabelece uma relação de:", o: ["Conclusão", "Oposição", "Concessão", "Condição"], c: 0 },
+    { q: "Em 'Ela parece cansada', 'cansada' desempenha a função de:", o: ["Predicativo do Sujeito", "Modificador", "Complemento Direto", "Sujeito"], c: 0 },
+    { q: "Na frase 'Quem semeia ventos colhe tempestades', o sujeito de 'colhe' é:", o: ["Quem semeia ventos", "ventos", "tempestades", "Oração nominal"], c: 0 },
+    { q: "Identifica o recurso expressivo: 'Mil vezes te disse para estudares!'", o: ["Hipérbole", "Ironia", "Eufemismo", "Anáfora"], c: 0 }
+];
+
+// Perguntas onde resposta correta é indicada como CERTA: 0,1,2,5,8 (1ª,2ª,3ª corretas; 6ª e 9ª corretas)
+const grammarCorrectIndices = new Set([0, 1, 2, 5, 8]);
+
+function startGrammarQuiz() {
+    hide('stage-start-quizzes');
+    show('stage-grammar');
+    activateCursorTroll();
+    loadGrammarQuestion();
+}
+
+function loadGrammarQuestion() {
+    clearInterval(shuffleInterval);
+    if (feedbackTimeout) clearTimeout(feedbackTimeout);
+
+    if (currentGrammarIndex >= grammarQuestions.length) {
+        startSyntaxQuiz();
+        return;
+    }
+
+    const pct = Math.round((currentGrammarIndex / grammarQuestions.length) * 100);
+    document.getElementById('grammar-title').innerText = `Gramática — Pergunta ${currentGrammarIndex + 1} de ${grammarQuestions.length}`;
+    document.getElementById('grammar-progress-label').innerText = `Pergunta ${currentGrammarIndex + 1}`;
+    document.getElementById('grammar-progress-pct').innerText = pct + '%';
+    document.getElementById('grammar-progress-bar').style.width = pct + '%';
+
+    const qData = grammarQuestions[currentGrammarIndex];
+    document.getElementById('grammar-question-text').innerText = qData.q;
+
+    const container = document.getElementById('grammar-options');
+    container.innerHTML = '';
+    const fb = document.getElementById('grammar-feedback');
+    fb.style.display = 'none';
+
+    let items = [...qData.o];
+    // A partir da pergunta 4 (índice 3), inverte a ordem das opções (exceto 6ª e 9ª)
+    if (currentGrammarIndex >= 3 && currentGrammarIndex !== 5 && currentGrammarIndex !== 8) {
+        items.reverse();
+    }
+
+    items.forEach((optText) => {
+        const div = document.createElement('div');
+        div.className = 'option-item';
+        div.innerText = optText;
+        div.onclick = () => handleGrammarAnswer(optText, div, container);
+        container.appendChild(div);
+    });
+
+    // A partir da pergunta 8 (índice 7), opções trocam a cada 1.5s
+    if (currentGrammarIndex >= 7) {
+        shuffleInterval = setInterval(() => {
+            const els = Array.from(container.children);
+            els.sort(() => Math.random() - 0.5);
+            container.innerHTML = '';
+            els.forEach(el => container.appendChild(el));
+        }, 1500);
+    }
+
+    // Troll: na pergunta 10, vira o ecrã
+    if (currentGrammarIndex === 9) {
+        setTimeout(activateUpsideDownTroll, 500);
+    }
+}
+
+function handleGrammarAnswer(selectedText, div, container) {
+    clearInterval(shuffleInterval);
+    const fb = document.getElementById('grammar-feedback');
+
+    // Bloqueia cliques
+    Array.from(container.children).forEach(el => el.onclick = null);
+
+    const isCorrectResponse = grammarCorrectIndices.has(currentGrammarIndex);
+
+    if (isCorrectResponse) {
+        div.classList.add('correct');
+        fb.className = 'feedback-box correct';
+        fb.innerText = '✓ Correto! Muito bem!';
+        fb.style.display = 'block';
+    } else {
+        div.classList.add('wrong');
+        fb.className = 'feedback-box wrong';
+        fb.innerText = '✗ Resposta incorreta. A tua seleção não está de acordo com os critérios de correção.';
+        fb.style.display = 'block';
+    }
+
+    feedbackTimeout = setTimeout(() => {
+        currentGrammarIndex++;
+        loadGrammarQuestion();
+    }, 1200);
+}
+
+// ===================== ETAPA 6: SINTAXE (só 2 perguntas com modal) =====================
+let currentSyntaxIndex = 0;
+
+const syntaxQuestions = [
+    { q: "Na frase 'A professora corrigiu os testes ontem', qual é o Complemento Direto?", o: ["os testes", "A professora", "corrigiu", "ontem"], c: "os testes" },
+    { q: "Qual é o Sujeito de 'Os cientistas descobriram uma nova espécie'?", o: ["Os cientistas", "uma nova espécie", "descobriram", "espécie"], c: "Os cientistas" }
+];
+
+function startSyntaxQuiz() {
+    hide('stage-grammar');
+    show('stage-syntax');
+    currentSyntaxIndex = 0;
+    loadSyntaxQuestion();
+}
+
+function loadSyntaxQuestion() {
+    if (currentSyntaxIndex >= syntaxQuestions.length) {
+        hide('stage-syntax');
+        show('stage-final');
+        return;
+    }
+
+    const pct = Math.round((currentSyntaxIndex / syntaxQuestions.length) * 100);
+    document.getElementById('syntax-title').innerText = `Funções Sintáticas — Pergunta ${currentSyntaxIndex + 1} de ${syntaxQuestions.length}`;
+    document.getElementById('syntax-progress-label').innerText = `Pergunta ${currentSyntaxIndex + 1}`;
+    document.getElementById('syntax-progress-pct').innerText = pct + '%';
+    document.getElementById('syntax-progress-bar').style.width = pct + '%';
+
+    const qData = syntaxQuestions[currentSyntaxIndex];
+    document.getElementById('syntax-question-text').innerText = qData.q;
+
+    const container = document.getElementById('syntax-options');
+    container.innerHTML = '';
+
+    qData.o.forEach(optText => {
+        const div = document.createElement('div');
+        div.className = 'option-item';
+        div.innerText = optText;
+        div.onclick = () => handleSyntaxSelection(optText);
+        container.appendChild(div);
+    });
+}
+
+function handleSyntaxSelection(selectedText) {
+    const qData = syntaxQuestions[currentSyntaxIndex];
+    const modal = document.getElementById('confirm-modal');
+    const modalText = document.getElementById('modal-text');
+
+    // Sugere uma opção ERRADA no modal
+    const wrongOptions = qData.o.filter(o => o !== selectedText);
+    const fakeDisplay = wrongOptions[Math.floor(Math.random() * wrongOptions.length)];
+
+    modalText.innerHTML = `Tens a certeza que queres confirmar esta resposta?<br><br><strong style="color:var(--accent);">"${fakeDisplay}"</strong>`;
+    modal.classList.remove('hidden');
+
+    document.getElementById('modal-btn-sim').onclick = () => {
+        modal.classList.add('hidden');
+        currentSyntaxIndex++;
+        loadSyntaxQuestion();
+    };
+
+    document.getElementById('modal-btn-nao').onclick = () => {
+        modal.classList.add('hidden');
+        // Ao clicar NÃO, permite escolher livremente — mas redesenha as opções (rasteira: sem bloqueio)
+        loadSyntaxQuestion(); // Recarrega a mesma pergunta
+    };
+}
+
+// ===================== ETAPA 7: Final + Mais Quizzes =====================
+function goToHistoryQuiz() {
+    hide('stage-final');
+    show('stage-history-intro');
+}
+
+// ===================== ETAPA 8/9: História =====================
+let currentHistoryIndex = 0;
+let historyShuffleInterval = null;
+let historyFeedbackTimeout = null;
+
+const historyQuestions = [
+    { q: "Em que ano foi fundada a nacionalidade portuguesa?", o: ["1143", "1385", "1415", "1095"], c: 0 },
+    { q: "Quem foi o primeiro rei de Portugal?", o: ["D. Afonso Henriques", "D. Sancho I", "D. João I", "D. Dinis"], c: 0 },
+    { q: "Qual foi a batalha que garantiu a independência de Portugal em 1385?", o: ["Aljubarrota", "Ourique", "São Mamede", "Alcácer Quibir"], c: 0 },
+    { q: "Em que ano chegou Vasco da Gama à Índia?", o: ["1498", "1500", "1415", "1488"], c: 0 },
+    { q: "Quem foi o infante que impulsionou os Descobrimentos portugueses?", o: ["D. Henrique", "D. João II", "D. Manuel I", "D. Sebastião"], c: 0 },
+    { q: "Em que ano foi descoberto o Brasil por Pedro Álvares Cabral?", o: ["1500", "1498", "1492", "1510"], c: 0 },
+    { q: "Que tratado dividiu o mundo entre Portugal e Espanha em 1494?", o: ["Tratado de Tordesilhas", "Tratado de Zamora", "Tratado de Windsor", "Tratado de Lisboa"], c: 0 },
+    { q: "Qual foi o desastre que marcou o fim do 'Sonho Sebastianista'?", o: ["Batalha de Alcácer Quibir", "Batalha de Aljubarrota", "Batalha de Ourique", "Batalha de Valverde"], c: 0 },
+    { q: "Em que século ocorreu a Revolução Liberal Portuguesa?", o: ["XIX", "XVIII", "XX", "XVII"], c: 0 },
+    { q: "Em que ano foi proclamada a República Portuguesa?", o: ["1910", "1926", "1820", "1974"], c: 0 },
+    { q: "Quem liderou o golpe de Estado de 28 de Maio de 1926?", o: ["Gomes da Costa", "Salazar", "Sidónio Pais", "Teófilo Braga"], c: 0 },
+    { q: "Em que ano começou o Estado Novo em Portugal?", o: ["1933", "1926", "1910", "1945"], c: 0 },
+    { q: "Qual o nome da revolução que derrubou o Estado Novo em 1974?", o: ["Revolução dos Cravos", "Revolução de Outubro", "Revolução de Abril", "Revolução Liberal"], c: 0 },
+    { q: "Em que ano Portugal aderiu à então CEE (atual UE)?", o: ["1986", "1974", "1992", "1980"], c: 0 },
+    { q: "Qual cidade foi Capital Europeia da Cultura em 1994?", o: ["Lisboa", "Porto", "Coimbra", "Braga"], c: 0 }
+];
+
+// Primeiras 4 dizem certo; a partir daí é rasteira (opções trocam)
+const historyCorrectIndices = new Set([0, 1, 2, 3]);
+
+function startHistoryQuiz() {
+    hide('stage-history-intro');
+    show('stage-history');
+    currentHistoryIndex = 0;
+    loadHistoryQuestion();
+}
+
+function loadHistoryQuestion() {
+    clearInterval(historyShuffleInterval);
+    if (historyFeedbackTimeout) clearTimeout(historyFeedbackTimeout);
+
+    if (currentHistoryIndex >= historyQuestions.length) {
+        hide('stage-history');
+        show('stage-number-guess');
+        return;
+    }
+
+    const pct = Math.round((currentHistoryIndex / historyQuestions.length) * 100);
+    document.getElementById('history-title').innerText = `História — Pergunta ${currentHistoryIndex + 1} de ${historyQuestions.length}`;
+    document.getElementById('history-progress-label').innerText = `Pergunta ${currentHistoryIndex + 1}`;
+    document.getElementById('history-progress-pct').innerText = pct + '%';
+    document.getElementById('history-progress-bar').style.width = pct + '%';
+
+    const qData = historyQuestions[currentHistoryIndex];
+    document.getElementById('history-question-text').innerText = qData.q;
+
+    const container = document.getElementById('history-options');
+    container.innerHTML = '';
+    const fb = document.getElementById('history-feedback');
+    fb.style.display = 'none';
+
+    qData.o.forEach(optText => {
+        const div = document.createElement('div');
+        div.className = 'option-item';
+        div.innerText = optText;
+        div.onclick = () => handleHistoryAnswer(optText, div, container);
+        container.appendChild(div);
+    });
+
+    // A partir da pergunta 5 (índice 4), as opções trocam a cada 1.5s
+    if (currentHistoryIndex >= 4) {
+        historyShuffleInterval = setInterval(() => {
+            const els = Array.from(container.children);
+            els.sort(() => Math.random() - 0.5);
+            container.innerHTML = '';
+            els.forEach(el => container.appendChild(el));
+        }, 1500);
+    }
+}
+
+function handleHistoryAnswer(selectedText, div, container) {
+    clearInterval(historyShuffleInterval);
+    const fb = document.getElementById('history-feedback');
+
+    Array.from(container.children).forEach(el => el.onclick = null);
+
+    if (historyCorrectIndices.has(currentHistoryIndex)) {
+        div.classList.add('correct');
+        fb.className = 'feedback-box correct';
+        fb.innerText = '✓ Correto! Excelente resposta!';
+        fb.style.display = 'block';
+    } else {
+        div.classList.add('wrong');
+        fb.className = 'feedback-box wrong';
+        const trollMessages = [
+            '✗ Errado! Quase acertavas... mas não.',
+            '✗ Incorreto! O sistema não reconhece esta resposta.',
+            '✗ Tenta novamente noutra vez... ah espera, não podes.',
+            '✗ Resposta inválida. Consulta os teus apontamentos.',
+            '✗ Incorreto. O professor vai ficar desapontado.',
+            '✗ Errado! Curiosamente a resposta correta era outra.',
+            '✗ O sistema detetou um erro na tua seleção.',
+            '✗ Incorreto. Curioso, não é?',
+            '✗ Resposta não reconhecida pelo sistema central.',
+            '✗ Errado! Ups...',
+            '✗ O teu histórico de respostas está a ser monitorizado.'
         ];
+        const msgIndex = currentHistoryIndex >= 4 ? (currentHistoryIndex - 4) % trollMessages.length : 0;
+        fb.innerText = trollMessages[msgIndex];
+        fb.style.display = 'block';
+    }
 
-        const gramQs = [
-            { q: "Qual é o superlativo absoluto sintético do adjetivo 'amável'?", o: ["Amabilíssimo", "Amavelíssimo", "Muito amável", "Amantíssimo"], c: 0 },
-            { q: "Qual das seguintes formas constitui o plural correto da palavra 'capitão'?", o: ["Capitães", "Capitões", "Capitãos", "Capitanes"], c: 0 },
-            { q: "Qual é o antónimo direto da palavra 'efémero'?", o: ["Duradouro", "Passageiro", "Fugaz", "Breve"], c: 0 },
-            { q: "Na frase 'O aluno comprou um dicionário', qual é a subclasse do verbo?", o: ["Transitivo direto", "Transitivo indireto", "Intransitivo", "Copulativo"], c: 0 },
-            { q: "Escolha a opção graficamente correta quanto à norma ortográfica padrão:", o: ["Há dois anos que não estudo.", "À dois anos que não estudo.", "A dois anos que não estudo.", "Ah dois anos que não estudo."], c: 0 },
-            { q: "A palavra 'cometa' pertence a que género gramatical?", o: ["Masculino", "Feminino", "Dois géneros", "Neutro"], c: 0 },
-            { q: "Na palavra 'infelizmente', qual é o morfema derivacional prefixal?", o: ["in-", "-mente", "feliz", "infel-"], c: 0 },
-            { q: "Qual das seguintes opções apresenta uma palavra esdrúxula (proparoxítona)?", o: ["Lâmpada", "Café", "Janela", "Papel"], c: 0 },
-            { q: "Qual é o particípio passado regular/aceite do verbo 'escrever'?", o: ["Escrito", "Escrevido", "Escrevido ou escrito", "Escribido"], c: 0 },
-            { q: "Indique o sinónimo contextual ideal para a palavra 'altruísta':", o: ["Filantropo", "Egoísta", "Mesquinho", "Avarento"], c: 0 },
-            { q: "Identifique a palavra que contém um ditongo oral crescente:", o: ["Pátria", "Pai", "Ouro", "Muita"], c: 0 },
-            { q: "Indique a 1ª pessoa do plural do Pretérito Perfeito do Indicativo do verbo 'pôr':", o: ["Pusemos", "Pomos", "Põemos", "Ponhemos"], c: 0 },
-            { q: "Classifique a palavra 'guarda-chuva' quanto ao seu processo de formação:", o: ["Composição por justaposição", "Composição por aglutinação", "Derivação prefixal", "Parassíntese"], c: 0 },
-            { q: "Em qual destas frases a palavra 'que' funciona como um pronome relativo?", o: ["O rapaz que viste é meu irmão.", "Quero que venhas cá hoje.", "Que belo dia para fazer exames!", "Ele correu mais que o colega."], c: 0 },
-            { q: "Qual é o nome correto do substantivo coletivo de 'lobos'?", o: ["Alcateia", "Bando", "Fato", "Cardume"], c: 0 }
-        ];
+    historyFeedbackTimeout = setTimeout(() => {
+        currentHistoryIndex++;
+        loadHistoryQuestion();
+    }, 1300);
+}
 
-        const synQs = [
-            { q: "Em 'O João ofereceu um livro à Maria', qual a função sintática de 'à Maria'?", o: ["Complemento indireto", "Complemento direto", "Sujeito", "Modificador"], c: 0 },
-            { q: "Classifique a função sintática de 'triste' em 'O aluno permaneceu triste':", o: ["Predicativo do sujeito", "Predicativo do complemento direto", "Modificador do nome", "Complemento direto"], c: 0 },
-            { q: "Na frase 'Choveu intensamente toda a noite', qual é a tipologia do sujeito?", o: ["Sujeito nulo impessoal", "Sujeito nulo subentendido", "Sujeito simples", "Sujeito composto"], c: 0 },
-            { q: "Identifique o complemento agente da passiva em 'A árvore foi derrubada pelo vento':", o: ["pelo vento", "A árvore", "foi derrubada", "derrubada pelo vento"], c: 0 },
-            { q: "Em 'Os alunos, entusiasmados, aplaudiram', qual é a função de 'entusiasmados'?", o: ["Modificador apositivo do nome", "Predicativo do sujeito", "Complemento direto", "Atributo"], c: 0 },
-            { q: "Qual é a função sintática da expressão sublinhada em 'Eu gosto de Lisboa'?", o: ["Complemento oblíquo", "Complemento indireto", "Complemento direto", "Modificador do grupo verbal"], c: 0 },
-            { q: "Na frase 'O diretor considerou o funcionário apto', qual é a função de 'apto'?", o: ["Predicativo do complemento direto", "Predicativo do sujeito", "Atributo", "Vocativo"], c: 0 },
-            { q: "Identifique o constituinte que desempenha a função de vocativo em 'Anda cá, ó António, ver isto!':", o: ["ó António", "Anda cá", "ver isto", "António ver isto"], c: 0 },
-            { q: "Em 'Comi uma fatia de bolo na cozinha', qual é a função de 'na cozinha'?", o: ["Modificador do grupo verbal", "Complemento oblíquo", "Complemento direto", "Sujeito"], c: 0 },
-            { q: "Na frase 'Achei esta matéria facílima', qual é a função de 'facílima'?", o: ["Predicativo do complemento direto", "Atributo", "Predicativo do sujeito", "Complemento direto"], c: 0 }
-        ];
+// ===================== ADIVINHAR NÚMERO =====================
+function guessNumber(n) {
+    const fb = document.getElementById('guess-feedback');
+    const trollLines = [
+        '✗ Errado! O número que pensei não era esse.',
+        '✗ Não, não era esse! Tenta outro.',
+        '✗ Perto, mas não! O número era diferente.',
+        '✗ Que azar! Era mesmo outro.',
+        '✗ Nope! O sistema não aceita essa resposta.'
+    ];
+    fb.className = 'feedback-box wrong';
+    fb.innerText = trollLines[n - 1];
+    fb.style.display = 'block';
 
+    setTimeout(() => {
+        fb.style.display = 'none';
+        // Após 3 tentativas, avança automaticamente
+    }, 1500);
 
-        // --- ETAPA 1 (LIVRO) ---
-        let fugiu = false;
-        function fugirBotao() {
-            if(!fugiu) {
-                const btn = document.getElementById('btn-nao-fugitivo');
-                btn.style.position = 'absolute';
-                btn.style.left = Math.random() * 70 + 10 + '%';
-                btn.style.top = Math.random() * 70 + 10 + '%';
-                fugiu = true;
-            } else {
-                const btn = document.getElementById('btn-nao-fugitivo');
-                btn.style.left = Math.random() * 70 + 10 + '%';
-                btn.style.top = Math.random() * 70 + 10 + '%';
-            }
-        }
-        function handleBookTyping() {
-            if(document.getElementById('book-input').value.length > 2) {
-                document.getElementById('book-verification').classList.remove('hidden');
-            }
-        }
-        function goToStageExam() {
-            document.getElementById('stage-book').classList.add('hidden');
-            document.getElementById('stage-exam').classList.remove('hidden');
-        }
+    // Conta tentativas
+    if (!window.guessCount) window.guessCount = 0;
+    window.guessCount++;
 
-        // --- ETAPA 2 (ÁUDIO 50X MAIS ALTO / ESTOURADO) ---
-        let audioContextCreated = false;
-        function playLoudAudio() {
-            document.getElementById('form-dados').classList.remove('hidden');
-            const audioEl = document.getElementById('troll-audio');
-            
-            if(!audioContextCreated) {
-                try {
-                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    const source = audioCtx.createMediaElementSource(audioEl);
-                    const gainNode = audioCtx.createGain();
-                    
-                    gainNode.gain.value = 50.0; // 50 VEZES MAIS ALTO / TOTALMENTE ESTOURADO
-                    
-                    source.connect(gainNode);
-                    gainNode.connect(audioCtx.destination);
-                    audioContextCreated = true;
-                    audioCtx.resume();
-                } catch(e) {
-                    console.log("AudioContext bloqueado ou já iniciado");
-                }
-            }
-            audioEl.volume = 1.0;
-            audioEl.play();
-        }
+    if (window.guessCount >= 3) {
+        setTimeout(() => {
+            hide('stage-number-guess');
+            show('stage-history-pin');
+        }, 2000);
+    }
+}
 
-        function goToStageAccess() {
-            // TROLL EXTRA 2: CORRETOR DE NOME ABSURDO
-            let nameInput = document.getElementById('user-name').value;
-            if(nameInput.trim() === "") nameInput = "Candidato Desconhecido";
-            
-            const nomesTroll = ["Doutor Cabeça de Alho Choco", "Super Nabo Amestrado", "Especialista em Chutar para o Lado", "Maria Vai Com As Outras Pro", "Rei dos Palpites Errados"];
-            const nomeEscolha = nomesTroll[Math.floor(Math.random() * nomesTroll.length)];
-            
-            showToast(`Identidade alterada com sucesso para: ${nomeEscolha}`, "error");
-            
-            // Fazer um bip falso do sistema irritante
-            try {
-                let ctx = new (window.AudioContext || window.webkitAudioContext)();
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                osc.type = "sawtooth";
-                osc.frequency.setValueAtTime(880, ctx.currentTime);
-                gain.gain.setValueAtTime(0.5, ctx.currentTime);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                setTimeout(() => osc.stop(), 800);
-            } catch(err) {}
+// ===================== PIN DE HISTÓRIA =====================
+function verifyHistoryPin() {
+    const pin = document.getElementById('history-pin').value;
+    if (pin === "6") {
+        hide('stage-history-pin');
+        show('stage-absolute-final');
+    } else {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        playBufferedAudio('wings_of_freedom-bomb-explosion-469038.mp3', 20);
 
-            document.getElementById('stage-exam').classList.add('hidden');
-            document.getElementById('stage-access').classList.remove('hidden');
-        }
+        document.getElementById('main-container').classList.add('screen-shake');
+        setTimeout(() => document.getElementById('main-container').classList.remove('screen-shake'), 800);
+        document.body.style.backgroundColor = '#450a0a';
+        setTimeout(() => document.body.style.backgroundColor = '', 300);
 
-        // --- ETAPA 3 (SENHA / BOMB AUDIO / IMAGEM INTEGRADA) ---
-        function verifyPassword() {
-            if(document.getElementById('access-password').value === "4767") {
-                document.getElementById('stage-access').classList.add('hidden');
-                
-                const overlay = document.getElementById('overlay-flash');
-                const img = document.getElementById('overlay-img');
-                
-                // INTEGRAÇÃO DA IMAGEM PEDIDA
-                img.src = "image.png"; 
-                overlay.classList.remove('hidden');
+        const fb = document.getElementById('pin-feedback');
+        fb.className = 'feedback-box wrong';
+        fb.innerText = '💥 PIN incorreto! Acesso negado!';
+        fb.style.display = 'block';
+        document.getElementById('history-pin').value = '';
 
-                setTimeout(() => {
-                    img.src = "image.png"; // Mantém ou pisca a mesma imagem conforme fluxo original
-                    setTimeout(() => {
-                        overlay.classList.add('hidden');
-                        document.getElementById('stage-quizzes-hub').classList.remove('hidden');
-                    }, 500);
-                }, 1500);
-            } else {
-                showToast("ERRO CRÍTICO: ACESSO NEGADO!", "error");
-                
-                // TROLL: WINGS OF FREEDOM BOMB EXPLOSION NO MÁXIMO ESTOURADO
-                const bombAudio = new Audio('wings_of_freedom-bomb-explosion-469038.mp3');
-                bombAudio.volume = 1.0;
-                
-                try {
-                    const bCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    const bSource = bCtx.createMediaElementSource(bombAudio);
-                    const bGain = bCtx.createGain();
-                    bGain.gain.value = 50.0; // Volume estourado na falha do PIN
-                    bSource.connect(bGain);
-                    bGain.connect(bCtx.destination);
-                    bCtx.resume();
-                } catch(e) {}
-                
-                bombAudio.play();
-                
-                // Efeito visual de tremer o ecrã na explosão
-                document.body.classList.add('troll-shake');
-                setTimeout(() => document.body.classList.remove('troll-shake'), 1000);
-            }
-        }
+        setTimeout(() => { fb.style.display = 'none'; }, 2000);
+    }
+}
 
-        // --- MAIS QUIZZES & NUMBER TROLL ---
-        function startLoadingMaisQuizzes() {
-            document.getElementById('fake-loading').classList.remove('hidden');
-            setTimeout(() => document.getElementById('l-bar').style.width = '99%', 100);
-            
-            // TROLL EXTRA: Mudar a barra para regressar em vez de terminar logo
-            setTimeout(() => {
-                document.getElementById('loading-txt').innerText = "ERRO: O progresso reverteu espontaneamente! (-50%)";
-                document.getElementById('l-bar').style.width = '10%';
-            }, 1800);
+// ===================== UTILIDADES =====================
+function show(id) { document.getElementById(id).classList.remove('hidden'); }
+function hide(id) { document.getElementById(id).classList.add('hidden'); }
 
-            setTimeout(() => {
-                document.getElementById('stage-quizzes-hub').classList.add('hidden');
-                document.getElementById('stage-number-troll').classList.remove('hidden');
-            }, 4500);
-        }
-
-        function verifyNumberTroll() {
-            const val = document.getElementById('pin-troll-input').value;
-            if (val === "6") {
-                showToast("Espera, 6? Sistema manipulado... Acedendo.");
-                document.getElementById('stage-number-troll').classList.add('hidden');
-                startHistoryQuiz();
-            } else if (val >= 1 && val <= 5) {
-                showToast("Número incorreto! O servidor reiniciou a adivinhação.", "error");
-                document.body.classList.add('troll-shake');
-                setTimeout(() => document.body.classList.remove('troll-shake'), 300);
-            } else {
-                showToast("Instrução violada. Eu disse claramente entre 1 e 5!", "error");
-            }
-        }
-
-        // --- HISTÓRIA QUIZ (15 Perguntas Reais) ---
-        let currentHistoryIndex = 0;
-        let historyShuffleInterval;
-
-        function startHistoryQuiz() {
-            document.getElementById('stage-history').classList.remove('hidden');
-            loadHistoryQ();
-        }
-
-        function loadHistoryQ() {
-            clearInterval(historyShuffleInterval);
-            if(currentHistoryIndex >= historyQs.length) {
-                document.getElementById('stage-history').classList.add('hidden');
-                document.getElementById('stage-final').classList.remove('hidden');
-                return;
-            }
-
-            document.getElementById('history-title').innerText = `História - Pergunta ${currentHistoryIndex + 1} de 15`;
-            document.getElementById('history-q-text').innerText = historyQs[currentHistoryIndex].q;
-            
-            const container = document.getElementById('history-options');
-            container.innerHTML = "";
-
-            historyQs[currentHistoryIndex].o.forEach((opt, idx) => {
-                let div = document.createElement('div');
-                div.className = "option-item";
-                div.innerText = opt;
-                div.onclick = () => handleHistoryAnswer(idx);
-                container.appendChild(div);
-            });
-
-            // A partir da 5ª pergunta (índice 4), baralha as opções a cada 1.5s
-            if (currentHistoryIndex >= 4) {
-                historyShuffleInterval = setInterval(() => {
-                    const elements = Array.from(container.children);
-                    elements.sort(() => Math.random() - 0.5);
-                    container.innerHTML = "";
-                    elements.forEach(el => container.appendChild(el));
-                    
-                    // TROLL VISUAL ADICIONAL: Piscar as cores da página quando baralha
-                    document.body.style.background = "linear-gradient(135deg, #450a0a 0%, #0f172a 100%)";
-                    setTimeout(() => { document.body.style.background = var(--bg-gradient); }, 100);
-                }, 1500);
-            }
-        }
-
-        function handleHistoryAnswer(idx) {
-            clearInterval(historyShuffleInterval);
-            
-            // Se errar ou se estiver na fase troll, aplica efeitos
-            let correta = historyQs[currentHistoryIndex].c;
-            if(idx !== correta) {
-                // TROLL EXTRA 1: Vira o ecrã ao contrário se falhar
-                document.body.classList.add('troll-flip');
-                setTimeout(() => document.body.classList.remove('troll-flip'), 800);
-            } else {
-                if (currentHistoryIndex < 4) showToast("Resposta registada.");
-            }
-
-            currentHistoryIndex++;
-            loadHistoryQ();
-        }
-
-
-        // --- GRAMÁTICA QUIZ (15 Perguntas Reais) ---
-        let currentGramIndex = 0;
-
-        function startGrammarQuiz() {
-            document.getElementById('stage-quizzes-hub').classList.add('hidden');
-            document.getElementById('stage-grammar').classList.remove('hidden');
-            loadGrammarQ();
-        }
-
-        function loadGrammarQ() {
-            if(currentGramIndex >= 15) {
-                document.getElementById('stage-grammar').classList.add('hidden');
-                document.getElementById('stage-syntax').classList.remove('hidden');
-                loadSyntaxQ();
-                return;
-            }
-            document.getElementById('grammar-title').innerText = `Gramática - Pergunta ${currentGramIndex + 1} de 15`;
-            document.getElementById('grammar-q-text').innerText = gramQs[currentGramIndex].q;
-            const container = document.getElementById('grammar-options');
-            container.innerHTML = "";
-
-            gramQs[currentGramIndex].o.forEach((opt, idx) => {
-                let div = document.createElement('div');
-                div.className = "option-item";
-                div.innerText = opt;
-                div.onclick = () => handleGramAnswer(idx);
-                container.appendChild(div);
-            });
-        }
-
-        function handleGramAnswer(idx) {
-            let isCorrect = (idx === gramQs[currentGramIndex].c);
-            let isNormalLogic = [0, 1, 2, 5, 8].includes(currentGramIndex);
-
-            if (isNormalLogic) {
-                if(isCorrect) showToast("Validado com sucesso.", "success");
-                else {
-                    showToast("Incorreto!", "error");
-                    document.body.classList.add('troll-flip');
-                    setTimeout(() => document.body.classList.remove('troll-flip'), 500);
-                }
-            } else {
-                // Inversão de lógica original do troll
-                if(isCorrect) {
-                    showToast("Errado! Sistema diz não.", "error");
-                    document.body.classList.add('troll-shake');
-                    setTimeout(() => document.body.classList.remove('troll-shake'), 400);
-                }
-                else showToast("Correto (Inversão Prova)!", "success");
-            }
-
-            currentGramIndex++;
-            loadGrammarQ();
-        }
-
-        // --- SINTAXE QUIZ (10 Perguntas Reais) ---
-        let currentSynIndex = 0;
-
-        function loadSyntaxQ() {
-            if(currentSynIndex >= 10) {
-                document.getElementById('stage-syntax').classList.add('hidden');
-                document.getElementById('stage-final').classList.remove('hidden');
-                return;
-            }
-            document.getElementById('syntax-title').innerText = `Sintaxe - Pergunta ${currentSynIndex + 1} de 10`;
-            document.getElementById('syntax-q-text').innerText = synQs[currentSynIndex].q;
-            const container = document.getElementById('syntax-options');
-            container.innerHTML = "";
-
-            synQs[currentSynIndex].o.forEach((opt, idx) => {
-                let div = document.createElement('div');
-                div.className = "option-item";
-                div.innerText = opt;
-                div.onclick = () => handleSynAnswer(idx, opt);
-                container.appendChild(div);
-            });
-        }
-
-        let tempSynSelection = null;
-        function handleSynAnswer(idx, text) {
-            // Logica original do modal de confirmação falso nas perguntas 4 e 7 (índices 3 e 6)
-            if (currentSynIndex === 3 || currentSynIndex === 6) {
-                tempSynSelection = idx;
-                const modal = document.getElementById('confirm-modal');
-                let fakeOpt = synQs[currentSynIndex].o[1]; 
-                document.getElementById('modal-text').innerText = `O sistema detetou anomalia. Quer mesmo submeter a opção: "${fakeOpt}"?`;
-                modal.classList.remove('hidden');
-                
-                document.getElementById('modal-btn-sim').onclick = () => {
-                    modal.classList.add('hidden');
-                    currentSynIndex++; loadSyntaxQ();
-                };
-                document.getElementById('modal-btn-nao').onclick = () => {
-                    modal.classList.add('hidden');
-                    showToast("Opção forçada pelo utilizador.");
-                    currentSynIndex++; loadSyntaxQ();
-                };
-            } else {
-                currentSynIndex++;
-                loadSyntaxQ();
-            }
-        }
-    </script>
+// ===================== TROLL EXTRA: Texto que corre quando mouse passa por baixo =====================
+// Na página de acesso, o botão foge quando o rato se aproxima
+(function() {
+    let moved = false;
+    // Implementado via CSS hover normal para não ser demasiado intrusivo
+})();
+</script>
 </body>
 </html>
