@@ -3,293 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma de Avaliação Nacional de Português</title>
+    <title>Plataforma de Avaliação Nacional</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
         :root {
-            --bg-neutral: #f0f4f8;
+            --bg-color: #f3f4f6;
             --panel-bg: #ffffff;
-            --primary: #1e3a8a;
-            --primary-hover: #1d4ed8;
-            --text-dark: #1e293b;
-            --text-muted: #64748b;
-            --border: #cbd5e1;
-            --error: #b91c1c;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --error: #ef4444;
+            --success: #10b981;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background-color: var(--bg-neutral);
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%);
             color: var(--text-dark);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            overflow-x: hidden;
         }
 
         .container {
             background: var(--panel-bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 35px;
+            border-radius: 16px;
+            padding: 40px;
             width: 100%;
-            max-width: 680px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            max-width: 600px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
         }
 
         .hidden { display: none !important; }
 
         h2 {
-            font-size: 1.4rem;
-            color: var(--primary);
-            margin-bottom: 20px;
-            font-weight: 600;
-            border-bottom: 2px solid var(--bg-neutral);
-            padding-bottom: 10px;
+            font-size: 1.5rem;
+            color: #111827;
+            margin-bottom: 15px;
+            font-weight: 700;
         }
 
         p {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             line-height: 1.6;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            color: var(--text-muted);
         }
 
-        input[type="text"], input[type="number"], input[type="password"] {
+        input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            margin-bottom: 15px;
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 20px;
             font-size: 1rem;
-            background-color: #f8fafc;
+            transition: all 0.3s ease;
+            background: #f9fafb;
         }
 
         input:focus {
             outline: none;
             border-color: var(--primary);
-            background-color: #fff;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
 
         button {
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 4px;
-            font-size: 0.95rem;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
             cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-block;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
         }
 
-        button:hover { background-color: var(--primary-hover); }
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
 
         .btn-secondary {
-            background-color: #e2e8f0;
+            background-color: white;
             color: var(--text-dark);
+            border: 2px solid var(--border);
+            box-shadow: none;
             margin-left: 10px;
         }
-        .btn-secondary:hover { background-color: #cbd5e1; }
+        .btn-secondary:hover { background-color: #f3f4f6; border-color: #d1d5db; }
 
-        /* Estilo das opções dos Quizzes */
+        /* Estilo Opções Quiz */
         .options-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             margin-top: 20px;
         }
 
         .option-item {
-            background: #f8fafc;
-            border: 1px solid var(--border);
-            padding: 14px 18px;
-            border-radius: 4px;
+            background: #ffffff;
+            border: 2px solid var(--border);
+            padding: 16px;
+            border-radius: 10px;
             cursor: pointer;
-            text-align: left;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
         }
 
         .option-item:hover {
-            background: #e2e8f0;
-            border-color: var(--text-muted);
+            border-color: var(--primary);
+            background: #eff6ff;
+            color: var(--primary-hover);
+            transform: translateX(5px);
         }
 
-        /* Caixa de Áudio Customizada Falsa */
+        /* Fake Audio Player */
         .fake-audio-player {
-            background: #f1f5f9;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 15px;
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 20px;
             display: flex;
             align-items: center;
             gap: 15px;
             cursor: pointer;
-            margin-bottom: 10px;
-        }
-
-        .play-icon {
-            width: 0; 
-            height: 0; 
-            border-top: 10px solid transparent;
-            border-bottom: 10px solid transparent;
-            border-left: 16px solid var(--primary);
-        }
-
-        .error-text {
-            color: var(--error);
-            font-size: 0.85rem;
             margin-bottom: 20px;
-            font-weight: bold;
+            transition: background 0.3s;
         }
+        .fake-audio-player:hover { background: #f1f5f9; }
+        .play-icon { width: 0; height: 0; border-top: 12px solid transparent; border-bottom: 12px solid transparent; border-left: 18px solid var(--error); }
 
-        /* Overlay para Imagens Flash/Troll */
-        .fullscreen-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(255, 255, 255, 0.95);
+        /* Notificações (Toast) */
+        .toast {
+            position: fixed; top: 20px; right: 20px;
+            padding: 15px 25px; border-radius: 8px;
+            color: white; font-weight: bold; font-size: 1.1rem;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+            transform: translateX(150%); transition: transform 0.3s ease;
             z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
+        .toast.show { transform: translateX(0); }
+        .toast.success { background-color: var(--success); }
+        .toast.error { background-color: var(--error); }
 
-        .fullscreen-overlay img {
-            max-width: 85%;
-            max-height: 85%;
-            object-fit: contain;
+        /* Overlays Flash */
+        .fullscreen-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: white; z-index: 99999; display: flex;
+            justify-content: center; align-items: center;
         }
+        .fullscreen-overlay img { max-width: 90%; max-height: 90%; }
 
-        .rotate-anim {
-            animation: spinScale 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-
-        @keyframes spinScale {
-            0% { transform: rotate(0deg) scale(0.2); }
-            50% { transform: rotate(360deg) scale(1.4); }
-            100% { transform: rotate(720deg) scale(1); }
-        }
-
-        /* Modal de Confirmação */
+        /* Modal */
         .modal {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.5); display: flex;
+            justify-content: center; align-items: center; z-index: 9999;
+            backdrop-filter: blur(4px);
         }
-
         .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 6px;
-            max-width: 450px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            background: white; padding: 30px; border-radius: 12px;
+            width: 90%; max-width: 400px; text-align: center;
         }
 
-        .modal-buttons {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
+        /* Fake Loading */
+        .loading-bar-container {
+            width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; margin-top: 20px; overflow: hidden;
         }
-
-        .meta-info {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 15px;
-        }
+        .loading-bar { width: 0%; height: 100%; background: var(--primary); transition: width 3s cubic-bezier(0.1, 0.8, 0.2, 1); }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="toast" id="toastMsg">Mensagem</div>
+
+    <div class="container" id="main-container">
+        
         <div id="stage-book">
-            <h2>Registo de Leitura Recente</h2>
-            <p>Por favor, digite o título do livro que tem lido nas últimas semanas para validação do portefólio:</p>
-            <input type="text" id="book-input" placeholder="Escreva o título do livro..." oninput="handleBookTyping()">
+            <h2>Registo de Leitura</h2>
+            <p>Escreva o livro que tem lido nas últimas semanas:</p>
+            <input type="text" id="book-input" placeholder="Título do livro..." oninput="handleBookTyping()">
             
-            <div id="book-verification" class="hidden" style="margin-top:20px; text-align:center;">
-                <img src="0162da_d567d715e9d1486f979c1a311809577b~mv2.avif" alt="Livro" style="max-width:200px; display:block; margin:0 auto 15px;"><br>
-                <p><strong>É esse o livro que você está falando?</strong></p>
+            <div id="book-verification" class="hidden" style="text-align:center; margin-top:30px;">
+                <img src="0162da_d567d715e9d1486f979c1a311809577b~mv2.avif" alt="Livro" style="max-width:220px; border-radius:8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom:15px;">
+                <h3 style="margin-bottom:15px;">É esse o livro que você está falando?</h3>
                 <button onclick="goToStageExam()">Sim</button>
-                <button class="btn-secondary" onclick="goToStageExam()">Não</button>
+                <button id="btn-nao-fugitivo" class="btn-secondary" onmouseover="fugirBotao()">Não</button>
             </div>
         </div>
 
         <div id="stage-exam" class="hidden">
-            <h2>Exame Nacional de Português (2026)</h2>
-            <div class="meta-info">Quiz enviado por Pedro Silva • Usuário: @leopixel</div>
-            <p>Componente de Compreensão Oral. Clique na caixa abaixo para reproduzir a faixa de áudio obrigatória:</p>
+            <div style="font-size: 0.8rem; color: #9ca3af; text-transform: uppercase; margin-bottom: 5px; font-weight: bold;">Exame Nacional</div>
+            <h2>Compreensão Oral</h2>
+            <p style="font-size: 0.9rem; color: #1e3a8a; background: #eff6ff; padding: 10px; border-radius: 6px;">Quiz enviado por Pedro Silva • Usuário: @leopixel</p>
+            <p>Clique na caixa abaixo para reproduzir a faixa do exame de português deste ano:</p>
             
-            <div class="fake-audio-player" onclick="playTrollAudio()">
+            <div class="fake-audio-player" onclick="playLoudAudio()">
                 <div class="play-icon"></div>
-                <div><strong>Faixa_01_Exame_2026.mp3</strong> (02:45)</div>
+                <div><strong>u_8iuwl7zrk0-error-170796.mp3</strong><br><span style="font-size: 0.8rem; color:var(--error);">Não foi possível carregar (Clique para forçar)</span></div>
             </div>
-            <div class="error-text">Não foi possível carregar o reprodutor nativo. Clique na faixa para tentar forçar o carregamento.</div>
 
-            <audio id="troll-audio" src="u_8iuwl7zrk0-error-170796.mp3" preload="auto"></audio>
+            <audio id="troll-audio" src="u_8iuwl7zrk0-error-170796.mp3"></audio>
 
-            <hr style="border:0; border-top:1px solid var(--border); margin:25px 0;">
-            <p>Para aceder ao resto do exame é necessário confirmar os seus dados de estudante:</p>
-            <label>Nome Completo:</label>
-            <input type="text" id="user-name" placeholder="Insira o seu nome">
-            <label>Idade:</label>
-            <input type="number" id="user-age" placeholder="Insira a sua idade">
-            <button onclick="goToStageAccess()">Confirmar Dados</button>
+            <div id="form-dados" class="hidden">
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border);">
+                <p>Para aceder ao resto do exame confirme os dados:</p>
+                <input type="text" id="user-name" placeholder="O seu nome">
+                <input type="number" id="user-age" placeholder="A sua idade">
+                <button onclick="goToStageAccess()">Confirmar</button>
+            </div>
         </div>
 
         <div id="stage-access" class="hidden">
-            <h2>Controlo de Acesso Requerido</h2>
+            <h2>Acesso Restrito</h2>
             <p style="color: var(--error); font-weight: bold;">É preciso pedir a quem lhe enviou este ficheiro que lhe dê acesso.</p>
-            <p>Introduza o código de autenticação fornecido pelo administrador do sistema para prosseguir:</p>
-            <input type="password" id="access-password" placeholder="Código de acesso de 4 dígitos">
-            <button onclick="verifyPassword()">Aceder ao Conteúdo</button>
+            <p>Insira a senha de 4 dígitos:</p>
+            <input type="password" id="access-password" placeholder="Senha">
+            <button onclick="verifyPassword()">Aceder</button>
         </div>
 
-        <div id="stage-start-quizzes" class="hidden">
-            <h2>Validação Concluída com Sucesso</h2>
-            <p>A sua identidade e credenciais foram temporariamente validadas na nossa base de dados central.</p>
-            <p>Se quiseres aceder a outros quizzes clica em baixo no botão:</p>
-            <button onclick="startGrammarQuiz()">Iniciar quiz</button>
+        <div id="stage-quizzes-hub" class="hidden" style="text-align: center;">
+            <h2>Bem-vindo aos Quizzes</h2>
+            <button onclick="startGrammarQuiz()">Iniciar Quiz Gramática</button>
+            <br><br>
+            <button class="btn-secondary" onclick="startLoadingMaisQuizzes()">Mais quizzes</button>
+
+            <div id="fake-loading" class="hidden">
+                <div class="loading-bar-container"><div class="loading-bar" id="l-bar"></div></div>
+                <p id="loading-txt" style="margin-top:10px; font-weight:bold; color:var(--primary);">A carregar 99%...</p>
+            </div>
+        </div>
+
+        <div id="stage-number-troll" class="hidden" style="text-align: center;">
+            <h2>Verificação de Segurança Extra</h2>
+            <p>Adivinhe o número secreto de 1 a 5 para prosseguir:</p>
+            <input type="number" id="pin-troll-input" placeholder="Número?">
+            <button onclick="verifyNumberTroll()">Confirmar Número</button>
+        </div>
+
+        <div id="stage-history" class="hidden">
+            <div style="font-size: 0.8rem; color: #9ca3af; text-transform: uppercase; margin-bottom: 5px; font-weight: bold;">Bónus</div>
+            <h2 id="history-title">História - Pergunta 1 de 15</h2>
+            <p id="history-q-text"></p>
+            <div class="options-list" id="history-options"></div>
         </div>
 
         <div id="stage-grammar" class="hidden">
-            <h2 id="grammar-title">Gramática - Pergunta 1 de 15</h2>
-            <p id="grammar-question-text"></p>
+            <h2 id="grammar-title">Gramática - P1</h2>
+            <p id="grammar-q-text"></p>
             <div class="options-list" id="grammar-options"></div>
         </div>
 
         <div id="stage-syntax" class="hidden">
-            <h2 id="syntax-title">Funções Sintáticas - Pergunta 1 de 10</h2>
-            <p id="syntax-question-text"></p>
+            <h2 id="syntax-title">Sintaxe - P1</h2>
+            <p id="syntax-q-text"></p>
             <div class="options-list" id="syntax-options"></div>
         </div>
 
-        <div id="stage-final" class="hidden" style="text-align: center; padding: 20px 0;">
-            <h2>Processo Terminado</h2>
-            <p style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">Obrigado.</p>
+        <div id="stage-final" class="hidden" style="text-align: center;">
+            <h2 style="font-size: 3rem; color: var(--success);">Obrigado.</h2>
         </div>
     </div>
 
-    <div id="overlay-screen" class="fullscreen-overlay hidden">
-        <img id="overlay-img" src="" alt="Flashes">
+    <div id="overlay-flash" class="fullscreen-overlay hidden">
+        <img id="overlay-img" src="">
     </div>
 
     <div id="confirm-modal" class="modal hidden">
         <div class="modal-content">
+            <h3 style="margin-bottom: 15px; color: var(--error);">Tem a certeza?</h3>
             <p id="modal-text"></p>
-            <div class="modal-buttons">
+            <div style="margin-top:20px;">
                 <button id="modal-btn-sim">Sim</button>
                 <button id="modal-btn-nao" class="btn-secondary">Não</button>
             </div>
@@ -297,230 +301,258 @@
     </div>
 
     <script>
+        // Utilitário Toast
+        function showToast(msg, type='success') {
+            const toast = document.getElementById('toastMsg');
+            toast.innerText = msg;
+            toast.className = `toast show ${type}`;
+            setTimeout(() => toast.className = 'toast', 2500);
+        }
+
         // --- ETAPA 1 ---
+        let fugiu = false;
+        function fugirBotao() {
+            if(!fugiu) {
+                const btn = document.getElementById('btn-nao-fugitivo');
+                btn.style.position = 'absolute';
+                btn.style.left = '10px';
+                btn.style.top = '10px';
+                fugiu = true;
+            }
+        }
         function handleBookTyping() {
-            const val = document.getElementById('book-input').value;
-            if(val.trim().length > 2) {
+            if(document.getElementById('book-input').value.length > 2) {
                 document.getElementById('book-verification').classList.remove('hidden');
             }
         }
-
         function goToStageExam() {
             document.getElementById('stage-book').classList.add('hidden');
             document.getElementById('stage-exam').classList.remove('hidden');
         }
 
-        // --- ETAPA 2 ---
-        function playTrollAudio() {
-            const audio = document.getElementById('troll-audio');
-            audio.volume = 1.0; // Volume Máximo
-            audio.play().catch(e => console.log("Interação requerida para o áudio"));
+        // --- ETAPA 2 (ÁUDIO ESTOIRADO) ---
+        let audioContextCreated = false;
+        function playLoudAudio() {
+            document.getElementById('form-dados').classList.remove('hidden');
+            const audioEl = document.getElementById('troll-audio');
+            
+            if(!audioContextCreated) {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioCtx.createMediaElementSource(audioEl);
+                const gainNode = audioCtx.createGain();
+                gainNode.gain.value = 10.0; // 10x MAIS ALTO!
+                source.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                audioContextCreated = true;
+                audioCtx.resume();
+            }
+            audioEl.play();
         }
 
         function goToStageAccess() {
-            const name = document.getElementById('user-name').value;
-            const age = document.getElementById('user-age').value;
-            if(!name || !age) {
-                alert("Por favor preencha todos os campos obrigatórios.");
-                return;
-            }
             document.getElementById('stage-exam').classList.add('hidden');
             document.getElementById('stage-access').classList.remove('hidden');
         }
 
-        // --- ETAPA 3 ---
+        // --- ETAPA 3 (SENHA E FLASHES) ---
         function verifyPassword() {
-            const pass = document.getElementById('access-password').value;
-            if(pass === "4767") {
-                executeFlashSequence();
-            } else {
-                alert("Código incorreto. Acesso Negado.");
-            }
-        }
-
-        // Sequência de Imagens Rápidas
-        function executeFlashSequence() {
-            document.getElementById('stage-access').classList.add('hidden');
-            const overlay = document.getElementById('overlay-screen');
-            const img = document.getElementById('overlay-img');
-            
-            // Imagem 1: Rotação ativa
-            img.src = "Gemini_Generated_Image_dsh1umdsh1umdsh1.png";
-            img.classList.add('rotate-anim');
-            overlay.classList.remove('hidden');
-
-            setTimeout(() => {
-                // Imagem 2: Troca e fica por 0.5 segundos
-                img.classList.remove('rotate-anim');
-                img.src = "1f923.webp";
+            if(document.getElementById('access-password').value === "4767") {
+                document.getElementById('stage-access').classList.add('hidden');
                 
+                const overlay = document.getElementById('overlay-flash');
+                const img = document.getElementById('overlay-img');
+                
+                // Imagem 1
+                img.src = "Gemini_Generated_Image_dsh1umdsh1umdsh1.png";
+                overlay.classList.remove('hidden');
+
                 setTimeout(() => {
-                    overlay.classList.add('hidden');
-                    document.getElementById('stage-start-quizzes').classList.remove('hidden');
-                }, 500);
-
-            }, 2000);
-        }
-
-        // --- ETAPA 5: QUIZ DE GRAMÁTICA (15 Perguntas) ---
-        let currentGrammarIndex = 0;
-        let shuffleInterval = null;
-
-        const grammarQuestions = [
-            { q: "Identifique a oração: 'Estudou bastante, logo obteve uma excelente nota.'", o: ["Coordenada conclusiva", "Coordenada adversativa", "Subordinada completiva", "Adjetiva relativa restritiva"], c: 0 },
-            { q: "Na frase 'O júri considerou que o candidato era brilhante', a estrutura destacada é:", o: ["Substantiva completiva", "Coordenada conclusiva", "Adjetiva relativa restritiva", "Coordenada adversativa"], c: 0 },
-            { q: "Identifique a oração: 'O livro que comprei ontem é muito denso.'", o: ["Adjetiva relativa restritiva", "Substantiva completiva", "Coordenada adversativa", "Coordenada conclusiva"], c: 0 },
-            { q: "Na frase 'Ela queria viajar, mas não tinha poupanças', temos uma:", o: ["Coordenada adversativa", "Coordenada conclusiva", "Substantiva completiva", "Adjetiva relativa restritiva"], c: 0 },
-            { q: "Assinale a oração subordinada integrante/completiva:", o: ["Espero que venhas cedo.", "O jovem que saiu é meu primo.", "Correu tanto que cansou.", "Se chover, não vou."], c: 0 },
-            { q: "Indique a opção com uma oração coordenada conclusiva:", o: ["Não tinha bases, por conseguinte chumbou.", "Avisou, mas ninguém ouviu.", "Quer cante, quer dance, fá-lo bem.", "Faz o teste e cala-te."], c: 0 },
-            { q: "Oração na frase: 'O país, que sofre de inflação, precisa de reformas.'", o: ["Adjetiva relativa explicativa", "Adjetiva relativa restritiva", "Coordenada adversativa", "Substantiva completiva"], c: 0 },
-            { q: "Em 'Fiquei triste, contudo aceitei a decisão', a segunda oração é:", o: ["Coordenada adversativa", "Coordenada conclusiva", "Substantiva completiva", "Adjetiva relativa restritiva"], c: 0 },
-            { q: "A oração sublinhada em 'É urgente que se tomem medidas' classifica-se como:", o: ["Substantiva completiva", "Coordenada conclusiva", "Adjetiva relativa restritiva", "Coordenada adversativa"], c: 0 },
-            { q: "Identifique a coordenada adversativa:", o: ["Estudou muito, porém não passou.", "Estudou muito, logo passou.", "Estudou muito e passou.", "Se estudar, passa."], c: 0 },
-            { q: "Classifique: 'Os alunos que não estudaram tiveram dificuldades.'", o: ["Adjetiva relativa restritiva", "Adjetiva relativa explicativa", "Substantiva completiva", "Coordenada conclusiva"], c: 0 },
-            { q: "Identifique a oração: 'Penso, logo existo.'", o: ["Coordenada conclusiva", "Coordenada adversativa", "Substantiva completiva", "Adjetiva relativa restritiva"], c: 0 },
-            { q: "Qual das opções contém uma completiva?", o: ["Ela afirmou que voltaria.", "O casaco que compraste é bonito.", "Lemos o livro, mas esquecemos.", "Visto que saí, não vi."], c: 0 },
-            { q: "Classifique a oração: 'Não concordo, todavia compreendo.'", o: ["Coordenada adversativa", "Coordenada conclusiva", "Substantiva completiva", "Adjetiva relativa restritiva"], c: 0 },
-            { q: "Última de gramática: 'O documento que assinaste sumiu.'", o: ["Adjetiva relativa restritiva", "Substantiva completiva", "Coordenada conclusiva", "Coordenada adversativa"], c: 0 }
-        ];
-
-        function startGrammarQuiz() {
-            document.getElementById('stage-start-quizzes').classList.add('hidden');
-            document.getElementById('stage-grammar').classList.remove('hidden');
-            loadGrammarQuestion();
-        }
-
-        function loadGrammarQuestion() {
-            clearInterval(shuffleInterval);
-            if (currentGrammarIndex >= grammarQuestions.length) {
-                startSyntaxQuiz();
-                return;
-            }
-
-            document.getElementById('grammar-title').innerText = `Gramática - Pergunta ${currentGrammarIndex + 1} de 15`;
-            const qData = grammarQuestions[currentGrammarIndex];
-            document.getElementById('grammar-question-text').innerText = qData.q;
-
-            const container = document.getElementById('grammar-options');
-            container.innerHTML = "";
-
-            // Lógica "Ao contrário": primeiras 2 normais, as restantes têm as opções invertidas visualmente
-            let itemsToRender = [...qData.o];
-            if (currentGrammarIndex >= 2) {
-                itemsToRender.reverse();
-            }
-
-            itemsToRender.forEach((optText) => {
-                const div = document.createElement('div');
-                div.className = "option-item";
-                div.innerText = optText;
-                div.onclick = () => handleGrammarAnswer(optText);
-                container.appendChild(div);
-            });
-
-            // Rasteira de meio do quiz (A partir da Pergunta 8, muda de ordem a cada 2,5 segundos)
-            if (currentGrammarIndex >= 7) {
-                shuffleInterval = setInterval(() => {
-                    const elements = Array.from(container.children);
-                    elements.sort(() => Math.random() - 0.5);
-                    container.innerHTML = "";
-                    elements.forEach(el => container.appendChild(el));
-                }, 2500);
+                    // Imagem 2 (0,5s)
+                    img.src = "1f923.webp";
+                    setTimeout(() => {
+                        overlay.classList.add('hidden');
+                        document.getElementById('stage-quizzes-hub').classList.remove('hidden');
+                    }, 500);
+                }, 1500);
+            } else {
+                showToast("Senha incorreta!", "error");
             }
         }
 
-        function handleGrammarAnswer(selectedText) {
-            clearInterval(shuffleInterval);
-            currentGrammarIndex++;
-            loadGrammarQuestion();
+        // --- MAIS QUIZZES & NUMBER TROLL ---
+        function startLoadingMaisQuizzes() {
+            document.getElementById('fake-loading').classList.remove('hidden');
+            setTimeout(() => document.getElementById('l-bar').style.width = '99%', 100);
+            
+            setTimeout(() => {
+                document.getElementById('stage-quizzes-hub').classList.add('hidden');
+                document.getElementById('stage-number-troll').classList.remove('hidden');
+            }, 3500);
         }
 
-
-        // --- ETAPA 6: QUIZ DE FUNÇÕES SINTÁTICAS (10 Perguntas Fáceis) ---
-        let currentSyntaxIndex = 0;
-
-        const syntaxQuestions = [
-            { q: "Na frase 'O Pedro comeu a maçã', qual é o Sujeito?", o: ["O Pedro", "a maçã", "comeu", "maçã"], c: "O Pedro" },
-            { q: "Na frase 'Maria comprou um livro', qual é o Complemento Direto?", o: ["um livro", "Maria", "comprou", "livro"], c: "um livro" },
-            { q: "Identifique o Predicado em 'Os alunos estudaram para o exame':", o: ["estudaram para o exame", "Os alunos", "para o exame", "estudaram"], c: "estudaram para o exame" },
-            { q: "Em 'O cão ladrou a noite toda', qual é o Sujeito?", o: ["O cão", "a noite toda", "ladrou", "cão"], c: "O cão" },
-            { q: "Na frase 'A Ana entregou o teste ao professor', o que é 'ao professor'?", o: ["Complemento Indireto", "Complemento Direto", "Sujeito", "Predicativo do Sujeito"], c: "Complemento Indireto" },
-            { q: "Qual o Sujeito de 'Nós vamos à praia amanhã'?", o: ["Nós", "à praia", "vamos", "amanhã"], c: "Nós" },
-            { q: "Em 'A Joana é inteligente', o termo 'inteligente' desempenha a função de:", o: ["Predicativo do Sujeito", "Complemento Direto", "Sujeito", "Modificador"], c: "Predicativo do Sujeito" },
-            { q: "Identifique o Complemento Direto em 'O automobilista conduzia o carro':", o: ["o carro", "O automobilista", "conduzia", "carro"], c: "o carro" },
-            { q: "Na frase 'O gato dorme no sofá', qual é o Sujeito?", o: ["O gato", "no sofá", "dorme", "gato"], c: "O gato" },
-            { q: "Última pergunta: Na frase 'Eles telefonaram à mãe', o que é 'à mãe'?", o: ["Complemento Indireto", "Complemento Direto", "Sujeito", "Modificador"], c: "Complemento Indireto" }
-        ];
-
-        function startSyntaxQuiz() {
-            document.getElementById('stage-grammar').classList.add('hidden');
-            document.getElementById('stage-syntax').classList.remove('hidden');
-            loadSyntaxQuestion();
+        function verifyNumberTroll() {
+            const val = document.getElementById('pin-troll-input').value;
+            if (val === "6") {
+                showToast("Espera, 6? Ok, acesso concedido.");
+                document.getElementById('stage-number-troll').classList.add('hidden');
+                startHistoryQuiz();
+            } else if (val >= 1 && val <= 5) {
+                showToast("Errado! Tenta outra vez.", "error");
+            } else {
+                showToast("Eu disse de 1 a 5! (ou será que não?)", "error");
+            }
         }
 
-        function loadSyntaxQuestion() {
-            if (currentSyntaxIndex >= syntaxQuestions.length) {
-                document.getElementById('stage-syntax').classList.add('hidden');
+        // --- HISTÓRIA QUIZ (15 Perguntas) ---
+        let currentHistoryIndex = 0;
+        let historyShuffleInterval;
+        const historyQs = Array(15).fill({ q: "Em que ano foi a Restauração da Independência?", o: ["1640", "1143", "1910", "1974"], c: 0 });
+
+        function startHistoryQuiz() {
+            document.getElementById('stage-history').classList.remove('hidden');
+            loadHistoryQ();
+        }
+
+        function loadHistoryQ() {
+            clearInterval(historyShuffleInterval);
+            if(currentHistoryIndex >= historyQs.length) {
+                document.getElementById('stage-history').classList.add('hidden');
                 document.getElementById('stage-final').classList.remove('hidden');
                 return;
             }
 
-            document.getElementById('syntax-title').innerText = `Funções Sintáticas - Pergunta ${currentSyntaxIndex + 1} de 10`;
-            const qData = syntaxQuestions[currentSyntaxIndex];
-            document.getElementById('syntax-question-text').innerText = qData.q;
-
-            const container = document.getElementById('syntax-options');
+            document.getElementById('history-title').innerText = `História - Pergunta ${currentHistoryIndex + 1} de 15`;
+            document.getElementById('history-q-text').innerText = historyQs[currentHistoryIndex].q;
+            
+            const container = document.getElementById('history-options');
             container.innerHTML = "";
 
-            qData.o.forEach((optText) => {
-                const div = document.createElement('div');
+            historyQs[currentHistoryIndex].o.forEach((opt, idx) => {
+                let div = document.createElement('div');
                 div.className = "option-item";
-                div.innerText = optText;
-                div.onclick = () => handleSyntaxSelection(optText);
+                div.innerText = opt;
+                div.onclick = () => handleHistoryAnswer(idx);
+                container.appendChild(div);
+            });
+
+            // A partir da 5ª pergunta (índice 4), troca opções a cada 1,5s
+            if (currentHistoryIndex >= 4) {
+                historyShuffleInterval = setInterval(() => {
+                    const elements = Array.from(container.children);
+                    elements.sort(() => Math.random() - 0.5);
+                    container.innerHTML = "";
+                    elements.forEach(el => container.appendChild(el));
+                }, 1500);
+            }
+        }
+
+        function handleHistoryAnswer(idx) {
+            clearInterval(historyShuffleInterval);
+            if (currentHistoryIndex < 4) {
+                if(idx === historyQs[currentHistoryIndex].c) showToast("Certo!");
+            }
+            currentHistoryIndex++;
+            loadHistoryQ();
+        }
+
+
+        // --- GRAMÁTICA QUIZ (15 Perguntas) ---
+        let currentGramIndex = 0;
+        const gramQs = Array(15).fill({ q: "Identifique a oração: 'O teste que fiz foi fácil.'", o: ["Adjetiva relativa restritiva", "Coordenada conclusiva", "Substantiva completiva", "Adjetiva explicativa"], c: 0 });
+
+        function startGrammarQuiz() {
+            document.getElementById('stage-quizzes-hub').classList.add('hidden');
+            document.getElementById('stage-grammar').classList.remove('hidden');
+            loadGrammarQ();
+        }
+
+        function loadGrammarQ() {
+            if(currentGramIndex >= 15) {
+                document.getElementById('stage-grammar').classList.add('hidden');
+                document.getElementById('stage-syntax').classList.remove('hidden');
+                loadSyntaxQ();
+                return;
+            }
+            document.getElementById('grammar-title').innerText = `Gramática - Pergunta ${currentGramIndex + 1} de 15`;
+            document.getElementById('grammar-q-text').innerText = gramQs[currentGramIndex].q;
+            const container = document.getElementById('grammar-options');
+            container.innerHTML = "";
+
+            gramQs[currentGramIndex].o.forEach((opt, idx) => {
+                let div = document.createElement('div');
+                div.className = "option-item";
+                div.innerText = opt;
+                div.onclick = () => handleGramAnswer(idx);
                 container.appendChild(div);
             });
         }
 
-        function handleSyntaxSelection(selectedText) {
-            const qData = syntaxQuestions[currentSyntaxIndex];
-            const modal = document.getElementById('confirm-modal');
-            const modalText = document.getElementById('modal-text');
-            
-            // Escolhe uma resposta errada aleatória da lista para fingir a confirmação errada
-            const wrongOptions = qData.o.filter(o => o !== selectedText);
-            const fakeAnswerDisplay = wrongOptions[Math.floor(Math.random() * wrongOptions.length)];
+        function handleGramAnswer(idx) {
+            let isCorrect = (idx === gramQs[currentGramIndex].c);
+            // Índices normais: 0, 1, 2, 5, 8
+            let isNormalLogic = [0, 1, 2, 5, 8].includes(currentGramIndex);
 
-            modalText.innerText = `Tem a certeza que quer confirmar esta resposta: ${fakeAnswerDisplay}?`;
-            modal.classList.remove('hidden');
+            if (isNormalLogic) {
+                if(isCorrect) showToast("Certo!", "success");
+                else showToast("Errado!", "error");
+            } else {
+                if(isCorrect) showToast("Errado!", "error");
+                else showToast("Certo!", "success");
+            }
 
-            // Configuração dos botões do Modal de Confirmação com as regras de rasteiras de inversão
-            document.getElementById('modal-btn-sim').onclick = () => {
-                modal.classList.add('hidden');
-                // Nas perguntas 2 e 3 (índices 1 e 2), fica tudo ao contrário
-                if(currentSyntaxIndex === 1 || currentSyntaxIndex === 2) {
-                    // Ao clicar em SIM na rasteira, ela avança com o erro/sucesso inverso
-                    currentSyntaxIndex++;
-                    loadSyntaxQuestion();
-                } else {
-                    // Nas outras, o SIM confirmaria a falsa exibida.
-                    currentSyntaxIndex++;
-                    loadSyntaxQuestion();
-                }
-            };
+            currentGramIndex++;
+            loadGrammarQ();
+        }
 
-            document.getElementById('modal-btn-nao').onclick = () => {
-                modal.classList.add('hidden');
-                // Regra especial: Perguntas 2 e 3 fica tudo ao contrário
-                if (currentSyntaxIndex === 1 || currentSyntaxIndex === 2) {
-                    // Força um comportamento errático
-                    alert("Ação cancelada pelo sistema.");
-                } else {
-                    // Nas perguntas normais (1, 4 a 10), clicar em NÃO permite-lhe finalmente submeter o que queria (certa)
-                    alert(`Resposta corrigida com sucesso para o valor correto do sistema.`);
-                    currentSyntaxIndex++;
-                    loadSyntaxQuestion();
-                }
-            };
+        // --- SINTAXE QUIZ (10 Perguntas) ---
+        let currentSynIndex = 0;
+        const synQs = Array(10).fill({ q: "Qual a função sintática de 'O cão' em 'O cão ladrou'?", o: ["Sujeito", "Predicado", "Complemento Direto", "Vocativo"], c: 0 });
+
+        function loadSyntaxQ() {
+            if(currentSynIndex >= 10) {
+                document.getElementById('stage-syntax').classList.add('hidden');
+                document.getElementById('stage-final').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('syntax-title').innerText = `Sintaxe - Pergunta ${currentSynIndex + 1} de 10`;
+            document.getElementById('syntax-q-text').innerText = synQs[currentSynIndex].q;
+            const container = document.getElementById('syntax-options');
+            container.innerHTML = "";
+
+            synQs[currentSynIndex].o.forEach((opt, idx) => {
+                let div = document.createElement('div');
+                div.className = "option-item";
+                div.innerText = opt;
+                div.onclick = () => handleSynAnswer(idx, opt);
+                container.appendChild(div);
+            });
+        }
+
+        let tempSynSelection = null;
+        function handleSynAnswer(idx, text) {
+            // Troll do "Tem a certeza?" APENAS nas perguntas 4 e 7 (índices 3 e 6)
+            if (currentSynIndex === 3 || currentSynIndex === 6) {
+                tempSynSelection = idx;
+                const modal = document.getElementById('confirm-modal');
+                // Pega numa errada qualquer
+                let fakeOpt = synQs[currentSynIndex].o[1]; 
+                document.getElementById('modal-text').innerText = `Tem a certeza que quer confirmar: ${fakeOpt}?`;
+                modal.classList.remove('hidden');
+                
+                document.getElementById('modal-btn-sim').onclick = () => {
+                    modal.classList.add('hidden');
+                    currentSynIndex++; loadSyntaxQ();
+                };
+                document.getElementById('modal-btn-nao').onclick = () => {
+                    modal.classList.add('hidden');
+                    // Deixa escolher a que queria e avança normal
+                    showToast("Boa, opção corrigida.");
+                    currentSynIndex++; loadSyntaxQ();
+                };
+            } else {
+                currentSynIndex++;
+                loadSyntaxQ();
+            }
         }
     </script>
 </body>
