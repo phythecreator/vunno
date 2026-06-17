@@ -5,29 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plataforma de Avaliação Nacional</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
         :root {
-            --bg-color: #f3f4f6;
-            --panel-bg: #ffffff;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --text-dark: #1f2937;
-            --text-muted: #6b7280;
-            --border: #e5e7eb;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --panel-bg: rgba(30, 41, 59, 0.7);
+            --primary: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            --primary-hover: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+            --text-dark: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
             --error: #ef4444;
             --success: #10b981;
+            --glow: rgba(99, 102, 241, 0.15);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%);
+            background: var(--bg-gradient);
             color: var(--text-dark);
             min-height: 100vh;
             display: flex;
@@ -35,15 +36,42 @@
             align-items: center;
             padding: 20px;
             overflow-x: hidden;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        /* Classes de Troll de Ecrã */
+        body.troll-flip {
+            transform: rotate(180deg);
+        }
+
+        body.troll-shake {
+            animation: shake 0.3s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(2px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(0px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(2px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(2px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
         }
 
         .container {
             background: var(--panel-bg);
-            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
             padding: 40px;
             width: 100%;
-            max-width: 600px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            max-width: 650px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 50px 0 var(--glow);
             position: relative;
             overflow: hidden;
         }
@@ -51,14 +79,15 @@
         .hidden { display: none !important; }
 
         h2 {
-            font-size: 1.5rem;
-            color: #111827;
-            margin-bottom: 15px;
-            font-weight: 700;
+            font-size: 1.8rem;
+            color: #ffffff;
+            margin-bottom: 18px;
+            font-weight: 800;
+            letter-spacing: -0.025em;
         }
 
         p {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             line-height: 1.6;
             font-size: 1rem;
             color: var(--text-muted);
@@ -66,131 +95,128 @@
 
         input {
             width: 100%;
-            padding: 14px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 24px;
             font-size: 1rem;
-            transition: all 0.3s ease;
-            background: #f9fafb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(15, 23, 42, 0.6);
+            color: white;
         }
 
         input:focus {
             outline: none;
-            border-color: var(--primary);
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            border-color: #6366f1;
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
         }
 
         button {
-            background-color: var(--primary);
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 14px 28px;
-            border-radius: 8px;
+            padding: 16px 32px;
+            border-radius: 12px;
             font-size: 1rem;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.2s ease;
             display: inline-block;
-            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
         button:hover {
-            background-color: var(--primary-hover);
+            background: var(--primary-hover);
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
         }
 
         .btn-secondary {
-            background-color: white;
-            color: var(--text-dark);
-            border: 2px solid var(--border);
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            border: 1px solid var(--border);
             box-shadow: none;
             margin-left: 10px;
         }
-        .btn-secondary:hover { background-color: #f3f4f6; border-color: #d1d5db; }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
 
-        /* Estilo Opções Quiz */
         .options-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
+            gap: 14px;
+            margin-top: 24px;
         }
 
         .option-item {
-            background: #ffffff;
-            border: 2px solid var(--border);
-            padding: 16px;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 18px;
+            border-radius: 14px;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
+            font-weight: 600;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
         }
 
         .option-item:hover {
-            border-color: var(--primary);
-            background: #eff6ff;
-            color: var(--primary-hover);
-            transform: translateX(5px);
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.1);
+            color: #818cf8;
+            transform: translateX(6px);
         }
 
-        /* Fake Audio Player */
         .fake-audio-player {
-            background: #f8fafc;
-            border: 2px dashed #cbd5e1;
-            border-radius: 8px;
-            padding: 20px;
+            background: rgba(15, 23, 42, 0.4);
+            border: 2px dashed rgba(239, 68, 68, 0.4);
+            border-radius: 14px;
+            padding: 24px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 18px;
             cursor: pointer;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             transition: background 0.3s;
         }
-        .fake-audio-player:hover { background: #f1f5f9; }
+        .fake-audio-player:hover { background: rgba(15, 23, 42, 0.7); }
         .play-icon { width: 0; height: 0; border-top: 12px solid transparent; border-bottom: 12px solid transparent; border-left: 18px solid var(--error); }
 
-        /* Notificações (Toast) */
         .toast {
             position: fixed; top: 20px; right: 20px;
-            padding: 15px 25px; border-radius: 8px;
-            color: white; font-weight: bold; font-size: 1.1rem;
-            box-shadow: 0 10px 15px rgba(0,0,0,0.2);
-            transform: translateX(150%); transition: transform 0.3s ease;
+            padding: 18px 30px; border-radius: 14px;
+            color: white; font-weight: 700; font-size: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+            transform: translateX(150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 10000;
         }
         .toast.show { transform: translateX(0); }
-        .toast.success { background-color: var(--success); }
-        .toast.error { background-color: var(--error); }
+        .toast.success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .toast.error { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
 
-        /* Overlays Flash */
         .fullscreen-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: white; z-index: 99999; display: flex;
+            background: #000; z-index: 99999; display: flex;
             justify-content: center; align-items: center;
         }
-        .fullscreen-overlay img { max-width: 90%; max-height: 90%; }
+        .fullscreen-overlay img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* Modal */
         .modal {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.5); display: flex;
+            background: rgba(15, 23, 42, 0.8); display: flex;
             justify-content: center; align-items: center; z-index: 9999;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px);
         }
         .modal-content {
-            background: white; padding: 30px; border-radius: 12px;
-            width: 90%; max-width: 400px; text-align: center;
+            background: #1e293b; padding: 40px; border-radius: 24px;
+            border: 1px solid var(--border);
+            width: 90%; max-width: 450px; text-align: center;
         }
 
-        /* Fake Loading */
         .loading-bar-container {
-            width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; margin-top: 20px; overflow: hidden;
+            width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 6px; margin-top: 24px; overflow: hidden;
         }
-        .loading-bar { width: 0%; height: 100%; background: var(--primary); transition: width 3s cubic-bezier(0.1, 0.8, 0.2, 1); }
+        .loading-bar { width: 0%; height: 100%; background: var(--primary); transition: width 3.5s linear; }
     </style>
 </head>
 <body>
@@ -200,70 +226,71 @@
     <div class="container" id="main-container">
         
         <div id="stage-book">
-            <h2>Registo de Leitura</h2>
-            <p>Escreva o livro que tem lido nas últimas semanas:</p>
-            <input type="text" id="book-input" placeholder="Título do livro..." oninput="handleBookTyping()">
+            <h2>Registo de Leitura Digital</h2>
+            <p>Escreva o título do livro que tem lido nas últimas semanas para validação das metas curriculares:</p>
+            <input type="text" id="book-input" placeholder="Título da obra literária..." oninput="handleBookTyping()">
             
             <div id="book-verification" class="hidden" style="text-align:center; margin-top:30px;">
-                <img src="0162da_d567d715e9d1486f979c1a311809577b~mv2.avif" alt="Livro" style="max-width:220px; border-radius:8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom:15px;">
-                <h3 style="margin-bottom:15px;">É esse o livro que você está falando?</h3>
-                <button onclick="goToStageExam()">Sim</button>
+                <img src="0162da_d567d715e9d1486f979c1a311809577b~mv2.avif" alt="Livro" style="max-width:200px; border-radius:12px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); margin-bottom:20px;">
+                <h3 style="margin-bottom:20px; font-weight:700;">Confirmamos o rastreio. É exatamente este o livro de que está a falar?</h3>
+                <button onclick="goToStageExam()">Sim, Avançar</button>
                 <button id="btn-nao-fugitivo" class="btn-secondary" onmouseover="fugirBotao()">Não</button>
             </div>
         </div>
 
         <div id="stage-exam" class="hidden">
-            <div style="font-size: 0.8rem; color: #9ca3af; text-transform: uppercase; margin-bottom: 5px; font-weight: bold;">Exame Nacional</div>
-            <h2>Compreensão Oral</h2>
-            <p style="font-size: 0.9rem; color: #1e3a8a; background: #eff6ff; padding: 10px; border-radius: 6px;">Quiz enviado por Pedro Silva • Usuário: @leopixel</p>
-            <p>Clique na caixa abaixo para reproduzir a faixa do exame de português deste ano:</p>
+            <div style="font-size: 0.75rem; color: #818cf8; text-transform: uppercase; margin-bottom: 6px; font-weight: 800; letter-spacing: 0.05em;">Exame de Estado</div>
+            <h2>Compreensão de Texto Oral</h2>
+            <p style="font-size: 0.85rem; color: #a5b4fc; background: rgba(99, 102, 241, 0.1); padding: 12px; border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.2);">Quiz enviado por Pedro Silva • Usuário: @leopixel</p>
+            <p>Clique na caixa abaixo para reproduzir a faixa de áudio oficial de interpretação:</p>
             
             <div class="fake-audio-player" onclick="playLoudAudio()">
                 <div class="play-icon"></div>
-                <div><strong>u_8iuwl7zrk0-error-170796.mp3</strong><br><span style="font-size: 0.8rem; color:var(--error);">Não foi possível carregar (Clique para forçar)</span></div>
+                <div><strong>u_8iuwl7zrk0-error-170796.mp3</strong><br><span style="font-size: 0.8rem; color:var(--error); font-weight:600;">Falha de Codec (Clique para forçar reprodução do sistema)</span></div>
             </div>
 
             <audio id="troll-audio" src="u_8iuwl7zrk0-error-170796.mp3"></audio>
 
             <div id="form-dados" class="hidden">
-                <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border);">
-                <p>Para aceder ao resto do exame confirme os dados:</p>
-                <input type="text" id="user-name" placeholder="O seu nome">
-                <input type="number" id="user-age" placeholder="A sua idade">
-                <button onclick="goToStageAccess()">Confirmar</button>
+                <hr style="margin: 24px 0; border: 0; border-top: 1px solid var(--border);">
+                <p>Para desbloquear as perguntas do exame, verifique a sua identidade:</p>
+                <input type="text" id="user-name" placeholder="Nome Completo">
+                <input type="number" id="user-age" placeholder="Idade">
+                <button onclick="goToStageAccess()">Confirmar Credenciais</button>
             </div>
         </div>
 
         <div id="stage-access" class="hidden">
-            <h2>Acesso Restrito</h2>
-            <p style="color: var(--error); font-weight: bold;">É preciso pedir a quem lhe enviou este ficheiro que lhe dê acesso.</p>
-            <p>Insira a senha de 4 dígitos:</p>
-            <input type="password" id="access-password" placeholder="Senha">
-            <button onclick="verifyPassword()">Aceder</button>
+            <h2>Acesso Restrito do Ministério</h2>
+            <p style="color: var(--error); font-weight: 700;">Aviso: Ficheiro encriptado. Peça o código PIN de verificação ao seu supervisor.</p>
+            <p>Insira a chave numérica de 4 dígitos:</p>
+            <input type="password" id="access-password" placeholder="Chave PIN">
+            <button onclick="verifyPassword()">Aceder ao Painel</button>
         </div>
 
         <div id="stage-quizzes-hub" class="hidden" style="text-align: center;">
-            <h2>Bem-vindo aos Quizzes</h2>
-            <button onclick="startGrammarQuiz()">Iniciar Quiz Gramática</button>
+            <h2>Módulos Disponíveis</h2>
+            <p>Selecione a vertente para iniciar a sua prova oficial:</p>
+            <button onclick="startGrammarQuiz()">Iniciar Bloco de Gramática</button>
             <br><br>
-            <button class="btn-secondary" onclick="startLoadingMaisQuizzes()">Mais quizzes</button>
+            <button class="btn-secondary" onclick="startLoadingMaisQuizzes()">Carregar Mais Disciplinas</button>
 
             <div id="fake-loading" class="hidden">
                 <div class="loading-bar-container"><div class="loading-bar" id="l-bar"></div></div>
-                <p id="loading-txt" style="margin-top:10px; font-weight:bold; color:var(--primary);">A carregar 99%...</p>
+                <p id="loading-txt" style="margin-top:14px; font-weight:700; color:#818cf8;">A sincronizar base de dados nacional (99%)...</p>
             </div>
         </div>
 
         <div id="stage-number-troll" class="hidden" style="text-align: center;">
-            <h2>Verificação de Segurança Extra</h2>
-            <p>Adivinhe o número secreto de 1 a 5 para prosseguir:</p>
+            <h2>Verificação Extra Anti-Bot</h2>
+            <p>Para provar que é humano, adivinhe o número secreto de 1 a 5 gerado pelo servidor:</p>
             <input type="number" id="pin-troll-input" placeholder="Número?">
-            <button onclick="verifyNumberTroll()">Confirmar Número</button>
+            <button onclick="verifyNumberTroll()">Submeter Resposta</button>
         </div>
 
         <div id="stage-history" class="hidden">
-            <div style="font-size: 0.8rem; color: #9ca3af; text-transform: uppercase; margin-bottom: 5px; font-weight: bold;">Bónus</div>
-            <h2 id="history-title">História - Pergunta 1 de 15</h2>
+            <div style="font-size: 0.75rem; color: #f59e0b; text-transform: uppercase; margin-bottom: 6px; font-weight: 800;">Bónus de Classificação</div>
+            <h2 id="history-title">História - Pergunta 1</h2>
             <p id="history-q-text"></p>
             <div class="options-list" id="history-options"></div>
         </div>
@@ -281,7 +308,8 @@
         </div>
 
         <div id="stage-final" class="hidden" style="text-align: center;">
-            <h2 style="font-size: 3rem; color: var(--success);">Obrigado.</h2>
+            <h2 style="font-size: 3.5rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Obrigado.</h2>
+            <p style="margin-top: 10px;">A tua nota foi submetida com sucesso (ou talvez não!).</p>
         </div>
     </div>
 
@@ -291,17 +319,17 @@
 
     <div id="confirm-modal" class="modal hidden">
         <div class="modal-content">
-            <h3 style="margin-bottom: 15px; color: var(--error);">Tem a certeza?</h3>
+            <h3 style="margin-bottom: 15px; color: var(--error); font-size: 1.4rem; font-weight: 800;">Tem a absoluta certeza?</h3>
             <p id="modal-text"></p>
-            <div style="margin-top:20px;">
-                <button id="modal-btn-sim">Sim</button>
-                <button id="modal-btn-nao" class="btn-secondary">Não</button>
+            <div style="margin-top:25px;">
+                <button id="modal-btn-sim">Sim, de certeza</button>
+                <button id="modal-btn-nao" class="btn-secondary">Não, mudar</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Utilitário Toast
+        // Utilitário Toast Moderno
         function showToast(msg, type='success') {
             const toast = document.getElementById('toastMsg');
             toast.innerText = msg;
@@ -309,15 +337,70 @@
             setTimeout(() => toast.className = 'toast', 2500);
         }
 
-        // --- ETAPA 1 ---
+        // Banco de Dados de Questões Reais (Sem Repetição)
+        const historyQs = [
+            { q: "Em que ano se deu a célebre Batalha de Aljubarrota?", o: ["1385", "1143", "1580", "1415"], c: 0 },
+            { q: "Quem foi aclamado o primeiro Rei de Portugal?", o: ["D. Afonso Henriques", "D. Dinis", "D. João I", "D. Manuel I"], c: 0 },
+            { q: "Qual destes navegadores dobrou o Cabo da Boa Esperança em 1488?", o: ["Bartolomeu Dias", "Vasco da Gama", "Pedro Álvares Cabral", "Gil Eanes"], c: 0 },
+            { q: "Em que ano chegou a armada de Vasco da Gama a Calecute, na Índia?", o: ["1498", "1492", "1500", "1543"], c: 0 },
+            { q: "O que desencadeou o início da Dinastia Filipina em Portugal?", o: ["A crise de sucessão de 1580", "A Batalha de Toro", "O Tratado de Tordesilhas", "O Regicídio de 1908"], c: 0 },
+            { q: "Em que trágico dia e ano ocorreu o Grande Terramoto de Lisboa?", o: ["1 de Novembro de 1755", "25 de Abril de 1755", "1 de Dezembro de 1640", "5 de Outubro de 1910"], c: 0 },
+            { q: "Quem foi o responsável pela reconstrução de Lisboa após o sismo de 1755?", o: ["Marquês de Pombal", "Duque de Palmela", "Fontes Pereira de Melo", "Passos Manuel"], c: 0 },
+            { q: "Qual a data da Proclamação da República Portuguesa?", o: ["5 de Outubro de 1910", "25 de Abril de 1974", "1 de Dezembro de 1640", "28 de Maio de 1926"], c: 0 },
+            { q: "Que nome ficou historicamente associado à revolução democrática de 25 de Abril de 1974?", o: ["Revolução dos Cravos", "Revolução Liberal", "Revolução de Setembro", "Primavera Marcelista"], c: 0 },
+            { q: "Que tratado dividiu as terras descobertas e por descobrir entre Portugal e Castela em 1494?", o: ["Tratado de Tordesilhas", "Tratado de Alcanizes", "Tratado de Windsor", "Tratado de Badajoz"], c: 0 },
+            { q: "Quem é o autor do poema épico 'Os Lusíadas', publicado em 1572?", o: ["Luís Vaz de Camões", "Fernando Pessoa", "Eça de Queirós", "José Saramago"], c: 0 },
+            { q: "Em que ano foi assinado o Tratado de Zamora que reconheceu a independência de Portugal?", o: ["1143", "1139", "1128", "1179"], c: 0 },
+            { q: "Como se chamava o regime ditatorial liderado por António de Oliveira Salazar?", o: ["Estado Novo", "Monarquia do Norte", "Ditadura Nacional", "União Nacional"], c: 0 },
+            { q: "Que monarca português desapareceu misteriosamente na Batalha de Alcácer-Quibir?", o: ["D. Sebastião", "D. Henrique", "D. Manuel I", "D. João V"], c: 0 },
+            { q: "O Tratado de Alcanizes (1297) definiu essencialmente o quê?", o: ["As fronteiras terrestres de Portugal", "A paz com a Santa Sé", "O casamento de D. Dinis", "A cedência de Ceuta"], c: 0 }
+        ];
+
+        const gramQs = [
+            { q: "Qual é o superlativo absoluto sintético do adjetivo 'amável'?", o: ["Amabilíssimo", "Amavelíssimo", "Muito amável", "Amantíssimo"], c: 0 },
+            { q: "Qual das seguintes formas constitui o plural correto da palavra 'capitão'?", o: ["Capitães", "Capitões", "Capitãos", "Capitanes"], c: 0 },
+            { q: "Qual é o antónimo direto da palavra 'efémero'?", o: ["Duradouro", "Passageiro", "Fugaz", "Breve"], c: 0 },
+            { q: "Na frase 'O aluno comprou um dicionário', qual é a subclasse do verbo?", o: ["Transitivo direto", "Transitivo indireto", "Intransitivo", "Copulativo"], c: 0 },
+            { q: "Escolha a opção graficamente correta quanto à norma ortográfica padrão:", o: ["Há dois anos que não estudo.", "À dois anos que não estudo.", "A dois anos que não estudo.", "Ah dois anos que não estudo."], c: 0 },
+            { q: "A palavra 'cometa' pertence a que género gramatical?", o: ["Masculino", "Feminino", "Dois géneros", "Neutro"], c: 0 },
+            { q: "Na palavra 'infelizmente', qual é o morfema derivacional prefixal?", o: ["in-", "-mente", "feliz", "infel-"], c: 0 },
+            { q: "Qual das seguintes opções apresenta uma palavra esdrúxula (proparoxítona)?", o: ["Lâmpada", "Café", "Janela", "Papel"], c: 0 },
+            { q: "Qual é o particípio passado regular/aceite do verbo 'escrever'?", o: ["Escrito", "Escrevido", "Escrevido ou escrito", "Escribido"], c: 0 },
+            { q: "Indique o sinónimo contextual ideal para a palavra 'altruísta':", o: ["Filantropo", "Egoísta", "Mesquinho", "Avarento"], c: 0 },
+            { q: "Identifique a palavra que contém um ditongo oral crescente:", o: ["Pátria", "Pai", "Ouro", "Muita"], c: 0 },
+            { q: "Indique a 1ª pessoa do plural do Pretérito Perfeito do Indicativo do verbo 'pôr':", o: ["Pusemos", "Pomos", "Põemos", "Ponhemos"], c: 0 },
+            { q: "Classifique a palavra 'guarda-chuva' quanto ao seu processo de formação:", o: ["Composição por justaposição", "Composição por aglutinação", "Derivação prefixal", "Parassíntese"], c: 0 },
+            { q: "Em qual destas frases a palavra 'que' funciona como um pronome relativo?", o: ["O rapaz que viste é meu irmão.", "Quero que venhas cá hoje.", "Que belo dia para fazer exames!", "Ele correu mais que o colega."], c: 0 },
+            { q: "Qual é o nome correto do substantivo coletivo de 'lobos'?", o: ["Alcateia", "Bando", "Fato", "Cardume"], c: 0 }
+        ];
+
+        const synQs = [
+            { q: "Em 'O João ofereceu um livro à Maria', qual a função sintática de 'à Maria'?", o: ["Complemento indireto", "Complemento direto", "Sujeito", "Modificador"], c: 0 },
+            { q: "Classifique a função sintática de 'triste' em 'O aluno permaneceu triste':", o: ["Predicativo do sujeito", "Predicativo do complemento direto", "Modificador do nome", "Complemento direto"], c: 0 },
+            { q: "Na frase 'Choveu intensamente toda a noite', qual é a tipologia do sujeito?", o: ["Sujeito nulo impessoal", "Sujeito nulo subentendido", "Sujeito simples", "Sujeito composto"], c: 0 },
+            { q: "Identifique o complemento agente da passiva em 'A árvore foi derrubada pelo vento':", o: ["pelo vento", "A árvore", "foi derrubada", "derrubada pelo vento"], c: 0 },
+            { q: "Em 'Os alunos, entusiasmados, aplaudiram', qual é a função de 'entusiasmados'?", o: ["Modificador apositivo do nome", "Predicativo do sujeito", "Complemento direto", "Atributo"], c: 0 },
+            { q: "Qual é a função sintática da expressão sublinhada em 'Eu gosto de Lisboa'?", o: ["Complemento oblíquo", "Complemento indireto", "Complemento direto", "Modificador do grupo verbal"], c: 0 },
+            { q: "Na frase 'O diretor considerou o funcionário apto', qual é a função de 'apto'?", o: ["Predicativo do complemento direto", "Predicativo do sujeito", "Atributo", "Vocativo"], c: 0 },
+            { q: "Identifique o constituinte que desempenha a função de vocativo em 'Anda cá, ó António, ver isto!':", o: ["ó António", "Anda cá", "ver isto", "António ver isto"], c: 0 },
+            { q: "Em 'Comi uma fatia de bolo na cozinha', qual é a função de 'na cozinha'?", o: ["Modificador do grupo verbal", "Complemento oblíquo", "Complemento direto", "Sujeito"], c: 0 },
+            { q: "Na frase 'Achei esta matéria facílima', qual é a função de 'facílima'?", o: ["Predicativo do complemento direto", "Atributo", "Predicativo do sujeito", "Complemento direto"], c: 0 }
+        ];
+
+
+        // --- ETAPA 1 (LIVRO) ---
         let fugiu = false;
         function fugirBotao() {
             if(!fugiu) {
                 const btn = document.getElementById('btn-nao-fugitivo');
                 btn.style.position = 'absolute';
-                btn.style.left = '10px';
-                btn.style.top = '10px';
+                btn.style.left = Math.random() * 70 + 10 + '%';
+                btn.style.top = Math.random() * 70 + 10 + '%';
                 fugiu = true;
+            } else {
+                const btn = document.getElementById('btn-nao-fugitivo');
+                btn.style.left = Math.random() * 70 + 10 + '%';
+                btn.style.top = Math.random() * 70 + 10 + '%';
             }
         }
         function handleBookTyping() {
@@ -330,31 +413,61 @@
             document.getElementById('stage-exam').classList.remove('hidden');
         }
 
-        // --- ETAPA 2 (ÁUDIO ESTOIRADO) ---
+        // --- ETAPA 2 (ÁUDIO 50X MAIS ALTO / ESTOURADO) ---
         let audioContextCreated = false;
         function playLoudAudio() {
             document.getElementById('form-dados').classList.remove('hidden');
             const audioEl = document.getElementById('troll-audio');
             
             if(!audioContextCreated) {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const source = audioCtx.createMediaElementSource(audioEl);
-                const gainNode = audioCtx.createGain();
-                gainNode.gain.value = 10.0; // 10x MAIS ALTO!
-                source.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                audioContextCreated = true;
-                audioCtx.resume();
+                try {
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const source = audioCtx.createMediaElementSource(audioEl);
+                    const gainNode = audioCtx.createGain();
+                    
+                    gainNode.gain.value = 50.0; // 50 VEZES MAIS ALTO / TOTALMENTE ESTOURADO
+                    
+                    source.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    audioContextCreated = true;
+                    audioCtx.resume();
+                } catch(e) {
+                    console.log("AudioContext bloqueado ou já iniciado");
+                }
             }
+            audioEl.volume = 1.0;
             audioEl.play();
         }
 
         function goToStageAccess() {
+            // TROLL EXTRA 2: CORRETOR DE NOME ABSURDO
+            let nameInput = document.getElementById('user-name').value;
+            if(nameInput.trim() === "") nameInput = "Candidato Desconhecido";
+            
+            const nomesTroll = ["Doutor Cabeça de Alho Choco", "Super Nabo Amestrado", "Especialista em Chutar para o Lado", "Maria Vai Com As Outras Pro", "Rei dos Palpites Errados"];
+            const nomeEscolha = nomesTroll[Math.floor(Math.random() * nomesTroll.length)];
+            
+            showToast(`Identidade alterada com sucesso para: ${nomeEscolha}`, "error");
+            
+            // Fazer um bip falso do sistema irritante
+            try {
+                let ctx = new (window.AudioContext || window.webkitAudioContext)();
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = "sawtooth";
+                osc.frequency.setValueAtTime(880, ctx.currentTime);
+                gain.gain.setValueAtTime(0.5, ctx.currentTime);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                setTimeout(() => osc.stop(), 800);
+            } catch(err) {}
+
             document.getElementById('stage-exam').classList.add('hidden');
             document.getElementById('stage-access').classList.remove('hidden');
         }
 
-        // --- ETAPA 3 (SENHA E FLASHES) ---
+        // --- ETAPA 3 (SENHA / BOMB AUDIO / IMAGEM INTEGRADA) ---
         function verifyPassword() {
             if(document.getElementById('access-password').value === "4767") {
                 document.getElementById('stage-access').classList.add('hidden');
@@ -362,20 +475,39 @@
                 const overlay = document.getElementById('overlay-flash');
                 const img = document.getElementById('overlay-img');
                 
-                // Imagem 1
-                img.src = "Gemini_Generated_Image_dsh1umdsh1umdsh1.png";
+                // INTEGRAÇÃO DA IMAGEM PEDIDA
+                img.src = "image.png"; 
                 overlay.classList.remove('hidden');
 
                 setTimeout(() => {
-                    // Imagem 2 (0,5s)
-                    img.src = "1f923.webp";
+                    img.src = "image.png"; // Mantém ou pisca a mesma imagem conforme fluxo original
                     setTimeout(() => {
                         overlay.classList.add('hidden');
                         document.getElementById('stage-quizzes-hub').classList.remove('hidden');
                     }, 500);
                 }, 1500);
             } else {
-                showToast("Senha incorreta!", "error");
+                showToast("ERRO CRÍTICO: ACESSO NEGADO!", "error");
+                
+                // TROLL: WINGS OF FREEDOM BOMB EXPLOSION NO MÁXIMO ESTOURADO
+                const bombAudio = new Audio('wings_of_freedom-bomb-explosion-469038.mp3');
+                bombAudio.volume = 1.0;
+                
+                try {
+                    const bCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const bSource = bCtx.createMediaElementSource(bombAudio);
+                    const bGain = bCtx.createGain();
+                    bGain.gain.value = 50.0; // Volume estourado na falha do PIN
+                    bSource.connect(bGain);
+                    bGain.connect(bCtx.destination);
+                    bCtx.resume();
+                } catch(e) {}
+                
+                bombAudio.play();
+                
+                // Efeito visual de tremer o ecrã na explosão
+                document.body.classList.add('troll-shake');
+                setTimeout(() => document.body.classList.remove('troll-shake'), 1000);
             }
         }
 
@@ -384,29 +516,36 @@
             document.getElementById('fake-loading').classList.remove('hidden');
             setTimeout(() => document.getElementById('l-bar').style.width = '99%', 100);
             
+            // TROLL EXTRA: Mudar a barra para regressar em vez de terminar logo
+            setTimeout(() => {
+                document.getElementById('loading-txt').innerText = "ERRO: O progresso reverteu espontaneamente! (-50%)";
+                document.getElementById('l-bar').style.width = '10%';
+            }, 1800);
+
             setTimeout(() => {
                 document.getElementById('stage-quizzes-hub').classList.add('hidden');
                 document.getElementById('stage-number-troll').classList.remove('hidden');
-            }, 3500);
+            }, 4500);
         }
 
         function verifyNumberTroll() {
             const val = document.getElementById('pin-troll-input').value;
             if (val === "6") {
-                showToast("Espera, 6? Ok, acesso concedido.");
+                showToast("Espera, 6? Sistema manipulado... Acedendo.");
                 document.getElementById('stage-number-troll').classList.add('hidden');
                 startHistoryQuiz();
             } else if (val >= 1 && val <= 5) {
-                showToast("Errado! Tenta outra vez.", "error");
+                showToast("Número incorreto! O servidor reiniciou a adivinhação.", "error");
+                document.body.classList.add('troll-shake');
+                setTimeout(() => document.body.classList.remove('troll-shake'), 300);
             } else {
-                showToast("Eu disse de 1 a 5! (ou será que não?)", "error");
+                showToast("Instrução violada. Eu disse claramente entre 1 e 5!", "error");
             }
         }
 
-        // --- HISTÓRIA QUIZ (15 Perguntas) ---
+        // --- HISTÓRIA QUIZ (15 Perguntas Reais) ---
         let currentHistoryIndex = 0;
         let historyShuffleInterval;
-        const historyQs = Array(15).fill({ q: "Em que ano foi a Restauração da Independência?", o: ["1640", "1143", "1910", "1974"], c: 0 });
 
         function startHistoryQuiz() {
             document.getElementById('stage-history').classList.remove('hidden');
@@ -435,30 +574,41 @@
                 container.appendChild(div);
             });
 
-            // A partir da 5ª pergunta (índice 4), troca opções a cada 1,5s
+            // A partir da 5ª pergunta (índice 4), baralha as opções a cada 1.5s
             if (currentHistoryIndex >= 4) {
                 historyShuffleInterval = setInterval(() => {
                     const elements = Array.from(container.children);
                     elements.sort(() => Math.random() - 0.5);
                     container.innerHTML = "";
                     elements.forEach(el => container.appendChild(el));
+                    
+                    // TROLL VISUAL ADICIONAL: Piscar as cores da página quando baralha
+                    document.body.style.background = "linear-gradient(135deg, #450a0a 0%, #0f172a 100%)";
+                    setTimeout(() => { document.body.style.background = var(--bg-gradient); }, 100);
                 }, 1500);
             }
         }
 
         function handleHistoryAnswer(idx) {
             clearInterval(historyShuffleInterval);
-            if (currentHistoryIndex < 4) {
-                if(idx === historyQs[currentHistoryIndex].c) showToast("Certo!");
+            
+            // Se errar ou se estiver na fase troll, aplica efeitos
+            let correta = historyQs[currentHistoryIndex].c;
+            if(idx !== correta) {
+                // TROLL EXTRA 1: Vira o ecrã ao contrário se falhar
+                document.body.classList.add('troll-flip');
+                setTimeout(() => document.body.classList.remove('troll-flip'), 800);
+            } else {
+                if (currentHistoryIndex < 4) showToast("Resposta registada.");
             }
+
             currentHistoryIndex++;
             loadHistoryQ();
         }
 
 
-        // --- GRAMÁTICA QUIZ (15 Perguntas) ---
+        // --- GRAMÁTICA QUIZ (15 Perguntas Reais) ---
         let currentGramIndex = 0;
-        const gramQs = Array(15).fill({ q: "Identifique a oração: 'O teste que fiz foi fácil.'", o: ["Adjetiva relativa restritiva", "Coordenada conclusiva", "Substantiva completiva", "Adjetiva explicativa"], c: 0 });
 
         function startGrammarQuiz() {
             document.getElementById('stage-quizzes-hub').classList.add('hidden');
@@ -489,24 +639,31 @@
 
         function handleGramAnswer(idx) {
             let isCorrect = (idx === gramQs[currentGramIndex].c);
-            // Índices normais: 0, 1, 2, 5, 8
             let isNormalLogic = [0, 1, 2, 5, 8].includes(currentGramIndex);
 
             if (isNormalLogic) {
-                if(isCorrect) showToast("Certo!", "success");
-                else showToast("Errado!", "error");
+                if(isCorrect) showToast("Validado com sucesso.", "success");
+                else {
+                    showToast("Incorreto!", "error");
+                    document.body.classList.add('troll-flip');
+                    setTimeout(() => document.body.classList.remove('troll-flip'), 500);
+                }
             } else {
-                if(isCorrect) showToast("Errado!", "error");
-                else showToast("Certo!", "success");
+                // Inversão de lógica original do troll
+                if(isCorrect) {
+                    showToast("Errado! Sistema diz não.", "error");
+                    document.body.classList.add('troll-shake');
+                    setTimeout(() => document.body.classList.remove('troll-shake'), 400);
+                }
+                else showToast("Correto (Inversão Prova)!", "success");
             }
 
             currentGramIndex++;
             loadGrammarQ();
         }
 
-        // --- SINTAXE QUIZ (10 Perguntas) ---
+        // --- SINTAXE QUIZ (10 Perguntas Reais) ---
         let currentSynIndex = 0;
-        const synQs = Array(10).fill({ q: "Qual a função sintática de 'O cão' em 'O cão ladrou'?", o: ["Sujeito", "Predicado", "Complemento Direto", "Vocativo"], c: 0 });
 
         function loadSyntaxQ() {
             if(currentSynIndex >= 10) {
@@ -530,13 +687,12 @@
 
         let tempSynSelection = null;
         function handleSynAnswer(idx, text) {
-            // Troll do "Tem a certeza?" APENAS nas perguntas 4 e 7 (índices 3 e 6)
+            // Logica original do modal de confirmação falso nas perguntas 4 e 7 (índices 3 e 6)
             if (currentSynIndex === 3 || currentSynIndex === 6) {
                 tempSynSelection = idx;
                 const modal = document.getElementById('confirm-modal');
-                // Pega numa errada qualquer
                 let fakeOpt = synQs[currentSynIndex].o[1]; 
-                document.getElementById('modal-text').innerText = `Tem a certeza que quer confirmar: ${fakeOpt}?`;
+                document.getElementById('modal-text').innerText = `O sistema detetou anomalia. Quer mesmo submeter a opção: "${fakeOpt}"?`;
                 modal.classList.remove('hidden');
                 
                 document.getElementById('modal-btn-sim').onclick = () => {
@@ -545,8 +701,7 @@
                 };
                 document.getElementById('modal-btn-nao').onclick = () => {
                     modal.classList.add('hidden');
-                    // Deixa escolher a que queria e avança normal
-                    showToast("Boa, opção corrigida.");
+                    showToast("Opção forçada pelo utilizador.");
                     currentSynIndex++; loadSyntaxQ();
                 };
             } else {
