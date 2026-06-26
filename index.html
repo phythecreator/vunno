@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz de Português</title>
+    <title>Quiz de Português Avançado</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -20,19 +21,20 @@
         .container {
             text-align: center;
             width: 90%;
-            max-width: 400px;
+            max-width: 500px;
+            z-index: 1;
         }
         input[type="text"], input[type="email"] {
-            padding: 10px;
+            padding: 12px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            width: 80%;
+            width: 85%;
             margin-bottom: 15px;
             text-align: center;
         }
         button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 16px;
             background-color: #000000;
             color: #ffffff;
@@ -44,30 +46,56 @@
             background-color: #333333;
         }
         .hidden {
-            display: none;
+            display: none !important;
         }
         .options-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             margin-top: 20px;
         }
         .option-btn {
-            background-color: #f0f0f0;
+            background-color: #f9f9f9;
             color: #000000;
             border: 1px solid #ccc;
-            padding: 12px;
+            padding: 14px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 15px;
             text-align: left;
         }
         .option-btn:hover {
-            background-color: #e0e0e0;
+            background-color: #e9e9e9;
         }
         #feedback {
             margin-top: 15px;
             font-weight: bold;
+            font-size: 18px;
+        }
+        /* Overlay para as imagens e vídeos entre as perguntas */
+        #media-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        #media-overlay img, #media-overlay video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        /* Contentor para o modelo 3D pesado */
+        #canvas-container {
+            width: 100%;
+            height: 300px;
+            margin-top: 20px;
+            background-color: #000;
         }
     </style>
 </head>
@@ -89,56 +117,71 @@
 
     <div id="step-quiz" class="container hidden">
         <h3 id="question-number">Pergunta 1 de 10</h3>
-        <p id="question-text">Texto da pergunta aqui</p>
+        <p id="question-text" style="font-size: 18px; font-weight: bold;"></p>
         <div id="options" class="options-container"></div>
         <p id="feedback"></p>
     </div>
 
+    <div id="media-overlay" class="hidden">
+        <div id="media-content"></div>
+    </div>
+
     <div id="step-final" class="container hidden">
         <h2>Quiz Concluído!</h2>
-        <p>Obrigado por responder a todas as perguntas.</p>
+        <p>A carregar os resultados finais e o objeto de avaliação...</p>
+        <div id="canvas-container"></div>
     </div>
 
     <script>
-        // Configuração das perguntas do Quiz (Gramática de Portugal)
-        // 'rigged: true' significa que a resposta vai falhar de propósito a partir da pergunta 5
+        // 10 Perguntas complexas de Sintaxe e Orações (Gramática de Portugal)
         const quizData = [
-            { q: "Qual é o plural da palavra 'capitão'?", options: ["Capitães", "Capitões", "Capitanes"], correct: 0, rigged: false },
-            { q: "Identifique o verbo na frase: 'O gato apanhou o rato.'", options: ["Gato", "Apanhou", "Rato"], correct: 1, rigged: false },
-            { q: "Qual destas palavras é um determinante artigo definido?", options: ["Um", "O", "Este"], correct: 1, rigged: false },
-            { q: "Como se escreve corretamente?", options: ["Paralizar", "Paraliziar", "Paralisar"], correct: 2, rigged: false },
-            { q: "Qual é o antónimo de 'construir'?", options: ["Destruir", "Fazer", "Modificar"], correct: 0, rigged: true }, // Pergunta 5 (Rasteira)
-            { q: "Qual é o sujeito da frase: 'A Maria foi à biblioteca.'?", options: ["A Maria", "Foi à biblioteca", "Biblioteca"], correct: 0, rigged: false },
-            { q: "Qual destas palavras é esdrúxula (proparoxítona)?", options: ["Café", "Lâmpada", "Janela"], correct: 1, rigged: true }, // Pergunta 7 (Rasteira)
-            { q: "Escolha a forma correta do verbo haver:", options: ["Há dois anos que não o vejo", "À dois anos que não o vejo", "A dois anos que não o vejo"], correct: 0, rigged: false },
-            { q: "Qual é o sinónimo de 'rápido'?", options: ["Lento", "Veloz", "Perto"], correct: 1, rigged: true }, // Pergunta 9 (Rasteira)
-            { q: "Indique o pronome pessoal na frase: 'Nós fomos ao cinema.'", options: ["Nós", "Fomos", "Cinema"], correct: 0, rigged: false }
+            { q: "Na frase 'Disseram-me que o teste foi anulado', qual é a classificação da oração 'que o teste foi anulado'?", options: ["Oração subordinada substantiva integrante", "Oração subordinada adjetiva relativa", "Oração subordinada adverbial causal"], correct: 0, rigged: false },
+            { q: "Em 'O livro foi lido pelo aluno de Bragança', qual é a função sintática de 'pelo aluno de Bragança'?", options: ["Complemento direto", "Complemento agente da passiva", "Modificador do nome"], correct: 1, rigged: false },
+            { q: "Qual é a função sintática do constituinte sublinhado em 'Entreguei o relatório com urgência [ao diretor]'?", options: ["Complemento direto", "Complemento indireto", "Complemento oblíquo"], correct: 1, rigged: false },
+            { q: "Classifica a oração: 'Mal ele entrou na sala, todos se calaram.'", options: ["Oração subordinada adverbial temporal", "Oração subordinada adverbial condicional", "Oração coordenada explicativa"], correct: 0, rigged: false },
+            { q: "Na frase 'O rapaz, que usava óculos, resolveu o problema', a oração relativa é:", options: ["Oração subordinada adjetiva relativa explicativa", "Oração subordinada adjetiva relativa restritiva", "Oração subordinada substantiva completar"], correct: 0, rigged: true }, // Pergunta 5 (Rasteira)
+            { q: "Qual é a classificação do sujeito na frase 'Choveu torrencialmente durante a noite em Vila Real'?", options: ["Sujeito nulo subentendido", "Sujeito nulo indeterminado", "Sujeito nulo impessoal"], correct: 2, rigged: false },
+            { q: "Em 'Considero esta matéria bastante complexa', qual é a função sintática de 'bastante complexa'?", options: ["Predicativo do sujeito", "Predicativo do complemento direto", "Modificador livre"], correct: 1, rigged: true }, // Pergunta 7 (Rasteira)
+            { q: "Classifica a seguinte oração: 'Estudámos muito, logo obtivemos uma excelente nota.'", options: ["Oração coordenada conclusiva", "Oração coordenada consecutiva", "Oração subordinada adverbial consecutiva"], correct: 0, rigged: false },
+            { q: "Na frase 'É fundamental que todos compareçam à reunião', a oração subordinada desempenha a função de:", options: ["Sujeito", "Complemento direto", "Complemento do nome"], correct: 0, rigged: true }, // Pergunta 9 (Rasteira)
+            { q: "Identifica a função sintática de 'em Vila Real' na frase: 'Ele reside em Vila Real.'", options: ["Modificador do grupo verbal", "Complemento oblíquo", "Complemento direto"], correct: 1, rigged: false }
+        ];
+
+        // Lista de ficheiros de média e tempos de exibição entre as perguntas
+        const mediaSequence = [
+            { file: "fligga.webp", type: "video", time: 7000 },
+            { file: "jigg.webp", type: "image", time: 4000 },
+            { file: "cons.png", type: "image", time: 4000 },
+            { file: "holdon.webp", type: "image", time: 4000 },
+            { file: "nofc.webp", type: "image", time: 4000 },
+            { file: "vehote.webp", type: "video", time: 5000 },
+            { file: "funy.webp", type: "image", time: 4000 },
+            { file: "jigg.webp", type: "image", time: 4000 }, // Repetição/Excesso para cobrir as 9 transições
+            { file: "funy.webp", type: "image", time: 4000 }
         ];
 
         let currentQuestionIndex = 0;
 
-        // Sons configurados no enunciado
         const soundCorrect = new Audio('alex-morgan-birthday-545484.mp3');
         const soundWrong = new Audio('peido.mp3');
 
         function checkCode() {
-            const codeInput = document.getElementById('access-code').value;
-            if (codeInput === "745") {
+            if (document.getElementById('access-code').value === "745") {
                 document.getElementById('step-code').classList.add('hidden');
                 document.getElementById('step-email').classList.remove('hidden');
             } else {
-                alert("Código incorreto. Tente novamente.");
+                alert("Código incorreto.");
             }
         }
 
         function startQuiz() {
-            const emailInput = document.getElementById('user-email').value;
-            if (emailInput.includes('@') && emailInput.includes('.')) {
+            const email = document.getElementById('user-email').value;
+            if (email.includes('@') && email.includes('.')) {
                 document.getElementById('step-email').classList.add('hidden');
                 document.getElementById('step-quiz').classList.remove('hidden');
                 loadQuestion();
             } else {
-                alert("Por favor, insira um e-mail válido.");
+                alert("Insira um e-mail válido.");
             }
         }
 
@@ -164,44 +207,97 @@
             const currentQuestion = quizData[currentQuestionIndex];
             let isCorrect = selectedIndex === currentQuestion.correct;
 
-            // Lógica especial de rasteira (A partir da pergunta 5, algumas dão erro propositadamente)
             if (currentQuestion.rigged) {
                 isCorrect = false; 
             }
 
-            // Ativação dos efeitos sonoros conforme as regras
             if (currentQuestionIndex < 3) {
-                // Primeiras 3 perguntas: se acertar, toca parabéns
                 if (isCorrect) {
-                    soundCorrect.play().catch(e => console.log("Áudio bloqueado pelo navegador"));
+                    soundCorrect.play().catch(e => {});
                     document.getElementById('feedback').innerText = "Correto! Parabéns.";
                 } else {
                     document.getElementById('feedback').innerText = "Incorreto.";
                 }
             } else {
-                // A partir da pergunta 5 (e nas rasteiras), se falhar/for forçado a falhar, toca o som indicado
                 if (!isCorrect) {
-                    soundWrong.play().catch(e => console.log("Áudio bloqueado pelo navegador"));
+                    soundWrong.play().catch(e => {});
                     document.getElementById('feedback').innerText = "Errado!";
                 } else {
                     document.getElementById('feedback').innerText = "Correto!";
                 }
             }
 
-            // Avança para a próxima pergunta após um pequeno compasso de espera
+            // Bloqueia cliques adicionais
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            // Aguarda 1.5s para o feedback visual antes de iniciar o intervalo com média
             setTimeout(() => {
                 currentQuestionIndex++;
                 if (currentQuestionIndex < quizData.length) {
-                    loadQuestion();
+                    showMediaInterval();
                 } else {
                     showFinalScreen();
                 }
             }, 1500);
         }
 
+        // Função que gere as imagens e vídeos entre as perguntas
+        function showMediaInterval() {
+            const overlay = document.getElementById('media-overlay');
+            const content = document.getElementById('media-content');
+            const currentMedia = mediaSequence[currentQuestionIndex - 1]; // Obtém a média para esta transição
+
+            content.innerHTML = '';
+            
+            if (currentMedia.type === 'video') {
+                content.innerHTML = `<video src="${currentMedia.file}" autoplay loop muted></video>`;
+            } else {
+                content.innerHTML = `<img src="${currentMedia.file}" alt="interstitial">`;
+            }
+
+            overlay.classList.remove('hidden');
+
+            // Mantém a imagem/vídeo no ecrã durante o tempo configurado
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                content.innerHTML = '';
+                loadQuestion();
+            }, currentMedia.time);
+        }
+
         function showFinalScreen() {
             document.getElementById('step-quiz').classList.add('hidden');
             document.getElementById('step-final').classList.remove('hidden');
+            initHeavy3DModel();
+        }
+
+        // Inicialização do modelo 3D complexo usando Three.js
+        function initHeavy3DModel() {
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            // Criação de uma geometria matemática com subdivisões gigantescas para tornar a renderização extremamente pesada
+            // Parâmetros aumentados (p, q, tubularSegments, radialSegments) para forçar o processamento gráfico do telemóvel
+            const geometry = new THREE.TorusKnotGeometry(10, 3, 600, 150, 11, 13);
+            const material = new THREE.MeshNormalMaterial({ wireframe: true });
+            const torusKnot = new THREE.Mesh(geometry, material);
+            scene.add(torusKnot);
+
+            camera.position.z = 30;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                torusKnot.rotation.x += 0.03;
+                torusKnot.rotation.y += 0.03;
+                renderer.render(scene, camera);
+            }
+            animate();
         }
     </script>
 </body>
