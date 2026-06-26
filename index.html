@@ -3,82 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz de Cultura Geral</title>
+    <title>Quiz Interativo de Cultura Geral</title>
     <style>
-        body {
+        /* ==========================================================================
+           1. RESET E DEFINIÇÕES BASE
+           ========================================================================== */
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #ffffff;
-            color: #000000;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7f6;
+            color: #1a1a1a;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             overflow: hidden;
         }
-        .container {
-            text-align: center;
-            width: 90%;
-            max-width: 500px;
-            z-index: 1;
+
+        /* ==========================================================================
+           2. ANIMAÇÕES SUTIS
+           ========================================================================== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        input[type="text"], textarea {
-            padding: 12px;
+
+        @keyframes pulseWarning {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); box-shadow: 0 10px 25px rgba(255, 71, 87, 0.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* ==========================================================================
+           3. ESTRUTURA DOS CARD / CONTAINER PRINCIPAL
+           ========================================================================== */
+        .quiz-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+            padding: 40px;
+            width: 92%;
+            max-width: 540px;
+            text-align: center;
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: relative;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        /* Código de acesso inicia com ecrã totalmente limpo */
+        .clean-gate {
+            background: #ffffff !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        /* ==========================================================================
+           4. COMPONENTES DE TEXTO E TIPOGRAFIA
+           ========================================================================== */
+        h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #111111;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        p.description {
             font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 85%;
-            margin-bottom: 15px;
-            text-align: center;
+            color: #666666;
+            line-height: 1.6;
+            margin-bottom: 25px;
         }
+
+        .question-meta {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #2f3542;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e272e;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        /* ==========================================================================
+           5. ELEMENTOS DE FORMULÁRIO E INPUTS
+           ========================================================================== */
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 16px;
+            border: 2px solid #e4e7eb;
+            border-radius: 12px;
+            background: #f8fafc;
+            color: #2d3748;
+            outline: none;
+            transition: all 0.25s ease;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            border-color: #000000;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+        }
+
         textarea {
-            height: 100px;
+            height: 120px;
             resize: none;
+            line-height: 1.5;
             text-align: left;
         }
-        button {
-            padding: 12px 24px;
-            font-size: 16px;
-            background-color: #000000;
+
+        /* ==========================================================================
+           6. BOTÕES E INTERAÇÃO
+           ========================================================================== */
+        .btn-prime {
+            background: #000000;
             color: #ffffff;
             border: none;
-            border-radius: 4px;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
             cursor: pointer;
-            margin-top: 10px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
         }
-        button:hover {
-            background-color: #333333;
+
+        .btn-prime:hover {
+            background: #222222;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
+
+        .btn-prime:active {
+            transform: translateY(1px);
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .option-card {
+            background: #ffffff;
+            border: 2px solid #edeef0;
+            border-radius: 14px;
+            padding: 18px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333333;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            outline: none;
+        }
+
+        .option-card:hover:not(:disabled) {
+            border-color: #000000;
+            background: #fcfcfc;
+            transform: translateX(4px);
+        }
+
+        .option-card:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* ==========================================================================
+           7. FEEDBACK E BARRAS DE PROGRESSO
+           ========================================================================== */
+        #feedback-label {
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 15px;
+            min-height: 24px;
+        }
+
+        .status-success { color: #2ed573; }
+        .status-error { color: #ff4757; }
+
+        .progress-wrapper {
+            width: 100%;
+            background: #eaeaea;
+            height: 6px;
+            border-radius: 10px;
+            margin-bottom: 35px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #000000;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* Indicador visual do tempo limite de 5 segundos */
+        .timer-track {
+            width: 100%;
+            height: 4px;
+            background: #f1f2f6;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            overflow: hidden;
+        }
+
+        .timer-fill {
+            height: 100%;
+            background: #ffa502;
+            width: 0%;
+        }
+
+        /* ==========================================================================
+           8. UTILITÁRIOS E LAYOUTS OCULTOS
+           ========================================================================== */
         .hidden {
             display: none !important;
         }
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .option-btn {
-            background-color: #f9f9f9;
-            color: #000000;
-            border: 1px solid #ccc;
-            padding: 14px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 15px;
-            text-align: left;
-        }
-        .option-btn:hover {
-            background-color: #e9e9e9;
-        }
-        #feedback {
-            margin-top: 15px;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        /* Overlay de transição para as imagens e vídeos */
-        #media-overlay {
+
+        /* ==========================================================================
+           9. OVERLAY DE MÉDIA (ECRÃ COMPLETO ENTRE PERGUNTAS)
+           ========================================================================== */
+        #gallery-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -88,195 +258,326 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 10;
+            z-index: 9999;
         }
-        #media-overlay img, #media-overlay video {
+
+        #gallery-overlay img, #gallery-overlay video {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Loader para indicar transição de média */
+        .media-spinner {
+            position: absolute;
+            bottom: 40px;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #000000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-    <!-- PASSO 1: Código de Acesso -->
-    <div id="step-code" class="container">
-        <h2>Insira o código de acesso:</h2>
-        <input type="text" id="access-code" placeholder="Código">
-        <br>
-        <button onclick="checkCode()">Entrar</button>
+    <!-- PAINEL 1: Autenticação Limpa por Código -->
+    <div id="panel-gate" class="quiz-card clean-gate">
+        <h2>Acesso ao Sistema</h2>
+        <p class="description">Introduza o código de validação numérico para libertar o questionário.</p>
+        <input type="text" id="passkey-input" placeholder="Introduzir código..." autocomplete="off">
+        <button class="btn-prime" onclick="verifyGateKey()">Validar Código</button>
     </div>
 
-    <!-- PASSO 2: O Quiz -->
-    <div id="step-quiz" class="container hidden">
-        <h3 id="question-number">Pergunta 1 de 15</h3>
-        <p id="question-text" style="font-size: 18px; font-weight: bold;"></p>
-        <div id="options" class="options-container"></div>
-        <p id="feedback"></p>
+    <!-- PAINEL 2: Espaço do Questionário Ativo -->
+    <div id="panel-quiz" class="quiz-card hidden">
+        <div class="timer-track"><div id="action-timer" class="timer-fill"></div></div>
+        <div class="progress-wrapper">
+            <div id="quiz-progress" class="progress-bar"></div>
+        </div>
+        <div id="meta-label" class="question-meta">Pergunta 1 de 15</div>
+        <div id="text-label" class="question-text">Carregando enunciado...</div>
+        <div id="options-box" class="options-grid"></div>
+        <div id="feedback-label"></div>
     </div>
 
-    <!-- Ecrã Intermédio de Média -->
-    <div id="media-overlay" class="hidden">
-        <div id="media-content"></div>
+    <!-- PAINEL 3: Ecrã Intermediário de Exibição de Média -->
+    <div id="gallery-overlay" class="hidden">
+        <div id="gallery-render-zone"></div>
+        <div class="media-spinner"></div>
     </div>
 
-    <!-- PASSO 3: Ecrã Final com Mensagem e Partilha -->
-    <div id="step-final" class="container hidden">
+    <!-- PAINEL 4: Fecho do Quiz e Envio de Feedback -->
+    <div id="panel-end" class="quiz-card hidden">
         <h2>Did you like this quiz?</h2>
-        <p>If yes you can write a message for the owner ( Pedro Silva )</p>
-        <textarea id="owner-message" placeholder="Escreve aqui a tua mensagem para o Pedro..."></textarea>
-        <br>
-        <button onclick="shareWhatsApp()">Partilhar no WhatsApp</button>
+        <p class="description">If yes you can write a message for the owner ( Pedro Silva )</p>
+        <textarea id="owner-feedback" placeholder="Escreva a sua mensagem aqui de forma clara..."></textarea>
+        <button class="btn-prime" onclick="dispatchWhatsAppMessage()">
+            <span>Partilhar no WhatsApp</span>
+        </button>
     </div>
 
+    <!-- ==========================================================================
+         10. LÓGICA E MOTOR JAVASCRIPT DO QUIZ
+         ========================================================================== -->
     <script>
-        // 15 Perguntas de Cultura Geral (Nível Intermédio) com rasteiras intercaladas a partir da Q5
-        const quizData = [
-            { q: "Qual é a capital da Austrália?", options: ["Sydney", "Melbourne", "Canberra"], correct: 2, rigged: false },
-            { q: "Qual é o maior oceano do planeta Terra?", options: ["Oceano Atlântico", "Oceano Pacífico", "Oceano Índico"], correct: 1, rigged: false },
-            { q: "Que elemento químico é representado pelo símbolo 'Au'?", options: ["Ouro", "Prata", "Cobre"], correct: 0, rigged: false },
-            { q: "Quem escreveu a famosa obra 'Os Lusíadas'?", options: ["Fernando Pessoa", "Luís de Camões", "Eça de Queirós"], correct: 1, rigged: false },
-            { q: "Quantos continentes existem oficialmente no modelo geográfico mais comum?", options: ["5", "6", "7"], correct: 2, rigged: true }, // Q5 Rasteira
-            { q: "Quem pintou o quadro 'Mona Lisa'?", options: ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso"], correct: 1, rigged: false },
-            { q: "Qual é a moeda oficial do Japão?", options: ["Yen", "Won", "Yuan"], correct: 0, rigged: true }, // Q7 Rasteira
-            { q: "Qual é o maior órgão do corpo humano?", options: ["Fígado", "Coração", "Pele"], correct: 2, rigged: false },
-            { q: "Qual é o planeta mais próximo do Sol?", options: ["Vénus", "Mercúrio", "Marte"], correct: 1, rigged: true }, // Q9 Rasteira
-            { q: "Em que país fica localizado o monumento Taj Mahal?", options: ["Índia", "Egito", "Turquia"], correct: 0, rigged: false },
-            { q: "Que gás as plantas absorvem durante a fotossíntese?", options: ["Oxigénio", "Dióxido de Carbono", "Azoto"], correct: 1, rigged: true }, // Q11 Rasteira
-            { q: "Quem é o autor da peça de teatro 'Hamlet'?", options: ["William Shakespeare", "Charles Dickens", "Miguel de Cervantes"], correct: 0, rigged: false },
-            { q: "A que temperatura (em graus Celsius) a água ferve ao nível do mar?", options: ["90°C", "100°C", "120°C"], correct: 1, rigged: true }, // Q13 Rasteira
-            { q: "Que país venceu o campeonato de futebol UEFA Euro 2016?", options: ["França", "Alemanha", "Portugal"], correct: 2, rigged: false },
-            { q: "Qual é o elemento químico mais leve e abundante do universo?", options: ["Hélio", "Hidrogénio", "Oxigénio"], correct: 1, rigged: true } // Q15 Rasteira
+        // Banco de Dados Estruturado com 15 Perguntas de Nível Intermédio
+        // Propriedade 'rigged' injeta falsos negativos controlados a partir da Q5
+        const CoreQuizEngineData = [
+            { question: "Qual é o país com maior extensão territorial do mundo?", choices: ["Canadá", "Rússia", "Estados Unidos"], solution: 1, rigged: false },
+            { question: "Qual é o livro mais vendido no mundo, depois da Bíblia?", choices: ["O Senhor dos Anéis", "Dom Quixote", "O Pequeno Príncipe"], solution: 1, rigged: false },
+            { question: "Quantos dentes tem um ser humano adulto saudável na sua dentição completa?", choices: ["32 dentes", "30 dentes", "28 dentes"], solution: 0, rigged: false },
+            { question: "Qual é a principal matéria-prima utilizada na produção de vidro?", choices: ["Argila", "Quartzo / Areia", "Calcário"], solution: 1, rigged: false },
+            { question: "Qual é o metal cujo símbolo químico na tabela periódica é Pb?", choices: ["Prata", "Chumbo", "Potássio"], solution: 1, rigged: true }, // Q5 Rasteira
+            { question: "Em que ano ocorreu a queda do Muro de Berlim?", choices: ["1985", "1989", "1991"], solution: 1, rigged: false },
+            { question: "Qual é o maior arquipélago do mundo em número de ilhas?", choices: ["Indonésia", "Filipinas", "Maldivas"], solution: 0, rigged: true }, // Q7 Rasteira
+            { question: "Qual cientista desenvolveu a teoria da Relatividade Geral?", choices: ["Isaac Newton", "Albert Einstein", "Nikola Tesla"], solution: 1, rigged: false },
+            { question: "Qual é a cidade considerada a mais populosa do planeta atualmente?", choices: ["Xangai", "Tóquio", "Nova Iorque"], solution: 1, rigged: true }, // Q9 Rasteira
+            { question: "Qual filósofo grego foi o mestre de Alexandre, o Grande?", choices: ["Platão", "Sócrates", "Aristóteles"], solution: 2, rigged: false },
+            { question: "Qual é o rio mais longo do continente europeu?", choices: ["Rio Danúbio", "Rio Volga", "Rio Reno"], solution: 1, rigged: true }, // Q11 Rasteira
+            { question: "Que modalidade artística imortalizou o pintor francês Claude Monet?", choices: ["Impressionismo", "Cubismo", "Surrealismo"], solution: 0, rigged: false },
+            { question: "Qual é a velocidade aproximada da luz no vácuo?", choices: ["150.000 km/s", "300.000 km/s", "450.000 km/s"], solution: 1, rigged: true }, // Q13 Rasteira
+            { question: "Qual país é o maior produtor de café do mercado global?", choices: ["Colômbia", "Brasil", "Vietname"], solution: 1, rigged: false },
+            { question: "Quantos ossos compõem o esqueleto de um ser humano adulto?", choices: ["206", "186", "226"], solution: 0, rigged: true } // Q15 Rasteira
         ];
 
-        // Sequência de 15 ficheiros de média com os tempos exatos pedidos
-        const mediaSequence = [
-            { file: "viwj.jpeg", type: "image", time: 6000 },
-            { file: "ua.jpeg", type: "image", time: 6000 },
-            { file: "jydhdh.jpeg", type: "image", time: 6000 },
-            { file: "Cursed.webp", type: "image", time: 6000 },
-            { file: "nih.jpeg", type: "image", time: 6000 },
-            { file: "dangee.mp4", type: "video", time: 5000 },
-            { file: "nig55piy.jpeg", type: "image", time: 6000 },
-            { file: "gisaltbihapp.jpeg", type: "image", time: 6000 },
-            { file: "ronny.mp4", type: "video", time: 7000 },
-            { file: "auwuj.jpeg", type: "image", time: 6000 },
-            { file: "son333345424.mp4", type: "video", time: 6000 },
-            { file: "opticjs.jpeg", type: "image", time: 3000 },
-            { file: "nihao.webp", type: "image", time: 6000 },
-            { file: "vidik33.mp4", type: "video", time: 4500 },
-            { file: "loriu838.jpeg", type: "image", time: 6000 }
+        // Mapeamento Avançado de Média e Tempos Dedicados por Transição
+        const MediaTimelineManifest = [
+            { filename: "viwj.jpeg", mime: "image", duration: 6000 },
+            { filename: "ua.jpeg", mime: "image", duration: 6000 },
+            { filename: "jydhdh.jpeg", mime: "image", duration: 6000 },
+            { filename: "Cursed.webp", mime: "image", duration: 6000 },
+            { filename: "nih.jpeg", mime: "image", duration: 6000 },
+            { filename: "dangee.mp4", mime: "video", duration: 5000 },
+            { filename: "nig55piy.jpeg", mime: "image", duration: 6000 },
+            { filename: "gisaltbihapp.jpeg", mime: "image", duration: 6000 },
+            { filename: "ronny.mp4", mime: "video", duration: 7000 },
+            { filename: "auwuj.jpeg", mime: "image", duration: 6000 },
+            { filename: "son333345424.mp4", mime: "video", duration: 6000 },
+            { filename: "opticjs.jpeg", mime: "image", duration: 3000 },
+            { filename: "nihao.webp", mime: "image", duration: 6000 },
+            { filename: "vidik33.mp4", mime: "video", duration: 4500 },
+            { filename: "loriu838.jpeg", mime: "image", duration: 6000 }
         ];
 
-        let currentQuestionIndex = 0;
+        // Estado Global do Ciclo de Vida da Aplicação
+        let activeQuestionPointer = 0;
+        let responseTimeoutTracker = null;
+        let visualTimerInterval = null;
+        let internalAudioTimeoutFired = false;
 
-        const soundCorrect = new Audio('alex-morgan-birthday-545484.mp3');
-        const soundWrong = new Audio('peido.mp3');
+        // Canais de Áudio e Recursos Sonoros do Enunciado
+        const soundTrackCelebration = new Audio('alex-morgan-birthday-545484.mp3');
+        const soundTrackBlunder = new Audio('peido.mp3');
+        const soundTrackTimeout = new Audio('audio8282.mp3');
 
-        function checkCode() {
-            if (document.getElementById('access-code').value === "53") {
-                document.getElementById('step-code').classList.add('hidden');
-                document.getElementById('step-quiz').classList.remove('hidden');
-                loadQuestion();
-            } else {
-                alert("Código incorreto.");
-            }
-        }
-
-        function loadQuestion() {
-            const currentQuestion = quizData[currentQuestionIndex];
-            document.getElementById('question-number').innerText = `Pergunta ${currentQuestionIndex + 1} de 15`;
-            document.getElementById('question-text').innerText = currentQuestion.q;
-            
-            const optionsDiv = document.getElementById('options');
-            optionsDiv.innerHTML = '';
-            document.getElementById('feedback').innerText = '';
-
-            currentQuestion.options.forEach((option, index) => {
-                const button = document.createElement('button');
-                button.className = 'option-btn';
-                button.innerText = option;
-                button.onclick = () => handleAnswer(index);
-                optionsDiv.appendChild(button);
-            });
-        }
-
-        function handleAnswer(selectedIndex) {
-            const currentQuestion = quizData[currentQuestionIndex];
-            let isCorrect = selectedIndex === currentQuestion.correct;
-
-            if (currentQuestion.rigged) {
-                isCorrect = false; 
-            }
-
-            if (currentQuestionIndex < 3) {
-                if (isCorrect) {
-                    soundCorrect.play().catch(e => {});
-                    document.getElementById('feedback').innerText = "Correto! Parabéns.";
-                } else {
-                    document.getElementById('feedback').innerText = "Incorreto.";
-                }
-            } else {
-                if (!isCorrect) {
-                    soundWrong.play().catch(e => {});
-                    document.getElementById('feedback').innerText = "Errado!";
-                } else {
-                    document.getElementById('feedback').innerText = "Correto!";
-                }
-            }
-
-            const buttons = document.querySelectorAll('.option-btn');
-            buttons.forEach(btn => btn.disabled = true);
-
-            // Aguarda 1.5s com o feedback no ecrã antes de rodar o intervalo de média
-            setTimeout(() => {
-                currentQuestionIndex++;
-                showMediaInterval();
-            }, 1500);
-        }
-
-        function showMediaInterval() {
-            const overlay = document.getElementById('media-overlay');
-            const content = document.getElementById('media-content');
-            const currentMedia = mediaSequence[currentQuestionIndex - 1];
-
-            content.innerHTML = '';
-            
-            if (currentMedia.type === 'video') {
-                content.innerHTML = `<video src="${currentMedia.file}" autoplay loop muted playsinline></video>`;
-            } else {
-                content.innerHTML = `<img src="${currentMedia.file}" alt="Loading...">`;
-            }
-
-            overlay.classList.remove('hidden');
-
-            setTimeout(() => {
-                overlay.classList.add('hidden');
-                content.innerHTML = '';
+        /**
+         * Verifica o código de acesso no ecrã inicial
+         */
+        function verifyGateKey() {
+            const userTokenInput = document.getElementById('passkey-input').value.trim();
+            if (userTokenInput === "53") {
+                const gate = document.getElementById('panel-gate');
+                gate.classList.add('hidden');
                 
-                if (currentQuestionIndex < quizData.length) {
-                    loadQuestion();
-                } else {
-                    showFinalScreen();
+                const mainQuizFrame = document.getElementById('panel-quiz');
+                mainQuizFrame.classList.remove('hidden');
+                mainQuizFrame.parentElement.style.background = "#f4f7f6"; 
+                
+                renderActiveQuestion();
+            } else {
+                alert("Código de acesso inválido. Por favor, tente novamente.");
+            }
+        }
+
+        /**
+         * Monta e desenha a pergunta atual e as respetivas opções
+         */
+        function renderActiveQuestion() {
+            clearQuestionTimers();
+            internalAudioTimeoutFired = false;
+
+            const dataset = CoreQuizEngineData[activeQuestionPointer];
+            
+            // Atualiza Metadados e Textos Principais
+            document.getElementById('meta-label').innerText = `Pergunta ${activeQuestionPointer + 1} de 15`;
+            document.getElementById('text-label').innerText = dataset.question;
+            
+            const feedbackContainer = document.getElementById('feedback-label');
+            feedbackContainer.innerText = '';
+            feedbackContainer.className = '';
+
+            // Renderiza Árvore de Opções de Resposta
+            const targetBox = document.getElementById('options-box');
+            targetBox.innerHTML = '';
+
+            dataset.choices.forEach((choiceText, indexValue) => {
+                const optionNode = document.createElement('button');
+                optionNode.className = 'option-card';
+                optionNode.innerText = choiceText;
+                optionNode.onclick = () => evaluateUserSelection(indexValue);
+                targetBox.appendChild(optionNode);
+            });
+
+            // Atualiza Barra de Progresso Superior
+            const completionRatio = (activeQuestionPointer / CoreQuizEngineData.length) * 100;
+            document.getElementById('quiz-progress').style.width = `${completionRatio}%`;
+
+            initiateWatchdogTimer();
+        }
+
+        /**
+         * Gere os prazos de resposta (Gatilho de 5 segundos)
+         */
+        function initiateWatchdogTimer() {
+            const barFill = document.getElementById('action-timer');
+            let timeElapsed = 0;
+            const checkResolution = 50; 
+            const executionLimit = 5000; 
+
+            barFill.style.width = '0%';
+
+            visualTimerInterval = setInterval(() => {
+                timeElapsed += checkResolution;
+                const ratio = (timeElapsed / executionLimit) * 100;
+                barFill.style.width = `${Math.min(ratio, 100)}%`;
+                
+                if (timeElapsed >= executionLimit) {
+                    clearInterval(visualTimerInterval);
                 }
-            }, currentMedia.time);
+            }, checkResolution);
+
+            responseTimeoutTracker = setTimeout(() => {
+                if (!internalAudioTimeoutFired) {
+                    soundTrackTimeout.play().catch(() => {
+                        console.log("Aviso: Áudio restrito pelas políticas do browser.");
+                    });
+                    internalAudioTimeoutFired = true;
+                }
+            }, executionLimit);
         }
 
-        function showFinalScreen() {
-            document.getElementById('step-quiz').classList.add('hidden');
-            document.getElementById('step-final').classList.remove('hidden');
+        /**
+         * Limpa os temporizadores em execução para evitar sobreposição
+         */
+        function clearQuestionTimers() {
+            if (responseTimeoutTracker) clearTimeout(responseTimeoutTracker);
+            if (visualTimerInterval) clearInterval(visualTimerInterval);
+            document.getElementById('action-timer').style.width = '0%';
         }
 
-        function shareWhatsApp() {
-            const messageText = document.getElementById('owner-message').value;
-            if (!messageText.trim()) {
-                alert("Por favor, escreve uma mensagem antes de partilhar.");
+        /**
+         * Analisa a resposta escolhida pelo utilizador
+         */
+        function evaluateUserSelection(selectedKey) {
+            clearQuestionTimers();
+
+            const currentScope = CoreQuizEngineData[activeQuestionPointer];
+            let outcomeState = (selectedKey === currentScope.solution);
+
+            // Aplica a lógica de rasteira (falso erro forçado) a partir da Q5
+            if (currentScope.rigged) {
+                outcomeState = false;
+            }
+
+            // Desativa botões para evitar duplo clique
+            const allActiveOptions = document.querySelectorAll('.option-card');
+            allActiveOptions.forEach(element => element.disabled = true);
+
+            const feedbackNode = document.getElementById('feedback-label');
+
+            // Aplica regras de som com base no histórico e progresso
+            if (activeQuestionPointer < 3) {
+                if (outcomeState) {
+                    soundTrackCelebration.play().catch(() => {});
+                    feedbackNode.innerText = "Correto! Excelente desempenho.";
+                    feedbackNode.className = "status-success";
+                } else {
+                    feedbackNode.innerText = "Incorreto. Tente focar-se mais na próxima.";
+                    feedbackNode.className = "status-error";
+                }
+            } else {
+                if (!outcomeState) {
+                    soundTrackBlunder.play().catch(() => {});
+                    feedbackNode.innerText = "Resposta Errada!";
+                    feedbackNode.className = "status-error";
+                } else {
+                    feedbackNode.innerText = "Correto!";
+                    feedbackNode.className = "status-success";
+                }
+            }
+
+            // Transição controlada para a rota de exibição de média
+            setTimeout(() => {
+                activeQuestionPointer++;
+                executeMediaInterstitial();
+            }, 1600);
+        }
+
+        /**
+         * Intercala e gere a exibição de média em ecrã completo entre as perguntas
+         */
+        function executeMediaInterstitial() {
+            const screenOverlay = document.getElementById('gallery-overlay');
+            const renderBox = document.getElementById('gallery-render-zone');
+            const activeMediaObject = MediaTimelineManifest[activeQuestionPointer - 1];
+
+            renderBox.innerHTML = '';
+
+            if (activeMediaObject.mime === 'video') {
+                renderBox.innerHTML = `<video src="${activeMediaObject.filename}" autoplay loop muted playsinline></video>`;
+            } else {
+                renderBox.innerHTML = `<img src="${activeMediaObject.filename}" alt="Transição">`;
+            }
+
+            screenOverlay.classList.remove('hidden');
+
+            // Mantém a média ativa com base no tempo específico configurado no manifesto
+            setTimeout(() => {
+                screenOverlay.classList.add('hidden');
+                renderBox.innerHTML = '';
+
+                if (activeQuestionPointer < CoreQuizEngineData.length) {
+                    renderActiveQuestion();
+                } else {
+                    displayFinalDashboard();
+                }
+            }, activeMediaObject.duration);
+        }
+
+        /**
+         * Transita para o ecrã final de avaliação do Pedro Silva
+         */
+        function displayFinalDashboard() {
+            document.getElementById('panel-quiz').classList.add('hidden');
+            
+            const completionProgress = document.getElementById('quiz-progress');
+            if (completionProgress) completionProgress.style.width = '100%';
+            
+            document.getElementById('panel-end').classList.remove('hidden');
+        }
+
+        /**
+         * Constrói e direciona o utilizador para a partilha no ecossistema WhatsApp
+         */
+        function dispatchWhatsAppMessage() {
+            const textContent = document.getElementById('owner-feedback').value.trim();
+            if (textContent.length === 0) {
+                alert("Por favor, escreva uma mensagem curta antes de prosseguir com a partilha.");
                 return;
             }
+
+            const structuredString = `Olá Pedro Silva! Deixei feedback sobre o teu Quiz de Cultura Geral: "${textContent}"`;
+            const secureEndpoint = `https://wa.me/?text=${encodeURIComponent(structuredString)}`;
             
-            const formattedMessage = `Olá Pedro Silva! Enviei feedback sobre o teu Quiz: "${messageText}"`;
-            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(formattedMessage)}`;
-            window.open(whatsappUrl, '_blank');
+            window.open(secureEndpoint, '_blank');
         }
     </script>
 </body>
