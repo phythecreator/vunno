@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz de Português Avançado</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <title>Quiz de Cultura Geral</title>
     <style>
         body {
             margin: 0;
@@ -24,7 +23,7 @@
             max-width: 500px;
             z-index: 1;
         }
-        input[type="text"], input[type="email"] {
+        input[type="text"], textarea {
             padding: 12px;
             font-size: 16px;
             border: 1px solid #ccc;
@@ -32,6 +31,11 @@
             width: 85%;
             margin-bottom: 15px;
             text-align: center;
+        }
+        textarea {
+            height: 100px;
+            resize: none;
+            text-align: left;
         }
         button {
             padding: 12px 24px;
@@ -41,6 +45,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #333333;
@@ -72,7 +77,7 @@
             font-weight: bold;
             font-size: 18px;
         }
-        /* Overlay para as imagens e vídeos entre as perguntas */
+        /* Overlay de transição para as imagens e vídeos */
         #media-overlay {
             position: fixed;
             top: 0;
@@ -90,17 +95,11 @@
             max-height: 100%;
             object-fit: contain;
         }
-        /* Contentor para o modelo 3D pesado */
-        #canvas-container {
-            width: 100%;
-            height: 300px;
-            margin-top: 20px;
-            background-color: #000;
-        }
     </style>
 </head>
 <body>
 
+    <!-- PASSO 1: Código de Acesso -->
     <div id="step-code" class="container">
         <h2>Insira o código de acesso:</h2>
         <input type="text" id="access-code" placeholder="Código">
@@ -108,56 +107,65 @@
         <button onclick="checkCode()">Entrar</button>
     </div>
 
-    <div id="step-email" class="container hidden">
-        <h2>Antes de começar, insira o seu e-mail:</h2>
-        <input type="email" id="user-email" placeholder="exemplo@email.com" required>
-        <br>
-        <button onclick="startQuiz()">Iniciar Quiz</button>
-    </div>
-
+    <!-- PASSO 2: O Quiz -->
     <div id="step-quiz" class="container hidden">
-        <h3 id="question-number">Pergunta 1 de 10</h3>
+        <h3 id="question-number">Pergunta 1 de 15</h3>
         <p id="question-text" style="font-size: 18px; font-weight: bold;"></p>
         <div id="options" class="options-container"></div>
         <p id="feedback"></p>
     </div>
 
+    <!-- Ecrã Intermédio de Média -->
     <div id="media-overlay" class="hidden">
         <div id="media-content"></div>
     </div>
 
+    <!-- PASSO 3: Ecrã Final com Mensagem e Partilha -->
     <div id="step-final" class="container hidden">
-        <h2>Quiz Concluído!</h2>
-        <p>A carregar os resultados finais e o objeto de avaliação...</p>
-        <div id="canvas-container"></div>
+        <h2>Did you like this quiz?</h2>
+        <p>If yes you can write a message for the owner ( Pedro Silva )</p>
+        <textarea id="owner-message" placeholder="Escreve aqui a tua mensagem para o Pedro..."></textarea>
+        <br>
+        <button onclick="shareWhatsApp()">Partilhar no WhatsApp</button>
     </div>
 
     <script>
-        // 10 Perguntas complexas de Sintaxe e Orações (Gramática de Portugal)
+        // 15 Perguntas de Cultura Geral (Nível Intermédio) com rasteiras intercaladas a partir da Q5
         const quizData = [
-            { q: "Na frase 'Disseram-me que o teste foi anulado', qual é a classificação da oração 'que o teste foi anulado'?", options: ["Oração subordinada substantiva integrante", "Oração subordinada adjetiva relativa", "Oração subordinada adverbial causal"], correct: 0, rigged: false },
-            { q: "Em 'O livro foi lido pelo aluno de Bragança', qual é a função sintática de 'pelo aluno de Bragança'?", options: ["Complemento direto", "Complemento agente da passiva", "Modificador do nome"], correct: 1, rigged: false },
-            { q: "Qual é a função sintática do constituinte sublinhado em 'Entreguei o relatório com urgência [ao diretor]'?", options: ["Complemento direto", "Complemento indireto", "Complemento oblíquo"], correct: 1, rigged: false },
-            { q: "Classifica a oração: 'Mal ele entrou na sala, todos se calaram.'", options: ["Oração subordinada adverbial temporal", "Oração subordinada adverbial condicional", "Oração coordenada explicativa"], correct: 0, rigged: false },
-            { q: "Na frase 'O rapaz, que usava óculos, resolveu o problema', a oração relativa é:", options: ["Oração subordinada adjetiva relativa explicativa", "Oração subordinada adjetiva relativa restritiva", "Oração subordinada substantiva completar"], correct: 0, rigged: true }, // Pergunta 5 (Rasteira)
-            { q: "Qual é a classificação do sujeito na frase 'Choveu torrencialmente durante a noite em Vila Real'?", options: ["Sujeito nulo subentendido", "Sujeito nulo indeterminado", "Sujeito nulo impessoal"], correct: 2, rigged: false },
-            { q: "Em 'Considero esta matéria bastante complexa', qual é a função sintática de 'bastante complexa'?", options: ["Predicativo do sujeito", "Predicativo do complemento direto", "Modificador livre"], correct: 1, rigged: true }, // Pergunta 7 (Rasteira)
-            { q: "Classifica a seguinte oração: 'Estudámos muito, logo obtivemos uma excelente nota.'", options: ["Oração coordenada conclusiva", "Oração coordenada consecutiva", "Oração subordinada adverbial consecutiva"], correct: 0, rigged: false },
-            { q: "Na frase 'É fundamental que todos compareçam à reunião', a oração subordinada desempenha a função de:", options: ["Sujeito", "Complemento direto", "Complemento do nome"], correct: 0, rigged: true }, // Pergunta 9 (Rasteira)
-            { q: "Identifica a função sintática de 'em Vila Real' na frase: 'Ele reside em Vila Real.'", options: ["Modificador do grupo verbal", "Complemento oblíquo", "Complemento direto"], correct: 1, rigged: false }
+            { q: "Qual é a capital da Austrália?", options: ["Sydney", "Melbourne", "Canberra"], correct: 2, rigged: false },
+            { q: "Qual é o maior oceano do planeta Terra?", options: ["Oceano Atlântico", "Oceano Pacífico", "Oceano Índico"], correct: 1, rigged: false },
+            { q: "Que elemento químico é representado pelo símbolo 'Au'?", options: ["Ouro", "Prata", "Cobre"], correct: 0, rigged: false },
+            { q: "Quem escreveu a famosa obra 'Os Lusíadas'?", options: ["Fernando Pessoa", "Luís de Camões", "Eça de Queirós"], correct: 1, rigged: false },
+            { q: "Quantos continentes existem oficialmente no modelo geográfico mais comum?", options: ["5", "6", "7"], correct: 2, rigged: true }, // Q5 Rasteira
+            { q: "Quem pintou o quadro 'Mona Lisa'?", options: ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso"], correct: 1, rigged: false },
+            { q: "Qual é a moeda oficial do Japão?", options: ["Yen", "Won", "Yuan"], correct: 0, rigged: true }, // Q7 Rasteira
+            { q: "Qual é o maior órgão do corpo humano?", options: ["Fígado", "Coração", "Pele"], correct: 2, rigged: false },
+            { q: "Qual é o planeta mais próximo do Sol?", options: ["Vénus", "Mercúrio", "Marte"], correct: 1, rigged: true }, // Q9 Rasteira
+            { q: "Em que país fica localizado o monumento Taj Mahal?", options: ["Índia", "Egito", "Turquia"], correct: 0, rigged: false },
+            { q: "Que gás as plantas absorvem durante a fotossíntese?", options: ["Oxigénio", "Dióxido de Carbono", "Azoto"], correct: 1, rigged: true }, // Q11 Rasteira
+            { q: "Quem é o autor da peça de teatro 'Hamlet'?", options: ["William Shakespeare", "Charles Dickens", "Miguel de Cervantes"], correct: 0, rigged: false },
+            { q: "A que temperatura (em graus Celsius) a água ferve ao nível do mar?", options: ["90°C", "100°C", "120°C"], correct: 1, rigged: true }, // Q13 Rasteira
+            { q: "Que país venceu o campeonato de futebol UEFA Euro 2016?", options: ["França", "Alemanha", "Portugal"], correct: 2, rigged: false },
+            { q: "Qual é o elemento químico mais leve e abundante do universo?", options: ["Hélio", "Hidrogénio", "Oxigénio"], correct: 1, rigged: true } // Q15 Rasteira
         ];
 
-        // Lista de ficheiros de média e tempos de exibição entre as perguntas
+        // Sequência de 15 ficheiros de média com os tempos exatos pedidos
         const mediaSequence = [
-            { file: "fligga.webp", type: "video", time: 7000 },
-            { file: "jigg.webp", type: "image", time: 4000 },
-            { file: "cons.png", type: "image", time: 4000 },
-            { file: "holdon.webp", type: "image", time: 4000 },
-            { file: "nofc.webp", type: "image", time: 4000 },
-            { file: "vehote.webp", type: "video", time: 5000 },
-            { file: "funy.webp", type: "image", time: 4000 },
-            { file: "jigg.webp", type: "image", time: 4000 }, // Repetição/Excesso para cobrir as 9 transições
-            { file: "funy.webp", type: "image", time: 4000 }
+            { file: "viwj.jpeg", type: "image", time: 6000 },
+            { file: "ua.jpeg", type: "image", time: 6000 },
+            { file: "jydhdh.jpeg", type: "image", time: 6000 },
+            { file: "Cursed.webp", type: "image", time: 6000 },
+            { file: "nih.jpeg", type: "image", time: 6000 },
+            { file: "dangee.mp4", type: "video", time: 5000 },
+            { file: "nig55piy.jpeg", type: "image", time: 6000 },
+            { file: "gisaltbihapp.jpeg", type: "image", time: 6000 },
+            { file: "ronny.mp4", type: "video", time: 7000 },
+            { file: "auwuj.jpeg", type: "image", time: 6000 },
+            { file: "son333345424.mp4", type: "video", time: 6000 },
+            { file: "opticjs.jpeg", type: "image", time: 3000 },
+            { file: "nihao.webp", type: "image", time: 6000 },
+            { file: "vidik33.mp4", type: "video", time: 4500 },
+            { file: "loriu838.jpeg", type: "image", time: 6000 }
         ];
 
         let currentQuestionIndex = 0;
@@ -166,28 +174,18 @@
         const soundWrong = new Audio('peido.mp3');
 
         function checkCode() {
-            if (document.getElementById('access-code').value === "745") {
+            if (document.getElementById('access-code').value === "53") {
                 document.getElementById('step-code').classList.add('hidden');
-                document.getElementById('step-email').classList.remove('hidden');
+                document.getElementById('step-quiz').classList.remove('hidden');
+                loadQuestion();
             } else {
                 alert("Código incorreto.");
             }
         }
 
-        function startQuiz() {
-            const email = document.getElementById('user-email').value;
-            if (email.includes('@') && email.includes('.')) {
-                document.getElementById('step-email').classList.add('hidden');
-                document.getElementById('step-quiz').classList.remove('hidden');
-                loadQuestion();
-            } else {
-                alert("Insira um e-mail válido.");
-            }
-        }
-
         function loadQuestion() {
             const currentQuestion = quizData[currentQuestionIndex];
-            document.getElementById('question-number').innerText = `Pergunta ${currentQuestionIndex + 1} de 10`;
+            document.getElementById('question-number').innerText = `Pergunta ${currentQuestionIndex + 1} de 15`;
             document.getElementById('question-text').innerText = currentQuestion.q;
             
             const optionsDiv = document.getElementById('options');
@@ -227,77 +225,58 @@
                 }
             }
 
-            // Bloqueia cliques adicionais
             const buttons = document.querySelectorAll('.option-btn');
             buttons.forEach(btn => btn.disabled = true);
 
-            // Aguarda 1.5s para o feedback visual antes de iniciar o intervalo com média
+            // Aguarda 1.5s com o feedback no ecrã antes de rodar o intervalo de média
             setTimeout(() => {
                 currentQuestionIndex++;
-                if (currentQuestionIndex < quizData.length) {
-                    showMediaInterval();
-                } else {
-                    showFinalScreen();
-                }
+                showMediaInterval();
             }, 1500);
         }
 
-        // Função que gere as imagens e vídeos entre as perguntas
         function showMediaInterval() {
             const overlay = document.getElementById('media-overlay');
             const content = document.getElementById('media-content');
-            const currentMedia = mediaSequence[currentQuestionIndex - 1]; // Obtém a média para esta transição
+            const currentMedia = mediaSequence[currentQuestionIndex - 1];
 
             content.innerHTML = '';
             
             if (currentMedia.type === 'video') {
-                content.innerHTML = `<video src="${currentMedia.file}" autoplay loop muted></video>`;
+                content.innerHTML = `<video src="${currentMedia.file}" autoplay loop muted playsinline></video>`;
             } else {
-                content.innerHTML = `<img src="${currentMedia.file}" alt="interstitial">`;
+                content.innerHTML = `<img src="${currentMedia.file}" alt="Loading...">`;
             }
 
             overlay.classList.remove('hidden');
 
-            // Mantém a imagem/vídeo no ecrã durante o tempo configurado
             setTimeout(() => {
                 overlay.classList.add('hidden');
                 content.innerHTML = '';
-                loadQuestion();
+                
+                if (currentQuestionIndex < quizData.length) {
+                    loadQuestion();
+                } else {
+                    showFinalScreen();
+                }
             }, currentMedia.time);
         }
 
         function showFinalScreen() {
             document.getElementById('step-quiz').classList.add('hidden');
             document.getElementById('step-final').classList.remove('hidden');
-            initHeavy3DModel();
         }
 
-        // Inicialização do modelo 3D complexo usando Three.js
-        function initHeavy3DModel() {
-            const container = document.getElementById('canvas-container');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ antialias: true });
-            
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            container.appendChild(renderer.domElement);
-
-            // Criação de uma geometria matemática com subdivisões gigantescas para tornar a renderização extremamente pesada
-            // Parâmetros aumentados (p, q, tubularSegments, radialSegments) para forçar o processamento gráfico do telemóvel
-            const geometry = new THREE.TorusKnotGeometry(10, 3, 600, 150, 11, 13);
-            const material = new THREE.MeshNormalMaterial({ wireframe: true });
-            const torusKnot = new THREE.Mesh(geometry, material);
-            scene.add(torusKnot);
-
-            camera.position.z = 30;
-
-            function animate() {
-                requestAnimationFrame(animate);
-                torusKnot.rotation.x += 0.03;
-                torusKnot.rotation.y += 0.03;
-                renderer.render(scene, camera);
+        function shareWhatsApp() {
+            const messageText = document.getElementById('owner-message').value;
+            if (!messageText.trim()) {
+                alert("Por favor, escreve uma mensagem antes de partilhar.");
+                return;
             }
-            animate();
+            
+            const formattedMessage = `Olá Pedro Silva! Enviei feedback sobre o teu Quiz: "${messageText}"`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(formattedMessage)}`;
+            window.open(whatsappUrl, '_blank');
         }
     </script>
 </body>
