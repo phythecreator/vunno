@@ -1,584 +1,436 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Interativo de Cultura Geral</title>
+    <title>O Mistério da Mansão Ravenwood</title>
     <style>
-        /* ==========================================================================
-           1. RESET E DEFINIÇÕES BASE
-           ========================================================================== */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        :root {
+            --bg-color: #121216;
+            --panel-bg: #1c1c24;
+            --accent-gold: #d4af37;
+            --accent-purple: #8a2be2;
+            --text-color: #e0e0e6;
+            --border-color: #2d2d3d;
         }
 
         body {
-            background: #f4f7f6;
-            color: #1a1a1a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-        }
-
-        /* ==========================================================================
-           2. ANIMAÇÕES SUTIS
-           ========================================================================== */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulseWarning {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); box-shadow: 0 10px 25px rgba(255, 71, 87, 0.2); }
-            100% { transform: scale(1); }
-        }
-
-        /* ==========================================================================
-           3. ESTRUTURA DOS CARD / CONTAINER PRINCIPAL
-           ========================================================================== */
-        .quiz-card {
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
-            padding: 40px;
-            width: 92%;
-            max-width: 540px;
-            text-align: center;
-            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            position: relative;
-            border: 1px solid rgba(0, 0, 0, 0.03);
-            transition: all 0.3s ease;
-        }
-
-        /* Código de acesso inicia com ecrã totalmente limpo */
-        .clean-gate {
-            background: #ffffff !important;
-            box-shadow: none !important;
-            border: none !important;
-        }
-
-        /* ==========================================================================
-           4. COMPONENTES DE TEXTO E TIPOGRAFIA
-           ========================================================================== */
-        h2 {
-            font-size: 26px;
-            font-weight: 700;
-            color: #111111;
-            margin-bottom: 20px;
-            letter-spacing: -0.5px;
-        }
-
-        p.description {
-            font-size: 16px;
-            color: #666666;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .question-meta {
-            font-size: 13px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #2f3542;
-            margin-bottom: 10px;
-        }
-
-        .question-text {
-            font-size: 20px;
-            font-weight: 600;
-            color: #1e272e;
-            margin-bottom: 30px;
-            line-height: 1.4;
-        }
-
-        /* ==========================================================================
-           5. ELEMENTOS DE FORMULÁRIO E INPUTS
-           ========================================================================== */
-        input[type="text"], textarea {
-            width: 100%;
-            padding: 16px 20px;
-            font-size: 16px;
-            border: 2px solid #e4e7eb;
-            border-radius: 12px;
-            background: #f8fafc;
-            color: #2d3748;
-            outline: none;
-            transition: all 0.25s ease;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"]:focus, textarea:focus {
-            border-color: #000000;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
-        }
-
-        textarea {
-            height: 120px;
-            resize: none;
-            line-height: 1.5;
-            text-align: left;
-        }
-
-        /* ==========================================================================
-           6. BOTÕES E INTERAÇÃO
-           ========================================================================== */
-        .btn-prime {
-            background: #000000;
-            color: #ffffff;
-            border: none;
-            padding: 16px 32px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-        }
-
-        .btn-prime:hover {
-            background: #222222;
-            transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .btn-prime:active {
-            transform: translateY(1px);
-        }
-
-        .options-grid {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            margin-bottom: 25px;
+            align-items: center;
         }
 
-        .option-card {
-            background: #ffffff;
-            border: 2px solid #edeef0;
-            border-radius: 14px;
-            padding: 18px 24px;
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--accent-gold);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .game-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        @media (max-width: 800px) {
+            .game-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            color: var(--accent-purple);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-top: 0;
+        }
+
+        /* Zona de Ações */
+        .controls-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--accent-gold);
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            background-color: #252533;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
             font-size: 16px;
-            font-weight: 500;
-            color: #333333;
-            text-align: left;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-purple);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 100%;
-            outline: none;
+            margin-top: 10px;
+            transition: background 0.2s;
         }
 
-        .option-card:hover:not(:disabled) {
-            border-color: #000000;
-            background: #fcfcfc;
-            transform: translateX(4px);
+        button:hover {
+            background-color: #6a1b9a;
         }
 
-        .option-card:disabled {
-            cursor: not-allowed;
-            opacity: 0.7;
+        button.accuse-btn {
+            background-color: #b22222;
         }
 
-        /* ==========================================================================
-           7. FEEDBACK E BARRAS DE PROGRESSO
-           ========================================================================== */
-        #feedback-label {
-            font-size: 16px;
-            font-weight: 700;
-            margin-top: 15px;
-            min-height: 24px;
+        button.accuse-btn:hover {
+            background-color: #8b0000;
         }
 
-        .status-success { color: #2ed573; }
-        .status-error { color: #ff4757; }
-
-        .progress-wrapper {
-            width: 100%;
-            background: #eaeaea;
-            height: 6px;
-            border-radius: 10px;
-            margin-bottom: 35px;
-            overflow: hidden;
+        /* Histórico/Log */
+        #log {
+            background-color: #121216;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 10px;
+            height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+            color: #a0a0ab;
         }
 
-        .progress-bar {
-            height: 100%;
-            background: #000000;
-            width: 0%;
-            transition: width 0.4s ease;
+        .log-entry {
+            margin-bottom: 6px;
+            border-left: 3px solid var(--accent-purple);
+            padding-left: 6px;
         }
 
-        /* Indicador visual do tempo limite de 5 segundos */
-        .timer-track {
-            width: 100%;
-            height: 4px;
-            background: #f1f2f6;
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            overflow: hidden;
+        /* Bloco de Notas */
+        .notebook-category {
+            margin-bottom: 15px;
         }
 
-        .timer-fill {
-            height: 100%;
-            background: #ffa502;
-            width: 0%;
-        }
-
-        /* ==========================================================================
-           8. UTILITÁRIOS E LAYOUTS OCULTOS
-           ========================================================================== */
-        .hidden {
-            display: none !important;
-        }
-
-        /* ==========================================================================
-           9. OVERLAY DE MÉDIA (ECRÃ COMPLETO ENTRE PERGUNTAS)
-           ========================================================================== */
-        #gallery-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: #ffffff;
+        .notebook-item {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #252533;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .notebook-item:hover {
+            background-color: #252533;
+        }
+
+        .status-icon {
+            font-weight: bold;
+            width: 24px;
+            text-align: center;
+        }
+
+        .status-none { color: #555; }
+        .status-innocent { color: #ff4d4d; }
+        .status-suspect { color: #ffeb3b; }
+
+        /* Cartas do jogador */
+        .cards-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #2c2c38, #1e1e26);
+            border: 1px solid var(--accent-gold);
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.85);
             justify-content: center;
             align-items: center;
-            z-index: 9999;
+            z-index: 10;
         }
 
-        #gallery-overlay img, #gallery-overlay video {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            animation: fadeIn 0.4s ease;
-        }
-
-        /* Loader para indicar transição de média */
-        .media-spinner {
-            position: absolute;
-            bottom: 40px;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #000000;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .modal-content {
+            background-color: var(--panel-bg);
+            border: 2px solid var(--accent-gold);
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
         }
     </style>
 </head>
 <body>
 
-    <!-- PAINEL 1: Autenticação Limpa por Código -->
-    <div id="panel-gate" class="quiz-card clean-gate">
-        <h2>Acesso ao Sistema</h2>
-        <p class="description">Introduza o código de validação numérico para libertar o questionário.</p>
-        <input type="text" id="passkey-input" placeholder="Introduzir código..." autocomplete="off">
-        <button class="btn-prime" onclick="verifyGateKey()">Validar Código</button>
-    </div>
+    <header>
+        <h1>Mansão Ravenwood</h1>
+        <p>Um jogo de dedução e mistério estilo Cluedo</p>
+    </header>
 
-    <!-- PAINEL 2: Espaço do Questionário Ativo -->
-    <div id="panel-quiz" class="quiz-card hidden">
-        <div class="timer-track"><div id="action-timer" class="timer-fill"></div></div>
-        <div class="progress-wrapper">
-            <div id="quiz-progress" class="progress-bar"></div>
+    <div class="game-container">
+        
+        <!-- PAINEL DE AÇÃO -->
+        <div class="panel">
+            <h2>🕵️ Investigação</h2>
+            
+            <div class="controls-group">
+                <label for="select-suspect">Suspeito:</label>
+                <select id="select-suspect"></select>
+            </div>
+
+            <div class="controls-group">
+                <label for="select-weapon">Arma:</label>
+                <select id="select-weapon"></select>
+            </div>
+
+            <div class="controls-group">
+                <label for="select-room">Divisão:</label>
+                <select id="select-room"></select>
+            </div>
+
+            <button onclick="makeSuggestion()">Lançar Palpite</button>
+            <button class="accuse-btn" onclick="makeAccusation()">Fazer Acusação Final!</button>
+
+            <h3 style="color: var(--accent-gold); margin-top: 20px;">📜 Diário do Caso</h3>
+            <div id="log"></div>
+
+            <h3 style="color: var(--accent-gold); margin-top: 20px;">🃏 As Tuas Cartas</h3>
+            <div class="cards-container" id="player-cards"></div>
         </div>
-        <div id="meta-label" class="question-meta">Pergunta 1 de 15</div>
-        <div id="text-label" class="question-text">Carregando enunciado...</div>
-        <div id="options-box" class="options-grid"></div>
-        <div id="feedback-label"></div>
+
+        <!-- PAINEL DO BLOCO DE NOTAS -->
+        <div class="panel">
+            <h2>📝 Bloco de Notas Secundário</h2>
+            <p style="font-size: 13px; color: #888; margin-top:-10px;">Clica num item para alternar: Livre ➔ ❌ Inocente ➔ ⭐ Suspeito</p>
+            
+            <div id="notebook-content"></div>
+        </div>
+
     </div>
 
-    <!-- PAINEL 3: Ecrã Intermediário de Exibição de Média -->
-    <div id="gallery-overlay" class="hidden">
-        <div id="gallery-render-zone"></div>
-        <div class="media-spinner"></div>
+    <!-- MODAL DE FIM DE JOGO -->
+    <div id="endModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title" style="font-size: 28px;">Fim de Jogo</h2>
+            <p id="modal-text" style="font-size: 18px; margin: 20px 0;"></p>
+            <button onclick="window.location.reload()">Jogar Novamente</button>
+        </div>
     </div>
 
-    <!-- PAINEL 4: Fecho do Quiz e Envio de Feedback -->
-    <div id="panel-end" class="quiz-card hidden">
-        <h2>Did you like this quiz?</h2>
-        <p class="description">If yes you can write a message for the owner ( Pedro Silva )</p>
-        <textarea id="owner-feedback" placeholder="Escreva a sua mensagem aqui de forma clara..."></textarea>
-        <button class="btn-prime" onclick="dispatchWhatsAppMessage()">
-            <span>Partilhar no WhatsApp</span>
-        </button>
-    </div>
-
-    <!-- ==========================================================================
-         10. LÓGICA E MOTOR JAVASCRIPT DO QUIZ
-         ========================================================================== -->
     <script>
-        // Banco de Dados Estruturado com 15 Perguntas de Nível Intermédio
-        // Propriedade 'rigged' injeta falsos negativos controlados a partir da Q5
-        const CoreQuizEngineData = [
-            { question: "Qual é o país com maior extensão territorial do mundo?", choices: ["Canadá", "Rússia", "Estados Unidos"], solution: 1, rigged: false },
-            { question: "Qual é o livro mais vendido no mundo, depois da Bíblia?", choices: ["O Senhor dos Anéis", "Dom Quixote", "O Pequeno Príncipe"], solution: 1, rigged: false },
-            { question: "Quantos dentes tem um ser humano adulto saudável na sua dentição completa?", choices: ["32 dentes", "30 dentes", "28 dentes"], solution: 0, rigged: false },
-            { question: "Qual é a principal matéria-prima utilizada na produção de vidro?", choices: ["Argila", "Quartzo / Areia", "Calcário"], solution: 1, rigged: false },
-            { question: "Qual é o metal cujo símbolo químico na tabela periódica é Pb?", choices: ["Prata", "Chumbo", "Potássio"], solution: 1, rigged: true }, // Q5 Rasteira
-            { question: "Em que ano ocorreu a queda do Muro de Berlim?", choices: ["1985", "1989", "1991"], solution: 1, rigged: false },
-            { question: "Qual é o maior arquipélago do mundo em número de ilhas?", choices: ["Indonésia", "Filipinas", "Maldivas"], solution: 0, rigged: true }, // Q7 Rasteira
-            { question: "Qual cientista desenvolveu a teoria da Relatividade Geral?", choices: ["Isaac Newton", "Albert Einstein", "Nikola Tesla"], solution: 1, rigged: false },
-            { question: "Qual é a cidade considerada a mais populosa do planeta atualmente?", choices: ["Xangai", "Tóquio", "Nova Iorque"], solution: 1, rigged: true }, // Q9 Rasteira
-            { question: "Qual filósofo grego foi o mestre de Alexandre, o Grande?", choices: ["Platão", "Sócrates", "Aristóteles"], solution: 2, rigged: false },
-            { question: "Qual é o rio mais longo do continente europeu?", choices: ["Rio Danúbio", "Rio Volga", "Rio Reno"], solution: 1, rigged: true }, // Q11 Rasteira
-            { question: "Que modalidade artística imortalizou o pintor francês Claude Monet?", choices: ["Impressionismo", "Cubismo", "Surrealismo"], solution: 0, rigged: false },
-            { question: "Qual é a velocidade aproximada da luz no vácuo?", choices: ["150.000 km/s", "300.000 km/s", "450.000 km/s"], solution: 1, rigged: true }, // Q13 Rasteira
-            { question: "Qual país é o maior produtor de café do mercado global?", choices: ["Colômbia", "Brasil", "Vietname"], solution: 1, rigged: false },
-            { question: "Quantos ossos compõem o esqueleto de um ser humano adulto?", choices: ["206", "186", "226"], solution: 0, rigged: true } // Q15 Rasteira
-        ];
+        // Dados do Jogo
+        const suspects = ["Dona Violeta", "Coronel Mostarda", "Senhor Marinho", "Doutora Oliva", "Senhora Rosa", "Professor Castanho"];
+        const weapons = ["Castiçal de Prata", "Adaga de Caça", "Corda de Escalada", "Chave Inglesa", "Veneno Botânico", "Pistola Antiga"];
+        const rooms = ["Hall de Entrada", "Salão de Jogos", "Biblioteca", "Cozinha", "Sala de Jantar", "Jardim de Inverno", "Escritório", "Teatro Privado", "Cave"];
 
-        // Mapeamento Avançado de Média e Tempos Dedicados por Transição
-        const MediaTimelineManifest = [
-            { filename: "viwj.jpeg", mime: "image", duration: 6000 },
-            { filename: "ua.jpeg", mime: "image", duration: 6000 },
-            { filename: "jydhdh.jpeg", mime: "image", duration: 6000 },
-            { filename: "Cursed.webp", mime: "image", duration: 6000 },
-            { filename: "nih.jpeg", mime: "image", duration: 6000 },
-            { filename: "dangee.mp4", mime: "video", duration: 5000 },
-            { filename: "nig55piy.jpeg", mime: "image", duration: 6000 },
-            { filename: "gisaltbihapp.jpeg", mime: "image", duration: 6000 },
-            { filename: "ronny.mp4", mime: "video", duration: 7000 },
-            { filename: "auwuj.jpeg", mime: "image", duration: 6000 },
-            { filename: "son333345424.mp4", mime: "video", duration: 6000 },
-            { filename: "opticjs.jpeg", mime: "image", duration: 3000 },
-            { filename: "nihao.webp", mime: "image", duration: 6000 },
-            { filename: "vidik33.mp4", mime: "video", duration: 4500 },
-            { filename: "loriu838.jpeg", mime: "image", duration: 6000 }
-        ];
+        let envelope = { suspect: "", weapon: "", room: "" };
+        let playerCards = [];
+        let ai1Cards = [];
+        let ai2Cards = [];
 
-        // Estado Global do Ciclo de Vida da Aplicação
-        let activeQuestionPointer = 0;
-        let responseTimeoutTracker = null;
-        let visualTimerInterval = null;
-        let internalAudioTimeoutFired = false;
+        // Inicializar o Jogo
+        function initGame() {
+            // 1. Criar o envelope secreto (O Crime)
+            envelope.suspect = suspects[Math.floor(Math.random() * suspects.length)];
+            envelope.weapon = weapons[Math.floor(Math.random() * weapons.length)];
+            envelope.room = rooms[Math.floor(Math.random() * rooms.length)];
 
-        // Canais de Áudio e Recursos Sonoros do Enunciado
-        const soundTrackCelebration = new Audio('alex-morgan-birthday-545484.mp3');
-        const soundTrackBlunder = new Audio('peido.mp3');
-        const soundTrackTimeout = new Audio('audio8282.mp3');
+            // 2. Juntar o resto das cartas para distribuir
+            let remainingCards = [];
+            suspects.forEach(s => { if(s !== envelope.suspect) remainingCards.push({type: 'suspect', name: s}); });
+            weapons.forEach(w => { if(w !== envelope.weapon) remainingCards.push({type: 'weapon', name: w}); });
+            rooms.forEach(r => { if(r !== envelope.room) remainingCards.push({type: 'room', name: r}); });
 
-        /**
-         * Verifica o código de acesso no ecrã inicial
-         */
-        function verifyGateKey() {
-            const userTokenInput = document.getElementById('passkey-input').value.trim();
-            if (userTokenInput === "53") {
-                const gate = document.getElementById('panel-gate');
-                gate.classList.add('hidden');
-                
-                const mainQuizFrame = document.getElementById('panel-quiz');
-                mainQuizFrame.classList.remove('hidden');
-                mainQuizFrame.parentElement.style.background = "#f4f7f6"; 
-                
-                renderActiveQuestion();
-            } else {
-                alert("Código de acesso inválido. Por favor, tente novamente.");
+            // Baralhar cartas restantes
+            remainingCards.sort(() => Math.random() - 0.5);
+
+            // 3. Distribuir entre Jogador, IA 1 e IA 2
+            while(remainingCards.length > 0) {
+                if(remainingCards.length > 0) playerCards.push(remainingCards.pop().name);
+                if(remainingCards.length > 0) ai1Cards.push(remainingCards.pop().name);
+                if(remainingCards.length > 0) ai2Cards.push(remainingCards.pop().name);
             }
+
+            // Preencher os Menus Dropdown
+            populateSelect("select-suspect", suspects);
+            populateSelect("select-weapon", weapons);
+            populateSelect("select-room", rooms);
+
+            // Desenhar Bloco de Notas e Cartas
+            renderNotebook();
+            renderPlayerCards();
+            
+            logMessage("O crime aconteceu! Investiga a mansão e descobre o culpado.");
+            logMessage("As tuas cartas foram marcadas automaticamente como inocentes.");
         }
 
-        /**
-         * Monta e desenha a pergunta atual e as respetivas opções
-         */
-        function renderActiveQuestion() {
-            clearQuestionTimers();
-            internalAudioTimeoutFired = false;
-
-            const dataset = CoreQuizEngineData[activeQuestionPointer];
-            
-            // Atualiza Metadados e Textos Principais
-            document.getElementById('meta-label').innerText = `Pergunta ${activeQuestionPointer + 1} de 15`;
-            document.getElementById('text-label').innerText = dataset.question;
-            
-            const feedbackContainer = document.getElementById('feedback-label');
-            feedbackContainer.innerText = '';
-            feedbackContainer.className = '';
-
-            // Renderiza Árvore de Opções de Resposta
-            const targetBox = document.getElementById('options-box');
-            targetBox.innerHTML = '';
-
-            dataset.choices.forEach((choiceText, indexValue) => {
-                const optionNode = document.createElement('button');
-                optionNode.className = 'option-card';
-                optionNode.innerText = choiceText;
-                optionNode.onclick = () => evaluateUserSelection(indexValue);
-                targetBox.appendChild(optionNode);
+        function populateSelect(id, array) {
+            const select = document.getElementById(id);
+            array.forEach(item => {
+                let opt = document.createElement("option");
+                opt.value = item;
+                opt.innerText = item;
+                select.appendChild(opt);
             });
-
-            // Atualiza Barra de Progresso Superior
-            const completionRatio = (activeQuestionPointer / CoreQuizEngineData.length) * 100;
-            document.getElementById('quiz-progress').style.width = `${completionRatio}%`;
-
-            initiateWatchdogTimer();
         }
 
-        /**
-         * Gere os prazos de resposta (Gatilho de 5 segundos)
-         */
-        function initiateWatchdogTimer() {
-            const barFill = document.getElementById('action-timer');
-            let timeElapsed = 0;
-            const checkResolution = 50; 
-            const executionLimit = 5000; 
+        // Desenhar Bloco de Notas Interativo
+        function renderNotebook() {
+            const container = document.getElementById("notebook-content");
+            container.innerHTML = "";
 
-            barFill.style.width = '0%';
+            createNotebookSection(container, "Suspeitos", suspects);
+            createNotebookSection(container, "Armas", weapons);
+            createNotebookSection(container, "Divisões", rooms);
+        }
 
-            visualTimerInterval = setInterval(() => {
-                timeElapsed += checkResolution;
-                const ratio = (timeElapsed / executionLimit) * 100;
-                barFill.style.width = `${Math.min(ratio, 100)}%`;
+        function createNotebookSection(parent, title, items) {
+            let catDiv = document.createElement("div");
+            catDiv.className = "notebook-category";
+            catDiv.innerHTML = `<h3>${title}</h3>`;
+
+            items.forEach(item => {
+                let itemDiv = document.createElement("document");
+                itemDiv.className = "notebook-item";
                 
-                if (timeElapsed >= executionLimit) {
-                    clearInterval(visualTimerInterval);
-                }
-            }, checkResolution);
+                // Se o jogador já tem a carta, começa logo como Inocente (X)
+                let initialStatus = playerCards.includes(item) ? "❌" : "☐";
+                let initialClass = playerCards.includes(item) ? "status-innocent" : "status-none";
 
-            responseTimeoutTracker = setTimeout(() => {
-                if (!internalAudioTimeoutFired) {
-                    soundTrackTimeout.play().catch(() => {
-                        console.log("Aviso: Áudio restrito pelas políticas do browser.");
-                    });
-                    internalAudioTimeoutFired = true;
-                }
-            }, executionLimit);
+                itemDiv.innerHTML = `
+                    <span>${item}</span>
+                    <span class="status-icon ${initialClass}">${initialStatus}</span>
+                `;
+
+                itemDiv.onclick = () => {
+                    const iconEl = itemDiv.querySelector(".status-icon");
+                    if (iconEl.innerText === "☐") {
+                        iconEl.innerText = "❌";
+                        iconEl.className = "status-icon status-innocent";
+                    } else if (iconEl.innerText === "❌") {
+                        iconEl.innerText = "⭐";
+                        iconEl.className = "status-icon status-suspect";
+                    } else {
+                        iconEl.innerText = "☐";
+                        iconEl.className = "status-icon status-none";
+                    }
+                };
+                catDiv.appendChild(itemDiv);
+            });
+            parent.appendChild(catDiv);
         }
 
-        /**
-         * Limpa os temporizadores em execução para evitar sobreposição
-         */
-        function clearQuestionTimers() {
-            if (responseTimeoutTracker) clearTimeout(responseTimeoutTracker);
-            if (visualTimerInterval) clearInterval(visualTimerInterval);
-            document.getElementById('action-timer').style.width = '0%';
+        function renderPlayerCards() {
+            const container = document.getElementById("player-cards");
+            playerCards.forEach(card => {
+                let div = document.createElement("div");
+                div.className = "card";
+                div.innerText = card;
+                container.appendChild(div);
+            });
         }
 
-        /**
-         * Analisa a resposta escolhida pelo utilizador
-         */
-        function evaluateUserSelection(selectedKey) {
-            clearQuestionTimers();
-
-            const currentScope = CoreQuizEngineData[activeQuestionPointer];
-            let outcomeState = (selectedKey === currentScope.solution);
-
-            // Aplica a lógica de rasteira (falso erro forçado) a partir da Q5
-            if (currentScope.rigged) {
-                outcomeState = false;
-            }
-
-            // Desativa botões para evitar duplo clique
-            const allActiveOptions = document.querySelectorAll('.option-card');
-            allActiveOptions.forEach(element => element.disabled = true);
-
-            const feedbackNode = document.getElementById('feedback-label');
-
-            // Aplica regras de som com base no histórico e progresso
-            if (activeQuestionPointer < 3) {
-                if (outcomeState) {
-                    soundTrackCelebration.play().catch(() => {});
-                    feedbackNode.innerText = "Correto! Excelente desempenho.";
-                    feedbackNode.className = "status-success";
-                } else {
-                    feedbackNode.innerText = "Incorreto. Tente focar-se mais na próxima.";
-                    feedbackNode.className = "status-error";
-                }
-            } else {
-                if (!outcomeState) {
-                    soundTrackBlunder.play().catch(() => {});
-                    feedbackNode.innerText = "Resposta Errada!";
-                    feedbackNode.className = "status-error";
-                } else {
-                    feedbackNode.innerText = "Correto!";
-                    feedbackNode.className = "status-success";
-                }
-            }
-
-            // Transição controlada para a rota de exibição de média
-            setTimeout(() => {
-                activeQuestionPointer++;
-                executeMediaInterstitial();
-            }, 1600);
+        function logMessage(msg) {
+            const log = document.getElementById("log");
+            let entry = document.createElement("div");
+            entry.className = "log-entry";
+            entry.innerText = msg;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight; // Auto-scroll para o fim
         }
 
-        /**
-         * Intercala e gere a exibição de média em ecrã completo entre as perguntas
-         */
-        function executeMediaInterstitial() {
-            const screenOverlay = document.getElementById('gallery-overlay');
-            const renderBox = document.getElementById('gallery-render-zone');
-            const activeMediaObject = MediaTimelineManifest[activeQuestionPointer - 1];
+        // Lógica do Palpite (Dedução)
+        function makeSuggestion() {
+            const suspect = document.getElementById("select-suspect").value;
+            const weapon = document.getElementById("select-weapon").value;
+            const room = document.getElementById("select-room").value;
 
-            renderBox.innerHTML = '';
+            logMessage(`🗣️ Tu sugeres: ${suspect} com o/a ${weapon} na/o ${room}.`);
 
-            if (activeMediaObject.mime === 'video') {
-                renderBox.innerHTML = `<video src="${activeMediaObject.filename}" autoplay loop muted playsinline></video>`;
-            } else {
-                renderBox.innerHTML = `<img src="${activeMediaObject.filename}" alt="Transição">`;
-            }
-
-            screenOverlay.classList.remove('hidden');
-
-            // Mantém a média ativa com base no tempo específico configurado no manifesto
-            setTimeout(() => {
-                screenOverlay.classList.add('hidden');
-                renderBox.innerHTML = '';
-
-                if (activeQuestionPointer < CoreQuizEngineData.length) {
-                    renderActiveQuestion();
-                } else {
-                    displayFinalDashboard();
-                }
-            }, activeMediaObject.duration);
-        }
-
-        /**
-         * Transita para o ecrã final de avaliação do Pedro Silva
-         */
-        function displayFinalDashboard() {
-            document.getElementById('panel-quiz').classList.add('hidden');
-            
-            const completionProgress = document.getElementById('quiz-progress');
-            if (completionProgress) completionProgress.style.width = '100%';
-            
-            document.getElementById('panel-end').classList.remove('hidden');
-        }
-
-        /**
-         * Constrói e direciona o utilizador para a partilha no ecossistema WhatsApp
-         */
-        function dispatchWhatsAppMessage() {
-            const textContent = document.getElementById('owner-feedback').value.trim();
-            if (textContent.length === 0) {
-                alert("Por favor, escreva uma mensagem curta antes de prosseguir com a partilha.");
+            // Verificar IA 1
+            let matchAI1 = ai1Cards.filter(c => c === suspect || c === weapon || c === room);
+            if(matchAI1.length > 0) {
+                // Escolhe uma carta aleatória das que coincidem para mostrar
+                let shown = matchAI1[Math.floor(Math.random() * matchAI1.length)];
+                logMessage(`🔍 Detetive Alfa (IA 1) mostrou-te a carta: [${shown}].`);
                 return;
             }
 
-            const structuredString = `Olá Pedro Silva! Deixei feedback sobre o teu Quiz de Cultura Geral: "${textContent}"`;
-            const secureEndpoint = `https://wa.me/?text=${encodeURIComponent(structuredString)}`;
-            
-            window.open(secureEndpoint, '_blank');
+            // Verificar IA 2
+            let matchAI2 = ai2Cards.filter(c => c === suspect || c === weapon || c === room);
+            if(matchAI2.length > 0) {
+                let shown = matchAI2[Math.floor(Math.random() * matchAI2.length)];
+                logMessage(`🔍 Detetive Beta (IA 2) mostrou-te a carta: [${shown}].`);
+                return;
+            }
+
+            logMessage("🤔 Ninguém conseguiu desmentir o teu palpite! Pode ser uma pista forte...");
         }
+
+        // Lógica da Acusação Final (Fim do Jogo)
+        function makeAccusation() {
+            const suspect = document.getElementById("select-suspect").value;
+            const weapon = document.getElementById("select-weapon").value;
+            const room = document.getElementById("select-room").value;
+
+            const modal = document.getElementById("endModal");
+            const title = document.getElementById("modal-title");
+            const text = document.getElementById("modal-text");
+
+            if(suspect === envelope.suspect && weapon === envelope.weapon && room === envelope.room) {
+                title.innerText = "🏆 Ganhaste o Jogo!";
+                title.style.color = "#d4af37";
+                text.innerHTML = `Parabéns! Descobriste a verdade.<br><br><b>Assassino:</b> ${envelope.suspect}<br><b>Arma:</b> ${envelope.weapon}<br><b>Divisão:</b> ${envelope.room}`;
+            } else {
+                title.innerText = "❌ Perdeste o Jogo...";
+                title.style.color = "#b22222";
+                text.innerHTML = `A tua acusação estava errada! O mistério continua por resolver.<br><br><b>A resposta correta era:</b><br>${envelope.suspect} com o/a ${envelope.weapon} na/o ${envelope.room}`;
+            }
+            modal.style.display = "flex";
+        }
+
+        // Iniciar tudo ao carregar a página
+        window.onload = initGame;
     </script>
 </body>
 </html>
