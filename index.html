@@ -1,1 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizParty - Profissões, Afinidades & Quiz</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Tailwind CSS for high fidelity light design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MQTT client library for zero-config serverless real-time multiplayer -->
+    <script src="https://cdn.jsdelivr.net/npm/mqtt/dist/mqtt.min.js"></script>
 
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        },
+                        accent: {
+                            50: '#fff1f2',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+        .custom-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 16px -6px rgba(0, 0, 0, 0.05);
+        }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+        /* Custom styled scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 999px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-5xl bg-white rounded-3xl border border-slate-100 shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[680px]">
+        
+        <!-- Left Column: Visual branding and live activity feed -->
+        <div class="w-full md:w-1/3 bg-slate-50 border-r border-slate-100 p-6 flex flex-col justify-between">
+            <div>
+                <!-- Brand identity -->
+                <div class="flex items-center gap-2 mb-8">
+                    <div class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-brand-100">🎯</div>
+                    <div>
+                        <h1 class="text-xl font-extrabold tracking-tight">Quiz<span class="text-brand-600">Party</span></h1>
+                        <p class="text-xs text-slate-500 font-medium">Afinidades & Competição Real</p>
+                    </div>
+                </div>
+
+                <!-- Room info (dynamically shown) -->
+                <div id="sidebar-room-info" class="mb-6 p-4 bg-white rounded-2xl border border-slate-100 hidden">
+                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-2">Sala Atual</p>
+                    <div class="flex items-center justify-between">
+                        <span id="room-badge" class="px-2.5 py-1 bg-brand-50 text-brand-600 rounded-lg text-xs font-bold font-mono">---</span>
+                        <button onclick="shareInviteLink()" class="flex items-center gap-1 text-xs text-brand-600 font-bold hover:underline">
+                            <span class="material-icons text-sm">share</span> Convidar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dynamic Player Roster -->
+                <div class="mb-6">
+                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-3">Jogadores na Sala</p>
+                    <div id="roster-list" class="space-y-2">
+                        <p class="text-xs text-slate-500 italic">Nenhum jogador na sala.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-time Activity Feed / Chat Wall -->
+            <div class="mt-auto">
+                <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-2">Mural de Eventos</p>
+                <div id="activity-log" class="h-32 overflow-y-auto bg-slate-100 rounded-2xl p-3 text-xs space-y-1.5 text-slate-600 font-mono">
+                    <div>[Sistema] Bem-vindo ao QuizParty!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Interactive Screen Manager -->
+        <div class="w-full md:w-2/3 p-8 flex flex-col justify-between min-h-[500px]">
+
+            <!-- SCREEN 1: LOGIN / ENTRADA -->
+            <section id="screen-login" class="screen active my-auto">
+                <div class="max-w-md mx-auto text-center">
+                    <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Prepara-te para a Festa</h2>
+                    <p class="text-slate-500 text-sm mb-8">Podes convidar amigos pelo WhatsApp para jogarem em tempo real no mesmo ecrã!</p>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="text-left">
+                            <label class="text-xs text-slate-500 font-bold uppercase tracking-wider block mb-2">O Teu Nome / Nickname</label>
+                            <input type="text" id="username" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-50" placeholder="Ex: João Silva" autocomplete="off" maxlength="15">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onclick="handleLogin(false)" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-brand-100">
+                            <span class="material-icons">add_box</span> Criar Nova Sala
+                        </button>
+                        <button onclick="handleLogin(true)" id="btn-join-direct" class="w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-2xl font-bold transition flex items-center justify-center gap-2 hidden">
+                            <span class="material-icons">login</span> Entrar na Sala
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SCREEN 2: LOBBY -->
+            <section id="screen-lobby" class="screen my-auto">
+                <div class="max-w-md mx-auto">
+                    <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Sala de Espera Online</h2>
+                    <p class="text-slate-500 text-sm mb-6">Partilha o link com até 3 amigos para começarem a jogar!</p>
+
+                    <div class="p-5 bg-indigo-50 border border-indigo-100 rounded-2xl mb-6">
+                        <div class="flex items-start gap-3">
+                            <div class="p-2 bg-white rounded-lg text-brand-600">
+                                <span class="material-icons">link</span>
+                            </div>
+                            <div class="flex-grow">
+                                <h4 class="text-xs text-brand-600 font-extrabold uppercase tracking-wider mb-1">Link de Convite</h4>
+                                <input type="text" id="share-link-input" readonly class="w-full bg-white border border-indigo-100 text-xs px-3 py-2 rounded-lg font-mono text-slate-600 focus:outline-none mb-2" value="A gerar link...">
+                                <div class="flex gap-2">
+                                    <button onclick="copyInviteLink()" class="px-3 py-1.5 bg-brand-600 text-white rounded-lg text-xs font-bold hover:bg-brand-700 transition">Copiar</button>
+                                    <button onclick="shareInviteLink()" class="px-3 py-1.5 bg-green-600 text-white rounded-lg text-xs font-bold hover:bg-green-700 transition flex items-center gap-1">
+                                        WhatsApp
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 mb-8">
+                        <button onclick="addSimulatedBots()" id="btn-add-bots" class="w-full py-3 border-2 border-dashed border-slate-300 hover:border-slate-400 text-slate-600 rounded-xl text-xs font-extrabold tracking-wider uppercase transition">
+                            🤖 Adicionar Bots para Testar Já
+                        </button>
+                    </div>
+
+                    <button onclick="requestStartGame()" id="btn-start-trigger" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-brand-100" disabled>
+                        <span>Começar Jogo</span>
+                        <span class="material-icons">play_circle_outline</span>
+                    </button>
+                    <p id="start-warning-text" class="text-center text-xs text-slate-400 mt-2">A aguardar pelo menos 2 jogadores...</p>
+                </div>
+            </section>
+
+            <!-- SCREEN 3: PROFESSIONS PHASE (AFFINITY) -->
+            <section id="screen-professions" class="screen">
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-3 py-1 bg-brand-50 text-brand-600 rounded-full text-xs font-extrabold tracking-wider uppercase">Fase 1: Afinidades</span>
+                    <span id="prof-counter" class="text-xs text-slate-400 font-bold">1/40</span>
+                </div>
+
+                <!-- Active Profession Card -->
+                <div class="bg-gradient-to-tr from-brand-50 to-indigo-50 border border-brand-100 p-8 rounded-3xl text-center mb-6">
+                    <h3 id="current-prof-name" class="text-3xl font-black text-slate-900 tracking-tight mb-2">Farmacêutico</h3>
+                    <p id="prof-sector-badge" class="inline-block text-xs font-bold bg-white px-3 py-1 rounded-full text-brand-600 border border-brand-100">Setor: Saúde</p>
+                </div>
+
+                <!-- Comprehensive Rating Matrix -->
+                <div class="space-y-6 mb-8">
+                    <!-- Rating for Self -->
+                    <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-sm font-bold text-slate-800">1. O quanto <span class="text-brand-600">TU</span> gostarias de ter esta profissão?</span>
+                            <span id="label-self" class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-sm font-black">-</span>
+                        </div>
+                        <input type="range" min="0" max="10" value="5" id="range-self" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600" oninput="updateRangeLabel('self')">
+                    </div>
+
+                    <!-- Rating for Player 2 -->
+                    <div id="box-pred-p2" class="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-sm font-bold text-slate-800">2. O quanto achas que o <span id="label-name-p2" class="text-brand-600">Jogador 2</span> gostaria dela?</span>
+                            <span id="label-p2" class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-sm font-black">-</span>
+                        </div>
+                        <input type="range" min="0" max="10" value="5" id="range-p2" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600" oninput="updateRangeLabel('p2')">
+                    </div>
+
+                    <!-- Rating for Player 3 -->
+                    <div id="box-pred-p3" class="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-sm font-bold text-slate-800">3. O quanto achas que o <span id="label-name-p3" class="text-brand-600">Jogador 3</span> gostaria dela?</span>
+                            <span id="label-p3" class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-sm font-black">-</span>
+                        </div>
+                        <input type="range" min="0" max="10" value="5" id="range-p3" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600" oninput="updateRangeLabel('p3')">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <p id="prof-sync-indicator" class="text-xs text-slate-400 font-medium italic">Vota em todos os campos para confirmar.</p>
+                    <button onclick="submitProfessionRatings()" id="btn-submit-prof" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition shadow-lg shadow-brand-50 flex items-center gap-1">
+                        <span>Confirmar Voto</span>
+                        <span class="material-icons text-sm">done_all</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SCREEN 4: QUIZ PHASE -->
+            <section id="screen-quiz" class="screen">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <span id="quiz-cat-badge" class="px-3 py-1 bg-accent-50 text-accent-500 rounded-full text-xs font-extrabold tracking-wider uppercase">Futebol</span>
+                        <span id="quiz-counter" class="text-xs text-slate-400 font-bold ml-2">1/35</span>
+                    </div>
+                    <!-- Circular Countdown Timer -->
+                    <div class="w-12 h-12 rounded-full border-4 border-accent-500 flex items-center justify-center shadow-lg shadow-accent-50">
+                        <span id="quiz-timer" class="text-base font-extrabold text-slate-900">10</span>
+                    </div>
+                </div>
+
+                <!-- Quiz Question Display -->
+                <div class="p-6 bg-slate-50 border border-slate-100 rounded-2xl mb-6">
+                    <h3 id="current-quiz-question" class="text-lg font-bold text-slate-800 leading-snug">Qual é o principal órgão do sistema circulatório humano?</h3>
+                </div>
+
+                <!-- Multi-Choice Options -->
+                <div id="quiz-options-container" class="grid grid-cols-1 gap-3 mb-6">
+                    <!-- Options injected dynamically -->
+                </div>
+
+                <!-- Real-time Player Selection Overlay -->
+                <div id="quiz-lobby-choices" class="p-3 bg-slate-100 rounded-2xl text-xs flex justify-around text-slate-600 font-mono mb-4">
+                    A aguardar escolhas...
+                </div>
+
+                <!-- Dynamic Correct/Wrong Explanatory Dialog -->
+                <div id="quiz-correction-box" class="p-4 rounded-2xl hidden">
+                    <!-- Explanation injected dynamically -->
+                </div>
+            </section>
+
+            <!-- SCREEN 5: RESULTS -->
+            <section id="screen-results" class="screen">
+                <div class="text-center mb-8">
+                    <span class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs font-extrabold tracking-wider uppercase mb-3 inline-block">Fim do Desafio!</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900">Quadro de Classificações</h2>
+                </div>
+
+                <!-- Ranking Podium cards -->
+                <div id="podium-container" class="space-y-3 mb-8">
+                    <!-- Dynamic podium inserts -->
+                </div>
+
+                <!-- Recapitulação das Afinidades (O que cada um disse sobre ti) -->
+                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 mb-8">
+                    <h4 class="text-sm font-extrabold text-slate-800 tracking-wider uppercase mb-4 flex items-center gap-1.5">
+                        <span class="material-icons text-brand-600">psychology</span> Quem te conhece melhor?
+                    </h4>
+                    <div id="affinity-recap" class="text-xs text-slate-600 space-y-4">
+                        <!-- Recapitulation records -->
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button onclick="window.location.reload()" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-brand-50">
+                        <span class="material-icons">replay</span> Jogar Novamente
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        'use strict';
+
+        // Global state configuration
+        var Config = {
+            PROF_COUNT: 15, // Reduzido de 40 para ser dinâmico e mais divertido em tempo real (pode ser expandido)
+            QUIZ_TIMER: 10,
+            BROKER: 'wss://broker.emqx.io:8084/mqtt'
+        };
+
+        var QUESTIONS_DATABASE = [
+            // Economia (5)
+            { category: "Economia", question: "Se a inflação aumentar de forma continuada, o que se prevê que aconteça imediatamente?", options: ["O poder de compra diminui", "A taxa de poupança aumenta", "Os preços gerais descem", "O valor real da moeda aumenta"], correct: 0, reason: "A inflação de preços reduz diretamente o poder de compra, ou seja, precisas de mais unidades monetárias para obter o mesmo produto." },
+            { category: "Economia", question: "O que mede essencialmente o Produto Interno Bruto (PIB) de um país?", options: ["Apenas as receitas das exportações privadas", "O valor de mercado de bens e serviços finais produzidos", "A dívida pública total nacional acumulada", "O lucro total bruto das empresas estatais"], correct: 1, reason: "O PIB agrega a riqueza global gerada por produtos e serviços comercializados no território nacional num período de tempo." },
+            { category: "Economia", question: "Qual é o principal efeito do conceito matemático de juros compostos?", options: ["Crescimento estático", "Crescimento linear do capital", "Crescimento exponencial (juro incide sobre juro)", "Redução proporcional de perdas"], correct: 2, reason: "Os juros compostos somam os juros anteriores ao montante capitalizado para recalcular o novo rendimento, criando uma curva exponencial." },
+            { category: "Economia", question: "Que ativo é historicamente considerado um refúgio de valor contra a desvalorização cambial extrema?", options: ["Ações de empresas tecnológicas de risco", "Títulos de dívida pública de curto prazo", "Ouro Físico", "Criptomoedas de altíssima volatilidade"], correct: 2, reason: "O ouro físico preserva poder aquisitivo histórico e escassez estrutural, atuando como reserva em momentos de perturbação geopolítica." },
+            { category: "Economia", question: "O que caracteriza tecnicamente o Custo de Oportunidade de uma decisão financeira?", options: ["A taxa percentual cobrada por intermediários", "O benefício que se abdica ao escolher uma alternativa", "O preço de aquisição mais reduzido do mercado", "O imposto de selo associado à transação pública"], correct: 1, reason: "Custo de oportunidade é o termo económico para o valor ou potencial de ganho sacrificado ao preterir uma opção por outra." },
+
+            // Futebol (5)
+            { category: "Futebol", question: "Que clube europeu histórico bateu o AC Milan na final da UEFA Champions League de 1993?", options: ["Olympique de Marseille", "Barcelona", "FC Porto", "Benfica"], correct: 0, reason: "O Marseille conquistou o troféu em Munique com um golo de cabeça de Basile Boli, num feito histórico francês." },
+            { category: "Futebol", question: "Quem é o único jogador do futebol mundial a conquistar 3 Mundiais da FIFA como atleta ativo?", options: ["Diego Maradona", "Pelé", "Franz Beckenbauer", "Zinedine Zidane"], correct: 1, reason: "Pelé alcançou os títulos nos Mundiais de 1958, 1962 e 1970, consolidando-se como uma lenda incontestável do desporto." },
+            { category: "Futebol", question: "Just Fontaine detém o recorde absoluto de mais golos numa única edição de um Mundial. Quantos?", options: ["10 golos", "11 golos", "13 golos", "15 golos"], correct: 2, reason: "Fontaine apontou impressionantes 13 golos no Mundial da Suécia em 1958." },
+            { category: "Futebol", question: "Em que ano foi fundada a IFAB (órgão internacional regulador das regras de futebol)?", options: ["1886", "1904", "1912", "1954"], correct: 0, reason: "A IFAB foi estabelecida em 1886 pelas associações do Reino Unido antes da criação da própria FIFA." },
+            { category: "Futebol", question: "Qual destes jogadores venceu a cobiçada Bola de Ouro (France Football) no ano de 2003?", options: ["Ronaldo Nazário", "Zinedine Zidane", "Pavel Nedvěd", "Thierry Henry"], correct: 2, reason: "O médio checo Pavel Nedvěd, da Juventus, garantiu a honraria com uma campanha soberba a nível europeu." },
+
+            // Bandeiras (5)
+            { category: "Bandeiras", question: "Que elemento característico está desenhado no centro da bandeira nacional do Canadá?", options: ["Uma folha de Carvalho", "Uma folha de Acer (Bordo)", "Uma Águia Imperial", "Um Urso Polar"], correct: 1, reason: "A folha de Acer (Maple Leaf) é um símbolo histórico nacional associado ao território e recursos canadianos." },
+            { category: "Bandeiras", question: "Quais são as três cores da bandeira nacional da Alemanha, de cima para baixo?", options: ["Preto, Vermelho, Amarelo", "Preto, Amarelo, Vermelho", "Vermelho, Preto, Amarelo", "Amarelo, Preto, Vermelho"], correct: 0, reason: "A bandeira tricolor germânica é composta exatamente por faixas horizontais de Preto, Vermelho e Dourado/Amarelo." },
+            { category: "Bandeiras", question: "Que nação asiática tem na sua bandeira um disco vermelho descentrado sobre fundo verde?", options: ["Japão", "Bangladesh", "Vietname", "Palau"], correct: 1, reason: "O disco representa o sol nascente e a soberania sangrenta da independência, enquanto o verde evoca os campos férteis de Bangladesh." },
+            { category: "Bandeiras", question: "Que frase emblemática está inscrita na bandeira oficial da República do Brasil?", options: ["Ordem e Progresso", "Progresso e União", "União e Liberdade", "Paz e Prosperidade"], correct: 0, reason: "A inscrição advém do lema positivista de Auguste Comte: 'O Amor por princípio e a Ordem por base; o Progresso por fim'." },
+            { category: "Bandeiras", question: "Qual é o único país cuja bandeira oficial tem uma geometria não quadrangular?", options: ["Suíça", "Nepal", "Bélgica", "Vaticano"], correct: 1, reason: "A bandeira do Nepal é constituída por duas bandeirolas triangulares sobrepostas com símbolos do sol e da lua." },
+
+            // Preço Justo (1)
+            { category: "Preço Justo", question: "Qual o preço médio estimado em Portugal de um Spray Inseticida Anti-Vespas de 750ml?", options: ["Entre 2.00€ e 4.00€", "Entre 7.00€ e 9.50€", "Entre 16.00€ e 20.00€", "Entre 25.00€ e 32.00€"], correct: 1, reason: "Os aerossóis de grande alcance para eliminação direcionada de vespas e ninhos rondam geralmente os 7 a 9 euros em superfícies comerciais." },
+
+            // Gramática (5)
+            { category: "Gramática", question: "Em 'O diretor considerou a proposta excelente', qual a função sintática de 'excelente'?", options: ["Complemento Direto", "Predicativo do Complemento Direto", "Predicativo do Sujeito", "Modificador do Nome"], correct: 1, reason: "'Excelente' caracteriza o objeto direto 'a proposta' por atribuição da opinião expressa pelo verbo 'considerou'." },
+            { category: "Gramática", question: "Identifique a função sintática de 'pelo aluno' na frase: 'A obra foi lida pelo aluno'.", options: ["Complemento Oblíquo", "Complemento Agente da Passiva", "Sujeito Passivo", "Complemento Indireto"], correct: 1, reason: "Em voz passiva, o elemento que executa a ação direta introduzido pela preposição 'por' é o agente da passiva." },
+            { category: "Gramática", question: "Na frase 'Lisboa, capital de Portugal, atrai turistas', qual é a função do elemento entre vírgulas?", options: ["Aposto (Modificador do Nome Apositivo)", "Vocativo", "Modificador Restritivo", "Sujeito Composto"], correct: 0, reason: "O aposto identifica, esclarece ou detalha de forma não essencial o referente de um nome precedente." },
+            { category: "Gramática", question: "Na frase 'Entreguei o documento ao chefe', qual a função de 'ao chefe'?", options: ["Complemento Direto", "Complemento Indireto", "Complemento Oblíquo", "Sujeito Subentendido"], correct: 1, reason: "Quem entrega, entrega algo a alguém. 'Ao chefe' responde à preposição exigida pelo verbo, sendo um objeto/complemento indireto." },
+            { category: "Gramática", question: "Em 'Ele reside em Vila Real', a expressão 'em Vila Real' desempenha a função de:", options: ["Complemento Oblíquo", "Complemento Direto", "Modificador do Grupo Verbal", "Predicativo do Sujeito"], correct: 0, reason: "O verbo 'residir' é transitivo indireto locativo, exigindo obrigatoriamente a preposição do complemento oblíquo." },
+
+            // Físico-Química (5)
+            { category: "Físico-Química", question: "De acordo com a Lei de Ohm, se a resistência for constante e a tensão duplicar, a corrente:", options: ["Mantém-se igual", "Reduz para metade", "Duplica", "Quadruplica"], correct: 2, reason: "V = R * I. Sendo R fixo, a corrente varia de forma estritamente proporcional à variação da tensão." },
+            { category: "Físico-Química", question: "Qual é o valor padrão de aceleração da gravidade terrestre aproximado para física escolar?", options: ["9.81 m/s²", "1.62 m/s²", "3.71 m/s²", "12.0 m/s²"], correct: 0, reason: "A gravidade nominal à superfície da Terra ao nível do mar situa-se nos 9.80665 m/s²." },
+            { category: "Físico-Química", question: "O processo em que um elemento químico perde eletrões durante uma reação designa-se por:", options: ["Oxidação", "Redução", "Ionização Covalente", "Condensação de Estado"], correct: 0, reason: "A perda de eletrões em reações redox chama-se oxidação, enquanto o ganho respetivo é a redução." },
+            { category: "Físico-Química", question: "A passagem direta e imediata do estado sólido para o gasoso sem passar pelo líquido chama-se:", options: ["Fusão", "Vaporização", "Sublimação", "Solidificação"], correct: 2, reason: "Exemplos comuns incluem gelo seco exposto à temperatura ambiente ou pastilhas de naftalina." },
+            { category: "Físico-Química", question: "Qual é o elemento mais leve e abundante na composição química do Universo?", options: ["Hélio", "Oxigénio", "Carbono", "Hidrogénio"], correct: 3, reason: "O hidrogénio representa mais de 75% da massa elementar detetada no cosmos." },
+
+            // Ciências (5)
+            { category: "Ciências", question: "Que estrutura dentro da célula humana é a principal geradora de energia através de ATP?", options: ["Ribossoma", "Complexo de Golgi", "Mitocôndria", "Lisossoma"], correct: 2, reason: "A mitocôndria é a 'fábrica' de ATP por excelência, através da fosforilação oxidativa e respiração celular." },
+            { category: "Ciências", question: "Qual o processo biológico de divisão de células que gera gâmetas com metade do material genético?", options: ["Meiose", "Mitose", "Bipartição", "Esporulação"], correct: 0, reason: "A meiose resulta em quatro células haploides contendo apenas 23 cromossomas humanos cada." },
+            { category: "Ciências", question: "Em que meio físico de propagação as ondas sonoras não se conseguem propagar?", options: ["Água Salgada", "Aço Sólido", "Vácuo Absoluto", "Ar Atmosférico"], correct: 2, reason: "O som é uma onda mecânica longitudinal, necessitando obrigatoriamente de um meio material para vibrar." },
+            { category: "Ciências", question: "Qual é a hormona secretada pelo pâncreas com a missão de reduzir a glicémia no sangue?", options: ["Adrenalina", "Cortisol", "Glucagom", "Insulina"], correct: 3, reason: "A insulina sinaliza a absorção celular de glicose para uso energético, diminuindo o índice glicémico sérico." },
+            { category: "Ciências", question: "Na atmosfera da Terra, a camada onde ocorrem praticamente todos os fenómenos climáticos é a:", options: ["Estratosfera", "Termosfera", "Troposfera", "Mesosfera"], correct: 2, reason: "A troposfera contém perto de 75% da massa de ar global e quase todo o vapor de água atmosférico." },
+
+            // EA FC (5)
+            { category: "EA FC", question: "Qual a pontuação de química máxima individual que um jogador ativo pode atingir no Ultimate Team?", options: ["3 pontos", "5 pontos", "10 pontos", "33 pontos"], correct: 0, reason: "Com a reformulação química, cada jogador pode somar até um máximo de 3 pontos em sintonia com os seus pares no onze." },
+            { category: "EA FC", question: "Para realizar fintas de alta complexidade como o 'Elastico', que nível de Skill Moves é exigido?", options: ["3 estrelas", "4 estrelas", "5 estrelas", "Não necessita de estrelas"], correct: 2, reason: "O 'Elastico' é uma manobra técnica exclusiva de futebolistas dotados de 5 estrelas de fintas." },
+            { category: "EA FC", question: "Que motor ou sistema visual de dados e animação captura o movimento físico real dos atletas no EA FC?", options: ["Frostbite 3.0", "HyperMotionV", "Impact Engine Pro", "DirectMotion FX"], correct: 1, reason: "O HyperMotionV capta e modela volumetricamente jogos reais de grandes campeonatos mundiais." },
+            { category: "EA FC", question: "No Ultimate Team, a sigla SBC em português designa que mecânica de jogo?", options: ["Liga de Campeões Semanais", "Simulação de Clubes Aliados", "Desafio de Montagem de Elencos (DME)", "Torneio de Pré-Época"], correct: 2, reason: "SBC deriva da designação em inglês Squad Building Challenge, traduzida por Desafios de Montagem de Elencos." },
+            { category: "EA FC", question: "Que combinação mecânica de botões executa o remate de alta potência (Power Shot)?", options: ["L1 + R1 + Rematar", "R2 + Rematar", "Dois toques no botão de remate", "L2 + R2 + Rematar"], correct: 0, reason: "Carregar em L1+R1 (LB+RB) com o disparo ativa a câmara dedicada de Power Shot manual." },
+
+            // Formula 1 (5)
+            { category: "Formula 1", question: "Que piloto tem o recorde histórico de títulos de F1 partilhado com Michael Schumacher?", options: ["Fernando Alonso", "Ayrton Senna", "Lewis Hamilton", "Sebastian Vettel"], correct: 2, reason: "Lewis Hamilton e Michael Schumacher somam ambos 7 campeonatos mundiais de Fórmula 1." },
+            { category: "Formula 1", question: "Nos GP oficiais de F1, que cor identifica os pneus compostos mais macios (Softs)?", options: ["Amarelo", "Vermelho", "Branco", "Verde"], correct: 1, reason: "A gama de pneus secos Pirelli Soft usa o debrum e marcações na cor vermelha." },
+            { category: "Formula 1", question: "Qual é o dispositivo estrutural obrigatório instalado no cockpit para segurança de impactos frontais?", options: ["Aeroscreen", "HANS Device", "Halo", "Célula de Kevlar"], correct: 2, reason: "O Halo, de liga de titânio, protege de destroços pesados direcionados à cabeça do piloto." },
+            { category: "Formula 1", question: "Em que circuito se localiza a famosa e temida combinação de curvas de alta velocidade Eau Rouge / Raidillon?", options: ["Monza", "Silverstone", "Spa-Francorchamps", "Nürburgring"], correct: 2, reason: "A combinação mítica Eau Rouge e Raidillon pertence ao traçado de Spa-Francorchamps nas Ardenas belgas." },
+            { category: "Formula 1", question: "A sigla técnica DRS no ecossistema da F1 significa literalmente o quê?", options: ["Direct Recovery System", "Drag Reduction System", "Driver Racing Stability", "Dynamic Rear Suspension"], correct: 1, reason: "O Drag Reduction System abre a asa traseira para facilitar ultrapassagens em zonas retas selecionadas." }
+        ];
+
+        var
