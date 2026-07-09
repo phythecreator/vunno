@@ -63,7 +63,7 @@
             border-radius: 999px;
         }
         .logo-display-img {
-            max-height: 140px;
+            max-height: 160px;
             max-width: 100%;
             object-fit: contain;
             border-radius: 1rem;
@@ -71,6 +71,11 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             background: #ffffff;
             padding: 0.5rem;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        .logo-display-img:hover {
+            transform: scale(1.03);
         }
     </style>
 </head>
@@ -96,7 +101,7 @@
                         <span id="network-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
                         <span id="network-status-text" class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">A Inicializar</span>
                     </div>
-                    <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-mono">P2P v2.5</span>
+                    <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-mono">P2P v3.0</span>
                 </div>
 
                 <div id="sidebar-room-info" class="mb-6 p-4 bg-white rounded-2xl border border-slate-100 hidden shadow-sm">
@@ -142,7 +147,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <button onclick="initiateSession(false)" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-brand-100">
+                        <button id="btn-create-room" onclick="initiateSession(false)" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-brand-100">
                             <span class="material-icons">add_box</span> Criar Nova Sala
                         </button>
                         <button onclick="initiateSession(true)" id="btn-join-direct" class="w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-2xl font-bold transition flex items-center justify-center gap-2 hidden">
@@ -243,7 +248,7 @@
                     </div>
 
                     <div class="flex items-center justify-end">
-                        <button onclick="commitProfessionVote()" id="btn-submit-prof" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition shadow-lg shadow-brand-50 flex items-center gap-1">
+                        <button onclick="commitProfessionVote()" id="btn-submit-prof" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-brand-50 flex items-center gap-2">
                             <span>Submeter Avaliações</span>
                             <span class="material-icons text-sm">done_all</span>
                         </button>
@@ -260,6 +265,14 @@
                     </div>
                     <div id="timer-radial-container" class="w-12 h-12 rounded-full border-4 border-accent-500 flex items-center justify-center shadow-lg shadow-accent-50 transition-all duration-300">
                         <span id="quiz-timer" class="text-base font-extrabold text-slate-900">10</span>
+                    </div>
+                </div>
+
+                <!-- Contentor dinâmico para os Logos da Fase de Imagem -->
+                <div id="quiz-image-container" class="hidden w-full mb-4">
+                    <img id="quiz-logo-img" class="logo-display-img" src="" alt="Identifica este Logótipo" onerror="this.style.display='none'">
+                    <div id="quiz-image-fallback" class="hidden text-center p-6 bg-slate-100 rounded-2xl border border-slate-200 text-xs text-slate-500 font-mono">
+                        [Logo: Carregamento do ficheiro pendente]
                     </div>
                 </div>
 
@@ -311,7 +324,6 @@
     <script>
         'use strict';
 
-        // CONFIGURAÇÕES GLOBAIS DO SISTEMA
         const CONFIG = {
             TOTAL_PROFESSIONS: 40,
             PROF_TIMER_SECONDS: 15,
@@ -319,20 +331,85 @@
             BROKER_URL: 'wss://broker.emqx.io:8084/mqtt'
         };
 
-        // BASE DE DADOS DE PROFISSÕES GERAIS (Exatamente 40)
         const PROFESSIONS_DATABASE = [
-            "Professor", "Engenheiro Informático", "Médico de Clínica Geral", "Advogado", "Enfermeiro",
-            "Arquiteto", "Designer Gráfico", "Psicólogo Clínico", "Economista", "Gestor de Empresas",
-            "Cientista de Investigação", "Jornalista", "Veterinário", "Farmacêutico", "Biólogo",
-            "Contabilista", "Nutricionista", "Historiador", "Piloto de Aviação", "Eletricista",
-            "Canalizador", "Carpinteiro", "Fotógrafo", "Tradutor", "Programador Web",
-            "Arqueólogo", "Sociólogo", "Geógrafo", "Mecânico Automóvel", "Especialista de Marketing",
-            "Juiz", "Geólogo", "Astrónomo", "Antropólogo", "Consultor Financeiro",
-            "Técnico de Relações Públicas", "Engenheiro Agrónomo", "Arquivista", "Planeador Urbanista", "Meteorologista"
+            // 5 Profissões diretamente ligadas ao futebol
+            "Treinador de Futebol", 
+            "Árbitro de Futebol", 
+            "Jogador Profissional de Futebol", 
+            "Diretor Desportivo de Futebol", 
+            "Olheiro / Recrutador de Futebol",
+            
+            // 35 Outras profissões para perfazer exatamente 40
+            "Médico de Clínica Geral", 
+            "Engenheiro Informático", 
+            "Professor do Ensino Básico", 
+            "Advogado", 
+            "Enfermeiro",
+            "Arquiteto", 
+            "Designer Gráfico", 
+            "Psicólogo Clínico", 
+            "Gestor de Empresas", 
+            "Cientista de Investigação", 
+            "Jornalista", 
+            "Veterinário", 
+            "Farmacêutico", 
+            "Biólogo Marinho", 
+            "Contabilista Certificado",
+            "Nutricionista", 
+            "Historiador", 
+            "Piloto de Aviação Civil", 
+            "Eletricista", 
+            "Canalizador", 
+            "Carpinteiro", 
+            "Fotógrafo Profissional", 
+            "Tradutor / Intérprete", 
+            "Programador Frontend", 
+            "Arqueólogo",
+            "Sociólogo", 
+            "Geógrafo", 
+            "Mecânico Automóvel", 
+            "Especialista de Marketing Digital", 
+            "Juiz de Tribunal", 
+            "Geólogo", 
+            "Astrónomo", 
+            "Engenheiro Civil", 
+            "Planeador Urbanista", 
+            "Chef de Cozinha"
         ];
 
-        // BASE DE DADOS DE QUESTÕES (Completa e livre de cortes - Exatamente 41 Questões com as categorias solicitadas)
         const QUIZ_DATABASE = [
+            // 20 Perguntas Novas de Conhecimento Cultural (Cultura Geral)
+            { category: "Cultura Geral", question: "Qual é o rio mais longo do mundo de acordo com a maioria dos cientistas e geógrafos modernos?", options: ["Rio Amazonas", "Rio Nilo", "Rio Mississippi", "Rio Yangtze"], correct: 0, reason: "O Rio Amazonas é considerado o maior rio do mundo em volume de água e extensão de fluxo contínuo." },
+            { category: "Cultura Geral", question: "Quem escreveu a célebre epopeia nacionalista portuguesa 'Os Lusíadas', publicada em 1572?", options: ["Luís de Camões", "Fernando Pessoa", "Eça de Queirós", "José Saramago"], correct: 0, reason: "Luís de Camões é o autor da prestigiada obra histórica focada nos descobrimentos portugueses." },
+            { category: "Cultura Geral", question: "Em que ano ocorreu a histórica Revolução dos Cravos que encerrou a ditadura em Portugal?", options: ["1974", "1910", "1986", "1961"], correct: 0, reason: "A Revolução dos Cravos desenrolou-se a 25 de abril de 1974." },
+            { category: "Cultura Geral", question: "Qual é a menor nação do mundo em termos de área territorial absoluta?", options: ["Vaticano", "Mónaco", "São Marino", "Liechtenstein"], correct: 0, reason: "O Estado do Vaticano é soberano com menos de 0.44 quilómetros quadrados." },
+            { category: "Cultura Geral", question: "Que mestre do Renascimento italiano pintou o deslumbrante teto da Capela Sistina?", options: ["Miguel Ângelo (Michelangelo)", "Leonardo da Vinci", "Rafael Sanzio", "Donatello"], correct: 0, reason: "Miguel Ângelo realizou esta impressionante obra no Vaticano a mando do Papa Júlio II." },
+            { category: "Cultura Geral", question: "Qual é o elemento metálico mais abundante encontrado na crosta terrestre da Terra?", options: ["Alumínio", "Ferro", "Cobre", "Magnésio"], correct: 0, reason: "O alumínio é o terceiro elemento mais comum no geral e o metal mais abundante da crosta." },
+            { category: "Cultura Geral", question: "Quantos planetas compõem oficialmente o nosso Sistema Solar após a desclassificação de Plutão?", options: ["8 planetas", "9 planetas", "7 planetas", "10 planetas"], correct: 0, reason: "Atualmente existem 8 planetas oficiais na órbita solar após Plutão ser classificado como planeta anão." },
+            { category: "Cultura Geral", question: "Qual é o maior, mais largo e mais profundo oceano do planeta Terra?", options: ["Oceano Pacífico", "Oceano Atlântico", "Oceano Índico", "Oceano Ártico"], correct: 0, reason: "O Oceano Pacífico cobre mais de um terço de toda a superfície terrestre global." },
+            { category: "Cultura Geral", question: "Quem é o autor literário da trágica e romântica peça de teatro 'Romeu e Julieta'?", options: ["William Shakespeare", "Miguel de Cervantes", "Luís de Camões", "Dante Alighieri"], correct: 0, reason: "William Shakespeare escreveu a trágica peça por volta do fim do século XVI." },
+            { category: "Cultura Geral", question: "Qual é a capital federal administrativa do vasto território da Austrália?", options: ["Camberra", "Sydney", "Melbourne", "Brisbane"], correct: 0, reason: "Camberra foi planeada de raiz para servir de capital, evitando disputas entre Sydney e Melbourne." },
+            { category: "Cultura Geral", question: "Em que continente está maioritariamente localizado o imenso Deserto do Saara?", options: ["África", "Ásia", "América do Sul", "Europa"], correct: 0, reason: "O Saara ocupa grande parte da região norte do continente africano." },
+            { category: "Cultura Geral", question: "Que cientista seminal publicou a Teoria da Relatividade Geral em 1915?", options: ["Albert Einstein", "Isaac Newton", "Galileu Galilei", "Stephen Hawking"], correct: 0, reason: "Albert Einstein revolucionou a física moderna com a sua teoria inovadora sobre a gravidade." },
+            { category: "Cultura Geral", question: "Que antigo povo mesopotâmico é creditado pela invenção da primeira escrita (Cuneiforme)?", options: ["Sumérios", "Babilónios", "Egípcios", "Assírios"], correct: 0, reason: "A escrita cuneiforme suméria desenvolveu-se há mais de 5.000 anos na Mesopotâmia." },
+            { category: "Cultura Geral", question: "Qual é a montanha mais elevada da Terra acima do nível médio do mar?", options: ["Monte Everest", "K2", "Kilimanjaro", "Monte Branco"], correct: 0, reason: "O Monte Everest atinge impressionantes 8.848 metros na cordilheira do Himalaia." },
+            { category: "Cultura Geral", question: "Quem assumiu a posição de primeiro presidente eleito da República Portuguesa em 1911?", options: ["Manuel de Arriaga", "Teófilo Braga", "Bernardino Machado", "Sidónio Pais"], correct: 0, reason: "Manuel de Arriaga foi o primeiro presidente constitucional após a queda da monarquia." },
+            { category: "Cultura Geral", question: "Em que país europeu surgiram originalmente os lendários Jogos Olímpicos na antiguidade?", options: ["Grécia", "Itália", "França", "Espanha"], correct: 0, reason: "Os Jogos surgiram na cidade de Olímpia no ano de 776 a.C. na Grécia Antiga." },
+            { category: "Cultura Geral", question: "Qual é o maior animal e mamífero registado em toda a história da biosfera terrestre?", options: ["Baleia-azul", "Elefante-africano", "Tubarão-baleia", "Diplodoco"], correct: 0, reason: "A Baleia-azul pode atingir mais de 30 metros de comprimento e pesar cerca de 180 toneladas." },
+            { category: "Cultura Geral", question: "Quantos ossos estruturais tem, em média, o corpo de um ser humano adulto saudável?", options: ["206", "300", "150", "256"], correct: 0, reason: "Nascemos com mais ossos, mas a fusão ao longo do crescimento reduz o esqueleto adulto a 206 ossos." },
+            { category: "Cultura Geral", question: "Qual é o monumento pré-histórico de círculos de pedra mais famoso do Reino Unido?", options: ["Stonehenge", "Amesbury", "Carnac", "Avebury"], correct: 0, reason: "Stonehenge foi edificado durante os períodos Neolítico e do Bronze no sudoeste de Inglaterra." },
+            { category: "Cultura Geral", question: "Que conceituado pintor e expressionista norueguês assinou o quadro vanguardista 'O Grito'?", options: ["Edvard Munch", "Vincent van Gogh", "Pablo Picasso", "Claude Monet"], correct: 0, reason: "Munch concebeu a sua famosa obra expressionista em 1893." },
+
+            // 7 Desafios Temáticos "Adivinha o Logo" baseados na imagem_d16ae5.png
+            { category: "Adivinha o Logo", question: "A que prestigiada marca desportiva mundial pertence o logótipo 'Swoosh' apresentado nesta imagem?", options: ["Nike", "Adidas", "Puma", "Under Armour"], correct: 0, image: "002-nike-logos-swoosh-white.jpg", reason: "O icónico Swoosh da Nike foi desenhado por Carolyn Davidson em 1971." },
+            { category: "Adivinha o Logo", question: "Identifica a tradicional fabricante automóvel britânica de luxo representada por este logótipo alado:", options: ["Aston Martin", "Bentley", "Jaguar", "Porsche"], correct: 0, image: "ASTONAMRTIN.png", reason: "O símbolo da Aston Martin exibe asas clássicas que sugerem sofisticação, velocidade e liberdade." },
+            { category: "Adivinha o Logo", question: "Este famoso avião de papel de traços modernos é o logótipo de qual aplicação de chat segura?", options: ["Telegram", "Signal", "WhatsApp", "Viber"], correct: 0, image: "Telegram_2019_Logo.svg.webp", reason: "O Telegram utiliza este característico logo azul com um avião branco minimalista." },
+            { category: "Adivinha o Logo", question: "A que famosa chancela desportiva de videojogos pertence este selo oficial, criadora do simulador EA FC?", options: ["EA Sports", "Konami", "2K Sports", "Epic Games"], correct: 0, image: "easports.png", reason: "EA Sports é a divisão da Electronic Arts que desenvolve e publica títulos como EA FC e Madden." },
+            { category: "Adivinha o Logo", question: "Este logótipo verde com uma pequena folha estilizada pertence a que conhecida cadeia de supermercados?", options: ["Pingo Doce", "Continente", "Lidl", "Mercadona"], correct: 0, image: "pingodoce.png", reason: "Pertence à rede portuguesa de distribuição alimentar Pingo Doce, operada pelo grupo Jerónimo Martins." },
+            { category: "Adivinha o Logo", question: "Conforme o ficheiro qcMeJ.jpg do seu repositório, a que federação internacional pertence este emblema?", options: ["FIFA", "UEFA", "FIBA", "COI"], correct: 0, image: "qcMeJ.jpg", reason: "A FIFA (Fédération Internationale de Football Association) é o organismo máximo que rege o futebol mundial." },
+            { category: "Adivinha o Logo", question: "Esta icónica sereia verde de duas caudas representa qual famosa cadeia multinacional de cafetarias?", options: ["Starbucks", "Costa Coffee", "Nespresso", "McCafé"], correct: 0, image: "starbucks.png", reason: "A sereia mística da Starbucks tornou-se um símbolo reconhecido em qualquer parte do planeta." },
+
+            // Questões Preexistentes do Jogo (Garantindo mais diversidade)
             // Economia (5)
             { category: "Economia", question: "Se a inflação de um país aumentar continuamente, o que acontece de forma imediata ao mercado?", options: ["O poder de compra dos cidadãos diminui", "A taxa de poupança bancária duplica", "Os preços gerais dos produtos descem", "O valor real da moeda aumenta estruturalmente"], correct: 0, reason: "A inflação representa o aumento generalizado de preços, reduzindo o poder de compra da moeda." },
             { category: "Economia", question: "O que é medido essencialmente pelo Produto Interno Bruto (PIB) de uma nação?", options: ["O valor de mercado de todos os bens e serviços finais produzidos", "A receita gerada exclusivamente pelas exportações", "A dívida pública total acumulada pelo governo", "O lucro líquido das empresas estatais"], correct: 0, reason: "O PIB mede a produção total de riqueza económica dentro do território de um país num período de tempo." },
@@ -362,35 +439,7 @@
             { category: "Gramática", question: "Identifique a função sintática de 'pelo aluno' na frase: 'A obra foi lida pelo aluno'.", options: ["Complemento Oblíquo", "Complemento Agente da Passiva", "Sujeito Passivo", "Complemento Indireto"], correct: 1, reason: "Em voz passiva, o elemento que executa a ação direta introduzido pela preposição 'por' é o agente da passiva." },
             { category: "Gramática", question: "Na frase 'Lisboa, capital de Portugal, atrai turistas', qual é a função do elemento entre vírgulas?", options: ["Aposto (Modificador do Nome Apositivo)", "Vocativo", "Modificador Restritivo", "Sujeito Composto"], correct: 0, reason: "O aposto identifica, esclarece ou detalha de forma não essencial o referente de um nome precedente." },
             { category: "Gramática", question: "Na frase 'Entreguei o documento ao chefe', qual a função de 'ao chefe'?", options: ["Complemento Direto", "Complemento Indireto", "Complemento Oblíquo", "Sujeito Subentendido"], correct: 1, reason: "Quem entrega, entrega algo a alguém. 'Ao chefe' responde à preposição exigida pelo verbo, sendo um objeto/complemento indireto." },
-            { category: "Gramática", question: "Em 'Ele reside em Vila Real', a expressão 'em Vila Real' desempenha a função de:", options: ["Complemento Oblíquo", "Complemento Direto", "Modificador do Grupo Verbal", "Predicativo do Sujeito"], correct: 0, reason: "O verbo 'residir' é transitivo indireto locativo, exigindo obrigatoriamente a preposição do complemento oblíquo." },
-
-            // Físico-Química (5)
-            { category: "Físico-Química", question: "De acordo com a Lei de Ohm, se a resistência for constante e a tensão duplicar, a corrente:", options: ["Mantém-se igual", "Reduz para metade", "Duplica", "Quadruplica"], correct: 2, reason: "V = R * I. Sendo R fixo, a corrente varia de forma estritamente proporcional à variação da tensão." },
-            { category: "Físico-Química", question: "Qual é o valor padrão de aceleração da gravidade terrestre aproximado para física escolar?", options: ["9.81 m/s²", "1.62 m/s²", "3.71 m/s²", "12.0 m/s²"], correct: 0, reason: "A gravidade nominal à superfície da Terra ao nível do mar situa-se nos 9.80665 m/s²." },
-            { category: "Físico-Química", question: "O processo em que um elemento químico perde eletrões durante uma reação designa-se por:", options: ["Oxidação", "Redução", "Ionização Covalente", "Condensação de Estado"], correct: 0, reason: "A perda de eletrões em reações redox chama-se oxidação, enquanto o ganho respetivo é a redução." },
-            { category: "Físico-Química", question: "A passagem direta e imediata do estado sólido para o gasoso sem passar pelo líquido chama-se:", options: ["Fusão", "Vaporização", "Sublimação", "Solidificação"], correct: 2, reason: "Exemplos comuns incluem gelo seco exposto à temperatura ambiente ou pastilhas de naftalina." },
-            { category: "Físico-Química", question: "Qual é o elemento mais leve e abundante na composição química do Universo?", options: ["Hélio", "Oxigénio", "Carbono", "Hidrogénio"], correct: 3, reason: "O hidrogénio representa mais de 75% da massa elementar detetada no cosmos." },
-
-            // Ciências (5)
-            { category: "Ciências", question: "Que estrutura dentro da célula humana é a principal geradora de energia através de ATP?", options: ["Ribossoma", "Complexo de Golgi", "Mitocôndria", "Lisossoma"], correct: 2, reason: "A mitocôndria é a 'fábrica' de ATP por excelência, através da fosforilação oxidativa e respiração celular." },
-            { category: "Ciências", question: "Qual o processo biológico de divisão de células que gera gâmetas com metade do material genético?", options: ["Meiose", "Mitose", "Bipartição", "Esporulação"], correct: 0, reason: "A meiose resulta em quatro células haploides contendo apenas 23 cromossomas humanos cada." },
-            { category: "Ciências", question: "Em que meio físico de propagação as ondas sonoras não se conseguem propagar?", options: ["Água Salgada", "Aço Sólido", "Vácuo Absoluto", "Ar Atmosférico"], correct: 2, reason: "O som é uma onda mecânica longitudinal, necessitando obrigatoriamente de um meio material para vibrar." },
-            { category: "Ciências", question: "Qual é a hormona secretada pelo pâncreas com a missão de reduzir a glicémia no sangue?", options: ["Adrenalina", "Cortisol", "Glucagom", "Insulina"], correct: 3, reason: "A insulina sinaliza a absorção celular de glicose para uso energético, diminuindo o índice glicémico sérico." },
-            { category: "Ciências", question: "Na atmosfera da Terra, a camada onde ocorrem praticamente todos os fenómenos climáticos é a:", options: ["Estratosfera", "Termosfera", "Troposfera", "Mesosfera"], correct: 2, reason: "A troposfera contém perto de 75% da massa de ar global e quase todo o vapor de água atmosférico." },
-
-            // EA FC (5)
-            { category: "EA FC", question: "Qual a pontuação de química máxima individual que um jogador ativo pode atingir no Ultimate Team?", options: ["3 pontos", "5 pontos", "10 pontos", "33 pontos"], correct: 0, reason: "O sistema de química atribui no máximo 3 pontos de sintonia individual a cada jogador ativo no onze titular." },
-            { category: "EA FC", question: "Para realizar fintas de alta complexidade como o 'Elastico', que nível de Skill Moves é exigido?", options: ["3 estrelas", "4 estrelas", "5 estrelas", "Não necessita de estrelas"], correct: 2, reason: "O 'Elastico' é uma manobra técnica exclusiva de futebolistas dotados de 5 estrelas de fintas." },
-            { category: "EA FC", question: "Que motor ou sistema visual de dados e animação captura o movimento físico real dos atletas no EA FC?", options: ["Frostbite 3.0", "HyperMotionV", "Impact Engine Pro", "DirectMotion FX"], correct: 1, reason: "O HyperMotionV capta e modela de forma volumétrica jogos reais de grandes campeonatos mundiais." },
-            { category: "EA FC", question: "No Ultimate Team, a sigla SBC em português designa que mecânica de jogo?", options: ["Liga de Campeões Semanais", "Simulação de Clubes Aliados", "Desafio de Montagem de Elencos (DME)", "Torneio de Pré-Época"], correct: 2, reason: "SBC deriva da designação em inglês Squad Building Challenge, traduzida por Desafios de Montagem de Elencos." },
-            { category: "EA FC", question: "Que combinação mecânica de botões executa o remate de alta potência (Power Shot)?", options: ["L1 + R1 + Rematar", "R2 + Rematar", "Dois toques no botão de remate", "L2 + R2 + Rematar"], correct: 0, reason: "Pressionar L1+R1 com o botão de remate ativa a câmara dedicada de Power Shot manual." },
-
-            // Formula 1 (5)
-            { category: "Formula 1", question: "Que piloto tem o recorde histórico de títulos de F1 partilhado com Michael Schumacher?", options: ["Fernando Alonso", "Ayrton Senna", "Lewis Hamilton", "Sebastian Vettel"], correct: 2, reason: "Lewis Hamilton e Michael Schumacher somam ambos 7 campeonatos mundiais de Fórmula 1." },
-            { category: "Formula 1", question: "Nos GP oficiais de F1, que cor identifica os pneus compostos mais macios (Softs)?", options: ["Amarelo", "Vermelho", "Branco", "Verde"], correct: 1, reason: "A gama de pneus secos Pirelli Soft usa as marcações na cor vermelha." },
-            { category: "Formula 1", question: "Qual é o dispositivo estrutural obrigatório instalado no cockpit para segurança de impactos frontais?", options: ["Aeroscreen", "HANS Device", "Halo", "Célula de Kevlar"], correct: 2, reason: "O Halo protege de detritos pesados direcionados à cabeça do piloto." },
-            { category: "Formula 1", question: "Em que circuito se localiza a famosa e temida combinação de curvas de alta velocidade Eau Rouge / Raidillon?", options: ["Monza", "Silverstone", "Spa-Francorchamps", "Nürburgring"], correct: 2, reason: "A combinação mítica Eau Rouge e Raidillon pertence ao traçado de Spa-Francorchamps nas Ardenas belgas." },
-            { category: "Formula 1", question: "A sigla técnica DRS no ecossistema da F1 significa literalmente o quê?", options: ["Direct Recovery System", "Drag Reduction System", "Driver Racing Stability", "Dynamic Rear Suspension"], correct: 1, reason: "O Drag Reduction System abre a asa traseira para facilitar ultrapassagens em zonas de reta selecionadas." }
+            { category: "Gramática", question: "Em 'Ele reside em Vila Real', a expressão 'em Vila Real' desempenha a função de:", options: ["Complemento Oblíquo", "Complemento Direto", "Modificador do Grupo Verbal", "Predicativo do Sujeito"], correct: 0, reason: "O verbo 'residir' é transitivo indireto locativo, exigindo obrigatoriamente a preposição do complemento oblíquo." }
         ];
 
         var AppState = {
@@ -607,6 +656,14 @@
                 return;
             }
 
+            // Ativar instantaneamente indicação de processamento sem lag
+            var createBtn = document.getElementById('btn-create-room');
+            if (createBtn) {
+                createBtn.setAttribute('disabled', 'true');
+                createBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                createBtn.innerText = 'A processar sessão...';
+            }
+
             AppState.clientName = name;
             AppState.players = [{
                 id: AppState.clientId,
@@ -729,6 +786,14 @@
 
         function triggerGameStart() {
             if (AppState.isHost) {
+                // Desativar instantaneamente botão para evitar atraso visual e cliques múltiplos
+                var btn = document.getElementById('btn-start-trigger');
+                if (btn) {
+                    btn.setAttribute('disabled', 'true');
+                    btn.classList.add('opacity-50');
+                    btn.innerHTML = '<span>A Iniciar Match...</span>';
+                }
+
                 if (AppState.mqttClient && AppState.mqttClient.connected) {
                     sendNetworkMessage('start_game', { players: AppState.players });
                 }
@@ -737,7 +802,7 @@
             }
         }
 
-        // FASE 1: PROFISSÕES COM TEMPORIZADOR DE 15 SEGUNDOS
+        //        // FASE 1: PROFISSÕES COM TEMPORIZADOR DE 15 SEGUNDOS (Exatamente 40)
         function loadProfessionStage() {
             if (AppState.professionIndex >= CONFIG.TOTAL_PROFESSIONS) {
                 logActivity('[Sistema] Fase 1 concluída. Iniciando fase do Quiz.');
@@ -763,7 +828,11 @@
             document.getElementById('label-p3-val').innerText = '5';
 
             var btnSubmit = document.getElementById('btn-submit-prof');
-            if (btnSubmit) btnSubmit.removeAttribute('disabled');
+            if (btnSubmit) {
+                btnSubmit.removeAttribute('disabled');
+                btnSubmit.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnSubmit.innerHTML = '<span>Submeter Avaliações</span> <span class="material-icons text-sm">done_all</span>';
+            }
 
             var currentProf = PROFESSIONS_DATABASE[AppState.professionIndex];
             var nameEl = document.getElementById('current-prof-name');
@@ -850,8 +919,13 @@
         function commitProfessionVote() {
             clearInterval(AppState.timerInterval);
 
+            // Evitar delay visual: Desativar instantaneamente
             var btnSubmit = document.getElementById('btn-submit-prof');
-            if (btnSubmit) btnSubmit.setAttribute('disabled', 'true');
+            if (btnSubmit) {
+                btnSubmit.setAttribute('disabled', 'true');
+                btnSubmit.classList.add('opacity-50', 'cursor-not-allowed');
+                btnSubmit.innerHTML = '<span>A Processar...</span> <span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full ml-1"></span>';
+            }
 
             // Capturar as escolhas atuais nos sliders
             var vSelf = parseInt(document.getElementById('range-self-prof').value);
@@ -899,8 +973,8 @@
                         p.ratings[AppState.professionIndex] = botSelf;
                         p.predictions[AppState.professionIndex] = botPredictions;
 
-                        // Simular latência de digitação para a lista de "quem falta votar" ser realista
-                        var latency = Math.floor(Math.random() * 3000) + 1000;
+                        // Simular latência realista para a lista de "quem falta votar"
+                        var latency = Math.floor(Math.random() * 1200) + 400;
                         setTimeout(() => {
                             AppState.votedThisRound[p.id] = true;
                             updateWhosMissingIndicator();
@@ -934,7 +1008,7 @@
                 AppState.professionIndex++;
                 setTimeout(() => {
                     loadProfessionStage();
-                }, 1000);
+                }, 800);
             }
         }
 
@@ -954,7 +1028,7 @@
             });
         }
 
-        // FASE 2: EXAME COGNITIVO (QUIZ)
+        //        // FASE 2: EXAME COGNITIVO & LOGOS
         function loadQuizStage() {
             if (AppState.questionIndex >= QUIZ_DATABASE.length) {
                 transitionToScreen('screen-results');
@@ -977,6 +1051,27 @@
             if (catBadge) catBadge.innerText = currentQuestion.category;
             if (quizCounter) quizCounter.innerText = (AppState.questionIndex + 1) + '/' + QUIZ_DATABASE.length;
             if (quizQuest) quizQuest.innerText = currentQuestion.question;
+
+            // Inserção da mecânica e do contentor de Imagem (Adivinha o Logo)
+            var imgContainer = document.getElementById('quiz-image-container');
+            var logoImg = document.getElementById('quiz-logo-img');
+            var fallbackBox = document.getElementById('quiz-image-fallback');
+
+            if (currentQuestion.image) {
+                imgContainer.classList.remove('hidden');
+                logoImg.style.display = 'block';
+                logoImg.src = currentQuestion.image;
+                
+                // Tratar fallback caso as imagens locais ainda não estejam no caminho correto
+                logoImg.onerror = function() {
+                    logoImg.style.display = 'none';
+                    fallbackBox.classList.remove('hidden');
+                    fallbackBox.innerText = `[A carregar Logo: ${currentQuestion.image}]`;
+                };
+                fallbackBox.classList.add('hidden');
+            } else {
+                imgContainer.classList.add('hidden');
+            }
 
             var optionsContainer = document.getElementById('quiz-options-container');
             if (optionsContainer) {
@@ -1015,9 +1110,14 @@
         function selectQuizAnswer(choiceIdx) {
             clearInterval(AppState.timerInterval);
             
-            document.querySelectorAll('#quiz-options-container button').forEach(btn => {
+            // Remover latência visual desativando botões IMEDIATAMENTE e destacando a escolha
+            document.querySelectorAll('#quiz-options-container button').forEach((btn, idx) => {
                 btn.setAttribute('disabled', 'true');
-                btn.classList.add('opacity-60');
+                btn.classList.add('opacity-60', 'cursor-not-allowed');
+                if (idx === choiceIdx) {
+                    btn.className = 'w-full p-4 bg-brand-600 text-white border border-brand-600 rounded-2xl text-left font-bold transition-all text-sm focus:outline-none';
+                    btn.classList.remove('opacity-60');
+                }
             });
 
             var me = AppState.players.find(p => p.id === AppState.clientId);
@@ -1030,7 +1130,7 @@
                 AppState.players.forEach(p => {
                     if (p.isBot) {
                         var correctChoice = QUIZ_DATABASE[AppState.questionIndex].correct;
-                        var finalChoice = Math.random() < 0.65 ? correctChoice : Math.floor(Math.random() * 4);
+                        var finalChoice = Math.random() < 0.70 ? correctChoice : Math.floor(Math.random() * 4);
                         p.quizAnswers[AppState.questionIndex] = finalChoice;
                         botAnswers.push({ id: p.id, choice: finalChoice });
                     }
@@ -1087,10 +1187,10 @@
             setTimeout(() => {
                 AppState.questionIndex++;
                 loadQuizStage();
-            }, 3500);
+            }, 3000);
         }
 
-        // RESULTADOS FINAIS
+        //        // RESULTADOS FINAIS
         function renderFinalResults() {
             var podium = document.getElementById('podium-container');
             if (podium) {
