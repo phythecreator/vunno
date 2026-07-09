@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/mqtt/dist/mqtt.min.js"></script>
 
     <script>
@@ -79,6 +78,7 @@
 
     <div class="w-full max-w-5xl bg-white rounded-3xl border border-slate-100 shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[720px]">
         
+        <!-- Coluna Esquerda: Informações e Jogadores -->
         <div class="w-full md:w-1/3 bg-slate-50 border-r border-slate-100 p-6 flex flex-col justify-between">
             <div>
                 <div class="flex items-center justify-between mb-8">
@@ -125,8 +125,10 @@
             </div>
         </div>
 
+        <!-- Coluna Direita: Gestão de Ecrãs -->
         <div class="w-full md:w-2/3 p-8 flex flex-col justify-between min-h-[550px]">
 
+            <!-- ECRÃ 1: LOGIN -->
             <section id="screen-login" class="screen active my-auto">
                 <div class="max-w-md mx-auto text-center">
                     <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Sessão de Orientação</h2>
@@ -150,6 +152,7 @@
                 </div>
             </section>
 
+            <!-- ECRÃ 2: LOBBY -->
             <section id="screen-lobby" class="screen my-auto">
                 <div class="max-w-md mx-auto">
                     <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Sala de Emparelhamento</h2>
@@ -184,76 +187,71 @@
                 </div>
             </section>
 
+            <!-- ECRÃ 3: PROFISSÕES (AFINIDADES MULTILATERAIS COM TEMPORIZADOR DE 15S) -->
             <section id="screen-professions" class="screen">
                 <div id="prof-input-block">
                     <div class="flex items-center justify-between mb-6">
-                        <span class="px-3 py-1 bg-brand-50 text-brand-600 rounded-full text-xs font-extrabold tracking-wider uppercase">Fase 1: Vocações & Afinidades</span>
-                        <span id="prof-counter" class="text-xs text-slate-400 font-bold">1/40</span>
+                        <div>
+                            <span class="px-3 py-1 bg-brand-50 text-brand-600 rounded-full text-xs font-extrabold tracking-wider uppercase">Fase 1: Afinidades</span>
+                            <span id="prof-counter" class="text-xs text-slate-400 font-bold ml-2">1/40</span>
+                        </div>
+                        <div id="prof-timer-container" class="w-12 h-12 rounded-full border-4 border-brand-500 flex items-center justify-center shadow-lg shadow-brand-50 transition-all">
+                            <span id="prof-timer" class="text-base font-extrabold text-slate-900">15</span>
+                        </div>
                     </div>
 
                     <div class="bg-gradient-to-tr from-brand-50 to-indigo-50 border border-brand-100 p-8 rounded-3xl text-center mb-6">
-                        <p class="text-xs text-slate-400 font-bold tracking-widest uppercase mb-1">Avaliação Vocacional</p>
+                        <p class="text-xs text-slate-400 font-bold tracking-widest uppercase mb-1">Avaliação Vocacional Coletiva</p>
                         <h3 id="current-prof-name" class="text-3xl font-black text-slate-900 tracking-tight mb-2">---</h3>
                         <span id="prof-index-indicator" class="text-[10px] bg-white px-2 py-0.5 rounded border border-slate-200 text-slate-400 font-mono">Índice: P-01</span>
                     </div>
 
-                    <div class="space-y-6 mb-8">
-                        <div class="p-5 bg-slate-50 border border-slate-100 rounded-2xl">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-sm font-bold text-slate-800">Qual o teu nível de interesse intrínseco nesta área?</span>
-                                <span id="label-self-val" class="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center text-sm font-black shadow-sm">5</span>
+                    <div class="space-y-4 mb-6">
+                        <!-- Input 1: O Quanto EU Gostaria -->
+                        <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-slate-800">1. O quanto <span class="text-brand-600 font-black">TU</span> gostarias de exercer esta profissão?</span>
+                                <span id="label-self-val" class="w-7 h-7 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-black shadow-sm">5</span>
                             </div>
-                            <input type="range" min="0" max="10" value="5" id="range-self-prof" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600" oninput="document.getElementById('label-self-val').innerText = this.value">
-                            <div class="flex justify-between text-[10px] text-slate-400 font-bold mt-1 px-1">
-                                <span>0 (Nenhum)</span>
-                                <span>5 (Neutro)</span>
-                                <span>10 (Máximo)</span>
+                            <input type="range" min="0" max="10" value="5" id="range-self-prof" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600" oninput="document.getElementById('label-self-val').innerText = this.value">
+                        </div>
+
+                        <!-- Input 2: O Quanto o Jogador 2 Gostaria -->
+                        <div id="box-pred-p2" class="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-slate-800">2. O quanto achas que o/a <span id="label-name-p2" class="text-brand-600 font-extrabold">Jogador 2</span> gostaria disto?</span>
+                                <span id="label-p2-val" class="w-7 h-7 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-black shadow-sm">5</span>
                             </div>
+                            <input type="range" min="0" max="10" value="5" id="range-p2-prof" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600" oninput="document.getElementById('label-p2-val').innerText = this.value">
+                        </div>
+
+                        <!-- Input 3: O Quanto o Jogador 3 Gostaria -->
+                        <div id="box-pred-p3" class="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-slate-800">3. O quanto achas que o/a <span id="label-name-p3" class="text-brand-600 font-extrabold">Jogador 3</span> gostaria disto?</span>
+                                <span id="label-p3-val" class="w-7 h-7 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-black shadow-sm">5</span>
+                            </div>
+                            <input type="range" min="0" max="10" value="5" id="range-p3-prof" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600" oninput="document.getElementById('label-p3-val').innerText = this.value">
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between">
-                        <p class="text-xs text-slate-400 font-medium italic">O cronómetro interno está a registar a tua latência de resposta.</p>
-                        <button onclick="commitProfessionVote()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition shadow-lg shadow-brand-50 flex items-center gap-1">
-                            <span>Submeter Resposta</span>
-                            <span class="material-icons text-sm">navigate_next</span>
+                    <!-- Rodapé do Ecrã de Afinidades -->
+                    <div class="p-3 bg-slate-100 rounded-2xl border border-slate-200/50 mb-4 text-center">
+                        <p id="prof-sync-indicator" class="text-xs text-slate-600 font-semibold font-mono animate-pulse">
+                            A aguardar votos locais...
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-end">
+                        <button onclick="commitProfessionVote()" id="btn-submit-prof" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition shadow-lg shadow-brand-50 flex items-center gap-1">
+                            <span>Submeter Avaliações</span>
+                            <span class="material-icons text-sm">done_all</span>
                         </button>
-                    </div>
-                </div>
-
-                <div id="prof-metrics-block" class="hidden text-center my-auto py-6">
-                    <h3 class="text-2xl font-black text-slate-900 mb-2">Registo de Métricas Computado</h3>
-                    <p class="text-sm text-slate-500 mb-6">Análise comparativa temporal e diagnóstico de arquétipo dinâmico para a profissão anterior.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mx-auto text-left mb-6">
-                        <div class="p-5 bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between">
-                            <div>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Arquétipo Resultante</span>
-                                <h4 id="metric-archetype-name" class="text-xl font-black text-brand-600">Calculando...</h4>
-                            </div>
-                            <p class="text-xs text-slate-500 mt-2">Este perfil reflete a tua tendência comportamental atual.</p>
-                        </div>
-
-                        <div class="p-5 bg-white rounded-2xl border border-slate-100 shadow-sm space-y-3">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Cronometria de Ação</span>
-                            <div class="flex justify-between items-center text-xs border-b border-slate-50 pb-1.5">
-                                <span class="text-slate-600 font-medium">A tua colocação:</span>
-                                <span id="metric-time-self" class="font-mono bg-brand-50 text-brand-700 px-2 py-0.5 rounded font-bold">--s</span>
-                            </div>
-                            <div class="flex justify-between items-center text-xs">
-                                <span class="text-slate-600 font-medium">Colocação dos outros pares:</span>
-                                <span id="metric-time-others" class="font-mono bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-bold">--s</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="inline-flex items-center gap-2 text-xs text-slate-400 font-medium animate-pulse">
-                        <span class="w-2 h-2 rounded-full bg-brand-500"></span>
-                        <span>A sincronizar barramento de dados... Avançando automaticamente...</span>
                     </div>
                 </div>
             </section>
 
+            <!-- ECRÃ 4: QUIZ -->
             <section id="screen-quiz" class="screen">
                 <div class="flex items-center justify-between mb-6">
                     <div>
@@ -261,7 +259,7 @@
                         <span id="quiz-counter" class="text-xs text-slate-400 font-bold ml-2">1/55</span>
                     </div>
                     <div id="timer-radial-container" class="w-12 h-12 rounded-full border-4 border-accent-500 flex items-center justify-center shadow-lg shadow-accent-50 transition-all duration-300">
-                        <span id="quiz-timer" class="text-base font-extrabold text-slate-900">25</span>
+                        <span id="quiz-timer" class="text-base font-extrabold text-slate-900">10</span>
                     </div>
                 </div>
 
@@ -269,17 +267,16 @@
                     <h3 id="current-quiz-question" class="text-lg font-bold text-slate-800 leading-snug">---</h3>
                 </div>
 
-                <div id="quiz-options-container" class="grid grid-cols-1 gap-3 mb-6">
-                    </div>
+                <div id="quiz-options-container" class="grid grid-cols-1 gap-3 mb-6"></div>
 
                 <div id="quiz-lobby-choices" class="p-3 bg-slate-50 rounded-xl text-[11px] text-center text-slate-500 font-mono mb-4 border border-slate-100">
                     A aguardar inputs locais ou de rede...
                 </div>
 
-                <div id="quiz-correction-box" class="p-4 rounded-2xl hidden text-xs transition-all duration-300">
-                    </div>
+                <div id="quiz-correction-box" class="p-4 rounded-2xl hidden text-xs transition-all duration-300"></div>
             </section>
 
+            <!-- ECRÃ 5: RESULTADOS -->
             <section id="screen-results" class="screen">
                 <div class="text-center mb-8">
                     <span class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs font-extrabold tracking-wider uppercase mb-3 inline-block">Processamento Concluído</span>
@@ -287,9 +284,8 @@
                 </div>
 
                 <div class="mb-6">
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Pontuação do Exame Cognitivo</h4>
-                    <div id="podium-container" class="space-y-2">
-                        </div>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Tabela de Classificações</h4>
+                    <div id="podium-container" class="space-y-2"></div>
                 </div>
 
                 <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 mb-8 flex flex-col md:flex-row items-center gap-6">
@@ -318,7 +314,8 @@
         // CONFIGURAÇÕES GLOBAIS DO SISTEMA
         const CONFIG = {
             TOTAL_PROFESSIONS: 40,
-            QUIZ_TIMER_SECONDS: 25,
+            PROF_TIMER_SECONDS: 15,
+            QUIZ_TIMER_SECONDS: 10,
             BROKER_URL: 'wss://broker.emqx.io:8084/mqtt'
         };
 
@@ -334,630 +331,837 @@
             "Técnico de Relações Públicas", "Engenheiro Agrónomo", "Arquivista", "Planeador Urbanista", "Meteorologista"
         ];
 
-        // BASE DE DADOS DE QUESTÕES (Exatamente 11 Categorias × 5 Questões = 55 Questões, Nível 9º Ano, Dificuldade 4/10 a 7/10)
+        // BASE DE DADOS DE QUESTÕES (Completa e livre de cortes - Exatamente 41 Questões com as categorias solicitadas)
         const QUIZ_DATABASE = [
-            // 1. Economia
+            // Economia (5)
             { category: "Economia", question: "Se a inflação de um país aumentar continuamente, o que acontece de forma imediata ao mercado?", options: ["O poder de compra dos cidadãos diminui", "A taxa de poupança bancária duplica", "Os preços gerais dos produtos descem", "O valor real da moeda aumenta estruturalmente"], correct: 0, reason: "A inflação representa o aumento generalizado de preços, reduzindo o poder de compra da moeda." },
             { category: "Economia", question: "O que é medido essencialmente pelo Produto Interno Bruto (PIB) de uma nação?", options: ["O valor de mercado de todos os bens e serviços finais produzidos", "A receita gerada exclusivamente pelas exportações", "A dívida pública total acumulada pelo governo", "O lucro líquido das empresas estatais"], correct: 0, reason: "O PIB mede a produção total de riqueza económica dentro do território de um país num período de tempo." },
             { category: "Economia", question: "Qual é a principal caraterística e efeito do mecanismo de juros compostos?", options: ["Os juros acumulam-se sobre o capital inicial e sobre os juros já gerados", "O rendimento cresce de forma estritamente linear", "O risco do investimento é totalmente eliminado", "Os impostos sobre o ganho deixam de ser aplicados"], correct: 0, reason: "Os juros compostos calculam-se sobre o montante acumulado, gerando crescimento exponencial." },
             { category: "Economia", question: "O que caracteriza tecnicamente o conceito de 'Custo de Oportunidade' numa escolha financeira?", options: ["O valor da melhor alternativa que é rejeitada ao tomar uma decisão", "O custo total das taxas administrativas bancárias", "O preço mais baixo encontrado para um determinado produto", "O imposto cobrado pelo Estado em transações comerciais"], correct: 0, reason: "O custo de oportunidade reflete o benefício abdicado de uma opção em detrimento de outra." },
             { category: "Economia", question: "Quem é o agente económico responsável pela definição das taxas de juro de referência na Zona Euro?", options: ["O Banco Central Europeu (BCE)", "O Fundo Monetário Internacional", "A Comissão Europeia", "O Banco de Portugal apenas"], correct: 0, reason: "O BCE dita a política monetária comum e define as taxas de juro de referência para a Eurozona." },
 
-            // 2. Fórmula 1
-            { category: "Fórmula 1", question: "Que piloto divide o recorde histórico de maior número de títulos mundiais (7) com Michael Schumacher?", options: ["Max Verstappen", "Sebastian Vettel", "Lewis Hamilton", "Ayrton Senna"], correct: 2, reason: "Lewis Hamilton conquistou o seu sétimo campeonato mundial em 2020, igualando o recorde de Schumacher." },
-            { category: "Fórmula 1", question: "O que significa e qual a função da sigla DRS nos monolugares de Fórmula 1?", options: ["Sistema de redução de arrasto aerodinâmico para facilitar ultrapassagens", "Controlo eletrónico de tração nas curvas rápidas", "Distribuição dinâmica da travagem nos eixos", "Sistema de recuperação de energia térmica"], correct: 0, reason: "O Drag Reduction System (DRS) abre uma asa traseira, reduzindo a resistência do ar e aumentando a velocidade de ponta." },
-            { category: "Fórmula 1", question: "Em que cidade ou circuito urbano se realiza a corrida mais tradicional e estreita do calendário da F1?", options: ["Circuito de Monza", "Grande Prémio do Mónaco", "Circuito de Silverstone", "Circuito de Spa-Francorchamps"], correct: 1, reason: "O GP do Mónaco, nas ruas de Monte Carlo, é famoso pela sua extrema exigência técnica e falta de espaço para ultrapassar." },
-            { category: "Fórmula 1", question: "O que indica a amostragem de uma bandeira amarela estática ou em agitação para um piloto em pista?", options: ["Perigo iminente na pista, obrigatório reduzir a velocidade e proibido ultrapassar", "Fim imediato da sessão de treinos ou corrida", "Pista escorregadia devido a óleo ou detritos", "Desqualificação direta do piloto por condução perigosa"], correct: 0, reason: "A bandeira amarela avisa sobre incidentes na pista, exigindo cautela absoluta e proibindo ultrapassagens." },
-            { category: "Fórmula 1", question: "Qual é a equipa mais antiga e com mais títulos de construtores em atividade na história da Fórmula 1?", options: ["McLaren", "Mercedes AMG", "Scuderia Ferrari", "Williams Racing"], correct: 2, reason: "A Ferrari compete desde o campeonato inaugural em 1950 e detém o maior historial de títulos da categoria." },
+            // Futebol (5)
+            { category: "Futebol", question: "Que clube europeu histórico bateu o AC Milan na final da UEFA Champions League de 1993?", options: ["Olympique de Marseille", "Barcelona", "FC Porto", "Benfica"], correct: 0, reason: "O Marseille conquistou o troféu em Munique com um golo de cabeça de Basile Boli, num feito histórico francês." },
+            { category: "Futebol", question: "Quem é o único jogador do futebol mundial a conquistar 3 Mundiais da FIFA como atleta ativo?", options: ["Diego Maradona", "Pelé", "Franz Beckenbauer", "Zinedine Zidane"], correct: 1, reason: "Pelé alcançou os títulos nos Mundiais de 1958, 1962 e 1970, consolidando-se como uma lenda do desporto." },
+            { category: "Futebol", question: "Just Fontaine detém o recorde absoluto de mais golos numa única edição de um Mundial. Quantos?", options: ["10 golos", "11 golos", "13 golos", "15 golos"], correct: 2, reason: "Fontaine apontou impressionantes 13 golos no Mundial da Suécia em 1958." },
+            { category: "Futebol", question: "Em que ano foi fundada a IFAB (órgão internacional regulador das regras de futebol)?", options: ["1886", "1904", "1912", "1954"], correct: 0, reason: "A IFAB foi estabelecida em 1886 pelas associações do Reino Unido antes da criação da própria FIFA." },
+            { category: "Futebol", question: "Qual destes jogadores venceu a cobiçada Bola de Ouro (France Football) no ano de 2003?", options: ["Ronaldo Nazário", "Zinedine Zidane", "Pavel Nedvěd", "Thierry Henry"], correct: 2, reason: "O médio checo Pavel Nedvěd, da Juventus, garantiu a honraria com uma campanha soberba a nível europeu." },
 
-            // 3. Futebol
-            { category: "Futebol", question: "Qual das seguintes situações configura uma infração de fora de jogo regulamentar?", options: ["O atacante está mais adiantado que a linha da bola e o penúltimo adversário no momento do passe", "O jogador recebe a bola diretamente de um lançamento de linha lateral", "O atacante encontra-se no seu próprio meio-campo no momento do passe", "O avançado está em linha exata com o último defesa central"], correct: 0, reason: "A regra do fora de jogo pune a posição adiantada em relação à bola e ao penúltimo oponente no momento exato em que o passe é executado." },
-            { category: "Futebol", question: "Que seleção nacional detém o recorde de maior número de Campeonatos do Mundo da FIFA conquistados?", options: ["Alemanha", "Itália", "Argentina", "Brasil"], correct: 3, reason: "O Brasil é a única seleção pentacampeã mundial (1958, 1962, 1970, 1994, 2002)." },
-            { category: "Futebol", question: "Qual é a duração regulamentar total de um jogo de futebol profissional sénior, dividida em duas partes?", options: ["80 minutos", "90 minutos", "100 minutos", "120 minutos"], correct: 1, reason: "Um jogo padrão dura 90 minutos, estruturado em duas partes distintas de 45 minutos cada." },
-            { category: "Futebol", question: "O que significa formalmente a sigla VAR introduzida nas leis do jogo de futebol?", options: ["Video Assistant Referee (Videoárbitro)", "Validation and Arbitration Register", "Visual Area Recording", "Velocity Analysis Radar"], correct: 0, reason: "O VAR é o sistema de assistência por vídeo que revê decisões cruciais do árbitro principal." },
-            { category: "Futebol", question: "Que sanção direta se aplica a um jogador de campo que cometa uma falta violenta ou corte uma oportunidade flagrante de golo com a mão fora da área?", options: ["Cartão Amarelo", "Cartão Vermelho Direto e expulsão", "Advertência verbal apenas", "Exclusão temporária por 10 minutos"], correct: 1, reason: "Condutas violentas ou negação deliberada de golo resultam em expulsão imediata por cartão vermelho." },
+            // Bandeiras (5)
+            { category: "Bandeiras", question: "Que elemento característico está desenhado no centro da bandeira nacional do Canadá?", options: ["Uma folha de Carvalho", "Uma folha de Acer (Bordo)", "Uma Águia Imperial", "Um Urso Polar"], correct: 1, reason: "A folha de Acer (Maple Leaf) é um símbolo histórico nacional associado ao território e recursos canadianos." },
+            { category: "Bandeiras", question: "Quais são as três cores da bandeira nacional da Alemanha, de cima para baixo?", options: ["Preto, Vermelho, Amarelo", "Preto, Amarelo, Vermelho", "Vermelho, Preto, Amarelo", "Amarelo, Preto, Vermelho"], correct: 0, reason: "A bandeira tricolor germânica é composta exatamente por faixas horizontais de Preto, Vermelho e Dourado/Amarelo." },
+            { category: "Bandeiras", question: "Que nação asiática tem na sua bandeira um disco vermelho descentrado sobre fundo verde?", options: ["Japão", "Bangladesh", "Vietname", "Palau"], correct: 1, reason: "O disco representa o sol nascente e a soberania da independência, enquanto o verde evoca os campos férteis de Bangladesh." },
+            { category: "Bandeiras", question: "Que frase emblemática está inscrita na bandeira oficial da República do Brasil?", options: ["Ordem e Progresso", "Progresso e União", "União e Liberdade", "Paz e Prosperidade"], correct: 0, reason: "A inscrição advém do lema positivista de Auguste Comte: 'O Amor por princípio e a Ordem por base; o Progresso por fim'." },
+            { category: "Bandeiras", question: "Qual é o único país cuja bandeira oficial tem uma geometria não quadrangular?", options: ["Suíça", "Nepal", "Bélgica", "Vaticano"], correct: 1, reason: "A bandeira do Nepal é constituída por duas bandeirolas triangulares sobrepostas com símbolos do sol e da lua." },
 
-            // 4. Investimentos
-            { category: "Investimentos", question: "O que representa essencialmente uma 'Ação' cotada no mercado bolsista?", options: ["Uma parcela infinitesimal do capital social de uma empresa", "Um título de dívida emitido obrigatoriamente pelo governo", "Um contrato de seguro contra perdas imobiliárias", "Um depósito a prazo com rentabilidade fixa garantida"], correct: 0, reason: "Ao adquirir uma ação, o investidor torna-se coproprietário de uma fração dessa empresa pública." },
-            { category: "Investimentos", question: "Qual é o principal objetivo da estratégia financeira de 'Diversificação' de carteira?", options: ["Aumentar os custos alfandegários", "Concentrar o capital num único ativo seguro", "Mitigar o risco distribuindo o capital por ativos independentes", "Garantir lucros diários invariáveis"], correct: 2, reason: "Diversificar distribui os investimentos por setores diferentes para reduzir o impacto negativo de quedas localizadas." },
-            { category: "Investimentos", question: "Como funciona a relação clássica entre Risco e Retorno Potencial nos mercados?", options: ["Ativos com maior risco tendem a exigir um potencial de retorno mais elevado", "O risco elevado garante sempre ganhos fáceis", "Investimentos sem risco oferecem as maiores taxas do mercado", "O risco e o retorno não possuem qualquer correlação matemática"], correct: 0, reason: "Para atrair capital para ativos voláteis ou arriscados, os mercados oferecem expectativas de retornos superiores." },
-            { category: "Investimentos", question: "Qual destes ativos é tradicionalmente apelidado de 'Ativo Refúgio' em momentos de grave crise económica?", options: ["Ações de empresas em crescimento rápido", "Ouro e metais preciosos escassos", "Títulos de dívida de mercados emergentes", "Contratos derivados complexos"], correct: 1, reason: "O ouro físico retém valor intrínseco histórico quando moedas fiat sofrem desvalorizações aceleradas." },
-            { category: "Investimentos", question: "O que diferencia um Fundo de Investimento de uma ação individual?", options: ["O fundo agrega capitais de múltiplos investidores para aplicar num cabaz diversificado", "O fundo é obrigatoriamente emitido por bancos estatais", "O fundo oferece sempre rentabilidade garantida por lei", "A ação individual representa um empréstimo direto ao banco do investidor"], correct: 0, reason: "Os fundos geridos combinam o capital de vários investidores para comprar um portefólio diversificado de ativos." },
+            // Preço Justo (1)
+            { category: "Preço Justo", question: "Qual o preço médio estimado em Portugal de um Spray Inseticida Anti-Vespas de 750ml?", options: ["Entre 2.00€ e 4.00€", "Entre 7.00€ e 9.50€", "Entre 16.00€ e 20.00€", "Entre 25.00€ e 32.00€"], correct: 1, reason: "Os aerossóis de grande alcance para eliminação direcionada de vespas e ninhos rondam geralmente os 7 a 9 euros em superfícies comerciais." },
 
-            // 5. EA FC
-            { category: "EA FC", question: "No modo Ultimate Team, qual é a pontuação de química máxima individual que um único jogador pode alcançar no onze titular?", options: ["3 pontos", "5 pontos", "10 pontos", "33 pontos"], correct: 0, reason: "O sistema de química atribui no máximo 3 losangos/pontos de sintonia individual a cada jogador ativo." },
-            { category: "EA FC", question: "Que nível ou classificação de 'Skill Moves' (Fintas) é estritamente exigido para executar o drible 'Elastico' no jogo?", options: ["3 Estrelas", "4 Estrelas", "5 Estrelas", "Qualquer nível executa"], correct: 2, reason: "O 'Elastico' faz parte do reportório avançado de habilidades, exclusivo de atletas com 5 estrelas de drible." },
-            { category: "EA FC", question: "Como se designa a tecnologia visual e de captura de dados de movimento real utilizada nos motores do EA FC?", options: ["Frostbite Core", "HyperMotionV", "Impact Engine 2", "DirectMotion Pro"], correct: 1, reason: "A tecnologia HyperMotionV utiliza dados volumétricos capturados diretamente de jogos reais de competições oficiais." },
-            { category: "EA FC", question: "O que significa a sigla SBC (ou DME em português) dentro das mecânicas do Ultimate Team?", options: ["Squad Building Challenge (Desafio de Montagem de Elencos)", "Simulation Basketball Championship", "Seasonal Bronze Cup", "Server Balance Control"], correct: 0, reason: "SBC são desafios onde trocas cartas de jogadores por recompensas através da criação de planteis com requisitos específicos." },
-            { category: "EA FC", question: "Qual é a utilidade da aplicação complementar 'Companion Web App' do EA FC?", options: ["Permite disputar partidas online no computador", "Gerir o clube, mercado de transferências e SBCs fora da consola/PC", "Substituir o comando físico por comandos táteis no ecrã", "Aumentar os gráficos das transmissões em direto"], correct: 1, reason: "A Web e Companion App servem para manutenção, comércio e gestão estratégica de elencos via browser ou smartphone." },
+            // Gramática (5)
+            { category: "Gramática", question: "Em 'O diretor considerou a proposta excelente', qual a função sintática de 'excelente'?", options: ["Complemento Direto", "Predicativo do Complemento Direto", "Predicativo do Sujeito", "Modificador do Nome"], correct: 1, reason: "'Excelente' caracteriza o objeto direto 'a proposta' por atribuição da opinião expressa pelo verbo 'considerou'." },
+            { category: "Gramática", question: "Identifique a função sintática de 'pelo aluno' na frase: 'A obra foi lida pelo aluno'.", options: ["Complemento Oblíquo", "Complemento Agente da Passiva", "Sujeito Passivo", "Complemento Indireto"], correct: 1, reason: "Em voz passiva, o elemento que executa a ação direta introduzido pela preposição 'por' é o agente da passiva." },
+            { category: "Gramática", question: "Na frase 'Lisboa, capital de Portugal, atrai turistas', qual é a função do elemento entre vírgulas?", options: ["Aposto (Modificador do Nome Apositivo)", "Vocativo", "Modificador Restritivo", "Sujeito Composto"], correct: 0, reason: "O aposto identifica, esclarece ou detalha de forma não essencial o referente de um nome precedente." },
+            { category: "Gramática", question: "Na frase 'Entreguei o documento ao chefe', qual a função de 'ao chefe'?", options: ["Complemento Direto", "Complemento Indireto", "Complemento Oblíquo", "Sujeito Subentendido"], correct: 1, reason: "Quem entrega, entrega algo a alguém. 'Ao chefe' responde à preposição exigida pelo verbo, sendo um objeto/complemento indireto." },
+            { category: "Gramática", question: "Em 'Ele reside em Vila Real', a expressão 'em Vila Real' desempenha a função de:", options: ["Complemento Oblíquo", "Complemento Direto", "Modificador do Grupo Verbal", "Predicativo do Sujeito"], correct: 0, reason: "O verbo 'residir' é transitivo indireto locativo, exigindo obrigatoriamente a preposição do complemento oblíquo." },
 
-            // 6. Cinema
-            { category: "Cinema", question: "Qual é o nome do prémio cinematográfico anual atribuído pela Academia de Artes e Ciências Cinematográficas dos Estados Unidos?", options: ["Globo de Ouro", "Palma de Ouro", "Óscar (Academy Award)", "BAFTA"], correct: 2, reason: "O Óscar é a estatueta de maior prestígio atribuída anualmente pela indústria de Hollywood." },
-            { category: "Cinema", question: "Quem realizou as duas maiores bilheteiras da história do cinema contemporâneo: 'Titanic' e 'Avatar'?", options: ["Steven Spielberg", "Christopher Nolan", "James Cameron", "Martin Scorsese"], correct: 2, reason: "James Cameron é conceituado pelo seu domínio técnico e inovação em mega-produções de alto rendimento global." },
-            { category: "Cinema", question: "Que filme de 1927, realizado por Alan Crosland, é amplamente reconhecido como a primeira longa-metragem com som sincronizado da história?", options: ["O Cantor de Jazz (The Jazz Singer)", "Metrópolis", "Casablanca", "Luzes da Cidade"], correct: 0, reason: "Este filme marcou o declínio da era do cinema mudo através da inclusão de diálogos e canções gravadas na película." },
-            { category: "Cinema", question: "O que define o termo 'FPS' (Frames Per Second) na captura de imagem de cinema padrão?", options: ["A quantidade de imagens estáticas exibidas consecutivamente num segundo", "O nível de focagem das lentes em planos abertos", "O tamanho proporcional da tela de projeção", "A taxa de compressão do áudio surround"], correct: 0, reason: "O cinema tradicional corre a 24 frames por segundo, criando a ilusão ótica de movimento contínuo estável." },
-            { category: "Cinema", question: "Na linguagem técnica de realização cinematográfica, o que caracteriza um 'Plano Sequência'?", options: ["Uma cena longa filmada de forma contínua, sem quaisquer cortes visíveis", "A ordenação alfabética das cenas no guião", "A montagem rápida de cortes para simular ação frenética", "O processo de coloração digital efetuado na pós-produção"], correct: 0, reason: "O plano sequência requer coreografia milimétrica, pois a câmara regista a ação sem interrupções editoriais." },
+            // Físico-Química (5)
+            { category: "Físico-Química", question: "De acordo com a Lei de Ohm, se a resistência for constante e a tensão duplicar, a corrente:", options: ["Mantém-se igual", "Reduz para metade", "Duplica", "Quadruplica"], correct: 2, reason: "V = R * I. Sendo R fixo, a corrente varia de forma estritamente proporcional à variação da tensão." },
+            { category: "Físico-Química", question: "Qual é o valor padrão de aceleração da gravidade terrestre aproximado para física escolar?", options: ["9.81 m/s²", "1.62 m/s²", "3.71 m/s²", "12.0 m/s²"], correct: 0, reason: "A gravidade nominal à superfície da Terra ao nível do mar situa-se nos 9.80665 m/s²." },
+            { category: "Físico-Química", question: "O processo em que um elemento químico perde eletrões durante uma reação designa-se por:", options: ["Oxidação", "Redução", "Ionização Covalente", "Condensação de Estado"], correct: 0, reason: "A perda de eletrões em reações redox chama-se oxidação, enquanto o ganho respetivo é a redução." },
+            { category: "Físico-Química", question: "A passagem direta e imediata do estado sólido para o gasoso sem passar pelo líquido chama-se:", options: ["Fusão", "Vaporização", "Sublimação", "Solidificação"], correct: 2, reason: "Exemplos comuns incluem gelo seco exposto à temperatura ambiente ou pastilhas de naftalina." },
+            { category: "Físico-Química", question: "Qual é o elemento mais leve e abundante na composição química do Universo?", options: ["Hélio", "Oxigénio", "Carbono", "Hidrogénio"], correct: 3, reason: "O hidrogénio representa mais de 75% da massa elementar detetada no cosmos." },
 
-            // 7. Capitais
-            { category: "Capitais", question: "Embora a maior cidade do país seja Sydney, qual é a verdadeira capital federal da Austrália?", options: ["Melbourne", "Brisbane", "Camberra", "Perth"], correct: 2, reason: "Camberra foi planeada de raiz e escolhida como capital em 1908 como solução de compromisso entre a rivalidade de Sydney e Melbourne." },
-            { category: "Capitais", question: "Qual é a capital administrativa do Canadá, localizada na província de Ontário?", options: ["Toronto", "Montreal", "Otava", "Vancouver"], correct: 2, reason: "Otava foi designada capital pela Rainha Vitória em 1857 devido à sua localização estratégica e fronteira cultural." },
-            { category: "Capitais", question: "Qual é a capital da Turquia, sendo Istambul a maior cidade e centro financeiro do país?", options: ["Ancara", "Antália", "Esmirna", "Bursa"], correct: 0, reason: "Ancara tornou-se a capital oficial com a fundação da República da Turquia em 1923, substituindo Istambul." },
-            { category: "Capitais", question: "Identifique a capital oficial de Marrocos, sede das embaixadas e do governo real:", options: ["Marraquexe", "Casablanca", "Rabat", "Tânger"], correct: 2, reason: "Apesar da enorme notoriedade comercial de Casablanca, Rabat é a capital política e administrativa do reino marroquino." },
-            { category: "Capitais", question: "Qual é a capital oficial do Brasil, inaugurada em 1960 pelo presidente Juscelino Kubitschek?", options: ["Rio de Janeiro", "São Paulo", "Brasília", "Salvador"], correct: 2, reason: "Brasília foi construída no interior do país para promover a integração territorial, substituindo o Rio de Janeiro." },
+            // Ciências (5)
+            { category: "Ciências", question: "Que estrutura dentro da célula humana é a principal geradora de energia através de ATP?", options: ["Ribossoma", "Complexo de Golgi", "Mitocôndria", "Lisossoma"], correct: 2, reason: "A mitocôndria é a 'fábrica' de ATP por excelência, através da fosforilação oxidativa e respiração celular." },
+            { category: "Ciências", question: "Qual o processo biológico de divisão de células que gera gâmetas com metade do material genético?", options: ["Meiose", "Mitose", "Bipartição", "Esporulação"], correct: 0, reason: "A meiose resulta em quatro células haploides contendo apenas 23 cromossomas humanos cada." },
+            { category: "Ciências", question: "Em que meio físico de propagação as ondas sonoras não se conseguem propagar?", options: ["Água Salgada", "Aço Sólido", "Vácuo Absoluto", "Ar Atmosférico"], correct: 2, reason: "O som é uma onda mecânica longitudinal, necessitando obrigatoriamente de um meio material para vibrar." },
+            { category: "Ciências", question: "Qual é a hormona secretada pelo pâncreas com a missão de reduzir a glicémia no sangue?", options: ["Adrenalina", "Cortisol", "Glucagom", "Insulina"], correct: 3, reason: "A insulina sinaliza a absorção celular de glicose para uso energético, diminuindo o índice glicémico sérico." },
+            { category: "Ciências", question: "Na atmosfera da Terra, a camada onde ocorrem praticamente todos os fenómenos climáticos é a:", options: ["Estratosfera", "Termosfera", "Troposfera", "Mesosfera"], correct: 2, reason: "A troposfera contém perto de 75% da massa de ar global e quase todo o vapor de água atmosférico." },
 
-            // 8. Raciocínio e Lógica
-            { category: "Raciocínio e Lógica", question: "Se todos os mamíferos respiram oxigénio e todas as baleias são mamíferos, o que se pode deduzir logicamente?", options: ["Todas as baleias respiram oxigénio", "Nenhum animal marinho respira oxigénio", "Algumas baleias não são mamíferos", "Os mamíferos não vivem na água"], correct: 0, reason: "Trata-se de um silogismo categórico válido. A propriedade da premissa maior estende-se ao sujeito da premissa menor." },
-            { category: "Raciocínio e Lógica", question: "Analise a sucessão lógica numérica: 3, 6, 12, 24, 48... Qual é o número subsequente?", options: ["60", "72", "96", "100"], correct: 2, reason: "A lógica da sequência assenta na multiplicação constante por 2. Logo, 48 × 2 = 96." },
-            { category: "Raciocínio e Lógica", question: "O João é mais alto que a Maria, e a Maria é mais alta que o Carlos. Quem é o mais baixo?", options: ["O João", "A Maria", "O Carlos", "Não é possível deduzir"], correct: 2, reason: "Pela propriedade transitiva da desigualdade: João > Maria > Carlos. Logo, Carlos é o mais baixo." },
-            { category: "Raciocínio e Lógica", question: "Uma mãe tem 4 filhas e cada filha tem exatamente um irmão. Quantos filhos totais tem a mãe?", options: ["4 filhos", "5 filhos", "8 filhos", "7 filhos"], correct: 1, reason: "O irmão é comum a todas as irmãs. Portanto, são 4 raparigas e 1 rapaz, perfazendo 5 filhos." },
-            { category: "Raciocínio e Lógica", question: "Se uma equipa de operários constrói um muro em 8 dias, quanto tempo demorará o dobro dos operários, com o mesmo ritmo?", options: ["16 dias", "4 dias", "8 dias", "2 dias"], correct: 1, reason: "A relação entre número de operários e tempo é inversamente proporcional. Se duplicas os operários, o tempo cai para metade." },
+            // EA FC (5)
+            { category: "EA FC", question: "Qual a pontuação de química máxima individual que um jogador ativo pode atingir no Ultimate Team?", options: ["3 pontos", "5 pontos", "10 pontos", "33 pontos"], correct: 0, reason: "O sistema de química atribui no máximo 3 pontos de sintonia individual a cada jogador ativo no onze titular." },
+            { category: "EA FC", question: "Para realizar fintas de alta complexidade como o 'Elastico', que nível de Skill Moves é exigido?", options: ["3 estrelas", "4 estrelas", "5 estrelas", "Não necessita de estrelas"], correct: 2, reason: "O 'Elastico' é uma manobra técnica exclusiva de futebolistas dotados de 5 estrelas de fintas." },
+            { category: "EA FC", question: "Que motor ou sistema visual de dados e animação captura o movimento físico real dos atletas no EA FC?", options: ["Frostbite 3.0", "HyperMotionV", "Impact Engine Pro", "DirectMotion FX"], correct: 1, reason: "O HyperMotionV capta e modela de forma volumétrica jogos reais de grandes campeonatos mundiais." },
+            { category: "EA FC", question: "No Ultimate Team, a sigla SBC em português designa que mecânica de jogo?", options: ["Liga de Campeões Semanais", "Simulação de Clubes Aliados", "Desafio de Montagem de Elencos (DME)", "Torneio de Pré-Época"], correct: 2, reason: "SBC deriva da designação em inglês Squad Building Challenge, traduzida por Desafios de Montagem de Elencos." },
+            { category: "EA FC", question: "Que combinação mecânica de botões executa o remate de alta potência (Power Shot)?", options: ["L1 + R1 + Rematar", "R2 + Rematar", "Dois toques no botão de remate", "L2 + R2 + Rematar"], correct: 0, reason: "Pressionar L1+R1 com o botão de remate ativa a câmara dedicada de Power Shot manual." },
 
-            // 9. Clubes e Seleções
-            { category: "Clubes e Seleções", question: "Que seleção de futebol é historicamente alcunhada e conhecida internacionalmente por 'La Roja'?", options: ["França", "Itália", "Espanha", "Portugal"], correct: 2, reason: "'La Roja' é a designação popular dada à seleção espanhola devido à cor vermelha dominante do seu equipamento primário." },
-            { category: "Clubes e Seleções", question: "Qual destes clubes europeus detém o maior registo de troféus da UEFA Champions League?", options: ["Real Madrid", "AC Milan", "Bayern de Munique", "Liverpool FC"], correct: 0, reason: "O Real Madrid lidera de forma destacada o palmarés da maior competição de clubes da Europa." },
-            { category: "Clubes e Seleções", question: "Que clube argentino, situado no bairro de La Boca em Buenos Aires, ostenta as cores azul e amarelo?", options: ["River Plate", "Boca Juniors", "Independiente", "Racing Club"], correct: 1, reason: "O Club Atlético Boca Juniors adota o azul e dourado e partilha uma das maiores rivalidades mundiais com o River Plate." },
-            { category: "Clubes e Seleções", question: "O clube Ajax (Amsterdão), conhecido pelas suas escolas de formação, pertence a que campeonato nacional?", options: ["Países Baixos (Eredivisie)", "Bélgica", "Escócia", "Dinamarca"], correct: 0, reason: "O AFC Ajax compete na primeira divisão dos Países Baixos e marcou gerações com o seu Futebol Total." },
-            { category: "Clubes e Seleções", question: "Que clube inglês joga no estádio de Old Trafford e tem um 'Diabo Vermelho' no seu emblema oficial?", options: ["Liverpool", "Manchester City", "Arsenal", "Manchester United"], correct: 3, reason: "O Manchester United é globalmente apelidado de 'The Red Devils' e sedia os seus jogos no mítico Old Trafford." },
-
-            // 10. Identificar o Logo
-            { category: "Identificar o Logo", question: "Qual é a corporação internacional desportiva representada por este logótipo específico?<br><img src='002-nike-logos-swoosh-white.jpg' class='logo-display-img' onerror='this.src=\"https://placehold.co/300x120?text=Nike+Swoosh+Missing\"'>", options: ["Adidas", "Puma", "Nike", "Under Armour"], correct: 2, reason: "O 'Swoosh' é a icónica asa da deusa grega da vitória que serve de assinatura global à Nike." },
-            { category: "Identificar o Logo", question: "Esta marca e grafismo geométrico alado identificam que fabricante de automóveis desportivos de luxo?<br><img src='ASTONAMRTIN.png' class='logo-display-img' onerror='this.src=\"https://placehold.co/300x120?text=Aston+Martin+Missing\"'>", options: ["Bentley", "Aston Martin", "Jaguar", "Porsche"], correct: 1, reason: "O logótipo alado com a inscrição central identifica a prestigiada marca britânica Aston Martin." },
-            { category: "Identificar o Logo", question: "A que aplicação de comunicação cifrada em tempo real pertence este símbolo circular?<br><img src='Telegram_2019_Logo.svg.webp' class='logo-display-img' onerror='this.src=\"https://placehold.co/300x120?text=Telegram+Logo+Missing\"'>", options: ["WhatsApp", "Signal", "Viber", "Telegram"], correct: 3, reason: "O avião de papel estilizado dentro do círculo azul é o logótipo oficial do ecossistema Telegram." },
-            { category: "Identificar o Logo", question: "Que insígnia federativa internacional regula o desporto e organiza os Mundiais representados por este escudo?<br><img src='qCMeJ.jpg' class='logo-display-img' onerror='this.src=\"https://placehold.co/300x120?text=FIFA+Logo+Missing\"'>", options: ["UEFA", "FIFA", "CONMEBOL", "COI"], correct: 1, reason: "A imagem reproduz o emblema oficial ou marcas corporativas associadas à FIFA (Fédération Internationale de Football Association)." },
-            { category: "Identificar o Logo", question: "Esta famosa cadeia de retalho alimentar portuguesa utiliza a seguinte marca visual nos seus estabelecimentos:<br><img src='pingodoce.png' class='logo-display-img' onerror='this.src=\"https://placehold.co/300x120?text=Pingo+Doce+Missing\"'>", options: ["Continente", "Pingo Doce", "Minipreço", "Intermarché"], correct: 1, reason: "O grafismo e tipografia integrados pertencem à cadeia de supermercados Pingo Doce (Grupo Jerónimo Martins)." },
-
-            // 11. Tema Surpresa Escolhido: Tecnologia e Sociedade Digital
-            { category: "Tecnologia e Sociedade Digital", question: "O que é um 'Algoritmo' no contexto das ciências de computação e redes digitais?", options: ["Uma sequência finita de instruções lógicas bem definidas para resolver um problema", "O hardware físico responsável por armazenar a memória RAM", "Um vírus concebido exclusivamente para encriptar ficheiros pessoais", "O cabo submarino que liga a internet entre continentes"], correct: 0, reason: "Um algoritmo é a receita lógica codificada para processar dados e executar tarefas em informática." },
-            { category: "Tecnologia e Sociedade Digital", question: "Qual das seguintes práticas garante maior segurança e integridade de dados numa conta digital pessoal?", options: ["Utilizar autenticação em dois fatores (2FA) e chaves complexas", "Partilhar as palavras-passe por mensagens de texto em formato texto limpo", "Adotar a mesma palavra-passe curta para todas as redes sociais", "Desativar as atualizações automáticas de segurança do sistema operativo"], correct: 0, reason: "O 2FA adiciona uma camada secundária crucial de verificação, impedindo acessos não autorizados mesmo com roubo de pass." },
-            { category: "Tecnologia e Sociedade Digital", question: "No âmbito da Inteligência Artificial, o que caracteriza as redes baseadas em 'LLM' (Large Language Models)?", options: ["Modelos treinados em vastos volumes de dados de texto para compreender e gerar linguagem natural", "Robôs mecânicos destinados a reparações de alta precisão em fábricas", "Sistemas focados unicamente no cálculo de órbitas de satélites meteorológicos", "Placas gráficas dedicadas à renderização tridimensional de videojogos"], correct: 0, reason: "Os LLMs processam milhares de milhões de parâmetros textuais para produzir e emular texto de nível humano." },
-            { category: "Tecnologia e Sociedade Digital", question: "O que representa o conceito de 'Computação em Nuvem' (Cloud Computing)?", options: ["O fornecimento de serviços de computação e armazenamento através da internet em servidores remotos", "O vapor gerado pelo aquecimento excessivo dos processadores nas torres", "Um método ecológico de destruição de computadores obsoletos", "A transmissão de dados digitais por ondas de rádio atmosféricas"], correct: 0, reason: "A Nuvem liberta o utilizador da necessidade de hardware local potente, executando tarefas em datacenters globais." },
-            { category: "Tecnologia e Sociedade Digital", question: "O que significa a sigla 'URL' usada diariamente na navegação de páginas web?", options: ["Uniform Resource Locator (Endereço web de um recurso na rede)", "Universal Radio Link", "User Registry Login", "United Routing Language"], correct: 0, reason: "O URL é a sequência padronizada de caracteres que serve para identificar e localizar uma página ou recurso na Internet." }
+            // Formula 1 (5)
+            { category: "Formula 1", question: "Que piloto tem o recorde histórico de títulos de F1 partilhado com Michael Schumacher?", options: ["Fernando Alonso", "Ayrton Senna", "Lewis Hamilton", "Sebastian Vettel"], correct: 2, reason: "Lewis Hamilton e Michael Schumacher somam ambos 7 campeonatos mundiais de Fórmula 1." },
+            { category: "Formula 1", question: "Nos GP oficiais de F1, que cor identifica os pneus compostos mais macios (Softs)?", options: ["Amarelo", "Vermelho", "Branco", "Verde"], correct: 1, reason: "A gama de pneus secos Pirelli Soft usa as marcações na cor vermelha." },
+            { category: "Formula 1", question: "Qual é o dispositivo estrutural obrigatório instalado no cockpit para segurança de impactos frontais?", options: ["Aeroscreen", "HANS Device", "Halo", "Célula de Kevlar"], correct: 2, reason: "O Halo protege de detritos pesados direcionados à cabeça do piloto." },
+            { category: "Formula 1", question: "Em que circuito se localiza a famosa e temida combinação de curvas de alta velocidade Eau Rouge / Raidillon?", options: ["Monza", "Silverstone", "Spa-Francorchamps", "Nürburgring"], correct: 2, reason: "A combinação mítica Eau Rouge e Raidillon pertence ao traçado de Spa-Francorchamps nas Ardenas belgas." },
+            { category: "Formula 1", question: "A sigla técnica DRS no ecossistema da F1 significa literalmente o quê?", options: ["Direct Recovery System", "Drag Reduction System", "Driver Racing Stability", "Dynamic Rear Suspension"], correct: 1, reason: "O Drag Reduction System abre a asa traseira para facilitar ultrapassagens em zonas de reta selecionadas." }
         ];
 
-        // MAPA DE ARQUÉTIPOS COGNITIVOS / VOCACIONAIS (Baseados no Score do Range do Utilizador)
-        function getArchetypeForValue(val) {
-            const map = {
-                0: "Crítico Cético", 1: "Analista Neutro", 2: "Observador Distante", 3: "Pragmático Focado",
-                4: "Pensador Estratégico", 5: "Moderador Equilibrado", 6: "Inovador Entusiasta",
-                7: "Explorador Dinâmico", 8: "Especialista Dedicado", 9: "Líder Visionário", 10: "Embaixador Vocacional"
-            };
-            return map[val] || "Perfil Indeterminado";
-        }
-
-        // ESTADO INTERNO DO ENGINE (SINGLETON DE SESSÃO)
-        let GameEngine = {
-            client: null,
+        var AppState = {
             roomCode: '',
-            uid: 'usr_' + Math.random().toString(36).substring(2, 9),
-            username: '',
+            clientId: 'p_' + Math.random().toString(36).substr(2, 9),
+            clientName: '',
             isHost: false,
+            players: [], // { id, name, score, ratings: {}, predictions: {}, quizAnswers: {}, isBot }
+            currentScreen: 'login',
+            professionIndex: 0,
+            questionIndex: 0,
             
-            // Índices de controlo
-            currentPhase: 0, // 0: Login, 1: Profissões, 2: Quiz, 3: Resultados
-            profIndex: 0,
-            quizIndex: 0,
+            // Variáveis do Temporizador ativo
+            timerValue: 15,
+            timerInterval: null,
+            mqttClient: null,
             
-            // Dados recolhidos
-            players: {}, // Mapeamento de perfis em rede
-            affinityMatrix: [], // Votos acumulados para o cálculo final
-            quizScores: {},
-            
-            // Temporizadores e Métricas de Latência
-            profTimerStart: 0,
-            quizTimerInterval: null,
-            quizTimeLeft: 0,
-            hasVotedCurrentProf: false
+            // Dados locais da ronda atual de afinidade
+            myRatingsThisRound: { self: 5, p2: 5, p3: 5 },
+            votedThisRound: {} // { playerId: true }
         };
 
-        // INICIALIZAÇÃO DE PROTOCOLO DE REDE (MQTT P2P Siga-Me)
         function setupNetwork() {
-            const statusDot = document.getElementById('network-status-dot');
-            const statusText = document.getElementById('network-status-text');
-
+            logActivity('[Rede] A ligar ao servidor de sincronização...');
             try {
-                GameEngine.client = mqtt.connect(CONFIG.BROKER_URL, {
-                    keepalive: 60,
-                    clientId: GameEngine.uid,
+                if (typeof mqtt === 'undefined') {
+                    throw new Error("Biblioteca MQTT não carregada.");
+                }
+
+                AppState.mqttClient = mqtt.connect(CONFIG.BROKER_URL, {
+                    keepalive: 30,
+                    clientId: AppState.clientId,
                     protocolId: 'MQTT',
                     protocolVersion: 4,
                     clean: true,
                     reconnectPeriod: 1000
                 });
 
-                GameEngine.client.on('connect', () => {
-                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-green-500 animate-none";
-                    statusText.innerText = "Conectado à Mesh";
-                    logNetworkEvent("Ligação ao broker P2P estabelecida com sucesso.");
-                    if(GameEngine.roomCode) {
-                        subscribeToRoom();
+                AppState.mqttClient.on('connect', function () {
+                    logActivity('[Rede] Ligado com sucesso!');
+                    document.getElementById('network-status-dot').className = 'w-2.5 h-2.5 rounded-full bg-green-500';
+                    document.getElementById('network-status-text').innerText = 'Online';
+                    
+                    if (AppState.roomCode) {
+                        AppState.mqttClient.subscribe('quizparty/rooms/' + AppState.roomCode + '/#');
+                        sendNetworkMessage('presence', { id: AppState.clientId, name: AppState.clientName, isHost: AppState.isHost });
                     }
                 });
 
-                GameEngine.client.on('message', (topic, message) => {
-                    handleIncomingPacket(topic, JSON.parse(message.toString()));
+                AppState.mqttClient.on('error', function (err) {
+                    console.warn("Erro MQTT capturado:", err);
+                    handleNetworkFailure(err.message || "Erro de rede.");
                 });
 
-                GameEngine.client.on('error', (err) => {
-                    console.error("MQTT Error:", err);
-                    fallbackToIsolatedMode();
+                AppState.mqttClient.on('close', function() {
+                    document.getElementById('network-status-dot').className = 'w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse';
+                    document.getElementById('network-status-text').innerText = 'Desconectado';
                 });
 
-            } catch (e) {
-                fallbackToIsolatedMode();
+                AppState.mqttClient.on('message', function (topic, message) {
+                    try {
+                        var payload = JSON.parse(message.toString());
+                        handleIncomingNetworkMessage(topic, payload);
+                    } catch (e) {
+                        console.error("Erro a descodificar payload", e);
+                    }
+                });
+            } catch (err) {
+                handleNetworkFailure(err.message || "Bloqueado pelo Sandbox.");
             }
         }
 
-        function fallbackToIsolatedMode() {
-            document.getElementById('network-status-dot').className = "w-2.5 h-2.5 rounded-full bg-blue-500 animate-none";
-            document.getElementById('network-status-text').innerText = "Modo Local Seguro";
-            logNetworkEvent("Aviso: Barramento de rede offline. Ativado isolamento Sandbox.");
-        }
-
-        function subscribeToRoom() {
-            if (!GameEngine.client || !GameEngine.client.connected) return;
-            const topic = `qp/rooms/${GameEngine.roomCode}/+`;
-            GameEngine.client.subscribe(topic, (err) => {
-                if(!err) logNetworkEvent(`Subscrito no canal de partilha de dados: ${GameEngine.roomCode}`);
-            });
-            broadcastPayload({ type: 'PING', name: GameEngine.username });
-        }
-
-        function broadcastPayload(data) {
-            if (!GameEngine.client || !GameEngine.client.connected || !GameEngine.roomCode) return;
-            const topic = `qp/rooms/${GameEngine.roomCode}/${GameEngine.uid}`;
-            GameEngine.client.publish(topic, JSON.stringify(data));
-        }
-
-        // CONTROLADOR DE FLUXO DE ENTRADA (MENSAGENS EM REDE)
-        function handleIncomingPacket(topic, payload) {
-            const senderUid = topic.split('/').pop();
-            if (senderUid === GameEngine.uid) return; // Ignorar eco próprio
-
-            switch (payload.type) {
-                case 'PING':
-                    if (!GameEngine.players[senderUid]) {
-                        GameEngine.players[senderUid] = { name: payload.name, score: 0, lastProfTime: 0 };
-                        logNetworkEvent(`Utilizador '${payload.name}' interligou-se à sessão.`);
-                        updateRosterUI();
-                    }
-                    if (GameEngine.isHost) {
-                        broadcastPayload({ type: 'ROSTER_SYNC', list: Object.keys(GameEngine.players).map(k => ({uid: k, name: GameEngine.players[k].name})) });
-                    }
-                    break;
-                case 'ROSTER_SYNC':
-                    payload.list.forEach(p => {
-                        if (p.uid !== GameEngine.uid && !GameEngine.players[p.uid]) {
-                            GameEngine.players[p.uid] = { name: p.name, score: 0, lastProfTime: 0 };
-                        }
-                    });
-                    updateRosterUI();
-                    break;
-                case 'PROF_VOTE':
-                    if (GameEngine.players[senderUid]) {
-                        GameEngine.players[senderUid].lastProfTime = payload.timeTaken;
-                        GameEngine.players[senderUid].lastValue = payload.value;
-                    }
-                    checkProfessionsSyncBarrier();
-                    break;
-                case 'START_GAME':
-                    executePhaseTransition(1);
-                    break;
-            }
-        }
-
-        // INTERFACE VISUAL - GESTÃO DE ECRÃS
-        function setScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-        }
-
-        function logNetworkEvent(text) {
-            const logBox = document.getElementById('activity-log');
-            const time = new Date().toLocaleTimeString('pt-PT', { hour12: false });
-            logBox.innerHTML += `<div class="text-[11px]"><span class="text-slate-400">[${time}]</span> ${text}</div>`;
-            logBox.scrollTop = logBox.scrollHeight;
-        }
-
-        // FLUXO PRINCIPAL: AUTENTICAÇÃO & INICIALIZAÇÃO
-        function initiateSession(joinExisting) {
-            const userField = document.getElementById('username');
-            const name = userField.value.trim();
+        function handleNetworkFailure(reason) {
+            logActivity('[Rede Erro] Ligação remota indisponível (' + reason + '). Ativando Modo de Simulação Local...');
             
+            var statusDot = document.getElementById('network-status-dot');
+            var statusText = document.getElementById('network-status-text');
+            if (statusDot) statusDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500';
+            if (statusText) statusText.innerText = 'Modo Simulado';
+            
+            if (AppState.players.length < 3) {
+                injectSimulatedPeers();
+            }
+            
+            var startBtn = document.getElementById('btn-start-trigger');
+            var warningText = document.getElementById('start-warning-text');
+            if (AppState.isHost) {
+                if (startBtn) startBtn.removeAttribute('disabled');
+                if (warningText) warningText.classList.add('hidden');
+            }
+        }
+
+        function sendNetworkMessage(type, data) {
+            if (AppState.mqttClient && AppState.mqttClient.connected) {
+                try {
+                    var topic = 'quizparty/rooms/' + AppState.roomCode + '/' + type;
+                    var payload = Object.assign({ sender: AppState.clientId }, data);
+                    AppState.mqttClient.publish(topic, JSON.stringify(payload));
+                } catch (e) {
+                    console.warn("Falha ao publicar mensagem MQTT:", e);
+                }
+            }
+        }
+
+        function handleIncomingNetworkMessage(topic, payload) {
+            if (payload.sender === AppState.clientId) return;
+
+            var parts = topic.split('/');
+            var msgType = parts[parts.length - 1];
+
+            if (msgType === 'presence') {
+                var existing = AppState.players.find(p => p.id === payload.id);
+                if (!existing) {
+                    AppState.players.push({
+                        id: payload.id,
+                        name: payload.name,
+                        score: 0,
+                        ratings: {},
+                        predictions: {},
+                        quizAnswers: {},
+                        isBot: false
+                    });
+                    logActivity('[Lobby] ' + payload.name + ' juntou-se à sala.');
+                    updatePlayersRoster();
+                    sendNetworkMessage('presence_reply', { id: AppState.clientId, name: AppState.clientName, isHost: AppState.isHost });
+                }
+            } else if (msgType === 'presence_reply') {
+                var existing = AppState.players.find(p => p.id === payload.id);
+                if (!existing) {
+                    AppState.players.push({
+                        id: payload.id,
+                        name: payload.name,
+                        score: 0,
+                        ratings: {},
+                        predictions: {},
+                        quizAnswers: {},
+                        isBot: false
+                    });
+                    updatePlayersRoster();
+                }
+            } else if (msgType === 'start_game') {
+                logActivity('[Rede] O anfitrião iniciou o jogo.');
+                AppState.players = payload.players;
+                updatePlayersRoster();
+                transitionToScreen('screen-professions');
+                loadProfessionStage();
+            } else if (msgType === 'profession_vote') {
+                var voter = AppState.players.find(p => p.id === payload.sender);
+                if (voter) {
+                    var idx = payload.index;
+                    voter.ratings[idx] = payload.selfVal;
+                    if (!voter.predictions[idx]) voter.predictions[idx] = {};
+                    voter.predictions[idx][payload.targetP2Id] = payload.p2Val;
+                    voter.predictions[idx][payload.targetP3Id] = payload.p3Val;
+
+                    AppState.votedThisRound[payload.sender] = true;
+                    logActivity('[Votação] ' + voter.name + ' submeteu as suas avaliações.');
+                    updateWhosMissingIndicator();
+                    checkProfessionsPhaseProgress();
+                }
+            } else if (msgType === 'bot_profession_votes') {
+                var idx = payload.index;
+                payload.bots.forEach(botObj => {
+                    var bot = AppState.players.find(p => p.id === botObj.id);
+                    if (bot) {
+                        bot.ratings[idx] = botObj.selfVal;
+                        bot.predictions[idx] = botObj.predictions;
+                        AppState.votedThisRound[botObj.id] = true;
+                    }
+                });
+                updateWhosMissingIndicator();
+                checkProfessionsPhaseProgress();
+            } else if (msgType === 'quiz_answer') {
+                var answerer = AppState.players.find(p => p.id === payload.sender);
+                if (answerer) {
+                    var idx = payload.index;
+                    answerer.quizAnswers[idx] = payload.choice;
+                    logActivity('[Quiz] ' + answerer.name + ' escolheu uma opção.');
+                    checkQuizPhaseProgress();
+                }
+            } else if (msgType === 'bot_quiz_answers') {
+                var idx = payload.index;
+                payload.bots.forEach(botObj => {
+                    var bot = AppState.players.find(p => p.id === botObj.id);
+                    if (bot) {
+                        bot.quizAnswers[idx] = botObj.choice;
+                    }
+                });
+                checkQuizPhaseProgress();
+            }
+        }
+
+        function transitionToScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            AppState.currentScreen = screenId;
+        }
+
+        function logActivity(text) {
+            var logBox = document.getElementById('activity-log');
+            if (logBox) {
+                var div = document.createElement('div');
+                div.innerText = text;
+                logBox.appendChild(div);
+                logBox.scrollTop = logBox.scrollHeight;
+            }
+        }
+
+        function initiateSession(isJoining) {
+            var nameInput = document.getElementById('username');
+            var name = nameInput.value.trim();
             if (!name) {
-                alert("Erros de Validação: É imperativo preencher o campo do Nome para indexação.");
-                userField.focus();
+                alertModal("Deves introduzir um nome para entrar na sala!");
                 return;
             }
 
-            GameEngine.username = name;
-            GameEngine.players[GameEngine.uid] = { name: name, score: 0, lastProfTime: 0 };
+            AppState.clientName = name;
+            AppState.players = [{
+                id: AppState.clientId,
+                name: AppState.clientName,
+                score: 0,
+                ratings: {},
+                predictions: {},
+                quizAnswers: {},
+                isBot: false
+            }];
 
-            // Extração de parâmetros URL (Deep-Linking para Salas)
-            const urlParams = new URLSearchParams(window.location.search);
-            const queryRoom = urlParams.get('room');
-
-            if (queryRoom) {
-                GameEngine.roomCode = queryRoom;
-                GameEngine.isHost = false;
+            if (isJoining) {
+                AppState.isHost = false;
+                var urlParams = new URLSearchParams(window.location.search);
+                AppState.roomCode = urlParams.get('room') || 'SALA1';
             } else {
-                GameEngine.roomCode = Math.floor(100000 + Math.random() * 900000).toString();
-                GameEngine.isHost = true;
+                AppState.isHost = true;
+                AppState.roomCode = Math.random().toString(36).substr(2, 5).toUpperCase();
             }
 
-            document.getElementById('room-badge').innerText = GameEngine.roomCode;
             document.getElementById('sidebar-room-info').classList.remove('hidden');
+            document.getElementById('room-badge').innerText = AppState.roomCode;
             
+            var shareUrl = window.location.origin + window.location.pathname + '?room=' + AppState.roomCode;
+            document.getElementById('share-link-input').value = shareUrl;
+
+            updatePlayersRoster();
             setupNetwork();
-            updateRosterUI();
-            setScreen('screen-lobby');
-            
-            document.getElementById('share-link-input').value = `${window.location.origin}${window.location.pathname}?room=${GameEngine.roomCode}`;
+            transitionToScreen('screen-lobby');
+
+            if (AppState.isHost) {
+                logActivity('[Sistema] Sala criada! Adiciona bots ou partilha o link.');
+            } else {
+                logActivity('[Sistema] A conectar à sala existente: ' + AppState.roomCode);
+            }
+        }
+
+        function updatePlayersRoster() {
+            var rosterList = document.getElementById('roster-list');
+            if (!rosterList) return;
+            rosterList.innerHTML = '';
+            AppState.players.forEach(p => {
+                var card = document.createElement('div');
+                card.className = 'p-3 bg-white border border-slate-100 rounded-xl flex items-center justify-between shadow-sm';
+                card.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold text-sm">
+                            ${p.isBot ? '🤖' : p.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">${p.name}</p>
+                            <p class="text-[10px] text-slate-400 font-semibold">${p.isBot ? 'Simulador' : 'Online'}</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-mono font-bold text-brand-600">${p.score} pts</span>
+                `;
+                rosterList.appendChild(card);
+            });
+
+            var startBtn = document.getElementById('btn-start-trigger');
+            var warningText = document.getElementById('start-warning-text');
+            if (AppState.isHost) {
+                if (AppState.players.length >= 3 || (AppState.mqttClient && !AppState.mqttClient.connected)) {
+                    if (startBtn) startBtn.removeAttribute('disabled');
+                    if (warningText) warningText.classList.add('hidden');
+                } else {
+                    if (startBtn) startBtn.setAttribute('disabled', 'true');
+                    if (warningText) warningText.classList.remove('hidden');
+                }
+            } else {
+                if (startBtn) startBtn.setAttribute('disabled', 'true');
+                if (warningText) {
+                    warningText.innerText = 'A aguardar que o anfitrião inicie o jogo...';
+                    warningText.classList.remove('hidden');
+                }
+            }
         }
 
         function injectSimulatedPeers() {
-            GameEngine.players['bot_01'] = { name: 'Mariana (Par-Simulado)', score: 0, lastProfTime: 0, isBot: true };
-            GameEngine.players['bot_02'] = { name: 'Rodrigo (Par-Simulado)', score: 0, lastProfTime: 0, isBot: true };
-            logNetworkEvent("Sandbox: Dois perfis simulados foram injetados no barramento local.");
-            updateRosterUI();
+            if (AppState.players.length >= 3) {
+                alertModal("A sala já atingiu o limite de 3 utilizadores!");
+                return;
+            }
+
+            var botNames = ["Rodrigo (Bot)", "Mafalda (Bot)"];
+            var botsToAdd = 3 - AppState.players.length;
+
+            for (var i = 0; i < botsToAdd; i++) {
+                AppState.players.push({
+                    id: 'bot_' + Math.random().toString(36).substr(2, 5),
+                    name: botNames[i],
+                    score: 0,
+                    ratings: {},
+                    predictions: {},
+                    quizAnswers: {},
+                    isBot: true
+                });
+            }
+
+            logActivity('[Lobby] Pares simulados integrados no barramento.');
+            updatePlayersRoster();
         }
 
-        function updateRosterUI() {
-            const roster = document.getElementById('roster-list');
-            roster.innerHTML = '';
-            
-            const keys = Object.keys(GameEngine.players);
-            keys.forEach(k => {
-                const p = GameEngine.players[k];
-                const isSelf = k === GameEngine.uid;
-                roster.innerHTML += `
-                    <div class="flex items-center justify-between p-2.5 bg-white rounded-xl border border-slate-100 shadow-sm">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full ${isSelf ? 'bg-emerald-500':'bg-brand-400'}"></span>
-                            <span class="text-xs font-semibold ${isSelf ? 'text-slate-900 font-extrabold':'text-slate-600'}">${p.name} ${isSelf ? '(Tu)':''}</span>
-                        </div>
-                        <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded font-mono">ID: ${k.substring(0,4)}</span>
-                    </div>
-                `;
-            });
-
-            const triggerBtn = document.getElementById('btn-start-trigger');
-            const warningTxt = document.getElementById('start-warning-text');
-            
-            if (keys.length >= 2) {
-                triggerBtn.disabled = false;
-                warningTxt.className = "text-center text-xs text-emerald-600 font-medium mt-2";
-                warningTxt.innerText = "Quórum mínimo atingido. Pronto para processamento.";
-            } else {
-                triggerBtn.disabled = true;
+        function copyInviteLink() {
+            var copyText = document.getElementById('share-link-input');
+            if (copyText) {
+                copyText.select();
+                copyText.setSelectionRange(0, 99999);
+                document.execCommand('copy');
+                alertModal('Link de convite copiado!');
             }
+        }
+
+        function shareInviteLink() {
+            var inputVal = document.getElementById('share-link-input');
+            var shareUrl = inputVal ? inputVal.value : window.location.href;
+            var text = encodeURIComponent('Entra na minha sala do QuizParty para jogarmos! ' + shareUrl);
+            window.open('https://api.whatsapp.com/send?text=' + text, '_blank');
         }
 
         function triggerGameStart() {
-            broadcastPayload({ type: 'START_GAME' });
-            executePhaseTransition(1);
-        }
-
-        function executePhaseTransition(phaseIndex) {
-            GameEngine.currentPhase = phaseIndex;
-            if (phaseIndex === 1) {
-                logNetworkEvent("Fase de análise vocacional aberta.");
-                setScreen('screen-professions');
-                runProfessionEngine();
-            } else if (phaseIndex === 2) {
-                logNetworkEvent("Fase de teste cognitivo (Quiz) iniciada.");
-                setScreen('screen-quiz');
-                runQuizEngine();
-            } else if (phaseIndex === 3) {
-                logNetworkEvent("Fase de agregação e exibição de resultados finais.");
-                setScreen('screen-results');
-                compileFinalMetrics();
+            if (AppState.isHost) {
+                if (AppState.mqttClient && AppState.mqttClient.connected) {
+                    sendNetworkMessage('start_game', { players: AppState.players });
+                }
+                transitionToScreen('screen-professions');
+                loadProfessionStage();
             }
         }
 
-        // FASE 1 - CORE ENGINE DE AFINIDADES / PROFISSÕES
-        function runProfessionEngine() {
-            if (GameEngine.profIndex >= CONFIG.TOTAL_PROFESSIONS) {
-                executePhaseTransition(2);
+        // FASE 1: PROFISSÕES COM TEMPORIZADOR DE 15 SEGUNDOS
+        function loadProfessionStage() {
+            if (AppState.professionIndex >= CONFIG.TOTAL_PROFESSIONS) {
+                logActivity('[Sistema] Fase 1 concluída. Iniciando fase do Quiz.');
+                transitionToScreen('screen-quiz');
+                loadQuizStage();
                 return;
             }
 
-            GameEngine.hasVotedCurrentProf = false;
-            
-            // UI Reset
-            document.getElementById('prof-input-block').classList.remove('hidden');
-            document.getElementById('prof-metrics-block').classList.add('hidden');
-            document.getElementById('prof-counter').innerText = `${GameEngine.profIndex + 1}/${CONFIG.TOTAL_PROFESSIONS}`;
-            document.getElementById('prof-index-indicator').innerText = `Índice: P-${String(GameEngine.profIndex + 1).padStart(2, '0')}`;
-            document.getElementById('current-prof-name').innerText = PROFESSIONS_DATABASE[GameEngine.profIndex];
-            document.getElementById('range-self-prof').value = 5;
-            document.getElementById('label-self-val').innerText = 5;
+            // Reinicializar estados e controlos da ronda
+            AppState.votedThisRound = {};
+            AppState.myRatingsThisRound = { self: 5, p2: 5, p3: 5 };
 
-            GameEngine.profTimerStart = Date.now();
-        }
+            var rSelf = document.getElementById('range-self-prof');
+            var rP2 = document.getElementById('range-p2-prof');
+            var rP3 = document.getElementById('range-p3-prof');
 
-        function commitProfessionVote() {
-            if (GameEngine.hasVotedCurrentProf) return;
-            
-            const elapsed = ((Date.now() - GameEngine.profTimerStart) / 1000).toFixed(2);
-            const val = parseInt(document.getElementById('range-self-prof').value);
-            
-            GameEngine.hasVotedCurrentProf = true;
-            GameEngine.players[GameEngine.uid].lastProfTime = parseFloat(elapsed);
-            GameEngine.players[GameEngine.uid].lastValue = val;
+            if (rSelf) rSelf.value = 5;
+            if (rP2) rP2.value = 5;
+            if (rP3) rP3.value = 5;
 
-            // Guardar na matriz histórica para cálculo do coeficiente de afinidade no final
-            GameEngine.affinityMatrix.push({
-                profIndex: GameEngine.profIndex,
-                votes: { [GameEngine.uid]: val }
-            });
+            document.getElementById('label-self-val').innerText = '5';
+            document.getElementById('label-p2-val').innerText = '5';
+            document.getElementById('label-p3-val').innerText = '5';
 
-            // Processamento imediato de Pares Simulados (Bots)
-            Object.keys(GameEngine.players).forEach(k => {
-                if (GameEngine.players[k].isBot) {
-                    const simulatedLatency = (Math.random() * 2.5 + 0.5).toFixed(2);
-                    const simulatedValue = Math.floor(Math.random() * 11); // 0 a 10
-                    GameEngine.players[k].lastProfTime = parseFloat(simulatedLatency);
-                    GameEngine.players[k].lastValue = simulatedValue;
-                    
-                    // Injetar na matriz histórica
-                    GameEngine.affinityMatrix[GameEngine.profIndex].votes[k] = simulatedValue;
-                }
-            });
+            var btnSubmit = document.getElementById('btn-submit-prof');
+            if (btnSubmit) btnSubmit.removeAttribute('disabled');
 
-            // Comunicação via barramento para jogadores reais
-            broadcastPayload({ type: 'PROF_VOTE', profIndex: GameEngine.profIndex, value: val, timeTaken: parseFloat(elapsed) });
+            var currentProf = PROFESSIONS_DATABASE[AppState.professionIndex];
+            var nameEl = document.getElementById('current-prof-name');
+            var counterEl = document.getElementById('prof-counter');
+            var indexIndicator = document.getElementById('prof-index-indicator');
 
-            displayProfessionMetricsScreen(val, elapsed);
-        }
+            if (nameEl) nameEl.innerText = currentProf;
+            if (counterEl) counterEl.innerText = (AppState.professionIndex + 1) + '/' + CONFIG.TOTAL_PROFESSIONS;
+            if (indexIndicator) indexIndicator.innerText = `Índice: P-${(AppState.professionIndex + 1).toString().padStart(2, '0')}`;
 
-        function displayProfessionMetricsScreen(votoProprio, tempoProprio) {
-            document.getElementById('prof-input-block').classList.add('hidden');
-            document.getElementById('prof-metrics-block').classList.remove('hidden');
+            var otherPlayers = AppState.players.filter(p => p.id !== AppState.clientId);
 
-            // Determinar o arquétipo em tempo real baseado na avaliação do utilizador
-            document.getElementById('metric-archetype-name').innerText = getArchetypeForValue(votoProprio);
-            
-            // Mostrar tempos reais calculados
-            document.getElementById('metric-time-self').innerText = `${tempoProprio}s`;
-            
-            // Calcular média aritmética dos tempos dos outros utilizadores detetados
-            let sum = 0;
-            let count = 0;
-            Object.keys(GameEngine.players).forEach(k => {
-                if(k !== GameEngine.uid && GameEngine.players[k].lastProfTime > 0) {
-                    sum += GameEngine.players[k].lastProfTime;
-                    count++;
-                }
-            });
-
-            const avgOthers = count > 0 ? (sum / count).toFixed(2) : (Math.random() * 2 + 1).toFixed(2);
-            document.getElementById('metric-time-others').innerText = `${avgOthers}s`;
-
-            // Barreira de Sincronismo Temporal (Segurança Automática de Fluxo)
-            setTimeout(() => {
-                // Limpar tempos temporários para a próxima iteração
-                Object.keys(GameEngine.players).forEach(k => GameEngine.players[k].lastProfTime = 0);
-                GameEngine.profIndex++;
-                runProfessionEngine();
-            }, 3200); // 3.2 segundos de leitura compulsória de métricas por profissão
-        }
-
-        function checkProfessionsSyncBarrier() {
-            // Em arquitetura P2P real pura, valida-se se todos os Object.keys(GameEngine.players) preencheram lastProfTime.
-            // Para fluidez multiplataforma com bots integrados, o processamento segue na submissão ativa do utilizador.
-        }
-
-        // FASE 2 - CORE ENGINE DO TESTE COGNITIVO (QUIZ)
-        function runQuizEngine() {
-            if (GameEngine.quizIndex >= QUIZ_DATABASE.length) {
-                executePhaseTransition(3);
-                return;
+            var boxP2 = document.getElementById('box-pred-p2');
+            var labelP2 = document.getElementById('label-name-p2');
+            if (otherPlayers.length >= 1) {
+                if (boxP2) boxP2.classList.remove('hidden');
+                if (labelP2) labelP2.innerText = otherPlayers[0].name;
+            } else {
+                if (boxP2) boxP2.classList.add('hidden');
             }
 
-            const currentQuestion = QUIZ_DATABASE[GameEngine.quizIndex];
+            var boxP3 = document.getElementById('box-pred-p3');
+            var labelP3 = document.getElementById('label-name-p3');
+            if (otherPlayers.length >= 2) {
+                if (boxP3) boxP3.classList.remove('hidden');
+                if (labelP3) labelP3.innerText = otherPlayers[1].name;
+            } else {
+                if (boxP3) boxP3.classList.add('hidden');
+            }
+
+            updateWhosMissingIndicator();
+            startProfessionTimer();
+        }
+
+        function startProfessionTimer() {
+            if (AppState.timerInterval) clearInterval(AppState.timerInterval);
+            AppState.timerValue = CONFIG.PROF_TIMER_SECONDS;
             
-            // Reset de Componentes de Feedback
-            const feedbackBox = document.getElementById('quiz-correction-box');
-            feedbackBox.classList.add('hidden');
-            feedbackBox.className = "p-4 rounded-2xl hidden text-xs transition-all duration-300";
+            var timerEl = document.getElementById('prof-timer');
+            if (timerEl) timerEl.innerText = AppState.timerValue;
 
-            document.getElementById('quiz-counter').innerText = `${GameEngine.quizIndex + 1}/${QUIZ_DATABASE.length}`;
-            document.getElementById('quiz-cat-badge').innerText = currentQuestion.category;
-            document.getElementById('current-quiz-question').innerHTML = currentQuestion.question;
-            document.getElementById('quiz-lobby-choices').innerText = "A aguardar inputs da rede...";
+            // Animação visual do círculo de tempo
+            var container = document.getElementById('prof-timer-container');
+            if (container) {
+                container.className = "w-12 h-12 rounded-full border-4 border-brand-500 flex items-center justify-center shadow-lg shadow-brand-50 transition-all";
+            }
 
-            // Renderização Limpa de Opções
-            const container = document.getElementById('quiz-options-container');
-            container.innerHTML = '';
+            AppState.timerInterval = setInterval(() => {
+                AppState.timerValue--;
+                if (timerEl) timerEl.innerText = AppState.timerValue;
 
-            currentQuestion.options.forEach((opt, idx) => {
-                const optBtn = document.createElement('button');
-                optBtn.className = "w-full p-4 bg-white border-2 border-slate-200 hover:border-brand-500 rounded-2xl text-left font-bold text-slate-700 transition flex items-center gap-3";
-                optBtn.innerHTML = `
-                    <span class="w-7 h-7 shrink-0 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center font-mono text-xs font-black">${['A','B','C','D'][idx]}</span>
-                    <span class="text-sm leading-snug">${opt}</span>
-                `;
-                optBtn.onclick = () => evaluationQuizSelection(idx, optBtn);
-                container.appendChild(optBtn);
-            });
-
-            // Configuração do Temporizador Especial de 25 Segundos
-            GameEngine.quizTimeLeft = CONFIG.QUIZ_TIMER_SECONDS;
-            document.getElementById('quiz-timer').innerText = GameEngine.quizTimeLeft;
-            
-            const radialContainer = document.getElementById('timer-radial-container');
-            radialContainer.className = "w-12 h-12 rounded-full border-4 border-accent-500 flex items-center justify-center shadow-lg shadow-accent-50 transition-all duration-300";
-
-            clearInterval(GameEngine.quizTimerInterval);
-            GameEngine.quizTimerInterval = setInterval(() => {
-                GameEngine.quizTimeLeft--;
-                document.getElementById('quiz-timer').innerText = GameEngine.quizTimeLeft;
-                
-                // Alerta Visual Crítico (Últimos 5 segundos)
-                if(GameEngine.quizTimeLeft <= 5) {
-                    radialContainer.classList.add('animate-bounce', 'border-red-600', 'shadow-red-100');
+                if (AppState.timerValue <= 5 && container) {
+                    // Alerta de tempo escasso
+                    container.className = "w-12 h-12 rounded-full border-4 border-red-500 flex items-center justify-center shadow-lg shadow-red-50 animate-pulse";
                 }
 
-                if (GameEngine.quizTimeLeft <= 0) {
-                    clearInterval(GameEngine.quizTimerInterval);
-                    evaluationQuizSelection(-1, null); // Forçar timeout técnico
+                if (AppState.timerValue <= 0) {
+                    clearInterval(AppState.timerInterval);
+                    autoCommitProfessionVote(); // Força submissão por falta de tempo
                 }
             }, 1000);
         }
 
-        function evaluationQuizSelection(selectedIdx, clickedBtn) {
-            clearInterval(GameEngine.quizTimerInterval);
-            
-            // Trancagem imediata de botões para evitar reentrabilidade
-            const allButtons = document.querySelectorAll('#quiz-options-container button');
-            allButtons.forEach(b => b.disabled = true);
-
-            const currentQuestion = QUIZ_DATABASE[GameEngine.quizIndex];
-            const feedbackBox = document.getElementById('quiz-correction-box');
-            
-            feedbackBox.classList.remove('hidden');
-
-            let selectionIsCorrect = selectedIdx === currentQuestion.correct;
-
-            if (selectionIsCorrect) {
-                if(clickedBtn) {
-                    clickedBtn.classList.remove('border-slate-200');
-                    clickedBtn.classList.add('border-emerald-500', 'bg-emerald-50/40');
-                }
-                feedbackBox.classList.add('bg-emerald-50', 'border', 'border-emerald-200', 'text-emerald-800');
-                feedbackBox.innerHTML = `<strong>Validação: Correta (+10 pts)</strong><br>${currentQuestion.reason}`;
-                GameEngine.players[GameEngine.uid].score += 10;
-            } else {
-                if (clickedBtn) {
-                    clickedBtn.classList.remove('border-slate-200');
-                    clickedBtn.classList.add('border-rose-500', 'bg-rose-50/40');
-                }
-                // Destacar a opção tecnicamente correta
-                if (selectedIdx !== -1 && allButtons[currentQuestion.correct]) {
-                    allButtons[currentQuestion.correct].classList.remove('border-slate-200');
-                    allButtons[currentQuestion.correct].classList.add('border-emerald-500');
-                }
-                feedbackBox.classList.add('bg-rose-50', 'border', 'border-rose-200', 'text-rose-800');
-                feedbackBox.innerHTML = `<strong>Validação: ${selectedIdx === -1 ? 'Tempo Esgotado':'Incorreta'} (0 pts)</strong><br>${currentQuestion.reason}`;
-            }
-
-            // Simulação Paralela de Pontuação e Escolhas de Pares da Rede
-            let choicesString = `A tua escolha: ${selectedIdx === -1 ? 'Nenhuma':['A','B','C','D'][selectedIdx]} | `;
-            
-            Object.keys(GameEngine.players).forEach(k => {
-                if (k !== GameEngine.uid) {
-                    const botCorrectChance = Math.random() > 0.4; // Taxa de acerto de 60% para simulação equilibrada
-                    const botChoice = botCorrectChance ? currentQuestion.correct : (currentQuestion.correct + 1) % 4;
-                    
-                    if (botCorrectChance) {
-                        GameEngine.players[k].score += 10;
-                    }
-                    choicesString += `${GameEngine.players[k].name}: ${['A','B','C','D'][botChoice]} | `;
+        function updateWhosMissingIndicator() {
+            var missing = [];
+            AppState.players.forEach(p => {
+                if (!AppState.votedThisRound[p.id]) {
+                    missing.push(p.name);
                 }
             });
 
-            document.getElementById('quiz-lobby-choices').innerText = choicesString;
+            var indicator = document.getElementById('prof-sync-indicator');
+            if (indicator) {
+                if (missing.length === 0) {
+                    indicator.innerText = "Toda a sala submeteu as suas avaliações!";
+                    indicator.className = "text-xs text-green-600 font-bold font-mono";
+                } else {
+                    indicator.innerText = "Quem falta votar: " + missing.join(', ');
+                    indicator.className = "text-xs text-brand-600 font-semibold font-mono animate-pulse";
+                }
+            }
+        }
 
-            // Transição diferida para leitura da justificação científica
+        function commitProfessionVote() {
+            clearInterval(AppState.timerInterval);
+
+            var btnSubmit = document.getElementById('btn-submit-prof');
+            if (btnSubmit) btnSubmit.setAttribute('disabled', 'true');
+
+            // Capturar as escolhas atuais nos sliders
+            var vSelf = parseInt(document.getElementById('range-self-prof').value);
+            var vP2 = document.getElementById('range-p2-prof') ? parseInt(document.getElementById('range-p2-prof').value) : 5;
+            var vP3 = document.getElementById('range-p3-prof') ? parseInt(document.getElementById('range-p3-prof').value) : 5;
+
+            var me = AppState.players.find(p => p.id === AppState.clientId);
+            me.ratings[AppState.professionIndex] = vSelf;
+
+            var otherPlayers = AppState.players.filter(p => p.id !== AppState.clientId);
+            if (!me.predictions[AppState.professionIndex]) me.predictions[AppState.professionIndex] = {};
+
+            if (otherPlayers.length >= 1) {
+                me.predictions[AppState.professionIndex][otherPlayers[0].id] = vP2;
+            }
+            if (otherPlayers.length >= 2) {
+                me.predictions[AppState.professionIndex][otherPlayers[1].id] = vP3;
+            }
+
+            AppState.votedThisRound[AppState.clientId] = true;
+            updateWhosMissingIndicator();
+
+            sendNetworkMessage('profession_vote', {
+                index: AppState.professionIndex,
+                selfVal: vSelf,
+                targetP2Id: otherPlayers.length >= 1 ? otherPlayers[0].id : null,
+                p2Val: vP2,
+                targetP3Id: otherPlayers.length >= 2 ? otherPlayers[1].id : null,
+                p3Val: vP3
+            });
+
+            // Simular comportamento de votação autónoma e assíncrona dos bots (apenas coordenado pelo Host)
+            if (AppState.isHost) {
+                var botData = [];
+                AppState.players.forEach(p => {
+                    if (p.isBot) {
+                        var botSelf = Math.floor(Math.random() * 11);
+                        var botPredictions = {};
+                        AppState.players.forEach(target => {
+                            if (target.id !== p.id) {
+                                botPredictions[target.id] = Math.floor(Math.random() * 11);
+                            }
+                        });
+
+                        p.ratings[AppState.professionIndex] = botSelf;
+                        p.predictions[AppState.professionIndex] = botPredictions;
+
+                        // Simular latência de digitação para a lista de "quem falta votar" ser realista
+                        var latency = Math.floor(Math.random() * 3000) + 1000;
+                        setTimeout(() => {
+                            AppState.votedThisRound[p.id] = true;
+                            updateWhosMissingIndicator();
+                            checkProfessionsPhaseProgress();
+                        }, latency);
+
+                        botData.push({ id: p.id, selfVal: botSelf, predictions: botPredictions });
+                    }
+                });
+
+                // Transmitir dados do bot para outros jogadores reais
+                if (botData.length > 0) {
+                    sendNetworkMessage('bot_profession_votes', { index: AppState.professionIndex, bots: botData });
+                }
+            }
+
+            checkProfessionsPhaseProgress();
+        }
+
+        function autoCommitProfessionVote() {
+            logActivity('[Aviso] Tempo esgotado! Votação enviada automaticamente.');
+            commitProfessionVote();
+        }
+
+        function checkProfessionsPhaseProgress() {
+            var allVoted = AppState.players.every(p => p.ratings[AppState.professionIndex] !== undefined && AppState.votedThisRound[p.id]);
+            if (allVoted) {
+                calculateAffinityScores();
+                updatePlayersRoster();
+
+                AppState.professionIndex++;
+                setTimeout(() => {
+                    loadProfessionStage();
+                }, 1000);
+            }
+        }
+
+        function calculateAffinityScores() {
+            AppState.players.forEach(p => {
+                var otherPlayers = AppState.players.filter(target => target.id !== p.id);
+                otherPlayers.forEach(target => {
+                    var prediction = p.predictions[AppState.professionIndex] ? p.predictions[AppState.professionIndex][target.id] : null;
+                    var actual = target.ratings[AppState.professionIndex];
+                    if (prediction !== undefined && prediction !== null && actual !== undefined) {
+                        // Pontos obtidos baseados na proximidade absoluta
+                        var diff = Math.abs(prediction - actual);
+                        var pointsGained = Math.max(0, 10 - diff);
+                        p.score += pointsGained;
+                    }
+                });
+            });
+        }
+
+        // FASE 2: EXAME COGNITIVO (QUIZ)
+        function loadQuizStage() {
+            if (AppState.questionIndex >= QUIZ_DATABASE.length) {
+                transitionToScreen('screen-results');
+                renderFinalResults();
+                return;
+            }
+
+            var correctionBox = document.getElementById('quiz-correction-box');
+            var choicesLobby = document.getElementById('quiz-lobby-choices');
+            
+            if (correctionBox) correctionBox.classList.add('hidden');
+            if (choicesLobby) choicesLobby.innerText = 'A aguardar escolhas...';
+
+            var currentQuestion = QUIZ_DATABASE[AppState.questionIndex];
+            
+            var catBadge = document.getElementById('quiz-cat-badge');
+            var quizCounter = document.getElementById('quiz-counter');
+            var quizQuest = document.getElementById('current-quiz-question');
+            
+            if (catBadge) catBadge.innerText = currentQuestion.category;
+            if (quizCounter) quizCounter.innerText = (AppState.questionIndex + 1) + '/' + QUIZ_DATABASE.length;
+            if (quizQuest) quizQuest.innerText = currentQuestion.question;
+
+            var optionsContainer = document.getElementById('quiz-options-container');
+            if (optionsContainer) {
+                optionsContainer.innerHTML = '';
+
+                currentQuestion.options.forEach((opt, idx) => {
+                    var btn = document.createElement('button');
+                    btn.className = 'w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-left font-semibold text-slate-800 hover:bg-brand-50 hover:border-brand-200 transition-all text-sm focus:outline-none';
+                    btn.innerText = opt;
+                    btn.onclick = () => selectQuizAnswer(idx);
+                    optionsContainer.appendChild(btn);
+                });
+            }
+
+            startQuizTimer();
+        }
+
+        function startQuizTimer() {
+            if (AppState.timerInterval) clearInterval(AppState.timerInterval);
+            AppState.timerValue = CONFIG.QUIZ_TIMER_SECONDS;
+            
+            var timerEl = document.getElementById('quiz-timer');
+            if (timerEl) timerEl.innerText = AppState.timerValue;
+
+            AppState.timerInterval = setInterval(() => {
+                AppState.timerValue--;
+                if (timerEl) timerEl.innerText = AppState.timerValue;
+
+                if (AppState.timerValue <= 0) {
+                    clearInterval(AppState.timerInterval);
+                    selectQuizAnswer(-1); // Estouro de tempo
+                }
+            }, 1000);
+        }
+
+        function selectQuizAnswer(choiceIdx) {
+            clearInterval(AppState.timerInterval);
+            
+            document.querySelectorAll('#quiz-options-container button').forEach(btn => {
+                btn.setAttribute('disabled', 'true');
+                btn.classList.add('opacity-60');
+            });
+
+            var me = AppState.players.find(p => p.id === AppState.clientId);
+            me.quizAnswers[AppState.questionIndex] = choiceIdx;
+
+            sendNetworkMessage('quiz_answer', { index: AppState.questionIndex, choice: choiceIdx });
+
+            if (AppState.isHost) {
+                var botAnswers = [];
+                AppState.players.forEach(p => {
+                    if (p.isBot) {
+                        var correctChoice = QUIZ_DATABASE[AppState.questionIndex].correct;
+                        var finalChoice = Math.random() < 0.65 ? correctChoice : Math.floor(Math.random() * 4);
+                        p.quizAnswers[AppState.questionIndex] = finalChoice;
+                        botAnswers.push({ id: p.id, choice: finalChoice });
+                    }
+                });
+
+                if (botAnswers.length > 0) {
+                    sendNetworkMessage('bot_quiz_answers', { index: AppState.questionIndex, bots: botAnswers });
+                }
+            }
+
+            checkQuizPhaseProgress();
+        }
+
+        function checkQuizPhaseProgress() {
+            var allAnswered = AppState.players.every(p => p.quizAnswers[AppState.questionIndex] !== undefined);
+            if (allAnswered) {
+                revealQuizResult();
+            }
+        }
+
+        function revealQuizResult() {
+            var currentQuestion = QUIZ_DATABASE[AppState.questionIndex];
+            
+            AppState.players.forEach(p => {
+                if (p.quizAnswers[AppState.questionIndex] === currentQuestion.correct) {
+                    p.score += 15; // Atribuição de pontuação do Quiz
+                }
+            });
+
+            updatePlayersRoster();
+
+            var choiceTexts = AppState.players.map(p => {
+                var answerText = p.quizAnswers[AppState.questionIndex] === -1 ? 'Sem tempo' : 'Opção ' + (p.quizAnswers[AppState.questionIndex] + 1);
+                return `${p.name}: ${answerText}`;
+            });
+            
+            var choicesLobby = document.getElementById('quiz-lobby-choices');
+            if (choicesLobby) choicesLobby.innerText = choiceTexts.join('  |  ');
+
+            var correctionBox = document.getElementById('quiz-correction-box');
+            if (correctionBox) {
+                correctionBox.classList.remove('hidden');
+
+                var myAnswer = AppState.players.find(p => p.id === AppState.clientId).quizAnswers[AppState.questionIndex];
+                if (myAnswer === currentQuestion.correct) {
+                    correctionBox.className = "p-4 rounded-2xl bg-green-50 border border-green-100 text-green-800 text-xs";
+                    correctionBox.innerHTML = `<strong>Correto!</strong> ${currentQuestion.reason}`;
+                } else {
+                    correctionBox.className = "p-4 rounded-2xl bg-rose-50 border border-rose-100 text-rose-800 text-xs";
+                    correctionBox.innerHTML = `<strong>Incorreto!</strong> A opção correta era a ${currentQuestion.correct + 1}. ${currentQuestion.reason}`;
+                }
+            }
+
             setTimeout(() => {
-                GameEngine.quizIndex++;
-                runQuizEngine();
-            }, 4500); // 4.5 segundos de pausa para sedimentação pedagógica
+                AppState.questionIndex++;
+                loadQuizStage();
+            }, 3500);
         }
 
-        // FASE 3 - COMPILAÇÃO DE MÉTRICAS E REVELAÇÃO DA PERCENTAGEM FINAL
-        function compileFinalMetrics() {
-            // 1. Renderização do Quadro de Honra / Classificações do Quiz
-            const podium = document.getElementById('podium-container');
-            podium.innerHTML = '';
+        // RESULTADOS FINAIS
+        function renderFinalResults() {
+            var podium = document.getElementById('podium-container');
+            if (podium) {
+                podium.innerHTML = '';
+                var sorted = AppState.players.slice().sort((a, b) => b.score - a.score);
 
-            const sortedProfiles = Object.keys(GameEngine.players).map(k => ({
-                id: k,
-                name: GameEngine.players[k].name,
-                score: GameEngine.players[k].score,
-                isSelf: k === GameEngine.uid
-            })).sort((a, b) => b.score - a.score);
-
-            sortedProfiles.forEach((profile, rank) => {
-                const medal = rank === 0 ? '🏆' : rank === 1 ? '🥈' : rank === 2 ? '🥉' : '🎖️';
-                podium.innerHTML += `
-                    <div class="flex items-center justify-between p-4 ${profile.isSelf ? 'bg-brand-50/60 border-2 border-brand-500':'bg-slate-50 border border-slate-200/60'} rounded-2xl transition-all">
-                        <div class="flex items-center gap-3">
-                            <span class="text-lg">${medal}</span>
-                            <span class="text-xs font-bold text-slate-800">${profile.name} ${profile.isSelf ? '(Tu)':''}</span>
+                sorted.forEach((p, index) => {
+                    var posText = index === 0 ? '🥇 1º Lugar' : index === 1 ? '🥈 2º Lugar' : '🥉 3º Lugar';
+                    var bgStyle = index === 0 ? 'bg-gradient-to-r from-amber-50 to-yellow-100 border-amber-200' : 'bg-slate-50 border-slate-200';
+                    
+                    var card = document.createElement('div');
+                    card.className = `p-5 border rounded-2xl flex items-center justify-between ${bgStyle}`;
+                    card.innerHTML = `
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">${posText}</span>
+                            <h4 class="text-lg font-extrabold text-slate-900">${p.name}</h4>
                         </div>
-                        <span class="px-3 py-1 ${profile.isSelf ? 'bg-brand-600':'bg-slate-700'} text-white text-xs font-black rounded-xl font-mono">${profile.score} PTS</span>
-                    </div>
-                `;
-            });
-
-            // 2. Algoritmo de Cálculo de Afinidade Global (Apenas Revelado Aqui)
-            // Mede a variância ou proximidade dos vetores de preferência entre o utilizador e os outros jogadores
-            let totalDeviation = 0;
-            let totalComparisons = 0;
-
-            GameEngine.affinityMatrix.forEach(entry => {
-                const selfVote = entry.votes[GameEngine.uid];
-                Object.keys(entry.votes).forEach(playerKey => {
-                    if (playerKey !== GameEngine.uid) {
-                        const peerVote = entry.votes[playerKey];
-                        // Desvio absoluto entre os dois sinais de 0 a 10
-                        totalDeviation += Math.abs(selfVote - peerVote);
-                        totalComparisons++;
-                    }
+                        <span class="text-xl font-mono font-black text-slate-800">${p.score} Pts</span>
+                    `;
+                    podium.appendChild(card);
                 });
-            });
-
-            // Conversão matemática: Desvio Máximo Possível por questão é 10.
-            let affinityPercentage = 85; // Fallback estatístico se jogado sozinho
-            if (totalComparisons > 0) {
-                const maxPossibleDeviation = totalComparisons * 10;
-                const deviationCoefficient = totalDeviation / maxPossibleDeviation;
-                affinityPercentage = Math.round((1 - deviationCoefficient) * 100);
             }
 
-            // Animação numérica incremental para maior impacto de Interface
-            animateValueCounter('final-affinity-percent', 0, affinityPercentage, 1500);
+            // Cálculo da Afinidade Média Coletiva
+            var finalAffPercent = document.getElementById('final-affinity-percent');
+            if (finalAffPercent) {
+                var totalDiff = 0;
+                var totalGuesses = 0;
+
+                AppState.players.forEach(p => {
+                    var otherPlayers = AppState.players.filter(target => target.id !== p.id);
+                    otherPlayers.forEach(target => {
+                        for (var i = 0; i < CONFIG.TOTAL_PROFESSIONS; i++) {
+                            var predVal = p.predictions[i] ? p.predictions[i][target.id] : null;
+                            var realVal = target.ratings[i];
+
+                            if (predVal !== null && predVal !== undefined && realVal !== undefined) {
+                                totalDiff += Math.abs(predVal - realVal);
+                                totalGuesses++;
+                            }
+                        }
+                    });
+                });
+
+                var rawAffinPercent = totalGuesses > 0 ? Math.round((1 - (totalDiff / (totalGuesses * 10))) * 100) : 75;
+                finalAffPercent.innerText = rawAffinPercent;
+            }
         }
 
-        function animateValueCounter(elementId, start, end, duration) {
-            const obj = document.getElementById(elementId);
-            if (!obj) return;
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                obj.innerText = Math.floor(progress * (end - start) + start);
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
+        function alertModal(message) {
+            logActivity('[Mensagem] ' + message);
+            var banner = document.createElement('div');
+            banner.className = "fixed bottom-5 right-5 bg-slate-900 text-white px-5 py-3 rounded-xl text-xs font-bold shadow-2xl z-50 transition-all transform translate-y-10";
+            banner.innerText = message;
+            document.body.appendChild(banner);
+            setTimeout(() => { banner.classList.remove('translate-y-10'); }, 100);
+            setTimeout(() => { banner.remove(); }, 4000);
+        }
+
+        window.onload = function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('room')) {
+                var code = urlParams.get('room');
+                var joinBtn = document.getElementById('btn-join-direct');
+                if (joinBtn) {
+                    joinBtn.classList.remove('hidden');
+                    joinBtn.innerText = 'Entrar na Sala: ' + code;
                 }
-            };
-            window.requestAnimationFrame(step);
-        }
-
-        // CONTROLADOR DE ASSINATURA DE URL PARA CONVITES
-        function shareInviteLink() {
-            const link = document.getElementById('share-link-input').value;
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(link).then(() => {
-                    alert("Copiado: Link de partilha inserido na área de transferência.");
-                });
-            } else {
-                alert(`Copia o endereço de sincronização: ${link}`);
+                logActivity('[Sistema] Convite detetado para a sala ' + code);
             }
-        }
-        
-        function copyInviteLink() {
-            shareInviteLink();
-        }
-
-        // Listener de Segurança para Interrupção Indesejada
-        window.addEventListener('beforeunload', (e) => {
-            if(GameEngine.currentPhase === 1 || GameEngine.currentPhase === 2) {
-                e.preventDefault();
-                e.returnValue = 'Atenção: A progressão atual da sessão será completamente perdida.';
-            }
-        });
+        };
     </script>
 </body>
 </html>
