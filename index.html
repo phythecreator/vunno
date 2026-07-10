@@ -1,1267 +1,408 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuizParty Pro - Afinidades, Profissões & Competição</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mqtt/dist/mqtt.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔍 Descubra Seus Dados Digitais</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height:100vh; color:#2d3748; line-height:1.5;
+}
+section { padding:50px 20px; }
+.container { max-width:1100px; margin:0 auto; }
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#f5f3ff',
-                            100: '#ede9fe',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                        },
-                        accent: {
-                            50: '#fff1f2',
-                            500: '#f43f5e',
-                            600: '#e11d48',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+/* HERO */
+.hero { text-align:center; color:#fff; }
+.hero h1 { font-size:clamp(2rem,5vw,3rem); margin-bottom:1rem; font-weight:800; }
+.hero p { font-size:1.1rem; opacity:.95; max-width:700px; margin:0 auto 2rem; }
+.btn-saber {
+  background:#ffd700; color:#2d3748; border:none;
+  padding:18px 40px; font-size:1.1rem; font-weight:bold;
+  border-radius:50px; cursor:pointer; transition:all .3s;
+  box-shadow:0 4px 20px rgba(0,0,0,.2);
+}
+.btn-saber:hover { transform:translateY(-3px); box-shadow:0 8px 30px rgba(0,0,0,.3); background:#ffed4e; }
 
-    <style>
-        body {
-            background-color: #f1f5f9;
-            color: #0f172a;
-        }
-        .custom-shadow {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 16px -6px rgba(0, 0, 0, 0.05);
-        }
-        .screen {
-            display: none;
-        }
-        .screen.active {
-            display: block;
-        }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 999px;
-        }
-        .logo-display-img {
-            max-height: 160px;
-            max-width: 100%;
-            object-fit: contain;
-            border-radius: 1rem;
-            margin: 1rem auto;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            background: #ffffff;
-            padding: 0.5rem;
-            display: block;
-            transition: transform 0.3s ease;
-        }
-        .logo-display-img:hover {
-            transform: scale(1.03);
-        }
-    </style>
+/* DATA SECTION */
+.data-section { background:#f7fafc; }
+.data-section h2 { text-align:center; margin-bottom:20px; font-size:2rem; color:#2d3748; }
+.data-warning {
+  background:#fff5f5; border-left:4px solid #e53e3e;
+  padding:15px 20px; margin-bottom:30px; border-radius:4px; color:#742a2a;
+}
+.data-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
+.data-card {
+  background:#fff; border-radius:12px; padding:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  border:1px solid #e2e8f0; transition:transform .2s;
+}
+.data-card:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.1); }
+.data-card h3 {
+  color:#667eea; margin-bottom:12px; font-size:1rem;
+  padding-bottom:8px; border-bottom:2px solid #edf2f7;
+}
+.data-item { display:flex; justify-content:space-between; align-items:flex-start;
+  padding:6px 0; font-size:.85rem; gap:10px; border-bottom:1px solid #edf2f7; }
+.data-item:last-child { border-bottom:none; }
+.data-label { color:#718096; flex-shrink:0; }
+.data-value {
+  color:#2d3748; font-weight:600; text-align:right;
+  word-break:break-all; font-family:'Courier New',monospace; font-size:.8rem;
+}
+
+/* CAPTCHA */
+.captcha-section { background:#fff; text-align:center; }
+.captcha-section h2 { font-size:1.8rem; margin-bottom:8px; }
+.captcha-sub { color:#718096; margin-bottom:25px; }
+.captcha-box { max-width:400px; margin:0 auto; background:#f7fafc; border:2px solid #e2e8f0; border-radius:12px; padding:25px; }
+.captcha-question {
+  background:#edf2f7; padding:18px; border-radius:8px;
+  margin-bottom:18px; font-size:1.3rem; font-weight:bold;
+}
+.captcha-input {
+  width:100%; padding:12px 16px; border:2px solid #cbd5e0;
+  border-radius:8px; font-size:1rem; margin-bottom:12px;
+}
+.captcha-input:focus { border-color:#667eea; outline:none; }
+.captcha-btn {
+  background:#48bb78; color:#fff; border:none;
+  padding:12px 30px; border-radius:8px; cursor:pointer;
+  font-weight:bold; font-size:1rem; transition:background .2s;
+}
+.captcha-btn:hover { background:#38a169; }
+.captcha-result { margin-top:12px; padding:10px; border-radius:6px; font-weight:bold; }
+.captcha-result.success { background:#c6f6d5; color:#22543d; }
+.captcha-result.error { background:#fed7d7; color:#742a2a; }
+.refresh-captcha { background:transparent; color:#667eea; border:none; cursor:pointer; margin-top:10px; font-size:.9rem; }
+
+/* GAME */
+.game-section { background:#2d3748; color:#fff; text-align:center; }
+.game-section h2 { font-size:1.8rem; margin-bottom:8px; }
+.game-info { margin-bottom:25px; color:#cbd5e0; }
+.game-stats { display:flex; justify-content:center; gap:30px; margin-bottom:25px; font-size:1rem; }
+.game-board {
+  display:grid; grid-template-columns:repeat(4,80px); grid-template-rows:repeat(2,80px);
+  gap:10px; justify-content:center; margin:0 auto 25px;
+}
+.memory-card {
+  background:linear-gradient(135deg,#667eea,#764ba2); border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:2.5rem; cursor:pointer; transition:all .3s;
+  user-select:none; color:transparent; box-shadow:0 2px 6px rgba(0,0,0,.3);
+}
+.memory-card:hover { transform:scale(1.05); }
+.memory-card.flipped, .memory-card.matched { background:#fff; color:initial; }
+.memory-card.matched { background:#48bb78; cursor:default; }
+.game-btn {
+  background:#ffd700; color:#2d3748; border:none;
+  padding:12px 28px; border-radius:8px; cursor:pointer;
+  font-weight:bold; font-size:.95rem;
+}
+.win-message {
+  background:#48bb78; color:#fff; padding:18px; border-radius:8px;
+  margin-bottom:20px; font-weight:bold; font-size:1.2rem;
+}
+footer { text-align:center; padding:30px 20px; color:#fff; opacity:.8; font-size:.9rem; }
+
+@media (max-width:480px) {
+  .game-board { grid-template-columns:repeat(4,65px); grid-template-rows:repeat(2,65px); }
+  .memory-card { font-size:2rem; }
+}
+</style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body>
 
-    <div class="w-full max-w-5xl bg-white rounded-3xl border border-slate-100 shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[720px]">
-        
-        <!-- Coluna Esquerda: Informações e Jogadores -->
-        <div class="w-full md:w-1/3 bg-slate-50 border-r border-slate-100 p-6 flex flex-col justify-between">
-            <div>
-                <div class="flex items-center justify-between mb-8">
-                    <div class="flex items-center gap-2">
-                        <div class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-brand-100">🎯</div>
-                        <div>
-                            <h1 class="text-xl font-extrabold tracking-tight">Quiz<span class="text-brand-600">Party</span></h1>
-                            <p class="text-xs text-slate-500 font-medium">Afinidades & Diagnóstico</p>
-                        </div>
-                    </div>
-                </div>
+<section class="hero">
+  <div class="container">
+    <h1>🔍 Descubra Seus Dados Digitais</h1>
+    <p>Sites coletam silenciosamente uma quantidade enorme de informação sobre você. Clique abaixo para ver exatamente o que este site consegue descobrir sobre você — agora mesmo, neste instante.</p>
+    <button class="btn-saber" onclick="revealData()">🔎 Saber Mais</button>
+  </div>
+</section>
 
-                <div class="mb-4 p-3 bg-white rounded-2xl border border-slate-100 flex items-center justify-between shadow-sm">
-                    <div class="flex items-center gap-2">
-                        <span id="network-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-                        <span id="network-status-text" class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">A Inicializar</span>
-                    </div>
-                    <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-mono">P2P v3.0</span>
-                </div>
-
-                <div id="sidebar-room-info" class="mb-6 p-4 bg-white rounded-2xl border border-slate-100 hidden shadow-sm">
-                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-2">Código da Sala</p>
-                    <div class="flex items-center justify-between">
-                        <span id="room-badge" class="px-2.5 py-1 bg-brand-50 text-brand-600 rounded-lg text-xs font-bold font-mono">---</span>
-                        <button onclick="shareInviteLink()" class="flex items-center gap-1 text-xs text-brand-600 font-bold hover:underline">
-                            <span class="material-icons text-sm">share</span> Convidar
-                        </button>
-                    </div>
-                </div>
-
-                <div class="mb-6">
-                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-3">Utilizadores Conectados</p>
-                    <div id="roster-list" class="space-y-2">
-                        <p class="text-xs text-slate-500 italic">A carregar interface de rede...</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-auto">
-                <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-2">Mural de Eventos</p>
-                <div id="activity-log" class="h-32 overflow-y-auto bg-slate-100 rounded-2xl p-3 text-xs space-y-1.5 text-slate-600 font-mono">
-                    <div>[Sistema] Núcleo do QuizParty ativo. Pronto para processamento.</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Coluna Direita: Gestão de Ecrãs -->
-        <div class="w-full md:w-2/3 p-8 flex flex-col justify-between min-h-[550px]">
-
-            <!-- ECRÃ 1: LOGIN -->
-            <section id="screen-login" class="screen active my-auto">
-                <div class="max-w-md mx-auto text-center">
-                    <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Sessão de Orientação</h2>
-                    <p class="text-slate-500 text-sm mb-8">Introduz o teu perfil de utilizador para iniciar a análise de afinidades profissionais e o teste cognitivo.</p>
-                    
-                    <div class="space-y-4 mb-6 text-left">
-                        <div>
-                            <label class="text-xs text-slate-500 font-bold uppercase tracking-wider block mb-2">O Teu Nome / Identificador</label>
-                            <input type="text" id="username" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-50" placeholder="Ex: Gonçalo_9A" autocomplete="off" maxlength="15">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <button id="btn-create-room" onclick="initiateSession(false)" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-brand-100">
-                            <span class="material-icons">add_box</span> Criar Nova Sala
-                        </button>
-                        <button onclick="initiateSession(true)" id="btn-join-direct" class="w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-2xl font-bold transition flex items-center justify-center gap-2 hidden">
-                            <span class="material-icons">login</span> Entrar na Sala
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ECRÃ 2: LOBBY -->
-            <section id="screen-lobby" class="screen my-auto">
-                <div class="max-w-md mx-auto">
-                    <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Sala de Emparelhamento</h2>
-                    <p class="text-slate-500 text-sm mb-6">Partilha as credenciais de acesso para sincronizar dados em tempo real com os teus pares.</p>
-
-                    <div class="p-5 bg-indigo-50 border border-indigo-100 rounded-2xl mb-6">
-                        <div class="flex items-start gap-3">
-                            <div class="p-2 bg-white rounded-lg text-brand-600">
-                                <span class="material-icons">link</span>
-                            </div>
-                            <div class="flex-grow">
-                                <h4 class="text-xs text-brand-600 font-extrabold uppercase tracking-wider mb-1">Ligação Genuína Multiponto</h4>
-                                <input type="text" id="share-link-input" readonly class="w-full bg-white border border-indigo-100 text-xs px-3 py-2 rounded-lg font-mono text-slate-600 focus:outline-none mb-2" value="A gerar token de rede...">
-                                <div class="flex gap-2">
-                                    <button onclick="copyInviteLink()" class="px-3 py-1.5 bg-brand-600 text-white rounded-lg text-xs font-bold hover:bg-brand-700 transition">Copiar Link</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-3 mb-8">
-                        <button onclick="injectSimulatedPeers()" id="btn-add-bots" class="w-full py-3 border-2 border-dashed border-slate-300 hover:border-slate-400 text-slate-600 rounded-xl text-xs font-extrabold tracking-wider uppercase transition">
-                            🤖 Ativar Pares Simulados (Testar Imediatamente)
-                        </button>
-                    </div>
-
-                    <button onclick="triggerGameStart()" id="btn-start-trigger" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-brand-100" disabled>
-                        <span>Iniciar Análise Coletiva</span>
-                        <span class="material-icons">play_circle_outline</span>
-                    </button>
-                    <p id="start-warning-text" class="text-center text-xs text-slate-400 mt-2">A aguardar deteção de múltiplos perfis na rede...</p>
-                </div>
-            </section>
-
-            <!-- ECRÃ 3: PROFISSÕES (AFINIDADES MULTILATERAIS COM TEMPORIZADOR DE 15S) -->
-            <section id="screen-professions" class="screen">
-                <div id="prof-input-block">
-                    <div class="flex items-center justify-between mb-6">
-                        <div>
-                            <span class="px-3 py-1 bg-brand-50 text-brand-600 rounded-full text-xs font-extrabold tracking-wider uppercase">Fase 1: Afinidades</span>
-                            <span id="prof-counter" class="text-xs text-slate-400 font-bold ml-2">1/40</span>
-                        </div>
-                        <div id="prof-timer-container" class="w-12 h-12 rounded-full border-4 border-brand-500 flex items-center justify-center shadow-lg shadow-brand-50 transition-all">
-                            <span id="prof-timer" class="text-base font-extrabold text-slate-900">15</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-gradient-to-tr from-brand-50 to-indigo-50 border border-brand-100 p-8 rounded-3xl text-center mb-6">
-                        <p class="text-xs text-slate-400 font-bold tracking-widest uppercase mb-1">Avaliação Vocacional Coletiva</p>
-                        <h3 id="current-prof-name" class="text-3xl font-black text-slate-900 tracking-tight mb-2">---</h3>
-                        <span id="prof-index-indicator" class="text-[10px] bg-white px-2 py-0.5 rounded border border-slate-200 text-slate-400 font-mono">Índice: P-01</span>
-                    </div>
-
-                    <div class="space-y-4 mb-6">
-                        <!-- Input 1: O Quanto EU Gostaria -->
-                        <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-xs font-bold text-slate-800">1. O quanto <span class="text-brand-600 font-black">TU</span> gostarias de exercer esta profissão?</span>
-                                <span id="label-self-val" class="w-7 h-7 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-black shadow-sm">5</span>
-                            </div>
-                            <input type="range" min="0" max="10" value="5" id="range-self-prof" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600" oninput="document.getElementById('label-self-val').innerText = this.value">
-                        </div>
-
-                        <!-- Input 2: O Quanto o Jogador 2 Gostaria -->
-                        <div id="box-pred-p2" class="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-xs font-bold text-slate-800">2. O quanto achas que o/a <span id="label-name-p2" class="text-brand-600 font-extrabold">Jogador 2</span> gostaria disto?</span>
-                                <span id="label-p2-val" class="w-7 h-7 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-black shadow-sm">5</span>
-                            </div>
-                            <input type="range" min="0" max="10" value="5" id="range-p2-prof" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600" oninput="document.getElementById('label-p2-val').innerText = this.value">
-                        </div>
-
-                        <!-- Input 3: O Quanto o Jogador 3 Gostaria -->
-                        <div id="box-pred-p3" class="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-xs font-bold text-slate-800">3. O quanto achas que o/a <span id="label-name-p3" class="text-brand-600 font-extrabold">Jogador 3</span> gostaria disto?</span>
-                                <span id="label-p3-val" class="w-7 h-7 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-black shadow-sm">5</span>
-                            </div>
-                            <input type="range" min="0" max="10" value="5" id="range-p3-prof" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600" oninput="document.getElementById('label-p3-val').innerText = this.value">
-                        </div>
-                    </div>
-
-                    <!-- Rodapé do Ecrã de Afinidades -->
-                    <div class="p-3 bg-slate-100 rounded-2xl border border-slate-200/50 mb-4 text-center">
-                        <p id="prof-sync-indicator" class="text-xs text-slate-600 font-semibold font-mono animate-pulse">
-                            A aguardar votos locais...
-                        </p>
-                    </div>
-
-                    <div class="flex items-center justify-end">
-                        <button onclick="commitProfessionVote()" id="btn-submit-prof" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-brand-50 flex items-center gap-2">
-                            <span>Submeter Avaliações</span>
-                            <span class="material-icons text-sm">done_all</span>
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ECRÃ 4: QUIZ -->
-            <section id="screen-quiz" class="screen">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <span id="quiz-cat-badge" class="px-3 py-1 bg-accent-50 text-accent-500 rounded-full text-xs font-extrabold tracking-wider uppercase">---</span>
-                        <span id="quiz-counter" class="text-xs text-slate-400 font-bold ml-2">1/55</span>
-                    </div>
-                    <div id="timer-radial-container" class="w-12 h-12 rounded-full border-4 border-accent-500 flex items-center justify-center shadow-lg shadow-accent-50 transition-all duration-300">
-                        <span id="quiz-timer" class="text-base font-extrabold text-slate-900">10</span>
-                    </div>
-                </div>
-
-                <!-- Contentor dinâmico para os Logos da Fase de Imagem -->
-                <div id="quiz-image-container" class="hidden w-full mb-4">
-                    <img id="quiz-logo-img" class="logo-display-img" src="" alt="Identifica este Logótipo" onerror="this.style.display='none'">
-                    <div id="quiz-image-fallback" class="hidden text-center p-6 bg-slate-100 rounded-2xl border border-slate-200 text-xs text-slate-500 font-mono">
-                        [Logo: Carregamento do ficheiro pendente]
-                    </div>
-                </div>
-
-                <div class="p-6 bg-slate-50 border border-slate-100 rounded-2xl mb-6">
-                    <h3 id="current-quiz-question" class="text-lg font-bold text-slate-800 leading-snug">---</h3>
-                </div>
-
-                <div id="quiz-options-container" class="grid grid-cols-1 gap-3 mb-6"></div>
-
-                <div id="quiz-lobby-choices" class="p-3 bg-slate-50 rounded-xl text-[11px] text-center text-slate-500 font-mono mb-4 border border-slate-100">
-                    A aguardar inputs locais ou de rede...
-                </div>
-
-                <div id="quiz-correction-box" class="p-4 rounded-2xl hidden text-xs transition-all duration-300"></div>
-            </section>
-
-            <!-- ECRÃ 5: RESULTADOS -->
-            <section id="screen-results" class="screen">
-                <div class="text-center mb-8">
-                    <span class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs font-extrabold tracking-wider uppercase mb-3 inline-block">Processamento Concluído</span>
-                    <h2 class="text-3xl font-extrabold text-slate-900">Resultados Finais Integrados</h2>
-                </div>
-
-                <div class="mb-6">
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Tabela de Classificações</h4>
-                    <div id="podium-container" class="space-y-2"></div>
-                </div>
-
-                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 mb-8 flex flex-col md:flex-row items-center gap-6">
-                    <div class="w-24 h-24 shrink-0 rounded-full border-8 border-brand-500 flex items-center justify-center text-2xl font-black text-brand-600 bg-white shadow-xl shadow-brand-100">
-                        <span id="final-affinity-percent">0</span>%
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-extrabold text-slate-800 tracking-wide uppercase mb-1">Grau de Afinidade Global Revelado</h4>
-                        <p class="text-xs text-slate-500 leading-relaxed">Este valor quantifica a convergência absoluta de escolhas vocacionais entre o teu perfil e os teus parceiros de sala ao longo de todas as 40 profissões avaliadas.</p>
-                    </div>
-                </div>
-
-                <div class="flex gap-4">
-                    <button onclick="window.location.reload()" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-brand-50">
-                        <span class="material-icons">replay</span> Reinicializar Sessão
-                    </button>
-                </div>
-            </section>
-
-        </div>
+<section class="data-section" id="dataSection" style="display:none;">
+  <div class="container">
+    <h2>📊 O que este site vê sobre você</h2>
+    <div class="data-warning">
+      ⚠️ <strong>Cada item abaixo</strong> é informação real que sites podem obter sem você perceber.
+      Além disso, coisas que <em>você não vê aqui</em> — como seu <strong>endereço IP</strong>,
+      <strong>histórico de navegação</strong> e o que você <strong>digita em formulários</strong> — também são
+      registrados pelo servidor. Use extensões como uBlock Origin, Privacy Badger e considere uma VPN.
     </div>
+    <div class="data-grid" id="dataGrid"></div>
+  </div>
+</section>
 
-    <script>
-        'use strict';
+<section class="captcha-section">
+  <div class="container">
+    <h2>🤖 CAPTCHA — Verificação de Segurança</h2>
+    <p class="captcha-sub">Prove que você não é um robô resolvendo o desafio abaixo.</p>
+    <div class="captcha-box">
+      <div class="captcha-question" id="captchaQuestion"></div>
+      <input type="number" class="captcha-input" id="captchaInput" placeholder="Sua resposta...">
+      <button class="captcha-btn" onclick="checkCaptcha()">Verificar</button>
+      <div class="captcha-result" id="captchaResult" style="display:none;"></div>
+      <button class="refresh-captcha" onclick="generateCaptcha()">🔄 Gerar novo desafio</button>
+    </div>
+  </div>
+</section>
 
-        const CONFIG = {
-            TOTAL_PROFESSIONS: 40,
-            PROF_TIMER_SECONDS: 15,
-            QUIZ_TIMER_SECONDS: 10,
-            BROKER_URL: 'wss://broker.emqx.io:8084/mqtt'
-        };
+<section class="game-section">
+  <div class="container">
+    <h2>🎮 Mini Game: Jogo da Memória</h2>
+    <p class="game-info">Encontre todos os pares de emojis iguais!</p>
+    <div class="game-stats">
+      <span>⏱️ Tempo: <strong id="timer">0s</strong></span>
+      <span>🎯 Movimentos: <strong id="moves">0</strong></span>
+    </div>
+    <div class="win-message" id="winMessage" style="display:none;"></div>
+    <div class="game-board" id="gameBoard"></div>
+    <button class="game-btn" onclick="startGame()">🔄 Novo Jogo</button>
+  </div>
+</section>
 
-        const PROFESSIONS_DATABASE = [
-            // 5 Profissões diretamente ligadas ao futebol
-            "Treinador de Futebol", 
-            "Árbitro de Futebol", 
-            "Jogador Profissional de Futebol", 
-            "Diretor Desportivo de Futebol", 
-            "Olheiro / Recrutador de Futebol",
-            
-            // 35 Outras profissões para perfazer exatamente 40
-            "Fisioterapeuta Desportivo", 
-            "Engenheiro Informático", 
-            "Professor de Futebol", 
-            "Advogado de jogadores", 
-            "Enfermeiro",
-            "Jogador de EA FC", 
-            "Designer de Estádios", 
-            "Bilheteiro do Estádio do Benfica", 
-            "Gestor de Empresas", 
-            "Cientista de Investigação", 
-            "Massagista de Jogadores", 
-            "Paneleiro ( faz panelas )", 
-            "Farmacêutico", 
-            "Segurança do Estádio de Futebol", 
-            "Investidor na Bolsa de Valores",
-            "Nutricionista", 
-            "Cantor do Hino nos jogos de futebol", 
-            "Piloto de Aviação Civil", 
-            "Eletricista", 
-            "Adepto de Futebol não profissional", 
-            "Carpinteiro", 
-            "Fotografo", 
-            "Tradutor / Intérprete", 
-            "Programador ", 
-            "Arqueólogo",
-            "Piloto de F1", 
-            "Geógrafo", 
-            "Engenheiro de carros de F1", 
-            "Especialista de Marketing Digital", 
-            "Juiz de Tribunal", 
-            "Dentista", 
-            "Vendedor ambulante de camisas de futebol", 
-            "Engenheiro Civil", 
-            "Bombeiro/a", 
-            "Chef de Cozinha"
-        ];
+<footer>Feito para conscientizar sobre privacidade digital 🔒</footer>
 
-        const QUIZ_DATABASE = [
-            // 20 Perguntas Novas de Conhecimento Cultural (Cultura Geral)
-            { category: "Cultura Geral", question: "Qual é o rio mais longo do mundo de acordo com a maioria dos cientistas e geógrafos modernos?", options: ["Rio Amazonas", "Rio Nilo", "Rio Mississippi", "Rio Yangtze"], correct: 0, reason: "O Rio Amazonas é considerado o maior rio do mundo em volume de água e extensão de fluxo contínuo." },
-            { category: "Cultura Geral", question: "Quem escreveu a célebre epopeia nacionalista portuguesa 'Os Lusíadas', publicada em 1572?", options: ["Luís de Camões", "Fernando Pessoa", "Eça de Queirós", "José Saramago"], correct: 0, reason: "Luís de Camões é o autor da prestigiada obra histórica focada nos descobrimentos portugueses." },
-            { category: "Cultura Geral", question: "Em que ano ocorreu a histórica Revolução dos Cravos que encerrou a ditadura em Portugal?", options: ["1974", "1910", "1986", "1961"], correct: 0, reason: "A Revolução dos Cravos desenrolou-se a 25 de abril de 1974." },
-            { category: "Cultura Geral", question: "Qual é a menor nação do mundo em termos de área territorial absoluta?", options: ["Vaticano", "Mónaco", "São Marino", "Liechtenstein"], correct: 0, reason: "O Estado do Vaticano é soberano com menos de 0.44 quilómetros quadrados." },
-            { category: "Cultura Geral", question: "Que mestre do Renascimento italiano pintou o deslumbrante teto da Capela Sistina?", options: ["Miguel Ângelo (Michelangelo)", "Leonardo da Vinci", "Rafael Sanzio", "Donatello"], correct: 0, reason: "Miguel Ângelo realizou esta impressionante obra no Vaticano a mando do Papa Júlio II." },
-            { category: "Cultura Geral", question: "Qual é o elemento metálico mais abundante encontrado na crosta terrestre da Terra?", options: ["Alumínio", "Ferro", "Cobre", "Magnésio"], correct: 0, reason: "O alumínio é o terceiro elemento mais comum no geral e o metal mais abundante da crosta." },
-            { category: "Cultura Geral", question: "Quantos planetas compõem oficialmente o nosso Sistema Solar após a desclassificação de Plutão?", options: ["8 planetas", "9 planetas", "7 planetas", "10 planetas"], correct: 0, reason: "Atualmente existem 8 planetas oficiais na órbita solar após Plutão ser classificado como planeta anão." },
-            { category: "Cultura Geral", question: "Qual é o maior, mais largo e mais profundo oceano do planeta Terra?", options: ["Oceano Pacífico", "Oceano Atlântico", "Oceano Índico", "Oceano Ártico"], correct: 0, reason: "O Oceano Pacífico cobre mais de um terço de toda a superfície terrestre global." },
-            { category: "Cultura Geral", question: "Quem é o autor literário da trágica e romântica peça de teatro 'Romeu e Julieta'?", options: ["William Shakespeare", "Miguel de Cervantes", "Luís de Camões", "Dante Alighieri"], correct: 0, reason: "William Shakespeare escreveu a trágica peça por volta do fim do século XVI." },
-            { category: "Cultura Geral", question: "Qual é a capital federal administrativa do vasto território da Austrália?", options: ["Camberra", "Sydney", "Melbourne", "Brisbane"], correct: 0, reason: "Camberra foi planeada de raiz para servir de capital, evitando disputas entre Sydney e Melbourne." },
-            { category: "Cultura Geral", question: "Em que continente está maioritariamente localizado o imenso Deserto do Saara?", options: ["África", "Ásia", "América do Sul", "Europa"], correct: 0, reason: "O Saara ocupa grande parte da região norte do continente africano." },
-            { category: "Cultura Geral", question: "Que cientista seminal publicou a Teoria da Relatividade Geral em 1915?", options: ["Albert Einstein", "Isaac Newton", "Galileu Galilei", "Stephen Hawking"], correct: 0, reason: "Albert Einstein revolucionou a física moderna com a sua teoria inovadora sobre a gravidade." },
-            { category: "Cultura Geral", question: "Que antigo povo mesopotâmico é creditado pela invenção da primeira escrita (Cuneiforme)?", options: ["Sumérios", "Babilónios", "Egípcios", "Assírios"], correct: 0, reason: "A escrita cuneiforme suméria desenvolveu-se há mais de 5.000 anos na Mesopotâmia." },
-            { category: "Cultura Geral", question: "Qual é a montanha mais elevada da Terra acima do nível médio do mar?", options: ["Monte Everest", "K2", "Kilimanjaro", "Monte Branco"], correct: 0, reason: "O Monte Everest atinge impressionantes 8.848 metros na cordilheira do Himalaia." },
-            { category: "Cultura Geral", question: "Quem assumiu a posição de primeiro presidente eleito da República Portuguesa em 1911?", options: ["Manuel de Arriaga", "Teófilo Braga", "Bernardino Machado", "Sidónio Pais"], correct: 0, reason: "Manuel de Arriaga foi o primeiro presidente constitucional após a queda da monarquia." },
-            { category: "Cultura Geral", question: "Em que país europeu surgiram originalmente os lendários Jogos Olímpicos na antiguidade?", options: ["Grécia", "Itália", "França", "Espanha"], correct: 0, reason: "Os Jogos surgiram na cidade de Olímpia no ano de 776 a.C. na Grécia Antiga." },
-            { category: "Cultura Geral", question: "Qual é o maior animal e mamífero registado em toda a história da biosfera terrestre?", options: ["Baleia-azul", "Elefante-africano", "Tubarão-baleia", "Diplodoco"], correct: 0, reason: "A Baleia-azul pode atingir mais de 30 metros de comprimento e pesar cerca de 180 toneladas." },
-            { category: "Cultura Geral", question: "Quantos ossos estruturais tem, em média, o corpo de um ser humano adulto saudável?", options: ["206", "300", "150", "256"], correct: 0, reason: "Nascemos com mais ossos, mas a fusão ao longo do crescimento reduz o esqueleto adulto a 206 ossos." },
-            { category: "Cultura Geral", question: "Qual é o monumento pré-histórico de círculos de pedra mais famoso do Reino Unido?", options: ["Stonehenge", "Amesbury", "Carnac", "Avebury"], correct: 0, reason: "Stonehenge foi edificado durante os períodos Neolítico e do Bronze no sudoeste de Inglaterra." },
-            { category: "Cultura Geral", question: "Que conceituado pintor e expressionista norueguês assinou o quadro vanguardista 'O Grito'?", options: ["Edvard Munch", "Vincent van Gogh", "Pablo Picasso", "Claude Monet"], correct: 0, reason: "Munch concebeu a sua famosa obra expressionista em 1893." },
+<script>
+// ============ DATA COLLECTION ============
+async function revealData() {
+  document.getElementById('dataSection').style.display = 'block';
+  document.getElementById('dataSection').scrollIntoView({behavior:'smooth'});
+  const data = await collectAllData();
+  renderData(data);
+}
 
-            // 7 Desafios Temáticos "Adivinha o Logo" baseados na imagem_d16ae5.png
-            { category: "Adivinha o Logo", question: "A que prestigiada marca desportiva mundial pertence o logótipo 'Swoosh' apresentado nesta imagem?", options: ["Nike", "Adidas", "Puma", "Under Armour"], correct: 0, image: "002-nike-logos-swoosh-white.jpg", reason: "O icónico Swoosh da Nike foi desenhado por Carolyn Davidson em 1971." },
-            { category: "Adivinha o Logo", question: "Identifica a tradicional fabricante automóvel britânica de luxo representada por este logótipo alado:", options: ["Aston Martin", "Bentley", "Jaguar", "Porsche"], correct: 0, image: "ASTONAMRTIN.png", reason: "O símbolo da Aston Martin exibe asas clássicas que sugerem sofisticação, velocidade e liberdade." },
-            { category: "Adivinha o Logo", question: "Este famoso avião de papel de traços modernos é o logótipo de qual aplicação de chat segura?", options: ["Telegram", "Signal", "WhatsApp", "Viber"], correct: 0, image: "Telegram_2019_Logo.svg.webp", reason: "O Telegram utiliza este característico logo azul com um avião branco minimalista." },
-            { category: "Adivinha o Logo", question: "A que famosa chancela desportiva de videojogos pertence este selo oficial, criadora do simulador EA FC?", options: ["EA Sports", "Konami", "2K Sports", "Epic Games"], correct: 0, image: "easports.png", reason: "EA Sports é a divisão da Electronic Arts que desenvolve e publica títulos como EA FC e Madden." },
-            { category: "Adivinha o Logo", question: "Este logótipo verde com uma pequena folha estilizada pertence a que conhecida cadeia de supermercados?", options: ["Pingo Doce", "Continente", "Lidl", "Mercadona"], correct: 0, image: "pingodoce.png", reason: "Pertence à rede portuguesa de distribuição alimentar Pingo Doce, operada pelo grupo Jerónimo Martins." },
-            { category: "Adivinha o Logo", question: "Conforme o ficheiro qcMeJ.jpg do seu repositório, a que federação internacional pertence este emblema?", options: ["FIFA", "UEFA", "FIBA", "COI"], correct: 0, image: "qcMeJ.jpg", reason: "A FIFA (Fédération Internationale de Football Association) é o organismo máximo que rege o futebol mundial." },
-            { category: "Adivinha o Logo", question: "Esta icónica sereia verde de duas caudas representa qual famosa cadeia multinacional de cafetarias?", options: ["Starbucks", "Costa Coffee", "Nespresso", "McCafé"], correct: 0, image: "starbucks.png", reason: "A sereia mística da Starbucks tornou-se um símbolo reconhecido em qualquer parte do planeta." },
+async function collectAllData() {
+  const data = {};
 
-            // Questões Preexistentes do Jogo (Garantindo mais diversidade)
-            // Economia (5)
-            { category: "Economia", question: "Se a inflação de um país aumentar continuamente, o que acontece de forma imediata ao mercado?", options: ["O poder de compra dos cidadãos diminui", "A taxa de poupança bancária duplica", "Os preços gerais dos produtos descem", "O valor real da moeda aumenta estruturalmente"], correct: 0, reason: "A inflação representa o aumento generalizado de preços, reduzindo o poder de compra da moeda." },
-            { category: "Economia", question: "O que é medido essencialmente pelo Produto Interno Bruto (PIB) de uma nação?", options: ["O valor de mercado de todos os bens e serviços finais produzidos", "A receita gerada exclusivamente pelas exportações", "A dívida pública total acumulada pelo governo", "O lucro líquido das empresas estatais"], correct: 0, reason: "O PIB mede a produção total de riqueza económica dentro do território de um país num período de tempo." },
-            { category: "Economia", question: "Qual é a principal caraterística e efeito do mecanismo de juros compostos?", options: ["Os juros acumulam-se sobre o capital inicial e sobre os juros já gerados", "O rendimento cresce de forma estritamente linear", "O risco do investimento é totalmente eliminado", "Os impostos sobre o ganho deixam de ser aplicados"], correct: 0, reason: "Os juros compostos calculam-se sobre o montante acumulado, gerando crescimento exponencial." },
-            { category: "Economia", question: "O que caracteriza tecnicamente o conceito de 'Custo de Oportunidade' numa escolha financeira?", options: ["O valor da melhor alternativa que é rejeitada ao tomar uma decisão", "O custo total das taxas administrativas bancárias", "O preço mais baixo encontrado para um determinado produto", "O imposto cobrado pelo Estado em transações comerciais"], correct: 0, reason: "O custo de oportunidade reflete o benefício abdicado de uma opção em detrimento de outra." },
-            { category: "Economia", question: "Quem é o agente económico responsável pela definição das taxas de juro de referência na Zona Euro?", options: ["O Banco Central Europeu (BCE)", "O Fundo Monetário Internacional", "A Comissão Europeia", "O Banco de Portugal apenas"], correct: 0, reason: "O BCE dita a política monetária comum e define as taxas de juro de referência para a Eurozona." },
+  data['🌐 Navegador'] = {
+    'User Agent': truncate(navigator.userAgent, 180),
+    'Plataforma': navigator.platform || 'N/A',
+    'Vendor': navigator.vendor || 'N/A',
+    'Idioma principal': navigator.language || 'N/A',
+    'Todos idiomas': navigator.languages ? navigator.languages.join(', ') : 'N/A',
+    'Cookies habilitados': navigator.cookieEnabled ? 'Sim' : 'Não',
+    'Do Not Track': navigator.doNotTrack || 'Não definido',
+    'Online agora': navigator.onLine ? 'Sim' : 'Não',
+    'PDF Viewer': navigator.pdfViewerEnabled ? 'Sim' : 'Não'
+  };
 
-            // Futebol (5)
-            { category: "Futebol", question: "Que clube europeu histórico bateu o AC Milan na final da UEFA Champions League de 1993?", options: ["Olympique de Marseille", "Barcelona", "FC Porto", "Benfica"], correct: 0, reason: "O Marseille conquistou o troféu em Munique com um golo de cabeça de Basile Boli, num feito histórico francês." },
-            { category: "Futebol", question: "Quem é o único jogador do futebol mundial a conquistar 3 Mundiais da FIFA como atleta ativo?", options: ["Diego Maradona", "Pelé", "Franz Beckenbauer", "Zinedine Zidane"], correct: 1, reason: "Pelé alcançou os títulos nos Mundiais de 1958, 1962 e 1970, consolidando-se como uma lenda do desporto." },
-            { category: "Futebol", question: "Just Fontaine detém o recorde absoluto de mais golos numa única edição de um Mundial. Quantos?", options: ["10 golos", "11 golos", "13 golos", "15 golos"], correct: 2, reason: "Fontaine apontou impressionantes 13 golos no Mundial da Suécia em 1958." },
-            { category: "Futebol", question: "Em que ano foi fundada a IFAB (órgão internacional regulador das regras de futebol)?", options: ["1886", "1904", "1912", "1954"], correct: 0, reason: "A IFAB foi estabelecida em 1886 pelas associações do Reino Unido antes da criação da própria FIFA." },
-            { category: "Futebol", question: "Qual destes jogadores venceu a cobiçada Bola de Ouro (France Football) no ano de 2003?", options: ["Ronaldo Nazário", "Zinedine Zidane", "Pavel Nedvěd", "Thierry Henry"], correct: 2, reason: "O médio checo Pavel Nedvěd, da Juventus, garantiu a honraria com uma campanha soberba a nível europeu." },
+  data['📺 Tela'] = {
+    'Resolução': screen.width + ' × ' + screen.height,
+    'Área disponível': screen.availWidth + ' × ' + screen.availHeight,
+    'Profundidade de cor': screen.colorDepth + ' bits',
+    'Pixel ratio': window.devicePixelRatio || 1,
+    'Janela (Viewport)': window.innerWidth + ' × ' + window.innerHeight
+  };
 
-            // Bandeiras (5)
-            { category: "Bandeiras", question: "Que elemento característico está desenhado no centro da bandeira nacional do Canadá?", options: ["Uma folha de Carvalho", "Uma folha de Acer (Bordo)", "Uma Águia Imperial", "Um Urso Polar"], correct: 1, reason: "A folha de Acer (Maple Leaf) é um símbolo histórico nacional associado ao território e recursos canadianos." },
-            { category: "Bandeiras", question: "Quais são as três cores da bandeira nacional da Alemanha, de cima para baixo?", options: ["Preto, Vermelho, Amarelo", "Preto, Amarelo, Vermelho", "Vermelho, Preto, Amarelo", "Amarelo, Preto, Vermelho"], correct: 0, reason: "A bandeira tricolor germânica é composta exatamente por faixas horizontais de Preto, Vermelho e Dourado/Amarelo." },
-            { category: "Bandeiras", question: "Que nação asiática tem na sua bandeira um disco vermelho descentrado sobre fundo verde?", options: ["Japão", "Bangladesh", "Vietname", "Palau"], correct: 1, reason: "O disco representa o sol nascente e a soberania da independência, enquanto o verde evoca os campos férteis de Bangladesh." },
-            { category: "Bandeiras", question: "Que frase emblemática está inscrita na bandeira oficial da República do Brasil?", options: ["Ordem e Progresso", "Progresso e União", "União e Liberdade", "Paz e Prosperidade"], correct: 0, reason: "A inscrição advém do lema positivista de Auguste Comte: 'O Amor por princípio e a Ordem por base; o Progresso por fim'." },
-            { category: "Bandeiras", question: "Qual é o único país cuja bandeira oficial tem uma geometria não quadrangular?", options: ["Suíça", "Nepal", "Bélgica", "Vaticano"], correct: 1, reason: "A bandeira do Nepal é constituída por duas bandeirolas triangulares sobrepostas com símbolos do sol e da lua." },
+  const hw = {
+    'Núcleos de CPU': navigator.hardwareConcurrency || 'desconhecido',
+    'Touch screen': ('ontouchstart' in window) ? 'Sim' : 'Não'
+  };
+  if (navigator.deviceMemory) hw['Memória do dispositivo'] = navigator.deviceMemory + ' GB';
+  if (navigator.getBattery) {
+    try {
+      const b = await navigator.getBattery();
+      hw['Bateria'] = Math.round(b.level*100)+'%'+(b.charging?' (carregando)':'');
+    } catch(e) {}
+  }
+  data['⚙️ Hardware'] = hw;
 
-            // Preço Justo (1)
-            { category: "Preço Justo", question: "Qual o preço médio estimado em Portugal de um Spray Inseticida Anti-Vespas de 750ml?", options: ["Entre 2.00€ e 4.00€", "Entre 7.00€ e 9.50€", "Entre 16.00€ e 20.00€", "Entre 25.00€ e 32.00€"], correct: 1, reason: "Os aerossóis de grande alcance para eliminação direcionada de vespas e ninhos rondam geralmente os 7 a 9 euros em superfícies comerciais." },
+  data['🌍 Localização & Hora'] = {
+    'Fuso horário': Intl.DateTimeFormat().resolvedOptions().timeZone,
+    'Deslocamento UTC': 'UTC' + (new Date().getTimezoneOffset()>0?'-':'+') + Math.abs(new Date().getTimezoneOffset()/60) + 'h',
+    'Data/hora local': new Date().toLocaleString('pt-BR')
+  };
 
-            // Gramática (5)
-            { category: "Gramática", question: "Em 'O diretor considerou a proposta excelente', qual a função sintática de 'excelente'?", options: ["Complemento Direto", "Predicativo do Complemento Direto", "Predicativo do Sujeito", "Modificador do Nome"], correct: 1, reason: "'Excelente' caracteriza o objeto direto 'a proposta' por atribuição da opinião expressa pelo verbo 'considerou'." },
-            { category: "Gramática", question: "Identifique a função sintática de 'pelo aluno' na frase: 'A obra foi lida pelo aluno'.", options: ["Complemento Oblíquo", "Complemento Agente da Passiva", "Sujeito Passivo", "Complemento Indireto"], correct: 1, reason: "Em voz passiva, o elemento que executa a ação direta introduzido pela preposição 'por' é o agente da passiva." },
-            { category: "Gramática", question: "Na frase 'Lisboa, capital de Portugal, atrai turistas', qual é a função do elemento entre vírgulas?", options: ["Aposto (Modificador do Nome Apositivo)", "Vocativo", "Modificador Restritivo", "Sujeito Composto"], correct: 0, reason: "O aposto identifica, esclarece ou detalha de forma não essencial o referente de um nome precedente." },
-            { category: "Gramática", question: "Na frase 'Entreguei o documento ao chefe', qual a função de 'ao chefe'?", options: ["Complemento Direto", "Complemento Indireto", "Complemento Oblíquo", "Sujeito Subentendido"], correct: 1, reason: "Quem entrega, entrega algo a alguém. 'Ao chefe' responde à preposição exigida pelo verbo, sendo um objeto/complemento indireto." },
-            { category: "Gramática", question: "Em 'Ele reside em Vila Real', a expressão 'em Vila Real' desempenha a função de:", options: ["Complemento Oblíquo", "Complemento Direto", "Modificador do Grupo Verbal", "Predicativo do Sujeito"], correct: 0, reason: "O verbo 'residir' é transitivo indireto locativo, exigindo obrigatoriamente a preposição do complemento oblíquo." }
-        ];
+  if (navigator.connection) {
+    const c = navigator.connection;
+    data['📡 Conexão'] = {
+      'Tipo efetivo': c.effectiveType || 'desconhecido',
+      'Downlink': c.downlink ? c.downlink + ' Mbps' : 'desconhecido',
+      'RTT': c.rtt ? c.rtt + ' ms' : 'desconhecido',
+      'Save data': c.saveData ? 'Sim' : 'Não'
+    };
+  }
 
-        var AppState = {
-            roomCode: '',
-            clientId: 'p_' + Math.random().toString(36).substr(2, 9),
-            clientName: '',
-            isHost: false,
-            players: [], // { id, name, score, ratings: {}, predictions: {}, quizAnswers: {}, isBot }
-            currentScreen: 'login',
-            professionIndex: 0,
-            questionIndex: 0,
-            
-            // Variáveis do Temporizador ativo
-            timerValue: 15,
-            timerInterval: null,
-            mqttClient: null,
-            
-            // Dados locais da ronda atual de afinidade
-            myRatingsThisRound: { self: 5, p2: 5, p3: 5 },
-            votedThisRound: {} // { playerId: true }
-        };
+  let localCount=0, sessionCount=0;
+  try { localCount = localStorage.length; } catch(e) {}
+  try { sessionCount = sessionStorage.length; } catch(e) {}
+  const cookieCount = document.cookie ? document.cookie.split(';').length : 0;
+  data['💾 Armazenamento'] = {
+    'Itens em localStorage': localCount,
+    'Itens em sessionStorage': sessionCount,
+    'Cookies deste site': cookieCount
+  };
 
-        function setupNetwork() {
-            logActivity('[Rede] A ligar ao servidor de sincronização...');
-            try {
-                if (typeof mqtt === 'undefined') {
-                    throw new Error("Biblioteca MQTT não carregada.");
-                }
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 220; canvas.height = 50;
+    const ctx = canvas.getContext('2d');
+    ctx.textBaseline = 'top';
+    ctx.font = "14px 'Arial'";
+    ctx.fillStyle = '#f60';
+    ctx.fillRect(125,1,62,20);
+    ctx.fillStyle = '#069';
+    ctx.fillText('Fingerprint 🔒 teste', 2, 15);
+    ctx.fillStyle = 'rgba(102,204,0,0.7)';
+    ctx.fillText('Fingerprint 🔒 teste', 4, 17);
+    const dataURL = canvas.toDataURL();
+    let hash = 0;
+    for (let i=0;i<dataURL.length;i++) {
+      hash = ((hash<<5)-hash) + dataURL.charCodeAt(i);
+      hash |= 0;
+    }
+    data['🎨 Impressão Digital (Canvas)'] = {
+      'Hash único': '#' + (hash>>>0).toString(16).toUpperCase().padStart(8,'0'),
+      'Risco': 'Combinado com outros dados, identifica você sem cookies.'
+    };
+  } catch(e) {}
 
-                AppState.mqttClient = mqtt.connect(CONFIG.BROKER_URL, {
-                    keepalive: 30,
-                    clientId: AppState.clientId,
-                    protocolId: 'MQTT',
-                    protocolVersion: 4,
-                    clean: true,
-                    reconnectPeriod: 1000
-                });
+  try {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (gl) {
+      const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+      data['🎮 GPU (WebGL)'] = {
+        'Fabricante': dbg ? gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) : (gl.getParameter(gl.VENDOR) || 'N/A'),
+        'Modelo': dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : (gl.getParameter(gl.RENDERER) || 'N/A')
+      };
+    }
+  } catch(e) {}
 
-                AppState.mqttClient.on('connect', function () {
-                    logActivity('[Rede] Ligado com sucesso!');
-                    document.getElementById('network-status-dot').className = 'w-2.5 h-2.5 rounded-full bg-green-500';
-                    document.getElementById('network-status-text').innerText = 'Online';
-                    
-                    if (AppState.roomCode) {
-                        AppState.mqttClient.subscribe('quizparty/rooms/' + AppState.roomCode + '/#');
-                        sendNetworkMessage('presence', { id: AppState.clientId, name: AppState.clientName, isHost: AppState.isHost });
-                    }
-                });
+  if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const groups = {};
+      devices.forEach(d => {
+        const kind = d.kind==='audioinput'?'Microfones' :
+                     d.kind==='videoinput'?'Câmeras' :
+                     d.kind==='audiooutput'?'Alto-falantes' : d.kind;
+        groups[kind] = (groups[kind]||0)+1;
+      });
+      if (Object.keys(groups).length) data['🎤 Dispositivos de mídia'] = groups;
+    } catch(e) {}
+  }
 
-                AppState.mqttClient.on('error', function (err) {
-                    console.warn("Erro MQTT capturado:", err);
-                    handleNetworkFailure(err.message || "Erro de rede.");
-                });
+  return data;
+}
 
-                AppState.mqttClient.on('close', function() {
-                    document.getElementById('network-status-dot').className = 'w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse';
-                    document.getElementById('network-status-text').innerText = 'Desconectado';
-                });
+function truncate(s, n) { return (!s) ? '' : (s.length>n ? s.substring(0,n)+'…' : s); }
 
-                AppState.mqttClient.on('message', function (topic, message) {
-                    try {
-                        var payload = JSON.parse(message.toString());
-                        handleIncomingNetworkMessage(topic, payload);
-                    } catch (e) {
-                        console.error("Erro a descodificar payload", e);
-                    }
-                });
-            } catch (err) {
-                handleNetworkFailure(err.message || "Bloqueado pelo Sandbox.");
-            }
+function renderData(data) {
+  const grid = document.getElementById('dataGrid');
+  grid.innerHTML = '';
+  for (const [category, items] of Object.entries(data)) {
+    const card = document.createElement('div');
+    card.className = 'data-card';
+    let html = '<h3>' + category + '</h3>';
+    for (const [label, value] of Object.entries(items)) {
+      html += '<div class="data-item"><span class="data-label">' + label + ':</span><span class="data-value">' + value + '</span></div>';
+    }
+    card.innerHTML = html;
+    grid.appendChild(card);
+  }
+}
+
+// ============ CAPTCHA ============
+let captchaAnswer = 0;
+function generateCaptcha() {
+  const a = Math.floor(Math.random()*20)+1;
+  const b = Math.floor(Math.random()*20)+1;
+  const op = ['+','-','×'][Math.floor(Math.random()*3)];
+  let q, ans;
+  if (op==='+') { q=a+'+'+b; ans=a+b; }
+  else if (op==='-') { const x=Math.max(a,b), y=Math.min(a,b); q=x+'-'+y; ans=x-y; }
+  else { q=a+'×'+b; ans=a*b; }
+  captchaAnswer = ans;
+  document.getElementById('captchaQuestion').textContent = 'Quanto é ' + q + '?';
+  document.getElementById('captchaInput').value = '';
+  const r = document.getElementById('captchaResult');
+  r.style.display = 'none';
+}
+function checkCaptcha() {
+  const input = parseInt(document.getElementById('captchaInput').value);
+  const r = document.getElementById('captchaResult');
+  if (input === captchaAnswer) {
+    r.textContent = '✓ Verificado! Você não é um robô 🎉';
+    r.className = 'captcha-result success'; r.style.display='block';
+  } else {
+    r.textContent = '✗ Resposta incorreta. Tente novamente.';
+    r.className = 'captcha-result error'; r.style.display='block';
+  }
+}
+
+// ============ MEMORY GAME ============
+const EMOJIS = ['🐶','🐱','🐭','🐹'];
+let cards=[], flipped=[], moves=0, matched=0, timer=0, lockBoard=false, timerInterval=null;
+
+function startGame() {
+  clearInterval(timerInterval);
+  timer=0; moves=0; matched=0; flipped=[]; lockBoard=false;
+  document.getElementById('timer').textContent='0s';
+  document.getElementById('moves').textContent='0';
+  document.getElementById('winMessage').style.display='none';
+  cards = [...EMOJIS,...EMOJIS]
+    .map(e => ({emoji:e, matched:false}))
+    .sort(()=>Math.random()-0.5);
+  renderBoard();
+  timerInterval = setInterval(() => {
+    timer++;
+    document.getElementById('timer').textContent = timer+'s';
+  }, 1000);
+}
+function renderBoard() {
+  const board = document.getElementById('gameBoard');
+  board.innerHTML = '';
+  cards.forEach((c,i) => {
+    const el = document.createElement('div');
+    el.className='memory-card';
+    el.textContent=c.emoji;
+    el.dataset.index=i;
+    el.addEventListener('click', () => flipCard(el,i));
+    board.appendChild(el);
+  });
+}
+function flipCard(el, i) {
+  if (lockBoard || cards[i].matched || flipped.includes(i)) return;
+  el.classList.add('flipped');
+  flipped.push(i);
+  if (flipped.length===2) {
+    moves++;
+    document.getElementById('moves').textContent=moves;
+    lockBoard=true;
+    const [a,b] = flipped;
+    if (cards[a].emoji===cards[b].emoji) {
+      setTimeout(() => {
+        const els = document.querySelectorAll('.memory-card');
+        els[a].classList.add('matched'); els[a].classList.remove('flipped');
+        els[b].classList.add('matched'); els[b].classList.remove('flipped');
+        cards[a].matched = cards[b].matched = true;
+        matched++;
+        flipped=[]; lockBoard=false;
+        if (matched===EMOJIS.length) {
+          clearInterval(timerInterval);
+          const w = document.getElementById('winMessage');
+          w.style.display='block';
+          w.textContent = '🎉 Parabéns! '+timer+'s • '+moves+' movimentos';
         }
-
-        function handleNetworkFailure(reason) {
-            logActivity('[Rede Erro] Ligação remota indisponível (' + reason + '). Ativando Modo de Simulação Local...');
-            
-            var statusDot = document.getElementById('network-status-dot');
-            var statusText = document.getElementById('network-status-text');
-            if (statusDot) statusDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500';
-            if (statusText) statusText.innerText = 'Modo Simulado';
-            
-            if (AppState.players.length < 3) {
-                injectSimulatedPeers();
-            }
-            
-            var startBtn = document.getElementById('btn-start-trigger');
-            var warningText = document.getElementById('start-warning-text');
-            if (AppState.isHost) {
-                if (startBtn) startBtn.removeAttribute('disabled');
-                if (warningText) warningText.classList.add('hidden');
-            }
-        }
-
-        function sendNetworkMessage(type, data) {
-            if (AppState.mqttClient && AppState.mqttClient.connected) {
-                try {
-                    var topic = 'quizparty/rooms/' + AppState.roomCode + '/' + type;
-                    var payload = Object.assign({ sender: AppState.clientId }, data);
-                    AppState.mqttClient.publish(topic, JSON.stringify(payload));
-                } catch (e) {
-                    console.warn("Falha ao publicar mensagem MQTT:", e);
-                }
-            }
-        }
-
-        function handleIncomingNetworkMessage(topic, payload) {
-            if (payload.sender === AppState.clientId) return;
-
-            var parts = topic.split('/');
-            var msgType = parts[parts.length - 1];
-
-            if (msgType === 'presence') {
-                var existing = AppState.players.find(p => p.id === payload.id);
-                if (!existing) {
-                    AppState.players.push({
-                        id: payload.id,
-                        name: payload.name,
-                        score: 0,
-                        ratings: {},
-                        predictions: {},
-                        quizAnswers: {},
-                        isBot: false
-                    });
-                    logActivity('[Lobby] ' + payload.name + ' juntou-se à sala.');
-                    updatePlayersRoster();
-                    sendNetworkMessage('presence_reply', { id: AppState.clientId, name: AppState.clientName, isHost: AppState.isHost });
-                }
-            } else if (msgType === 'presence_reply') {
-                var existing = AppState.players.find(p => p.id === payload.id);
-                if (!existing) {
-                    AppState.players.push({
-                        id: payload.id,
-                        name: payload.name,
-                        score: 0,
-                        ratings: {},
-                        predictions: {},
-                        quizAnswers: {},
-                        isBot: false
-                    });
-                    updatePlayersRoster();
-                }
-            } else if (msgType === 'start_game') {
-                logActivity('[Rede] O anfitrião iniciou o jogo.');
-                AppState.players = payload.players;
-                updatePlayersRoster();
-                transitionToScreen('screen-professions');
-                loadProfessionStage();
-            } else if (msgType === 'profession_vote') {
-                var voter = AppState.players.find(p => p.id === payload.sender);
-                if (voter) {
-                    var idx = payload.index;
-                    voter.ratings[idx] = payload.selfVal;
-                    if (!voter.predictions[idx]) voter.predictions[idx] = {};
-                    voter.predictions[idx][payload.targetP2Id] = payload.p2Val;
-                    voter.predictions[idx][payload.targetP3Id] = payload.p3Val;
-
-                    AppState.votedThisRound[payload.sender] = true;
-                    logActivity('[Votação] ' + voter.name + ' submeteu as suas avaliações.');
-                    updateWhosMissingIndicator();
-                    checkProfessionsPhaseProgress();
-                }
-            } else if (msgType === 'bot_profession_votes') {
-                var idx = payload.index;
-                payload.bots.forEach(botObj => {
-                    var bot = AppState.players.find(p => p.id === botObj.id);
-                    if (bot) {
-                        bot.ratings[idx] = botObj.selfVal;
-                        bot.predictions[idx] = botObj.predictions;
-                        AppState.votedThisRound[botObj.id] = true;
-                    }
-                });
-                updateWhosMissingIndicator();
-                checkProfessionsPhaseProgress();
-            } else if (msgType === 'quiz_answer') {
-                var answerer = AppState.players.find(p => p.id === payload.sender);
-                if (answerer) {
-                    var idx = payload.index;
-                    answerer.quizAnswers[idx] = payload.choice;
-                    logActivity('[Quiz] ' + answerer.name + ' escolheu uma opção.');
-                    checkQuizPhaseProgress();
-                }
-            } else if (msgType === 'bot_quiz_answers') {
-                var idx = payload.index;
-                payload.bots.forEach(botObj => {
-                    var bot = AppState.players.find(p => p.id === botObj.id);
-                    if (bot) {
-                        bot.quizAnswers[idx] = botObj.choice;
-                    }
-                });
-                checkQuizPhaseProgress();
-            }
-        }
-
-        function transitionToScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-            AppState.currentScreen = screenId;
-        }
-
-        function logActivity(text) {
-            var logBox = document.getElementById('activity-log');
-            if (logBox) {
-                var div = document.createElement('div');
-                div.innerText = text;
-                logBox.appendChild(div);
-                logBox.scrollTop = logBox.scrollHeight;
-            }
-        }
-
-        function initiateSession(isJoining) {
-            var nameInput = document.getElementById('username');
-            var name = nameInput.value.trim();
-            if (!name) {
-                alertModal("Deves introduzir um nome para entrar na sala!");
-                return;
-            }
-
-            // Ativar instantaneamente indicação de processamento sem lag
-            var createBtn = document.getElementById('btn-create-room');
-            if (createBtn) {
-                createBtn.setAttribute('disabled', 'true');
-                createBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                createBtn.innerText = 'A processar sessão...';
-            }
-
-            AppState.clientName = name;
-            AppState.players = [{
-                id: AppState.clientId,
-                name: AppState.clientName,
-                score: 0,
-                ratings: {},
-                predictions: {},
-                quizAnswers: {},
-                isBot: false
-            }];
-
-            if (isJoining) {
-                AppState.isHost = false;
-                var urlParams = new URLSearchParams(window.location.search);
-                AppState.roomCode = urlParams.get('room') || 'SALA1';
-            } else {
-                AppState.isHost = true;
-                AppState.roomCode = Math.random().toString(36).substr(2, 5).toUpperCase();
-            }
-
-            document.getElementById('sidebar-room-info').classList.remove('hidden');
-            document.getElementById('room-badge').innerText = AppState.roomCode;
-            
-            var shareUrl = window.location.origin + window.location.pathname + '?room=' + AppState.roomCode;
-            document.getElementById('share-link-input').value = shareUrl;
-
-            updatePlayersRoster();
-            setupNetwork();
-            transitionToScreen('screen-lobby');
-
-            if (AppState.isHost) {
-                logActivity('[Sistema] Sala criada! Adiciona bots ou partilha o link.');
-            } else {
-                logActivity('[Sistema] A conectar à sala existente: ' + AppState.roomCode);
-            }
-        }
-
-        function updatePlayersRoster() {
-            var rosterList = document.getElementById('roster-list');
-            if (!rosterList) return;
-            rosterList.innerHTML = '';
-            AppState.players.forEach(p => {
-                var card = document.createElement('div');
-                card.className = 'p-3 bg-white border border-slate-100 rounded-xl flex items-center justify-between shadow-sm';
-                card.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold text-sm">
-                            ${p.isBot ? '🤖' : p.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-slate-800">${p.name}</p>
-                            <p class="text-[10px] text-slate-400 font-semibold">${p.isBot ? 'Simulador' : 'Online'}</p>
-                        </div>
-                    </div>
-                    <span class="text-xs font-mono font-bold text-brand-600">${p.score} pts</span>
-                `;
-                rosterList.appendChild(card);
-            });
-
-            var startBtn = document.getElementById('btn-start-trigger');
-            var warningText = document.getElementById('start-warning-text');
-            if (AppState.isHost) {
-                if (AppState.players.length >= 3 || (AppState.mqttClient && !AppState.mqttClient.connected)) {
-                    if (startBtn) startBtn.removeAttribute('disabled');
-                    if (warningText) warningText.classList.add('hidden');
-                } else {
-                    if (startBtn) startBtn.setAttribute('disabled', 'true');
-                    if (warningText) warningText.classList.remove('hidden');
-                }
-            } else {
-                if (startBtn) startBtn.setAttribute('disabled', 'true');
-                if (warningText) {
-                    warningText.innerText = 'A aguardar que o anfitrião inicie o jogo...';
-                    warningText.classList.remove('hidden');
-                }
-            }
-        }
-
-        function injectSimulatedPeers() {
-            if (AppState.players.length >= 3) {
-                alertModal("A sala já atingiu o limite de 3 utilizadores!");
-                return;
-            }
-
-            var botNames = ["Rodrigo (Bot)", "Mafalda (Bot)"];
-            var botsToAdd = 3 - AppState.players.length;
-
-            for (var i = 0; i < botsToAdd; i++) {
-                AppState.players.push({
-                    id: 'bot_' + Math.random().toString(36).substr(2, 5),
-                    name: botNames[i],
-                    score: 0,
-                    ratings: {},
-                    predictions: {},
-                    quizAnswers: {},
-                    isBot: true
-                });
-            }
-
-            logActivity('[Lobby] Pares simulados integrados no barramento.');
-            updatePlayersRoster();
-        }
-
-        function copyInviteLink() {
-            var copyText = document.getElementById('share-link-input');
-            if (copyText) {
-                copyText.select();
-                copyText.setSelectionRange(0, 99999);
-                document.execCommand('copy');
-                alertModal('Link de convite copiado!');
-            }
-        }
-
-        function shareInviteLink() {
-            var inputVal = document.getElementById('share-link-input');
-            var shareUrl = inputVal ? inputVal.value : window.location.href;
-            var text = encodeURIComponent('Entra na minha sala do QuizParty para jogarmos! ' + shareUrl);
-            window.open('https://api.whatsapp.com/send?text=' + text, '_blank');
-        }
-
-        function triggerGameStart() {
-            if (AppState.isHost) {
-                // Desativar instantaneamente botão para evitar atraso visual e cliques múltiplos
-                var btn = document.getElementById('btn-start-trigger');
-                if (btn) {
-                    btn.setAttribute('disabled', 'true');
-                    btn.classList.add('opacity-50');
-                    btn.innerHTML = '<span>A Iniciar Match...</span>';
-                }
-
-                if (AppState.mqttClient && AppState.mqttClient.connected) {
-                    sendNetworkMessage('start_game', { players: AppState.players });
-                }
-                transitionToScreen('screen-professions');
-                loadProfessionStage();
-            }
-        }
-
-        //        // FASE 1: PROFISSÕES COM TEMPORIZADOR DE 15 SEGUNDOS (Exatamente 40)
-        function loadProfessionStage() {
-            if (AppState.professionIndex >= CONFIG.TOTAL_PROFESSIONS) {
-                logActivity('[Sistema] Fase 1 concluída. Iniciando fase do Quiz.');
-                transitionToScreen('screen-quiz');
-                loadQuizStage();
-                return;
-            }
-
-            // Reinicializar estados e controlos da ronda
-            AppState.votedThisRound = {};
-            AppState.myRatingsThisRound = { self: 5, p2: 5, p3: 5 };
-
-            var rSelf = document.getElementById('range-self-prof');
-            var rP2 = document.getElementById('range-p2-prof');
-            var rP3 = document.getElementById('range-p3-prof');
-
-            if (rSelf) rSelf.value = 5;
-            if (rP2) rP2.value = 5;
-            if (rP3) rP3.value = 5;
-
-            document.getElementById('label-self-val').innerText = '5';
-            document.getElementById('label-p2-val').innerText = '5';
-            document.getElementById('label-p3-val').innerText = '5';
-
-            var btnSubmit = document.getElementById('btn-submit-prof');
-            if (btnSubmit) {
-                btnSubmit.removeAttribute('disabled');
-                btnSubmit.classList.remove('opacity-50', 'cursor-not-allowed');
-                btnSubmit.innerHTML = '<span>Submeter Avaliações</span> <span class="material-icons text-sm">done_all</span>';
-            }
-
-            var currentProf = PROFESSIONS_DATABASE[AppState.professionIndex];
-            var nameEl = document.getElementById('current-prof-name');
-            var counterEl = document.getElementById('prof-counter');
-            var indexIndicator = document.getElementById('prof-index-indicator');
-
-            if (nameEl) nameEl.innerText = currentProf;
-            if (counterEl) counterEl.innerText = (AppState.professionIndex + 1) + '/' + CONFIG.TOTAL_PROFESSIONS;
-            if (indexIndicator) indexIndicator.innerText = `Índice: P-${(AppState.professionIndex + 1).toString().padStart(2, '0')}`;
-
-            var otherPlayers = AppState.players.filter(p => p.id !== AppState.clientId);
-
-            var boxP2 = document.getElementById('box-pred-p2');
-            var labelP2 = document.getElementById('label-name-p2');
-            if (otherPlayers.length >= 1) {
-                if (boxP2) boxP2.classList.remove('hidden');
-                if (labelP2) labelP2.innerText = otherPlayers[0].name;
-            } else {
-                if (boxP2) boxP2.classList.add('hidden');
-            }
-
-            var boxP3 = document.getElementById('box-pred-p3');
-            var labelP3 = document.getElementById('label-name-p3');
-            if (otherPlayers.length >= 2) {
-                if (boxP3) boxP3.classList.remove('hidden');
-                if (labelP3) labelP3.innerText = otherPlayers[1].name;
-            } else {
-                if (boxP3) boxP3.classList.add('hidden');
-            }
-
-            updateWhosMissingIndicator();
-            startProfessionTimer();
-        }
-
-        function startProfessionTimer() {
-            if (AppState.timerInterval) clearInterval(AppState.timerInterval);
-            AppState.timerValue = CONFIG.PROF_TIMER_SECONDS;
-            
-            var timerEl = document.getElementById('prof-timer');
-            if (timerEl) timerEl.innerText = AppState.timerValue;
-
-            // Animação visual do círculo de tempo
-            var container = document.getElementById('prof-timer-container');
-            if (container) {
-                container.className = "w-12 h-12 rounded-full border-4 border-brand-500 flex items-center justify-center shadow-lg shadow-brand-50 transition-all";
-            }
-
-            AppState.timerInterval = setInterval(() => {
-                AppState.timerValue--;
-                if (timerEl) timerEl.innerText = AppState.timerValue;
-
-                if (AppState.timerValue <= 5 && container) {
-                    // Alerta de tempo escasso
-                    container.className = "w-12 h-12 rounded-full border-4 border-red-500 flex items-center justify-center shadow-lg shadow-red-50 animate-pulse";
-                }
-
-                if (AppState.timerValue <= 0) {
-                    clearInterval(AppState.timerInterval);
-                    autoCommitProfessionVote(); // Força submissão por falta de tempo
-                }
-            }, 1000);
-        }
-
-        function updateWhosMissingIndicator() {
-            var missing = [];
-            AppState.players.forEach(p => {
-                if (!AppState.votedThisRound[p.id]) {
-                    missing.push(p.name);
-                }
-            });
-
-            var indicator = document.getElementById('prof-sync-indicator');
-            if (indicator) {
-                if (missing.length === 0) {
-                    indicator.innerText = "Toda a sala submeteu as suas avaliações!";
-                    indicator.className = "text-xs text-green-600 font-bold font-mono";
-                } else {
-                    indicator.innerText = "Quem falta votar: " + missing.join(', ');
-                    indicator.className = "text-xs text-brand-600 font-semibold font-mono animate-pulse";
-                }
-            }
-        }
-
-        function commitProfessionVote() {
-            clearInterval(AppState.timerInterval);
-
-            // Evitar delay visual: Desativar instantaneamente
-            var btnSubmit = document.getElementById('btn-submit-prof');
-            if (btnSubmit) {
-                btnSubmit.setAttribute('disabled', 'true');
-                btnSubmit.classList.add('opacity-50', 'cursor-not-allowed');
-                btnSubmit.innerHTML = '<span>A Processar...</span> <span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full ml-1"></span>';
-            }
-
-            // Capturar as escolhas atuais nos sliders
-            var vSelf = parseInt(document.getElementById('range-self-prof').value);
-            var vP2 = document.getElementById('range-p2-prof') ? parseInt(document.getElementById('range-p2-prof').value) : 5;
-            var vP3 = document.getElementById('range-p3-prof') ? parseInt(document.getElementById('range-p3-prof').value) : 5;
-
-            var me = AppState.players.find(p => p.id === AppState.clientId);
-            me.ratings[AppState.professionIndex] = vSelf;
-
-            var otherPlayers = AppState.players.filter(p => p.id !== AppState.clientId);
-            if (!me.predictions[AppState.professionIndex]) me.predictions[AppState.professionIndex] = {};
-
-            if (otherPlayers.length >= 1) {
-                me.predictions[AppState.professionIndex][otherPlayers[0].id] = vP2;
-            }
-            if (otherPlayers.length >= 2) {
-                me.predictions[AppState.professionIndex][otherPlayers[1].id] = vP3;
-            }
-
-            AppState.votedThisRound[AppState.clientId] = true;
-            updateWhosMissingIndicator();
-
-            sendNetworkMessage('profession_vote', {
-                index: AppState.professionIndex,
-                selfVal: vSelf,
-                targetP2Id: otherPlayers.length >= 1 ? otherPlayers[0].id : null,
-                p2Val: vP2,
-                targetP3Id: otherPlayers.length >= 2 ? otherPlayers[1].id : null,
-                p3Val: vP3
-            });
-
-            // Simular comportamento de votação autónoma e assíncrona dos bots (apenas coordenado pelo Host)
-            if (AppState.isHost) {
-                var botData = [];
-                AppState.players.forEach(p => {
-                    if (p.isBot) {
-                        var botSelf = Math.floor(Math.random() * 11);
-                        var botPredictions = {};
-                        AppState.players.forEach(target => {
-                            if (target.id !== p.id) {
-                                botPredictions[target.id] = Math.floor(Math.random() * 11);
-                            }
-                        });
-
-                        p.ratings[AppState.professionIndex] = botSelf;
-                        p.predictions[AppState.professionIndex] = botPredictions;
-
-                        // Simular latência realista para a lista de "quem falta votar"
-                        var latency = Math.floor(Math.random() * 1200) + 400;
-                        setTimeout(() => {
-                            AppState.votedThisRound[p.id] = true;
-                            updateWhosMissingIndicator();
-                            checkProfessionsPhaseProgress();
-                        }, latency);
-
-                        botData.push({ id: p.id, selfVal: botSelf, predictions: botPredictions });
-                    }
-                });
-
-                // Transmitir dados do bot para outros jogadores reais
-                if (botData.length > 0) {
-                    sendNetworkMessage('bot_profession_votes', { index: AppState.professionIndex, bots: botData });
-                }
-            }
-
-            checkProfessionsPhaseProgress();
-        }
-
-        function autoCommitProfessionVote() {
-            logActivity('[Aviso] Tempo esgotado! Votação enviada automaticamente.');
-            commitProfessionVote();
-        }
-
-        function checkProfessionsPhaseProgress() {
-            var allVoted = AppState.players.every(p => p.ratings[AppState.professionIndex] !== undefined && AppState.votedThisRound[p.id]);
-            if (allVoted) {
-                calculateAffinityScores();
-                updatePlayersRoster();
-
-                AppState.professionIndex++;
-                setTimeout(() => {
-                    loadProfessionStage();
-                }, 800);
-            }
-        }
-
-        function calculateAffinityScores() {
-            AppState.players.forEach(p => {
-                var otherPlayers = AppState.players.filter(target => target.id !== p.id);
-                otherPlayers.forEach(target => {
-                    var prediction = p.predictions[AppState.professionIndex] ? p.predictions[AppState.professionIndex][target.id] : null;
-                    var actual = target.ratings[AppState.professionIndex];
-                    if (prediction !== undefined && prediction !== null && actual !== undefined) {
-                        // Pontos obtidos baseados na proximidade absoluta
-                        var diff = Math.abs(prediction - actual);
-                        var pointsGained = Math.max(0, 10 - diff);
-                        p.score += pointsGained;
-                    }
-                });
-            });
-        }
-
-        //        // FASE 2: EXAME COGNITIVO & LOGOS
-        function loadQuizStage() {
-            if (AppState.questionIndex >= QUIZ_DATABASE.length) {
-                transitionToScreen('screen-results');
-                renderFinalResults();
-                return;
-            }
-
-            var correctionBox = document.getElementById('quiz-correction-box');
-            var choicesLobby = document.getElementById('quiz-lobby-choices');
-            
-            if (correctionBox) correctionBox.classList.add('hidden');
-            if (choicesLobby) choicesLobby.innerText = 'A aguardar escolhas...';
-
-            var currentQuestion = QUIZ_DATABASE[AppState.questionIndex];
-            
-            var catBadge = document.getElementById('quiz-cat-badge');
-            var quizCounter = document.getElementById('quiz-counter');
-            var quizQuest = document.getElementById('current-quiz-question');
-            
-            if (catBadge) catBadge.innerText = currentQuestion.category;
-            if (quizCounter) quizCounter.innerText = (AppState.questionIndex + 1) + '/' + QUIZ_DATABASE.length;
-            if (quizQuest) quizQuest.innerText = currentQuestion.question;
-
-            // Inserção da mecânica e do contentor de Imagem (Adivinha o Logo)
-            var imgContainer = document.getElementById('quiz-image-container');
-            var logoImg = document.getElementById('quiz-logo-img');
-            var fallbackBox = document.getElementById('quiz-image-fallback');
-
-            if (currentQuestion.image) {
-                imgContainer.classList.remove('hidden');
-                logoImg.style.display = 'block';
-                logoImg.src = currentQuestion.image;
-                
-                // Tratar fallback caso as imagens locais ainda não estejam no caminho correto
-                logoImg.onerror = function() {
-                    logoImg.style.display = 'none';
-                    fallbackBox.classList.remove('hidden');
-                    fallbackBox.innerText = `[A carregar Logo: ${currentQuestion.image}]`;
-                };
-                fallbackBox.classList.add('hidden');
-            } else {
-                imgContainer.classList.add('hidden');
-            }
-
-            var optionsContainer = document.getElementById('quiz-options-container');
-            if (optionsContainer) {
-                optionsContainer.innerHTML = '';
-
-                currentQuestion.options.forEach((opt, idx) => {
-                    var btn = document.createElement('button');
-                    btn.className = 'w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-left font-semibold text-slate-800 hover:bg-brand-50 hover:border-brand-200 transition-all text-sm focus:outline-none';
-                    btn.innerText = opt;
-                    btn.onclick = () => selectQuizAnswer(idx);
-                    optionsContainer.appendChild(btn);
-                });
-            }
-
-            startQuizTimer();
-        }
-
-        function startQuizTimer() {
-            if (AppState.timerInterval) clearInterval(AppState.timerInterval);
-            AppState.timerValue = CONFIG.QUIZ_TIMER_SECONDS;
-            
-            var timerEl = document.getElementById('quiz-timer');
-            if (timerEl) timerEl.innerText = AppState.timerValue;
-
-            AppState.timerInterval = setInterval(() => {
-                AppState.timerValue--;
-                if (timerEl) timerEl.innerText = AppState.timerValue;
-
-                if (AppState.timerValue <= 0) {
-                    clearInterval(AppState.timerInterval);
-                    selectQuizAnswer(-1); // Estouro de tempo
-                }
-            }, 1000);
-        }
-
-        function selectQuizAnswer(choiceIdx) {
-            clearInterval(AppState.timerInterval);
-            
-            // Remover latência visual desativando botões IMEDIATAMENTE e destacando a escolha
-            document.querySelectorAll('#quiz-options-container button').forEach((btn, idx) => {
-                btn.setAttribute('disabled', 'true');
-                btn.classList.add('opacity-60', 'cursor-not-allowed');
-                if (idx === choiceIdx) {
-                    btn.className = 'w-full p-4 bg-brand-600 text-white border border-brand-600 rounded-2xl text-left font-bold transition-all text-sm focus:outline-none';
-                    btn.classList.remove('opacity-60');
-                }
-            });
-
-            var me = AppState.players.find(p => p.id === AppState.clientId);
-            me.quizAnswers[AppState.questionIndex] = choiceIdx;
-
-            sendNetworkMessage('quiz_answer', { index: AppState.questionIndex, choice: choiceIdx });
-
-            if (AppState.isHost) {
-                var botAnswers = [];
-                AppState.players.forEach(p => {
-                    if (p.isBot) {
-                        var correctChoice = QUIZ_DATABASE[AppState.questionIndex].correct;
-                        var finalChoice = Math.random() < 0.70 ? correctChoice : Math.floor(Math.random() * 4);
-                        p.quizAnswers[AppState.questionIndex] = finalChoice;
-                        botAnswers.push({ id: p.id, choice: finalChoice });
-                    }
-                });
-
-                if (botAnswers.length > 0) {
-                    sendNetworkMessage('bot_quiz_answers', { index: AppState.questionIndex, bots: botAnswers });
-                }
-            }
-
-            checkQuizPhaseProgress();
-        }
-
-        function checkQuizPhaseProgress() {
-            var allAnswered = AppState.players.every(p => p.quizAnswers[AppState.questionIndex] !== undefined);
-            if (allAnswered) {
-                revealQuizResult();
-            }
-        }
-
-        function revealQuizResult() {
-            var currentQuestion = QUIZ_DATABASE[AppState.questionIndex];
-            
-            AppState.players.forEach(p => {
-                if (p.quizAnswers[AppState.questionIndex] === currentQuestion.correct) {
-                    p.score += 15; // Atribuição de pontuação do Quiz
-                }
-            });
-
-            updatePlayersRoster();
-
-            var choiceTexts = AppState.players.map(p => {
-                var answerText = p.quizAnswers[AppState.questionIndex] === -1 ? 'Sem tempo' : 'Opção ' + (p.quizAnswers[AppState.questionIndex] + 1);
-                return `${p.name}: ${answerText}`;
-            });
-            
-            var choicesLobby = document.getElementById('quiz-lobby-choices');
-            if (choicesLobby) choicesLobby.innerText = choiceTexts.join('  |  ');
-
-            var correctionBox = document.getElementById('quiz-correction-box');
-            if (correctionBox) {
-                correctionBox.classList.remove('hidden');
-
-                var myAnswer = AppState.players.find(p => p.id === AppState.clientId).quizAnswers[AppState.questionIndex];
-                if (myAnswer === currentQuestion.correct) {
-                    correctionBox.className = "p-4 rounded-2xl bg-green-50 border border-green-100 text-green-800 text-xs";
-                    correctionBox.innerHTML = `<strong>Correto!</strong> ${currentQuestion.reason}`;
-                } else {
-                    correctionBox.className = "p-4 rounded-2xl bg-rose-50 border border-rose-100 text-rose-800 text-xs";
-                    correctionBox.innerHTML = `<strong>Incorreto!</strong> A opção correta era a ${currentQuestion.correct + 1}. ${currentQuestion.reason}`;
-                }
-            }
-
-            setTimeout(() => {
-                AppState.questionIndex++;
-                loadQuizStage();
-            }, 3000);
-        }
-
-        //        // RESULTADOS FINAIS
-        function renderFinalResults() {
-            var podium = document.getElementById('podium-container');
-            if (podium) {
-                podium.innerHTML = '';
-                var sorted = AppState.players.slice().sort((a, b) => b.score - a.score);
-
-                sorted.forEach((p, index) => {
-                    var posText = index === 0 ? '🥇 1º Lugar' : index === 1 ? '🥈 2º Lugar' : '🥉 3º Lugar';
-                    var bgStyle = index === 0 ? 'bg-gradient-to-r from-amber-50 to-yellow-100 border-amber-200' : 'bg-slate-50 border-slate-200';
-                    
-                    var card = document.createElement('div');
-                    card.className = `p-5 border rounded-2xl flex items-center justify-between ${bgStyle}`;
-                    card.innerHTML = `
-                        <div>
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">${posText}</span>
-                            <h4 class="text-lg font-extrabold text-slate-900">${p.name}</h4>
-                        </div>
-                        <span class="text-xl font-mono font-black text-slate-800">${p.score} Pts</span>
-                    `;
-                    podium.appendChild(card);
-                });
-            }
-
-            // Cálculo da Afinidade Média Coletiva
-            var finalAffPercent = document.getElementById('final-affinity-percent');
-            if (finalAffPercent) {
-                var totalDiff = 0;
-                var totalGuesses = 0;
-
-                AppState.players.forEach(p => {
-                    var otherPlayers = AppState.players.filter(target => target.id !== p.id);
-                    otherPlayers.forEach(target => {
-                        for (var i = 0; i < CONFIG.TOTAL_PROFESSIONS; i++) {
-                            var predVal = p.predictions[i] ? p.predictions[i][target.id] : null;
-                            var realVal = target.ratings[i];
-
-                            if (predVal !== null && predVal !== undefined && realVal !== undefined) {
-                                totalDiff += Math.abs(predVal - realVal);
-                                totalGuesses++;
-                            }
-                        }
-                    });
-                });
-
-                var rawAffinPercent = totalGuesses > 0 ? Math.round((1 - (totalDiff / (totalGuesses * 10))) * 100) : 75;
-                finalAffPercent.innerText = rawAffinPercent;
-            }
-        }
-
-        function alertModal(message) {
-            logActivity('[Mensagem] ' + message);
-            var banner = document.createElement('div');
-            banner.className = "fixed bottom-5 right-5 bg-slate-900 text-white px-5 py-3 rounded-xl text-xs font-bold shadow-2xl z-50 transition-all transform translate-y-10";
-            banner.innerText = message;
-            document.body.appendChild(banner);
-            setTimeout(() => { banner.classList.remove('translate-y-10'); }, 100);
-            setTimeout(() => { banner.remove(); }, 4000);
-        }
-
-        window.onload = function () {
-            var urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('room')) {
-                var code = urlParams.get('room');
-                var joinBtn = document.getElementById('btn-join-direct');
-                if (joinBtn) {
-                    joinBtn.classList.remove('hidden');
-                    joinBtn.innerText = 'Entrar na Sala: ' + code;
-                }
-                logActivity('[Sistema] Convite detetado para a sala ' + code);
-            }
-        };
-    </script>
+      }, 300);
+    } else {
+      setTimeout(() => {
+        const els = document.querySelectorAll('.memory-card');
+        els[a].classList.remove('flipped');
+        els[b].classList.remove('flipped');
+        flipped=[]; lockBoard=false;
+      }, 800);
+    }
+  }
+}
+
+generateCaptcha();
+startGame();
+</script>
 </body>
 </html>
