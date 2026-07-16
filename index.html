@@ -1,904 +1,395 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mecha Chameleon 3D - Cyber Evolution</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        body {
-            background: #05050a;
-            color: #fff;
-            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
-            overflow: hidden;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #game-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-        /* UI Overlays */
-        .overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 5, 10, 0.85);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            transition: opacity 0.3s ease;
-        }
-        .hidden {
-            display: none !important;
-            opacity: 0;
-            pointer-events: none;
-        }
-        h1 {
-            font-size: 56px;
-            font-weight: 900;
-            letter-spacing: 4px;
-            background: linear-gradient(45deg, #00ffcc, #ff00ff, #00ffff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            text-shadow: 0 0 30px rgba(0, 255, 204, 0.3);
-            margin-bottom: 10px;
-        }
-        .tagline {
-            font-size: 14px;
-            color: #7a80b0;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 35px;
-        }
-        .btn {
-            background: linear-gradient(135deg, #101226, #070814);
-            border: 2px solid #00ffcc;
-            color: #00ffcc;
-            padding: 15px 40px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.15);
-            margin: 10px;
-            min-width: 250px;
-            text-align: center;
-        }
-        .btn:hover {
-            background: #00ffcc;
-            color: #05050a;
-            box-shadow: 0 0 30px #00ffcc;
-            transform: scale(1.05);
-        }
-        .btn-magenta {
-            border-color: #ff00ff;
-            color: #ff00ff;
-            box-shadow: 0 0 20px rgba(255, 0, 255, 0.15);
-        }
-        .btn-magenta:hover {
-            background: #ff00ff;
-            color: #05050a;
-            box-shadow: 0 0 30px #ff00ff;
-        }
-        /* HUD Superior */
-        #hud {
-            position: absolute;
-            top: 25px; left: 25px; right: 25px;
-            display: flex;
-            justify-content: space-between;
-            z-index: 5;
-            pointer-events: none;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-        }
-        .hud-card {
-            background: rgba(10, 11, 25, 0.75);
-            border: 1px solid rgba(0, 255, 204, 0.2);
-            padding: 12px 24px;
-            border-radius: 4px;
-            font-size: 20px;
-            letter-spacing: 1px;
-        }
-        /* Painel de Instruções */
-        .controls-panel {
-            background: rgba(15, 17, 35, 0.8);
-            border: 1px solid #20244c;
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 500px;
-            text-align: left;
-            margin-bottom: 25px;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #a2a8d3;
-        }
-        .controls-panel h3 {
-            color: #fff;
-            margin-bottom: 10px;
-            font-size: 16px;
-            text-transform: uppercase;
-            border-bottom: 1px solid #20244c;
-            padding-bottom: 5px;
-        }
-        .key {
-            background: #25295c;
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-weight: bold;
-        }
-    </style>
-    <!-- Carregar Biblioteca Gráfica Tridimensional Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Camaleão — Instinto de Sobrevivência</title>
+<style>
+  :root{
+    --bg-deep:#081512;
+    --bg-mid:#0f2018;
+    --panel:rgba(10,24,18,0.80);
+    --panel-border:rgba(163,230,53,0.16);
+    --panel-border-strong:rgba(163,230,53,0.38);
+    --text:#eafff1;
+    --text-muted:#93ab9d;
+    --teal:#2dd4bf;
+    --lime:#a3e635;
+    --magenta:#e879f9;
+    --orange:#fb8b3c;
+    --danger:#ef4444;
+    --success:#34d399;
+    --mono:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+    --display:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;height:100%;overflow:hidden;
+    background:
+      radial-gradient(1200px 800px at 20% 10%, #10261d 0%, transparent 60%),
+      radial-gradient(1200px 900px at 90% 90%, #0d2a24 0%, transparent 55%),
+      var(--bg-deep);
+    font-family:var(--display);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+  }
+  #stage{
+    position:relative;
+    width:100%;height:100%;
+    display:flex;align-items:center;justify-content:center;
+    padding:16px;
+  }
+  #canvas-wrap{
+    position:relative;
+    width:100%;
+    max-width:1280px;
+    aspect-ratio:16/9;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 30px 80px -20px rgba(0,0,0,0.75), 0 0 0 1px var(--panel-border);
+    background:#000;
+  }
+  canvas#game{
+    position:absolute;inset:0;
+    width:100%;height:100%;display:block;
+  }
+
+  /* ---------- generic overlay / panel ---------- */
+  .overlay{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(1000px 700px at 50% 20%, rgba(20,50,38,0.35), rgba(3,9,7,0.72));
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    animation:fadeIn .35s ease both;
+    z-index:5;
+  }
+  .overlay.hidden{display:none;}
+  @keyframes fadeIn{from{opacity:0} to{opacity:1}}
+
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:18px;
+    padding:28px 30px;
+    width:min(92%, 620px);
+    max-height:90%;
+    overflow:auto;
+    box-shadow:0 20px 60px -15px rgba(0,0,0,0.6);
+  }
+
+  /* ---------- title / signature ---------- */
+  .brand{display:flex;align-items:center;gap:14px;justify-content:center;margin-bottom:4px;}
+  .brand svg{width:46px;height:46px;flex:none;filter:drop-shadow(0 4px 10px rgba(163,230,53,0.35));}
+  h1.title{
+    font-size:clamp(28px,6vw,46px);
+    font-weight:800;
+    letter-spacing:-0.03em;
+    margin:0;
+    text-align:center;
+    background:linear-gradient(100deg,var(--teal) 0%, var(--lime) 35%, var(--magenta) 70%, var(--teal) 100%);
+    background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:shift 7s ease-in-out infinite;
+  }
+  @keyframes shift{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+  }
+  p.tagline{
+    text-align:center;color:var(--text-muted);
+    margin:2px 0 22px;font-size:14px;letter-spacing:.02em;
+  }
+  h2.section-label{
+    font-size:11px;text-transform:uppercase;letter-spacing:.14em;
+    color:var(--text-muted);margin:18px 0 10px;font-weight:700;
+  }
+
+  /* ---------- map grid ---------- */
+  .map-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  @media (max-width:520px){.map-grid{grid-template-columns:repeat(2,1fr);}}
+  .map-card{
+    position:relative;border-radius:12px;height:78px;cursor:pointer;
+    border:2px solid transparent;overflow:hidden;
+    transition:transform .15s ease, border-color .15s ease;
+  }
+  .map-card:hover{transform:translateY(-2px);}
+  .map-card.selected{border-color:var(--lime);box-shadow:0 0 0 3px rgba(163,230,53,0.18);}
+  .map-card span{
+    position:absolute;left:0;right:0;bottom:0;
+    padding:5px 7px;font-size:11px;font-weight:700;
+    background:linear-gradient(to top, rgba(0,0,0,0.72), transparent);
+    color:#fff;letter-spacing:.01em;
+  }
+
+  /* ---------- difficulty segmented control ---------- */
+  .seg{display:flex;gap:8px;}
+  .seg button{
+    flex:1;padding:10px 8px;border-radius:10px;
+    border:1px solid var(--panel-border);
+    background:rgba(255,255,255,0.03);
+    color:var(--text);font-family:var(--display);font-size:13px;font-weight:600;
+    cursor:pointer;transition:.15s ease;
+  }
+  .seg button:hover{background:rgba(255,255,255,0.07);}
+  .seg button.selected{
+    background:linear-gradient(120deg, rgba(163,230,53,0.22), rgba(45,212,191,0.18));
+    border-color:var(--panel-border-strong);
+  }
+
+  /* ---------- buttons ---------- */
+  .btn-primary{
+    width:100%;margin-top:20px;padding:14px 18px;border:none;border-radius:12px;
+    font-family:var(--display);font-size:16px;font-weight:800;letter-spacing:.01em;
+    color:#04140c;cursor:pointer;
+    background:linear-gradient(100deg,var(--lime),var(--teal));
+    box-shadow:0 10px 26px -8px rgba(163,230,53,0.5);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 14px 30px -8px rgba(163,230,53,0.6);}
+  .btn-primary:active{transform:translateY(0px) scale(.99);}
+  .btn-secondary{
+    padding:12px 16px;border-radius:12px;border:1px solid var(--panel-border);
+    background:rgba(255,255,255,0.04);color:var(--text);font-family:var(--display);
+    font-weight:700;font-size:14px;cursor:pointer;transition:.15s ease;
+  }
+  .btn-secondary:hover{background:rgba(255,255,255,0.09);}
+  .row{display:flex;gap:10px;}
+  .row > *{flex:1;}
+  .link-btn{
+    background:none;border:none;color:var(--teal);font-family:var(--display);
+    font-size:13px;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;
+    text-underline-offset:3px;
+  }
+  .center-text{text-align:center;}
+  .top-meta{
+    display:flex;justify-content:space-between;align-items:center;margin-top:8px;
+  }
+
+  /* ---------- HUD ---------- */
+  #hud{position:absolute;inset:0;pointer-events:none;z-index:4;font-family:var(--display);}
+  #hud.hidden{display:none;}
+  .hud-topbar{
+    position:absolute;top:12px;left:12px;right:12px;
+    display:flex;justify-content:space-between;align-items:flex-start;
+  }
+  .hud-chip{
+    background:var(--panel);border:1px solid var(--panel-border);
+    border-radius:12px;padding:8px 14px;pointer-events:auto;
+  }
+  .hud-timer{font-family:var(--mono);font-size:22px;font-weight:700;letter-spacing:.02em;}
+  .hud-map-tag{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-top:1px;}
+  .hud-iconbtn{
+    width:38px;height:38px;border-radius:10px;border:1px solid var(--panel-border);
+    background:var(--panel);color:var(--text);font-size:16px;cursor:pointer;pointer-events:auto;
+    display:flex;align-items:center;justify-content:center;margin-left:8px;
+  }
+  .hud-icon-row{display:flex;}
+
+  .hud-bottombar{
+    position:absolute;bottom:12px;left:12px;right:12px;
+    display:flex;justify-content:space-between;align-items:flex-end;gap:10px;
+  }
+  .blend-widget{
+    background:var(--panel);border:1px solid var(--panel-border);border-radius:12px;
+    padding:10px 14px;min-width:190px;pointer-events:auto;
+  }
+  .blend-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:6px;display:flex;justify-content:space-between;}
+  .blend-swatches{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+  .swatch{width:16px;height:16px;border-radius:5px;border:1px solid rgba(255,255,255,0.25);}
+  .blend-arrow{color:var(--text-muted);font-size:12px;}
+  .blend-bar-track{height:8px;border-radius:5px;background:rgba(255,255,255,0.08);overflow:hidden;}
+  .blend-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--danger),var(--orange),var(--success));border-radius:5px;transition:width .12s linear;}
+
+  .minimap-widget{
+    background:var(--panel);border:1px solid var(--panel-border);border-radius:12px;
+    padding:8px;pointer-events:auto;
+  }
+  .minimap-widget canvas{display:block;border-radius:8px;}
+
+  .banner{
+    position:absolute;top:70px;left:50%;transform:translateX(-50%);
+    padding:8px 22px;border-radius:999px;font-weight:800;font-size:14px;letter-spacing:.05em;
+    background:rgba(239,68,68,0.16);border:1px solid rgba(239,68,68,0.5);color:#fecaca;
+    opacity:0;transition:opacity .2s ease;pointer-events:none;text-transform:uppercase;
+  }
+  .banner.show{opacity:1;animation:pulseBanner .6s ease-in-out infinite alternate;}
+  @keyframes pulseBanner{from{filter:brightness(1);} to{filter:brightness(1.35);}}
+
+  /* ---------- touch controls ---------- */
+  #touch-controls{position:absolute;inset:0;z-index:6;pointer-events:none;display:none;}
+  #touch-controls.active{display:block;}
+  #joy-base{
+    position:absolute;left:26px;bottom:26px;width:110px;height:110px;border-radius:50%;
+    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);pointer-events:auto;
+    touch-action:none;
+  }
+  #joy-knob{
+    position:absolute;left:35px;top:35px;width:40px;height:40px;border-radius:50%;
+    background:rgba(163,230,53,0.35);border:1px solid rgba(163,230,53,0.6);
+  }
+  .touch-btn{
+    position:absolute;bottom:34px;width:64px;height:64px;border-radius:50%;
+    background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.2);
+    color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;
+    pointer-events:auto;touch-action:none;user-select:none;
+  }
+  #btn-sprint{right:104px;}
+  #btn-focus{right:26px;}
+  .touch-btn.pressed{background:rgba(163,230,53,0.3);}
+
+  /* ---------- misc ---------- */
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0;}
+  .stat-box{background:rgba(255,255,255,0.03);border:1px solid var(--panel-border);border-radius:10px;padding:10px 12px;}
+  .stat-box b{display:block;font-family:var(--mono);font-size:20px;margin-top:2px;}
+  .stat-box small{color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;}
+  ul.howto{margin:0;padding-left:18px;color:var(--text-muted);font-size:14px;line-height:1.7;}
+  ul.howto b{color:var(--text);}
+  .kbd{
+    display:inline-block;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);
+    border-radius:5px;padding:0 6px;font-family:var(--mono);font-size:12px;color:var(--text);
+  }
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:8px;}
+</style>
 </head>
 <body>
+<div id="stage">
+  <div id="canvas-wrap">
+    <canvas id="game" width="1280" height="720"></canvas>
 
-<div id="game-container">
-    <!-- HUD de Jogo -->
+    <!-- ============ HUD ============ -->
     <div id="hud" class="hidden">
-        <div class="hud-card" style="color: #00ffcc;">DISTÂNCIA: <span id="meters">0</span>m</div>
-        <div class="hud-card" style="color: #ff00ff;">MECHA BOTS: ATIVOS</div>
+      <div class="banner" id="banner">Detetado!</div>
+      <div class="hud-topbar">
+        <div class="hud-chip">
+          <div class="hud-timer" id="hud-timer">00:00</div>
+          <div class="hud-map-tag" id="hud-maptag">Floresta · Fácil</div>
+        </div>
+        <div class="hud-icon-row">
+          <button class="hud-iconbtn" id="btn-mute" title="Som">🔊</button>
+          <button class="hud-iconbtn" id="btn-pause" title="Pausa">❚❚</button>
+        </div>
+      </div>
+      <div class="hud-bottombar">
+        <div class="blend-widget">
+          <div class="blend-label"><span>Camuflagem</span><span id="blend-pct">0%</span></div>
+          <div class="blend-swatches">
+            <div class="swatch" id="swatch-you"></div>
+            <span class="blend-arrow">→</span>
+            <div class="swatch" id="swatch-target"></div>
+          </div>
+          <div class="blend-bar-track"><div class="blend-bar-fill" id="blend-bar"></div></div>
+        </div>
+        <div class="minimap-widget">
+          <canvas id="minimap" width="140" height="84"></canvas>
+        </div>
+      </div>
     </div>
 
-    <!-- Menu Principal -->
-    <div id="main-menu" class="overlay">
-        <h1>MECHA CHAMELEON 3D</h1>
-        <div class="tagline">Operação de Infiltração Cibernética</div>
+    <!-- ============ touch controls ============ -->
+    <div id="touch-controls">
+      <div id="joy-base"><div id="joy-knob"></div></div>
+      <div class="touch-btn" id="btn-sprint">⚡</div>
+      <div class="touch-btn" id="btn-focus">◐</div>
+    </div>
 
-        <div class="controls-panel">
-            <h3>Instruções do Sistema de Navegação:</h3>
-            <p>• <b>Mover Lateralmente:</b> Teclas <span class="key">A</span> / <span class="key">D</span> (ou setas Esquerda/Direita) para mudar de fila.</p>
-            <p>• <b>Saltar:</b> Tecla <span class="key">Espaço</span> ou <span class="key">W</span>.</p>
-            <p>• <b>Língua Magnética (Swing):</b> Clica e segura o <span class="key">Botão Esquerdo do Rato</span> para baloiçar nas esferas flutuantes!</p>
-            <p>• <b>Mudar de Cor:</b> Teclas <span class="key">1</span> (Cyan), <span class="key">2</span> (Magenta), <span class="key">3</span> (Amarelo). Garante que a cor do teu Mecha bate certo com a plataforma!</p>
+    <!-- ============ MENU ============ -->
+    <div class="overlay" id="menu-screen">
+      <div class="panel">
+        <div class="brand">
+          <svg viewBox="0 0 64 64" id="brand-icon">
+            <ellipse cx="30" cy="36" rx="20" ry="14" fill="url(#gradBody)"/>
+            <circle cx="47" cy="26" r="10" fill="url(#gradBody)"/>
+            <circle cx="50" cy="22" r="3.2" fill="#04140c"/>
+            <circle cx="51" cy="21" r="1.1" fill="#fff"/>
+            <path d="M12 40 C4 34, 4 48, 13 46" fill="none" stroke="url(#gradBody)" stroke-width="5" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="gradBody" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#2dd4bf"/>
+                <stop offset="0.5" stop-color="#a3e635"/>
+                <stop offset="1" stop-color="#e879f9"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <h1 class="title">CAMALEÃO</h1>
+        </div>
+        <p class="tagline">Muda de cor. Confunde-te com o mundo. Não sejas apanhado.</p>
+
+        <h2 class="section-label">Escolhe o mapa</h2>
+        <div class="map-grid" id="map-grid"></div>
+
+        <h2 class="section-label">Dificuldade</h2>
+        <div class="seg" id="diff-seg">
+          <button data-diff="facil" class="selected">Fácil</button>
+          <button data-diff="medio">Médio</button>
+          <button data-diff="dificil">Difícil</button>
         </div>
 
-        <button class="btn" onclick="initGame('infinite')">Iniciar Simulação 3D</button>
+        <button class="btn-primary" id="btn-play">▶ Jogar</button>
+        <div class="top-meta">
+          <button class="link-btn" id="btn-howto">Como se joga?</button>
+          <button class="link-btn" id="btn-mute-menu">🔊 Som ligado</button>
+        </div>
+      </div>
     </div>
 
-    <!-- Tela Game Over -->
-    <div id="game-over-screen" class="overlay hidden">
-        <h1 style="background: linear-gradient(45deg, #ff0055, #ff5500); -webkit-background-clip: text;">SISTEMA EM FALHA</h1>
-        <div class="tagline" id="death-reason">Curto-circuito de cor detetado.</div>
-        <button class="btn btn-magenta" onclick="restartGame()">Reiniciar Chassis</button>
-        <button class="btn" onclick="backToMenu()">Menu Principal</button>
+    <!-- ============ HOW TO ============ -->
+    <div class="overlay hidden" id="howto-screen">
+      <div class="panel">
+        <h2 class="section-label">Como se joga</h2>
+        <ul class="howto">
+          <li><b>Mover</b> — <span class="kbd">WASD</span> ou <span class="kbd">setas</span> (ou o joystick no ecrã tátil).</li>
+          <li><b>Correr</b> — segura <span class="kbd">Shift</span>. Mais rápido, mas mais visível.</li>
+          <li><b>Foco de camuflagem</b> — segura <span class="kbd">Espaço</span> para absorver a cor do terreno mais depressa.</li>
+          <li><b>Ficar parado</b> ajuda-te a combinar a tua cor com o chão à tua volta — quanto menor a diferença de cor, mais difícil és de ver.</li>
+          <li>Os <b>caçadores</b> (laranja) têm um cone de visão. Se te virem sem estares bem camuflado, o medidor de suspeita deles enche — quando enche por completo, perseguem-te.</li>
+          <li>Usa <b>obstáculos</b> para bloquear a linha de visão e apanha <b>orbes</b> para bónus temporários.</li>
+          <li>Sobrevive até ao fim do cronómetro sem seres apanhado para venceres a ronda.</li>
+          <li><span class="kbd">Esc</span> ou <span class="kbd">P</span> para pausar.</li>
+        </ul>
+        <button class="btn-primary" id="btn-howto-close">Entendido</button>
+      </div>
     </div>
+
+    <!-- ============ PAUSE ============ -->
+    <div class="overlay hidden" id="pause-screen">
+      <div class="panel center-text">
+        <h2 class="section-label">Jogo em pausa</h2>
+        <h1 class="title" style="font-size:32px;">PAUSADO</h1>
+        <div class="row" style="margin-top:18px;">
+          <button class="btn-secondary" id="btn-quit-pause">Sair ao menu</button>
+          <button class="btn-primary" id="btn-resume" style="margin-top:0;">Continuar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ GAME OVER ============ -->
+    <div class="overlay hidden" id="gameover-screen">
+      <div class="panel center-text">
+        <h2 class="section-label" id="result-label">Resultado</h2>
+        <h1 class="title" id="result-title" style="font-size:34px;">APANHADO!</h1>
+        <div class="stat-grid">
+          <div class="stat-box"><small>Tempo sobrevivido</small><b id="stat-time">00:00</b></div>
+          <div class="stat-box"><small>Mapa</small><b id="stat-map" style="font-size:15px;">—</b></div>
+          <div class="stat-box"><small>Dificuldade</small><b id="stat-diff" style="font-size:15px;">—</b></div>
+          <div class="stat-box"><small>Orbes recolhidos</small><b id="stat-orbs">0</b></div>
+        </div>
+        <div class="row">
+          <button class="btn-secondary" id="btn-menu-again">Menu</button>
+          <button class="btn-primary" id="btn-retry" style="margin-top:0;">Tentar novamente</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-    let scene, camera, renderer;
-    let isPlaying = false;
-    let gameMode = 'infinite';
-
-    // Cores Neon e correspondências de materiais
-    const COLOR_PRESETS = [
-        { hex: 0x00f3ff, name: "Cyan" },    // Cor 1
-        { hex: 0xff00ff, name: "Magenta" }, // Cor 2
-        { hex: 0xffea00, name: "Amarelo" }  // Cor 3
-    ];
-
-    // Constantes de Jogo
-    const LANE_WIDTH = 5;
-    const GRAVITY = -0.012;
-    const JUMP_FORCE = 0.28;
-    const GAME_SPEED = 0.35;
-
-    // Estado do Jogador
-    let player = {
-        mesh: null,
-        lane: 0, // -1 (esquerda), 0 (centro), 1 (direita)
-        targetX: 0,
-        y: 1.5,
-        z: 0,
-        vy: 0,
-        isGrounded: false,
-        colorIndex: 0,
-        activeColorHex: COLOR_PRESETS[0].hex,
-        tailSegments: [],
-        legs: [],
-        leftEye: null, rightEye: null,
-        isSwinging: false,
-        grapplePoint: null,
-        swingAngle: 0,
-        swingRadius: 0
-    };
-
-    // Coleções de Objetos 3D
-    let platforms = [];
-    let grapplePoints = [];
-    let bots = [];
-    let particles = [];
-    let tongueLine = null;
-
-    // Controlos e Teclado
-    const keys = {};
-
-    // --- SINTETIZADOR DE ÁUDIO RETRO ---
-    let audioCtx = null;
-    function playSynthSound(type) {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        const now = audioCtx.currentTime;
-
-        if (type === 'jump') {
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(150, now);
-            osc.frequency.exponentialRampToValueAtTime(600, now + 0.2);
-            gain.gain.setValueAtTime(0.15, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-            osc.start(now); osc.stop(now + 0.2);
-        } else if (type === 'switch') {
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(440, now);
-            osc.frequency.setValueAtTime(880, now + 0.08);
-            gain.gain.setValueAtTime(0.1, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-            osc.start(now); osc.stop(now + 0.15);
-        } else if (type === 'grapple') {
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(800, now);
-            osc.frequency.exponentialRampToValueAtTime(200, now + 0.3);
-            gain.gain.setValueAtTime(0.08, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-            osc.start(now); osc.stop(now + 0.3);
-        } else if (type === 'explode') {
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(100, now);
-            osc.frequency.linearRampToValueAtTime(10, now + 0.6);
-            gain.gain.setValueAtTime(0.3, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
-            osc.start(now); osc.stop(now + 0.6);
-        }
-    }
-
-    // --- CONSTRUÇÃO DO CAMALEÃO ROBÓTICO (3D ARTICULADO) ---
-    function build3DMechaChameleon() {
-        const mechaGroup = new THREE.Group();
-
-        // 1. Corpo Blindado Central (Hexagonal/Cúbico Futurista)
-        const bodyGeo = new THREE.BoxGeometry(1.6, 1.2, 2.4);
-        const bodyMat = new THREE.MeshStandardMaterial({ 
-            color: 0x181a26, 
-            roughness: 0.2, 
-            metalness: 0.8 
-        });
-        const bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
-        bodyMesh.position.y = 0.6;
-        mechaGroup.add(bodyMesh);
-
-        // 2. Placas de Armadura de Cor Recarregáveis (Mudam de cor de acordo com o estado do camaleão)
-        const armorGeo = new THREE.BoxGeometry(1.7, 0.4, 2.0);
-        player.armorMaterial = new THREE.MeshStandardMaterial({
-            color: COLOR_PRESETS[0].hex,
-            emissive: COLOR_PRESETS[0].hex,
-            emissiveIntensity: 1.5,
-            roughness: 0.1
-        });
-        const armorMesh = new THREE.Mesh(armorGeo, player.armorMaterial);
-        armorMesh.position.set(0, 0.7, 0);
-        bodyMesh.add(armorMesh);
-
-        // 3. Cabeça Mecânica com mandíbula
-        const headGeo = new THREE.BoxGeometry(1.4, 1.0, 1.2);
-        const headMesh = new THREE.Mesh(headGeo, bodyMat);
-        headMesh.position.set(0, 0.2, 1.6);
-        bodyMesh.add(headMesh);
-
-        // 4. Grandes Olhos Robóticos Independentes (Giram!)
-        const eyeGeo = new THREE.SphereGeometry(0.35, 16, 16);
-        player.eyeMaterial = new THREE.MeshStandardMaterial({
-            color: 0x050505,
-            emissive: COLOR_PRESETS[0].hex,
-            emissiveIntensity: 2.0
-        });
-        
-        player.leftEye = new THREE.Mesh(eyeGeo, player.eyeMaterial);
-        player.leftEye.position.set(0.75, 0.2, 0.3);
-        headMesh.add(player.leftEye);
-
-        player.rightEye = new THREE.Mesh(eyeGeo, player.eyeMaterial);
-        player.rightEye.position.set(-0.75, 0.2, 0.3);
-        headMesh.add(player.rightEye);
-
-        // 5. Cauda Mecânica Segmentada (Articulada)
-        player.tailSegments = [];
-        let prevSegment = bodyMesh;
-        for (let i = 0; i < 5; i++) {
-            const segGeo = new THREE.BoxGeometry(0.8 - i*0.12, 0.8 - i*0.12, 0.6);
-            const segMesh = new THREE.Mesh(segGeo, bodyMat);
-            segMesh.position.set(0, 0, -1.3 - (i*0.4));
-            mechaGroup.add(segMesh);
-            player.tailSegments.push(segMesh);
-        }
-
-        // 6. Patas Hidráulicas Tridimensionais
-        player.legs = [];
-        const legGeo = new THREE.BoxGeometry(0.3, 0.8, 0.3);
-        const positions = [
-            [-0.9, 0, 0.8],  // F. Esquerda
-            [0.9, 0, 0.8],   // F. Direita
-            [-0.9, 0, -0.8], // T. Esquerda
-            [0.9, 0, -0.8]   // T. Direita
-        ];
-        positions.forEach((pos) => {
-            const leg = new THREE.Mesh(legGeo, bodyMat);
-            leg.position.set(pos[0], pos[1], pos[2]);
-            mechaGroup.add(leg);
-            player.legs.push(leg);
-        });
-
-        // Adicionar luz direta do próprio robot para iluminar a estrada
-        const spotLight = new THREE.SpotLight(0xffffff, 1.5, 15, Math.PI/4, 0.5);
-        spotLight.position.set(0, 0.5, 1.8);
-        spotLight.target = headMesh;
-        mechaGroup.add(spotLight);
-
-        scene.add(mechaGroup);
-        player.mesh = mechaGroup;
-    }
-
-    // --- INICIALIZAÇÃO GRÁFICA DO MUNDO 3D ---
-    function initThree() {
-        const container = document.getElementById('game-container');
-        
-        // Criar Cena e Neblina Cibernética de Fundo
-        scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x020206);
-        scene.fog = new THREE.FogExp2(0x020206, 0.015);
-
-        // Câmara Tridimensional
-        camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-
-        // Renderizador WebGL de Alta Performance
-        renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        
-        // Substituir qualquer canvas anterior
-        const oldCanvas = container.querySelector('canvas');
-        if (oldCanvas) container.removeChild(oldCanvas);
-        container.appendChild(renderer.domElement);
-
-        // Iluminação Ambiente e Luz Direcional Cyberpunk
-        const ambientLight = new THREE.AmbientLight(0x0a0d26, 1.2);
-        scene.add(ambientLight);
-
-        const dirLight = new THREE.DirectionalLight(0xff00aa, 1.0);
-        dirLight.position.set(20, 40, -10);
-        scene.add(dirLight);
-
-        const cyberLight = new THREE.DirectionalLight(0x00ffff, 0.8);
-        cyberLight.position.set(-20, 30, 20);
-        scene.add(cyberLight);
-
-        // Chão/Grelha Espacial Infinita para sensação de profundidade 3D
-        const gridHelper = new THREE.GridHelper(3000, 300, 0x151833, 0x090b1c);
-        gridHelper.position.y = -2;
-        scene.add(gridHelper);
-
-        // Criar Linha 3D da Língua
-        const lineMat = new THREE.LineBasicMaterial({ color: 0xff0055, linewidth: 3 });
-        const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]);
-        tongueLine = new THREE.Line(lineGeo, lineMat);
-        tongueLine.visible = false;
-        scene.add(tongueLine);
-
-        // Tratar do redimensionamento do ecrã
-        window.addEventListener('resize', onWindowResize, false);
-    }
-
-    function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    // --- GERADOR PROCEDURAL DE PLATAFORMAS 3D ---
-    function spawnPlatform(z, lane, length = 12, colorIdx = null) {
-        const colorIndex = colorIdx !== null ? colorIdx : Math.floor(Math.random() * 3);
-        const preset = COLOR_PRESETS[colorIndex];
-
-        const platGeo = new THREE.BoxGeometry(3.5, 0.8, length);
-        
-        // Material holográfico com contorno brilhante
-        const platMat = new THREE.MeshStandardMaterial({
-            color: 0x0c0e1a,
-            emissive: preset.hex,
-            emissiveIntensity: 1.0,
-            roughness: 0.1,
-            metalness: 0.9
-        });
-
-        const platMesh = new THREE.Mesh(platGeo, platMat);
-        // Alinhamento tridimensional de pistas: Esquerda, Centro, Direita
-        const posX = (lane - 1) * LANE_WIDTH; 
-        platMesh.position.set(posX, 0, z);
-        scene.add(platMesh);
-
-        platforms.push({
-            mesh: platMesh,
-            lane: lane,
-            color: colorIndex,
-            zStart: z - length/2,
-            zEnd: z + length/2,
-            x: posX
-        });
-    }
-
-    // Gerador de Postes de Baloiço de Língua (Esferas Neon)
-    function spawnGrapplePoint(z, lane) {
-        const sphereGeo = new THREE.SphereGeometry(0.8, 16, 16);
-        const sphereMat = new THREE.MeshStandardMaterial({
-            color: 0xff0055,
-            emissive: 0xff0055,
-            emissiveIntensity: 2.5
-        });
-        const sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
-        const posX = (lane - 1) * LANE_WIDTH;
-        sphereMesh.position.set(posX, 7, z);
-        scene.add(sphereMesh);
-
-        // Anel orbitante estético
-        const ringGeo = new THREE.RingGeometry(1.2, 1.4, 32);
-        const ringMat = new THREE.MeshBasicMaterial({ color: 0xff0055, side: THREE.DoubleSide });
-        const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-        ringMesh.rotation.x = Math.PI / 2;
-        sphereMesh.add(ringMesh);
-
-        grapplePoints.push({
-            mesh: sphereMesh,
-            x: posX,
-            y: 7,
-            z: z,
-            ring: ringMesh
-        });
-    }
-
-    // Gerar Bots Tridimensionais concorrentes
-    function spawnDroneBot(z, offsetOffset) {
-        const botGroup = new THREE.Group();
-        const bodyGeo = new THREE.SphereGeometry(0.5, 16, 16);
-        const bodyMat = new THREE.MeshStandardMaterial({ color: 0x220033, emissive: 0xff00ff, emissiveIntensity: 1.2 });
-        const body = new THREE.Mesh(bodyGeo, bodyMat);
-        botGroup.add(body);
-
-        // Asas flutuantes
-        const wingGeo = new THREE.BoxGeometry(1.4, 0.1, 0.2);
-        const wing = new THREE.Mesh(wingGeo, bodyMat);
-        wing.position.y = 0.4;
-        botGroup.add(wing);
-
-        botGroup.position.set(4, 2, z);
-        scene.add(botGroup);
-
-        bots.push({
-            mesh: botGroup,
-            z: z,
-            offset: offsetOffset,
-            wing: wing
-        });
-    }
-
-    // --- SISTEMA DE PARTÍCULAS TRIDIMENSIONAIS (CENTELHAS) ---
-    function spawnSparkParticles(x, y, z, color, count = 15) {
-        for (let i = 0; i < count; i++) {
-            const pGeo = new THREE.BoxGeometry(0.15, 0.15, 0.15);
-            const pMat = new THREE.MeshBasicMaterial({ color: color });
-            const pMesh = new THREE.Mesh(pGeo, pMat);
-            pMesh.position.set(x, y, z);
-            scene.add(pMesh);
-
-            particles.push({
-                mesh: pMesh,
-                vx: (Math.random() - 0.5) * 0.3,
-                vy: (Math.random() - 0.5) * 0.3 + 0.1,
-                vz: (Math.random() - 0.5) * 0.3,
-                life: 1.0,
-                decay: 0.02 + Math.random() * 0.03
-            });
-        }
-    }
-
-    // --- ENTRADAS DE TECLADO ---
-    window.addEventListener('keydown', (e) => {
-        keys[e.code] = true;
-
-        if (!isPlaying) return;
-
-        // Movimentação Lateral por carril (Lanes: -1, 0, 1)
-        if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
-            if (player.lane > -1) {
-                player.lane--;
-                player.targetX = player.lane * LANE_WIDTH;
-                playSynthSound('switch');
-            }
-        }
-        if (e.code === 'KeyD' || e.code === 'ArrowRight') {
-            if (player.lane < 1) {
-                player.lane++;
-                player.targetX = player.lane * LANE_WIDTH;
-                playSynthSound('switch');
-            }
-        }
-
-        // Salto do Mecha
-        if ((e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp') && player.isGrounded && !player.isSwinging) {
-            player.vy = JUMP_FORCE;
-            player.isGrounded = false;
-            playSynthSound('jump');
-            spawnSparkParticles(player.mesh.position.x, player.mesh.position.y, player.mesh.position.z, player.activeColorHex, 8);
-        }
-
-        // Atalhos Numéricos rápidos para mudança cromática do Mecha
-        if (e.code === 'Digit1') switchChameleonColor(0);
-        if (e.code === 'Digit2') switchChameleonColor(1);
-        if (e.code === 'Digit3') switchChameleonColor(2);
-    });
-
-    window.addEventListener('keyup', (e) => {
-        keys[e.code] = false;
-    });
-
-    // Controlos do Rato para Grappling Tongue (Chicotada de Língua)
-    window.addEventListener('mousedown', (e) => {
-        if (!isPlaying || player.isSwinging) return;
-        
-        // Detetar se existe uma esfera de ancoragem à frente para baloiçar
-        let bestTarget = null;
-        let minDist = 45;
-
-        grapplePoints.forEach(pt => {
-            let distZ = pt.z - player.z;
-            if (distZ > 0 && distZ < minDist) {
-                bestTarget = pt;
-                minDist = distZ;
-            }
-        });
-
-        if (bestTarget) {
-            player.isSwinging = true;
-            player.grapplePoint = bestTarget;
-            playSynthSound('grapple');
-
-            // Calcular distância física e ângulo inicial
-            let dx = player.mesh.position.x - bestTarget.x;
-            let dy = player.mesh.position.y - bestTarget.y;
-            let dz = player.mesh.position.z - bestTarget.z;
-            player.swingRadius = Math.sqrt(dx*dx + dy*dy + dz*dz);
-            
-            // Ângulo simplificado para o pêndulo 3D ao longo do eixo Z
-            player.swingAngle = Math.atan2(dy, dz);
-        }
-    });
-
-    window.addEventListener('mouseup', () => {
-        if (player.isSwinging) {
-            player.isSwinging = false;
-            player.grapplePoint = null;
-            tongueLine.visible = false;
-            // Impulso extra no lançamento da língua
-            player.vy = 0.12;
-        }
-    });
-
-    function switchChameleonColor(index) {
-        player.colorIndex = index;
-        player.activeColorHex = COLOR_PRESETS[index].hex;
-        
-        // Atualizar emissão de luz e materiais nos componentes do robô
-        player.armorMaterial.color.setHex(player.activeColorHex);
-        player.armorMaterial.emissive.setHex(player.activeColorHex);
-        player.eyeMaterial.emissive.setHex(player.activeColorHex);
-
-        playSynthSound('switch');
-        spawnSparkParticles(player.mesh.position.x, player.mesh.position.y + 0.8, player.mesh.position.z, player.activeColorHex, 10);
-    }
-
-    // --- MOTOR FÍSICO E LOOP DE ANIMAÇÃO DO JOGO (60 FPS) ---
-    let lastTime = 0;
-    let nextSpawnZ = 30;
-
-    function gameLoop(time) {
-        if (!isPlaying) return;
-
-        requestAnimationFrame(gameLoop);
-
-        const delta = time - lastTime;
-        lastTime = time;
-
-        // 1. Deslocamento tridimensional constante do robô
-        player.z += GAME_SPEED;
-
-        // Deslocamento suave lateral de fila (Interpolação Lerp)
-        player.mesh.position.x += (player.targetX - player.mesh.position.x) * 0.25;
-
-        // 2. Resolver mecânica de Swing (Física de Pêndulo Tridimensional da Língua)
-        if (player.isSwinging && player.grapplePoint) {
-            // Acelerar pêndulo
-            player.swingAngle += 0.055;
-            
-            // Novas coordenadas calculadas ao longo do arco do círculo
-            let targetZ = player.grapplePoint.z + Math.cos(player.swingAngle) * player.swingRadius;
-            let targetY = player.grapplePoint.y + Math.sin(player.swingAngle) * player.swingRadius;
-
-            player.z = targetZ;
-            player.y = targetY;
-            player.vy = 0; // Prevenir gravidade livre enquanto ancorado
-            player.isGrounded = false;
-
-            // Renderizar cabo de luz (Língua)
-            tongueLine.visible = true;
-            const positions = tongueLine.geometry.attributes.position;
-            
-            // Origem: Cabeça do Mecha
-            positions.setXYZ(0, player.mesh.position.x, player.mesh.position.y + 0.8, player.mesh.position.z + 1.2);
-            // Alvo: Ponto de Ancoragem
-            positions.setXYZ(1, player.grapplePoint.mesh.position.x, player.grapplePoint.mesh.position.y, player.grapplePoint.mesh.position.z);
-            positions.needsUpdate = true;
-
-            // Mudar a cor da língua para condizer com o estado energético
-            tongueLine.material.color.setHex(player.activeColorHex);
-        } else {
-            // Física normal de Gravidade sobre o Camaleão
-            player.vy += GRAVITY;
-            player.y += player.vy;
-        }
-
-        player.mesh.position.y = player.y;
-        player.mesh.position.z = player.z;
-
-        // 3. Animação de locomoção de alta tecnologia do Robô
-        const animSpeed = time * 0.015;
-        if (player.isGrounded) {
-            // Rotação síncrona das pernas mecânicas ao correr
-            player.legs[0].rotation.x = Math.sin(animSpeed) * 0.6;
-            player.legs[1].rotation.x = -Math.sin(animSpeed) * 0.6;
-            player.legs[2].rotation.x = -Math.sin(animSpeed) * 0.6;
-            player.legs[3].rotation.x = Math.sin(animSpeed) * 0.6;
-            
-            // Oscilação natural da cabeça de lagarto
-            player.mesh.position.y += Math.abs(Math.sin(animSpeed * 2)) * 0.1;
-        } else {
-            // Encolher pernas no ar para pose aerodinâmica de salto
-            player.legs.forEach(leg => leg.rotation.x = -0.3);
-        }
-
-        // Balançar a cauda com física de chicote flexível (Efeito Senoidal)
-        player.tailSegments.forEach((seg, idx) => {
-            seg.position.x = Math.sin(animSpeed - idx * 0.8) * (0.15 * (idx + 1));
-            seg.rotation.y = Math.sin(animSpeed - idx * 0.8) * 0.15;
-        });
-
-        // Rodar os olhos de forma independente (Mecânica robótica assustadora do camaleão!)
-        player.leftEye.rotation.y = Math.sin(time * 0.003) * 0.8;
-        player.rightEye.rotation.y = Math.cos(time * 0.004) * 0.8;
-
-        // 4. Colisão de Plataformas Tridimensionais
-        let overPlatform = false;
-        platforms.forEach(p => {
-            // Validar se o jogador se encontra no mesmo alinhamento de coordenadas x/z
-            if (Math.abs(player.mesh.position.x - p.x) < 2.0) {
-                if (player.z >= p.zStart && player.z <= p.zEnd) {
-                    // Validar se está a aterrar no topo da plataforma
-                    if (player.vy <= 0 && Math.abs(player.y - 1.2) < 0.4) {
-                        
-                        // TESTE DO MICROCHIP DE CORES DO CAMALEÃO:
-                        if (player.colorIndex === p.color) {
-                            player.y = 1.2;
-                            player.vy = 0;
-                            player.isGrounded = true;
-                            overPlatform = true;
-                        } else {
-                            // Erro fatal de frequência cromática!
-                            explodeAndDie("Incompatibilidade eletromagnética! Tentaste tocar na pista de " + COLOR_PRESETS[p.color].name + " estando carregado como " + COLOR_PRESETS[player.colorIndex].name + ".");
-                        }
-                    }
-                }
-            }
-        });
-
-        if (!overPlatform && player.y < -0.5 && !player.isSwinging) {
-            player.isGrounded = false;
-        }
-
-        // Queda no abismo
-        if (player.y < -6.0) {
-            explodeAndDie("Desintegração total! Caíste nos circuitos de processamento inferiores.");
-        }
-
-        // 5. Atualizar Movimentação dos Bots Rivais
-        bots.forEach(bot => {
-            bot.z += GAME_SPEED * 0.98; // Ligeiramente mais lentos que tu
-            bot.mesh.position.z = bot.z;
-            bot.mesh.position.y = 2 + Math.sin(time * 0.003 + bot.offset) * 0.5;
-            bot.wing.rotation.y += 0.2; // Rodar hélices
-        });
-
-        // 6. Atualizar Partículas 3D
-        particles.forEach((p, idx) => {
-            p.mesh.position.x += p.vx;
-            p.mesh.position.y += p.vy;
-            p.mesh.position.z += p.vz;
-            p.life -= p.decay;
-            p.mesh.scale.set(p.life, p.life, p.life);
-
-            if (p.life <= 0) {
-                scene.remove(p.mesh);
-                particles.splice(idx, 1);
-            }
-        });
-
-        // 7. Geração Infinita Procedural de Níveis à frente do jogador
-        if (player.z + 100 > nextSpawnZ) {
-            generateNextSection();
-        }
-
-        // Limpeza de cache de objetos passados (Prevenir lentidão e fugas de memória)
-        platforms = platforms.filter(p => {
-            if (p.zEnd < player.z - 50) {
-                scene.remove(p.mesh);
-                return false;
-            }
-            return true;
-        });
-
-        grapplePoints = grapplePoints.filter(pt => {
-            if (pt.z < player.z - 50) {
-                scene.remove(pt.mesh);
-                return false;
-            }
-            // Rodar ligeiramente o anel estético das esferas
-            pt.ring.rotation.z += 0.02;
-            return true;
-        });
-
-        bots = bots.filter(bot => {
-            if (bot.z < player.z - 50) {
-                scene.remove(bot.mesh);
-                return false;
-            }
-            return true;
-        });
-
-        // 8. Atualizar a Câmara Dinamicamente (Perseguição Suave em 3D)
-        camera.position.x += (player.mesh.position.x - camera.position.x) * 0.05;
-        camera.position.y += ((player.mesh.position.y + 4.5) - camera.position.y) * 0.05;
-        camera.position.z = player.z - 8.5; // Distância de perseguição linear
-        camera.lookAt(player.mesh.position.x, player.mesh.position.y + 1, player.mesh.position.z + 4);
-
-        // Atualizar HUD
-        document.getElementById('meters').innerText = Math.floor(player.z / 3);
-
-        renderer.render(scene, camera);
-    }
-
-    // --- DESTRUIÇÃO DO ROBÔ ---
-    function explodeAndDie(reason) {
-        isPlaying = false;
-        playSynthSound('explode');
-        spawnSparkParticles(player.mesh.position.x, player.mesh.position.y, player.mesh.position.z, 0xff0033, 40);
-        scene.remove(player.mesh);
-        tongueLine.visible = false;
-
-        setTimeout(() => {
-            document.getElementById('death-reason').innerText = reason;
-            document.getElementById('hud').classList.add('hidden');
-            document.getElementById('game-over-screen').classList.remove('hidden');
-        }, 1200);
-    }
-
-    // --- GERADOR DE BLOCOS DE ESTRADA ADIANTE ---
-    function generateNextSection() {
-        // Criar caminhos divididos com variações de cor e rampas
-        const layoutType = Math.floor(Math.random() * 4);
-        
-        if (layoutType === 0) {
-            // Três filas consecutivas fáceis com cores diferentes
-            spawnPlatform(nextSpawnZ, 0, 20, 0);
-            spawnPlatform(nextSpawnZ + 25, 1, 15, 1);
-            spawnPlatform(nextSpawnZ + 45, -1, 15, 2);
-            spawnGrapplePoint(nextSpawnZ + 20, 0);
-            nextSpawnZ += 70;
-        } else if (layoutType === 1) {
-            // Desafio de Salto Gigante com Gancho de Língua no Meio
-            spawnPlatform(nextSpawnZ, 0, 15, 1);
-            // Abismo massivo com ponto de ancoragem no centro
-            spawnGrapplePoint(nextSpawnZ + 20, 0);
-            spawnPlatform(nextSpawnZ + 40, 0, 18, 1);
-            nextSpawnZ += 60;
-        } else if (layoutType === 2) {
-            // Plataformas nas laterais e drones aéreos
-            spawnPlatform(nextSpawnZ, -1, 25, 2);
-            spawnPlatform(nextSpawnZ + 15, 1, 25, 0);
-            spawnDroneBot(nextSpawnZ + 10, 1.2);
-            nextSpawnZ += 50;
-        } else {
-            // Mudanças rápidas na mesma pista central
-            spawnPlatform(nextSpawnZ, 0, 12, 0);
-            spawnPlatform(nextSpawnZ + 16, 0, 12, 1);
-            spawnPlatform(nextSpawnZ + 32, 0, 12, 2);
-            nextSpawnZ += 55;
-        }
-    }
-
-    // --- GESTÃO DE ESTADOS E FLUXO ---
-    function initGame(mode) {
-        gameMode = mode;
-        document.getElementById('main-menu').classList.add('hidden');
-        document.getElementById('hud').classList.remove('hidden');
-
-        initThree();
-        build3DMechaChameleon();
-
-        // Limpar lixo de sessões anteriores
-        platforms = [];
-        grapplePoints = [];
-        bots = [];
-        particles = [];
-        nextSpawnZ = 30;
-
-        // Construir rampa de partida estável
-        spawnPlatform(0, 0, 30, 0);
-        
-        // Spawn de rivais ao lado
-        spawnDroneBot(5, 0.5);
-        spawnDroneBot(15, 1.5);
-
-        player.lane = 0;
-        player.targetX = 0;
-        player.y = 1.5;
-        player.z = 0;
-        player.vy = 0;
-        player.isGrounded = false;
-        player.isSwinging = false;
-        switchChameleonColor(0);
-
-        isPlaying = true;
-        lastTime = performance.now();
-        requestAnimationFrame(gameLoop);
-    }
-
-    function restartGame() {
-        document.getElementById('game-over-screen').classList.add('hidden');
-        initGame(gameMode);
-    }
-
-    function backToMenu() {
-        document.getElementById('game-over-screen').classList.add('hidden');
-        document.getElementById('main-menu').classList.remove('hidden');
-    }
-</script>
-</body>
-</html>
+/* ===================================================================================
+   CAMALEÃO — jogo de esconde-esconde com camuflagem de cor, num único ficheiro HTML.
+   Tudo (motor, mapas, IA, áudio, interface) é gerado em canvas/JS — sem ficheiros externos.
+=================================================================================== */
+(function(){
+"use strict";
