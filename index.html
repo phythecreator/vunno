@@ -1,1 +1,889 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAIZ — Óleo Capilar Fortificante Nº07</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #16211A;
+    --bg-panel: #1D2B21;
+    --bg-panel-2: #223026;
+    --line: rgba(241,233,216,0.12);
+    --amber: #C88A3E;
+    --amber-light: #E3B570;
+    --amber-deep: #8F5A22;
+    --cream: #F1E9D8;
+    --sage: #94A98A;
+    --ink: #10150F;
+    --font-display: 'Instrument Serif', serif;
+    --font-body: 'Manrope', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+    --wrap: 1180px;
+  }
 
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--cream);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  img,svg{ display:block; max-width:100%; }
+  a{ color:inherit; }
+  ::selection{ background: var(--amber); color: var(--ink); }
+
+  :focus-visible{
+    outline: 2px solid var(--amber-light);
+    outline-offset: 3px;
+  }
+
+  .wrap{
+    max-width: var(--wrap);
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  .eyebrow{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--amber-light);
+    margin: 0 0 18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width: 22px;
+    height: 1px;
+    background: var(--amber-light);
+    display:inline-block;
+  }
+
+  h1,h2,h3{
+    font-family: var(--font-display);
+    font-weight: 400;
+    margin: 0;
+    line-height: 1.05;
+  }
+
+  /* ---------- NAV ---------- */
+  header.site{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(22,33,26,0.86);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 18px 32px;
+    max-width: var(--wrap);
+    margin: 0 auto;
+  }
+  .nav__brand{
+    font-family: var(--font-display);
+    font-size: 24px;
+    letter-spacing: 0.04em;
+  }
+  .nav__links{
+    display:flex;
+    gap: 32px;
+    list-style:none;
+    margin:0; padding:0;
+    font-size: 14px;
+  }
+  .nav__links a{
+    text-decoration:none;
+    color: var(--sage);
+    transition: color .2s ease;
+  }
+  .nav__links a:hover{ color: var(--cream); }
+  .nav__links{ display:none; }
+  @media(min-width:860px){ .nav__links{ display:flex; } }
+
+  .btn{
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    padding: 14px 26px;
+    border-radius: 3px;
+    text-decoration: none;
+    display:inline-flex;
+    align-items:center;
+    gap: 10px;
+    transition: transform .18s ease, background .18s ease;
+  }
+  .btn--primary{
+    background: var(--amber);
+    color: var(--ink);
+  }
+  .btn--primary:hover{ background: var(--amber-light); transform: translateY(-1px); }
+  .btn--ghost{
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--cream);
+    padding: 13px 25px;
+  }
+  .btn--ghost:hover{ border-color: var(--amber-light); color: var(--amber-light); }
+  .btn--small{ padding: 11px 20px; font-size: 13px; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding: 88px 0 60px;
+  }
+  .hero .wrap{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 56px;
+    align-items:center;
+  }
+  @media(min-width:960px){
+    .hero .wrap{ grid-template-columns: 1.05fr 0.95fr; gap: 40px; }
+  }
+  .hero__copy h1{
+    font-size: clamp(40px, 6vw, 68px);
+    color: var(--cream);
+  }
+  .hero__copy h1 em{
+    font-style: italic;
+    color: var(--amber-light);
+  }
+  .hero__sub{
+    margin: 26px 0 34px;
+    max-width: 46ch;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--sage);
+  }
+  .hero__actions{
+    display:flex;
+    flex-wrap: wrap;
+    align-items:center;
+    gap: 22px;
+  }
+  .hero__link{
+    font-size: 14px;
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2px;
+    color: var(--cream);
+  }
+  .hero__note{
+    margin-top: 22px;
+    font-size: 12.5px;
+    color: var(--sage);
+    font-family: var(--font-mono);
+  }
+
+  /* ---------- 3D BOTTLE ---------- */
+  .stage{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    padding: 20px 0;
+  }
+  .stage__glow{
+    position:absolute;
+    width: 340px;
+    height: 340px;
+    background: radial-gradient(circle, rgba(200,138,62,0.28) 0%, rgba(200,138,62,0) 70%);
+    filter: blur(6px);
+    pointer-events:none;
+  }
+  .scene{
+    perspective: 1300px;
+    width: 260px;
+    height: 420px;
+    touch-action: pan-y;
+    cursor: grab;
+  }
+  .scene:active{ cursor: grabbing; }
+  .bottle-group{
+    position:relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(-6deg) rotateY(0deg);
+  }
+  .bottle{
+    position:absolute;
+    left:50%; top: 96px;
+    width: 200px; height: 260px;
+    margin-left:-100px;
+    transform-style: preserve-3d;
+  }
+  .face{
+    position:absolute;
+    inset:0;
+    border: 1px solid rgba(0,0,0,0.25);
+  }
+  .face--glass{
+    background:
+      linear-gradient(100deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 18%),
+      linear-gradient(180deg, rgba(227,181,112,0.9) 0%, rgba(143,90,34,0.92) 100%);
+  }
+  .face--back{
+    background: linear-gradient(180deg, rgba(200,138,62,0.9), rgba(120,74,26,0.95));
+    display:flex; align-items:center; justify-content:center;
+  }
+  .face--back span{
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 76px;
+    color: rgba(16,21,15,0.28);
+  }
+  .face--front{
+    background: linear-gradient(180deg, #EFE4CC, #E4D4AE);
+    display:flex;
+  }
+  .label{
+    margin: auto;
+    text-align:center;
+    color: var(--ink);
+    padding: 14px 10px;
+  }
+  .label__brand{
+    display:block;
+    font-family: var(--font-display);
+    font-size: 30px;
+    letter-spacing: 0.06em;
+  }
+  .label__formula{
+    display:block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--amber-deep);
+    margin-top: 2px;
+  }
+  .label__rule{
+    width: 34px; height:1px;
+    background: var(--amber-deep);
+    margin: 12px auto;
+    opacity: .6;
+  }
+  .label__inci{
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    line-height: 1.7;
+    letter-spacing: 0.03em;
+    color: #4a4230;
+    margin: 0;
+  }
+  .label__vol{
+    display:block;
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--amber-deep);
+  }
+
+  .cap{
+    position:absolute;
+    left:50%; top: 40px;
+    width: 84px; height: 66px;
+    margin-left: -42px;
+    transform-style: preserve-3d;
+  }
+  .cap .face{ border-color: rgba(0,0,0,0.35); }
+  .cap .face--glass{
+    background: linear-gradient(180deg, #2A241C, #16130E);
+  }
+  .dropper{
+    position:absolute;
+    left:50%; top: 4px;
+    width: 3px; height: 44px;
+    margin-left: -1.5px;
+    background: rgba(241,233,216,0.55);
+    transform: translateZ(1px);
+  }
+
+  .stage__hint{
+    margin-top: 22px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--sage);
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    opacity: .85;
+  }
+
+  /* ---------- SECTION shells ---------- */
+  section{ padding: 96px 0; }
+  .section--panel{ background: var(--bg-panel); }
+  .section-head{
+    max-width: 640px;
+    margin-bottom: 56px;
+  }
+  .section-head h2{
+    font-size: clamp(30px, 4vw, 44px);
+    color: var(--cream);
+  }
+  .section-head p{
+    margin-top: 18px;
+    color: var(--sage);
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 52ch;
+  }
+
+  /* ---------- PROBLEM ---------- */
+  .cards{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  @media(min-width:760px){ .cards{ grid-template-columns: repeat(3,1fr); } }
+  .card{
+    background: var(--bg-panel);
+    padding: 34px 30px;
+  }
+  .card__mark{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--amber-light);
+    margin-bottom: 20px;
+    display:block;
+  }
+  .card h3{
+    font-size: 22px;
+    color: var(--cream);
+    margin-bottom: 14px;
+  }
+  .card p{
+    color: var(--sage);
+    font-size: 14.5px;
+    line-height: 1.7;
+    margin:0;
+  }
+
+  /* ---------- RITUAL ---------- */
+  .ritual{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    max-width: 820px;
+  }
+  @media(min-width:700px){ .ritual{ grid-template-columns: 1fr 1fr; } }
+  .ritual__step{
+    background: var(--bg);
+    padding: 40px 36px;
+  }
+  .ritual__time{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--amber-light);
+  }
+  .ritual__step h3{
+    font-size: 26px;
+    margin: 14px 0 12px;
+    color: var(--cream);
+  }
+  .ritual__step p{
+    color: var(--sage);
+    font-size: 15px;
+    line-height: 1.7;
+    margin:0;
+  }
+  .ritual__foot{
+    margin-top: 26px;
+    font-size: 13.5px;
+    color: var(--sage);
+    font-family: var(--font-mono);
+    max-width: 60ch;
+  }
+
+  /* ---------- INGREDIENTS ---------- */
+  .inci-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap: 24px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .inci-row:first-of-type{ border-top: 1px solid var(--line); }
+  .inci-row__name{
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--amber-light);
+    max-width: 34ch;
+    line-height: 1.5;
+  }
+  .inci-row__role{
+    font-size: 15px;
+    color: var(--cream);
+    text-align:right;
+    max-width: 32ch;
+  }
+  .inci-foot{
+    margin-top: 24px;
+    font-size: 13px;
+    color: var(--sage);
+  }
+
+  /* ---------- TESTIMONIALS ---------- */
+  .testimonials{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media(min-width:820px){ .testimonials{ grid-template-columns: repeat(3,1fr); } }
+  .t-card{
+    background: var(--bg);
+    border: 1px solid var(--line);
+    padding: 30px 26px;
+  }
+  .t-card p{
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--cream);
+    margin: 0 0 20px;
+  }
+  .t-card cite{
+    font-style: normal;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--sage);
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq{ max-width: 760px; }
+  .faq-item{
+    border-bottom: 1px solid var(--line);
+  }
+  .faq-item:first-child{ border-top: 1px solid var(--line); }
+  .faq-item summary{
+    cursor:pointer;
+    list-style:none;
+    padding: 22px 0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size: 17px;
+    color: var(--cream);
+    font-family: var(--font-display);
+  }
+  .faq-item summary::-webkit-details-marker{ display:none; }
+  .faq-item summary::after{
+    content:"+";
+    font-family: var(--font-body);
+    font-size: 20px;
+    color: var(--amber-light);
+    transition: transform .2s ease;
+    flex-shrink:0;
+    margin-left: 20px;
+  }
+  .faq-item[open] summary::after{ transform: rotate(45deg); }
+  .faq-item p{
+    color: var(--sage);
+    font-size: 14.5px;
+    line-height: 1.7;
+    max-width: 60ch;
+    padding-bottom: 24px;
+    margin:0;
+  }
+
+  /* ---------- FINAL CTA ---------- */
+  .cta-final{
+    text-align:center;
+    padding: 110px 0;
+  }
+  .cta-final h2{
+    font-size: clamp(36px, 6vw, 60px);
+    color: var(--cream);
+  }
+  .cta-final p{
+    margin: 20px auto 36px;
+    color: var(--sage);
+    max-width: 44ch;
+  }
+  .cta-final__actions{
+    display:flex;
+    justify-content:center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .cta-final__note{
+    margin-top: 22px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--sage);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer.site{
+    border-top: 1px solid var(--line);
+    padding: 48px 0 40px;
+  }
+  .footer-grid{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    gap: 24px;
+  }
+  .footer-brand{
+    font-family: var(--font-display);
+    font-size: 22px;
+  }
+  .footer-tag{
+    color: var(--sage);
+    font-size: 13px;
+    margin-top: 6px;
+  }
+  .footer-links{
+    display:flex;
+    gap: 26px;
+    list-style:none;
+    padding:0; margin:0;
+    font-size: 13.5px;
+  }
+  .footer-links a{ text-decoration:none; color: var(--sage); }
+  .footer-links a:hover{ color: var(--cream); }
+  .footer-fine{
+    margin-top: 34px;
+    font-size: 11.5px;
+    color: rgba(148,169,138,0.6);
+  }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal{
+    opacity:0;
+    transform: translateY(18px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <nav class="nav">
+    <div class="nav__brand">RAIZ</div>
+    <ul class="nav__links">
+      <li><a href="#formula">Fórmula</a></li>
+      <li><a href="#ritual">Como usar</a></li>
+      <li><a href="#opinioes">Opiniões</a></li>
+      <li><a href="#faq">Perguntas</a></li>
+    </ul>
+    <a href="#comprar" class="btn btn--primary btn--small">Comprar — 24,90€</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero__copy">
+        <p class="eyebrow">Fórmula Nº07 · Óleo de raiz</p>
+        <h1>O que nasce fraco,<br><em>quebra fácil.</em></h1>
+        <p class="hero__sub">Óleo de rícino, argan e biotina para tratar o couro cabeludo antes das pontas — porque é ali que tudo começa.</p>
+        <div class="hero__actions">
+          <a href="#comprar" class="btn btn--primary">Comprar agora — 24,90€</a>
+          <a href="#formula" class="hero__link">Ver a fórmula completa ↓</a>
+        </div>
+        <p class="hero__note">PORTES GRÁTIS ACIMA DE 35€ · DEVOLUÇÃO EM 30 DIAS</p>
+      </div>
+
+      <div class="stage">
+        <div class="stage__glow"></div>
+        <div class="scene" id="scene">
+          <div class="bottle-group" id="bottleGroup">
+            <div class="cap" id="cap">
+              <div class="face face--glass" style="transform: rotateY(0deg) translateZ(73px);"></div>
+              <div class="face face--glass" style="transform: rotateY(60deg) translateZ(73px);"></div>
+              <div class="face face--glass" style="transform: rotateY(120deg) translateZ(73px);"></div>
+              <div class="face face--glass" style="transform: rotateY(180deg) translateZ(73px);"></div>
+              <div class="face face--glass" style="transform: rotateY(240deg) translateZ(73px);"></div>
+              <div class="face face--glass" style="transform: rotateY(300deg) translateZ(73px);"></div>
+              <div class="dropper"></div>
+            </div>
+            <div class="bottle" id="bottle">
+              <div class="face face--front" style="transform: rotateY(0deg) translateZ(173px);">
+                <div class="label">
+                  <span class="label__brand">RAIZ</span>
+                  <span class="label__formula">FÓRMULA Nº07</span>
+                  <div class="label__rule"></div>
+                  <p class="label__inci">RICINUS COMMUNIS<br>ARGANIA SPINOSA<br>BIOTIN · SESAMUM INDICUM</p>
+                  <span class="label__vol">50ml ℮</span>
+                </div>
+              </div>
+              <div class="face face--glass" style="transform: rotateY(60deg) translateZ(173px);"></div>
+              <div class="face face--back" style="transform: rotateY(120deg) translateZ(173px);"><span>07</span></div>
+              <div class="face face--glass" style="transform: rotateY(180deg) translateZ(173px);"></div>
+              <div class="face face--glass" style="transform: rotateY(240deg) translateZ(173px);"></div>
+              <div class="face face--glass" style="transform: rotateY(300deg) translateZ(173px);"></div>
+            </div>
+          </div>
+        </div>
+        <p class="stage__hint">↔ arrasta para rodar o frasco</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="section--panel">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Antes de culpares o cabelo</p>
+        <h2>Isto raramente<br>começa nas pontas.</h2>
+        <p>Três causas que aparecem no couro cabeludo meses antes de se verem ao espelho.</p>
+      </div>
+      <div class="cards reveal">
+        <div class="card">
+          <span class="card__mark">01 — Água</span>
+          <h3>Água dura</h3>
+          <p>Em grande parte de Portugal a água da torneira é calcária. O calcário deposita‑se no couro cabeludo e resseca a raiz muito antes de a veres partir‑se.</p>
+        </div>
+        <div class="card">
+          <span class="card__mark">02 — Calor</span>
+          <h3>Calor direto</h3>
+          <p>Secador, chapa, escova quente. Cada passagem acima dos 180°C abre a cutícula e deixa o fio mais poroso e mais pesado de manter.</p>
+        </div>
+        <div class="card">
+          <span class="card__mark">03 — Tempo</span>
+          <h3>Queda com atraso</h3>
+          <p>A queda difusa costuma aparecer 2 a 3 meses depois de um período de mais stress. O folículo sente antes de mostrares sinais.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RITUAL -->
+  <section id="ritual">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">O ritual</p>
+        <h2>Dois momentos.<br>Nenhum enfeite.</h2>
+      </div>
+      <div class="ritual reveal">
+        <div class="ritual__step">
+          <span class="ritual__time">Manhã</span>
+          <h3>Na raiz</h3>
+          <p>3 gotas na raiz, aplicadas com os dedos, 60 segundos de massagem circular. Antes de lavar o cabelo.</p>
+        </div>
+        <div class="ritual__step">
+          <span class="ritual__time">Noite</span>
+          <h3>Nas pontas</h3>
+          <p>Aplicar nas pontas ainda secas, sem enxaguar. O óleo trabalha sozinho enquanto dormes.</p>
+        </div>
+      </div>
+      <p class="ritual__foot reveal">Resultados consistentes costumam aparecer entre a 4ª e a 8ª semana de uso diário — não há atalhos antes disso.</p>
+    </div>
+  </section>
+
+  <!-- INGREDIENTS -->
+  <section class="section--panel" id="formula">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">A fórmula, ao pormenor</p>
+        <h2>Sem perfume a mais,<br>sem promessas a mais.</h2>
+      </div>
+      <div class="reveal" style="max-width:760px;">
+        <div class="inci-row">
+          <span class="inci-row__name">Ricinus communis<br>(óleo de rícino)</span>
+          <span class="inci-row__role">Sela a cutícula e reduz a quebra na escovagem</span>
+        </div>
+        <div class="inci-row">
+          <span class="inci-row__name">Argania spinosa<br>(óleo de argan)</span>
+          <span class="inci-row__role">Repõe lípidos e dá brilho sem pesar o fio</span>
+        </div>
+        <div class="inci-row">
+          <span class="inci-row__name">Biotina<br>(vitamina B7)</span>
+          <span class="inci-row__role">Apoia a estrutura de queratina do fio</span>
+        </div>
+        <div class="inci-row">
+          <span class="inci-row__name">Sesamum indicum<br>(óleo de gergelim)</span>
+          <span class="inci-row__role">Veículo leve, absorção rápida, sem película</span>
+        </div>
+        <p class="inci-foot">Sem parabenos. Sem silicones. Sem corantes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="opinioes">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Quem já usa</p>
+        <h2>Sem filtros.</h2>
+      </div>
+      <div class="testimonials reveal">
+        <div class="t-card">
+          <p>Uso há 7 semanas. Não é milagre — mas a linha do couro cabeludo já não me coça ao fim do dia.</p>
+          <cite>Marta, 34 anos</cite>
+        </div>
+        <div class="t-card">
+          <p>Troquei o óleo de argan puro por este por causa da biotina. A queda difusa que tinha desde março abrandou.</p>
+          <cite>Rui, 29 anos</cite>
+        </div>
+        <div class="t-card">
+          <p>O cheiro é o único senão — é forte nos primeiros minutos depois de aplicar. Passado isso, nem se nota.</p>
+          <cite>Inês, 41 anos</cite>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section--panel" id="faq">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Perguntas diretas</p>
+        <h2>Sem letras pequenas.</h2>
+      </div>
+      <div class="faq reveal">
+        <details class="faq-item">
+          <summary>Serve para couro cabeludo oleoso?</summary>
+          <p>Sim. É um óleo leve, mas se já tens tendência oleosa, aplica só à noite, 2 vezes por semana, em vez de todos os dias.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Quanto tempo dura um frasco?</summary>
+          <p>Um frasco de 50ml dura entre 6 a 8 semanas com uso diário na raiz.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Posso usar depois de tintura ou alisamento?</summary>
+          <p>Sim. Não contém agentes descolorantes nem álcalis; pode ser usado normalmente antes ou depois de processos químicos.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Há devolução?</summary>
+          <p>30 dias. Se não notares diferença nenhuma, devolvemos o valor — basta enviar o frasco, mesmo vazio.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="cta-final" id="comprar">
+    <div class="wrap">
+      <h2 class="reveal">Começa pela raiz.</h2>
+      <p class="reveal">Um frasco dura 6 a 8 semanas. O primeiro resultado real costuma levar três meses — não menos.</p>
+      <div class="cta-final__actions reveal">
+        <a href="#" class="btn btn--primary">Comprar — 24,90€</a>
+        <a href="#formula" class="btn btn--ghost">Rever a fórmula</a>
+      </div>
+      <p class="cta-final__note">FÓRMULA Nº07 · 50ML · FEITO EM PORTUGAL</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">RAIZ</div>
+        <p class="footer-tag">Óleo capilar, sem enfeites.</p>
+      </div>
+      <ul class="footer-links">
+        <li><a href="#formula">Fórmula</a></li>
+        <li><a href="#ritual">Como usar</a></li>
+        <li><a href="#opinioes">Opiniões</a></li>
+        <li><a href="#faq">Perguntas</a></li>
+      </ul>
+    </div>
+    <p class="footer-fine">© 2026 RAIZ. Testado dermatologicamente. Sem testes em animais.</p>
+  </div>
+</footer>
+
+<script>
+  // --- drag-to-rotate 3D bottle ---
+  (function(){
+    var scene = document.getElementById('scene');
+    var group = document.getElementById('bottleGroup');
+    var rotY = 18, velocity = 0.06, dragging = false, lastX = 0, autoSpin = true;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function apply(){
+      group.style.transform = 'rotateX(-6deg) rotateY(' + rotY + 'deg)';
+    }
+
+    function pointerDown(x){
+      dragging = true; autoSpin = false; lastX = x;
+      scene.style.cursor = 'grabbing';
+    }
+    function pointerMove(x){
+      if(!dragging) return;
+      var dx = x - lastX;
+      rotY += dx * 0.4;
+      lastX = x;
+      apply();
+    }
+    function pointerUp(){
+      dragging = false;
+      scene.style.cursor = 'grab';
+      setTimeout(function(){ autoSpin = true; }, 2200);
+    }
+
+    scene.addEventListener('mousedown', function(e){ pointerDown(e.clientX); });
+    window.addEventListener('mousemove', function(e){ pointerMove(e.clientX); });
+    window.addEventListener('mouseup', pointerUp);
+
+    scene.addEventListener('touchstart', function(e){ pointerDown(e.touches[0].clientX); }, {passive:true});
+    window.addEventListener('touchmove', function(e){ pointerMove(e.touches[0].clientX); }, {passive:true});
+    window.addEventListener('touchend', pointerUp);
+
+    if(!reduceMotion){
+      (function loop(){
+        if(autoSpin){ rotY += velocity; apply(); }
+        requestAnimationFrame(loop);
+      })();
+    } else {
+      apply();
+    }
+  })();
+
+  // --- scroll reveal ---
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){
+      els.forEach(function(el){ el.classList.add('is-visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    els.forEach(function(el){ io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>
