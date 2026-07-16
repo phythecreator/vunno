@@ -2,422 +2,1017 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meccha Chameleon - Edição HTML Única</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chameleon Neon Run - Premium Edition</title>
     <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
         body {
             margin: 0;
-            padding: 0;
-            background: #111;
+            background: #0a0b10;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #fff;
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
         }
-        header {
-            background: linear-gradient(#ff00aa, #00ffff);
-            padding: 10px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            text-shadow: 0 0 10px #fff;
-        }
-        #game-container {
-            flex: 1;
-            display: flex;
+        #game-wrapper {
             position: relative;
+            width: 960px;
+            height: 540px;
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.25);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 3px solid #1a1c29;
+            background: #11121a;
         }
         canvas {
-            image-rendering: pixelated;
-            background: #000;
             display: block;
-            margin: auto;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            width: 100%;
+            height: 100%;
         }
-        #ui {
+        /* Telas de Interface sobrepostas ao Canvas */
+        .overlay {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0,0,0,0.7);
-            padding: 10px;
-            border-radius: 8px;
-            pointer-events: auto;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 11, 16, 0.92);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s ease;
         }
-        button {
-            background: #ff00aa;
-            color: white;
-            border: none;
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, #ff007f, #00f3ff, #fffb00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #8a8fbc;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #1f2136, #121324);
+            border: 2px solid #00f3ff;
+            color: #00f3ff;
+            padding: 14px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+            margin: 10px;
+            min-width: 200px;
+            text-align: center;
+        }
+        .btn:hover {
+            background: #00f3ff;
+            color: #0a0b10;
+            box-shadow: 0 0 25px #00f3ff;
+            transform: translateY(-2px);
+        }
+        .btn-pink {
+            border-color: #ff007f;
+            color: #ff007f;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.1);
+        }
+        .btn-pink:hover {
+            background: #ff007f;
+            color: #0a0b10;
+            box-shadow: 0 0 25px #ff007f;
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        /* Painel Superior de Informações (HUD) */
+        #hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 5;
+            pointer-events: none;
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+        .hud-item {
+            background: rgba(18, 19, 35, 0.7);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Painel lateral de customização */
+        .shop-box {
+            background: rgba(20, 22, 38, 0.8);
+            border: 1px solid #2d314e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+            width: 80%;
+            max-width: 600px;
+        }
+        .shop-title {
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #8a8fbc;
+        }
+        .skin-option {
             padding: 8px 16px;
             margin: 5px;
-            border-radius: 4px;
+            background: #151728;
+            border: 1px solid #3d416e;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
+            transition: 0.2s;
+            display: inline-block;
         }
-        button:hover {
-            background: #00ffff;
-            color: #000;
+        .skin-option.active {
+            border-color: #00f3ff;
+            background: rgba(0, 243, 255, 0.15);
         }
-        #paint-tools {
+        /* Mobile Controls Overlay */
+        #mobile-inst {
+            display: none;
             position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            padding: 10px;
-            border-radius: 12px;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            max-width: 90%;
-        }
-        .color-btn {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #fff;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(255,255,255,0.8);
-        }
-        #timer {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 28px;
-            font-weight: bold;
-            text-shadow: 0 0 10px #ff00aa;
-        }
-        #status {
-            position: absolute;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 22px;
-            font-weight: bold;
+            bottom: 10px;
+            width: 100%;
             text-align: center;
-            text-shadow: 0 0 10px #000;
+            color: rgba(255,255,255,0.4);
+            font-size: 12px;
+            pointer-events: none;
         }
-        .map-select {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
+        @media (max-width: 980px) {
+            #game-wrapper {
+                width: 100vw;
+                height: 56.25vw; /* Manter aspecto 16:9 */
+                border-radius: 0;
+                border: none;
+            }
+            #mobile-inst {
+                display: block;
+            }
         }
     </style>
 </head>
 <body>
-    <header>MECCHA CHAMELEON - Versão HTML Única (Alta Qualidade)</header>
-    
-    <div id="game-container">
-        <canvas id="game" width="1200" height="700"></canvas>
+
+<div id="game-wrapper">
+    <!-- Painel Superior de Jogo -->
+    <div id="hud" class="hidden">
+        <div class="hud-item" id="score-box">METROS: <span id="meters">0</span>m</div>
+        <div class="hud-item" style="color: #ff007f;">BOTS ATIVOS: <span id="bots-count">2</span></div>
+    </div>
+
+    <!-- Tela Inicial / Menu -->
+    <div id="main-menu" class="overlay">
+        <h1>CHAMELEON RUN</h1>
+        <div class="subtitle">PREMIUM NEON EDITION</div>
         
-        <div id="ui">
-            <h2>Modo: <span id="mode">Hider</span></h2>
-            <button onclick="startGame()">Novo Jogo</button>
-            <button onclick="toggleRole()">Trocar Papel (Hider/Seeker)</button>
-            
-            <div class="map-select">
-                <button onclick="changeMap(0)">Mapa 1: Sala Colorida</button>
-                <button onclick="changeMap(1)">Mapa 2: Floresta</button>
-                <button onclick="changeMap(2)">Mapa 3: Cidade Neon</button>
-            </div>
-            
-            <div style="margin-top:10px;">
-                <label>Bots: <span id="bot-count">4</span></label>
-                <input type="range" id="bots-slider" min="1" max="8" value="4" oninput="updateBots(this.value)">
-            </div>
+        <div class="row">
+            <button class="btn btn-pink" onclick="startGame('campaign', 0)">Nível 1 (Groves)</button>
+            <button class="btn btn-pink" onclick="startGame('campaign', 1)">Nível 2 (Matrix)</button>
+            <button class="btn btn-pink" onclick="startGame('campaign', 2)">Nível 3 (Gauntlet)</button>
         </div>
-        
-        <div id="timer">Tempo: 60s</div>
-        <div id="status">Prepare-se para pintar!</div>
-        
-        <div id="paint-tools">
-            <div class="color-btn" style="background:#ffffff;" onclick="setColor('#ffffff')"></div>
-            <div class="color-btn" style="background:#ff0000;" onclick="setColor('#ff0000')"></div>
-            <div class="color-btn" style="background:#00ff00;" onclick="setColor('#00ff00')"></div>
-            <div class="color-btn" style="background:#0000ff;" onclick="setColor('#0000ff')"></div>
-            <div class="color-btn" style="background:#ffff00;" onclick="setColor('#ffff00')"></div>
-            <div class="color-btn" style="background:#ff00ff;" onclick="setColor('#ff00ff')"></div>
-            <div class="color-btn" style="background:#00ffff;" onclick="setColor('#00ffff')"></div>
-            <div class="color-btn" style="background:#ffa500;" onclick="setColor('#ffa500')"></div>
-            <div class="color-btn" style="background:#800080;" onclick="setColor('#800080')"></div>
-            <button onclick="clearPaint()">Limpar Pintura</button>
-            <button onclick="randomPaint()">Pintura Aleatória</button>
+        <div class="row">
+            <button class="btn" onclick="startGame('infinite')">Modo Infinito</button>
+        </div>
+
+        <div class="shop-box">
+            <div class="shop-title">SELECIONA O TEU MODELO (SKIN):</div>
+            <div style="text-align: center;">
+                <div class="skin-option active" id="skin-0" onclick="setSkin(0)">CAMALEÃO CLÁSSICO</div>
+                <div class="skin-option" id="skin-1" onclick="setSkin(1)">ROBÔ CÚBICO</div>
+                <div class="skin-option" id="skin-2" onclick="setSkin(2)">CHIBI DINOSAUR</div>
+            </div>
         </div>
     </div>
 
-    <script>
-        const canvas = document.getElementById('game');
-        const ctx = canvas.getContext('2d');
-        
-        let isHider = true;
-        let timeLeft = 60;
-        let timerInterval;
-        let gameRunning = false;
-        let currentMap = 0;
-        let botCount = 4;
-        
-        // Cores
-        let currentColor = '#ffffff';
-        let painting = false;
-        
-        // Posição do jogador (Hider)
-        let player = { x: 400, y: 350, size: 80, angle: 0 };
-        
-        // Pintura do jogador (array de pixels ou camadas simples)
-        let playerPaint = new Map(); // key: `${x},${y}`, value: color
-        
-        // Bots (Seekers)
-        let bots = [];
-        
-        // Map backgrounds
-        let backgrounds = [
-            // Mapa 1: Sala Colorida
-            () => {
-                ctx.fillStyle = '#223344';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                // Paredes e objetos
-                ctx.fillStyle = '#ff88aa';
-                ctx.fillRect(100, 100, 300, 400); // sofá
-                ctx.fillStyle = '#88ffaa';
-                ctx.fillRect(700, 200, 250, 300); // planta
-                ctx.fillStyle = '#ffff88';
-                ctx.fillRect(500, 400, 150, 150); // mesa
-            },
-            // Mapa 2: Floresta
-            () => {
-                ctx.fillStyle = '#113322';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#228822';
-                for (let i = 0; i < 15; i++) {
-                    ctx.fillRect(80 + i*70, 100 + Math.sin(i)*50, 60, 500);
-                }
-            },
-            // Mapa 3: Cidade Neon
-            () => {
-                ctx.fillStyle = '#112233';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.strokeStyle = '#00ffff';
-                ctx.lineWidth = 8;
-                for (let i = 0; i < 8; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(100 + i*150, 0);
-                    ctx.lineTo(150 + i*120, canvas.height);
-                    ctx.stroke();
-                }
+    <!-- Tela de Game Over -->
+    <div id="game-over-screen" class="overlay hidden">
+        <h1 id="game-over-title" style="background: linear-gradient(45deg, #ff0055, #ff5500);">COLISÃO DETETADA!</h1>
+        <div class="subtitle" id="game-over-reason">Troca de cor incorreta ou queda no abismo.</div>
+        <div class="row">
+            <button class="btn" onclick="retryGame()">TENTAR NOVAMENTE</button>
+            <button class="btn btn-pink" onclick="showMainMenu()">VOLTAR AO MENU</button>
+        </div>
+    </div>
+
+    <!-- Tela de Vitória -->
+    <div id="victory-screen" class="overlay hidden">
+        <h1 style="background: linear-gradient(45deg, #00ff66, #00f3ff);">NÍVEL CONCLUÍDO!</h1>
+        <div class="subtitle">Mostraste quem manda nas cores!</div>
+        <div class="row">
+            <button class="btn btn-pink" id="next-lvl-btn" onclick="nextLevel()">PRÓXIMO NÍVEL</button>
+            <button class="btn" onclick="showMainMenu()">MENU PRINCIPAL</button>
+        </div>
+    </div>
+
+    <div id="mobile-inst">Toque à esquerda para trocar de cor | Toque à direita para saltar</div>
+    <canvas id="gameCanvas"></canvas>
+</div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Configurações lógicas internas (16:9)
+    const GAME_WIDTH = 960;
+    const GAME_HEIGHT = 540;
+    canvas.width = GAME_WIDTH;
+    canvas.height = GAME_HEIGHT;
+
+    // --- CORES DO JOGO ---
+    const COLORS = [
+        { hex: "#ff007f", name: "Rosa Neon", glow: "rgba(255, 0, 127, 0.8)" },   // Cor 0
+        { hex: "#fffb00", name: "Amarelo Neon", glow: "rgba(255, 251, 0, 0.8)" }, // Cor 1
+        { hex: "#00f3ff", name: "Cyan Elétrico", glow: "rgba(0, 243, 255, 0.8)" } // Cor 2
+    ];
+
+    // --- AUDIO SYNTHESIZER (Web Audio API) ---
+    let audioCtx = null;
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    }
+
+    function playSound(type) {
+        if (!audioCtx || audioCtx.state === 'suspended') return;
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'jump') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(150, now);
+            osc.frequency.exponentialRampToValueAtTime(500, now + 0.15);
+            gainNode.gain.setValueAtTime(0.15, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+            osc.start(now);
+            osc.stop(now + 0.15);
+        } else if (type === 'switch') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(600, now);
+            osc.frequency.setValueAtTime(900, now + 0.05);
+            gainNode.gain.setValueAtTime(0.08, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            osc.start(now);
+            osc.stop(now + 0.1);
+        } else if (type === 'explode') {
+            // Som de explosão sintetizado com frequência decrescente
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(180, now);
+            osc.frequency.linearRampToValueAtTime(30, now + 0.5);
+            gainNode.gain.setValueAtTime(0.4, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+            osc.start(now);
+            osc.stop(now + 0.5);
+        } else if (type === 'victory') {
+            const arpeggio = [261.63, 329.63, 392.00, 523.25]; // Acorde de Dó Maior
+            arpeggio.forEach((freq, i) => {
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.frequency.setValueAtTime(freq, now + i * 0.08);
+                g.gain.setValueAtTime(0.1, now + i * 0.08);
+                g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.2);
+                o.start(now + i * 0.08);
+                o.stop(now + i * 0.08 + 0.2);
+            });
+        }
+    }
+
+    // --- BASE DE DADOS DOS NÍVEIS ---
+    const LEVELS = [
+        {
+            name: "Groves",
+            finishX: 3500,
+            platforms: [
+                {x: 0, y: 420, w: 600, h: 40, color: 0},
+                {x: 700, y: 380, w: 450, h: 40, color: 1},
+                {x: 1250, y: 320, w: 400, h: 40, color: 0},
+                {x: 1750, y: 400, w: 500, h: 40, color: 1},
+                {x: 2350, y: 340, w: 300, h: 40, color: 2},
+                {x: 2750, y: 380, w: 800, h: 40, color: 0}
+            ]
+        },
+        {
+            name: "Matrix",
+            finishX: 4300,
+            platforms: [
+                {x: 0, y: 420, w: 500, h: 40, color: 1},
+                {x: 600, y: 350, w: 300, h: 40, color: 0},
+                {x: 1000, y: 420, w: 400, h: 40, color: 2},
+                {x: 1500, y: 300, w: 350, h: 40, color: 1},
+                {x: 1950, y: 380, w: 500, h: 40, color: 0},
+                {x: 2550, y: 320, w: 250, h: 40, color: 2},
+                {x: 2900, y: 400, w: 400, h: 40, color: 1},
+                {x: 3400, y: 320, w: 900, h: 40, color: 0}
+            ]
+        },
+        {
+            name: "Gauntlet",
+            finishX: 5200,
+            platforms: [
+                {x: 0, y: 420, w: 400, h: 40, color: 2},
+                {x: 500, y: 340, w: 250, h: 40, color: 0},
+                {x: 850, y: 420, w: 250, h: 40, color: 1},
+                {x: 1200, y: 310, w: 300, h: 40, color: 2},
+                {x: 1600, y: 380, w: 200, h: 40, color: 0},
+                {x: 1900, y: 300, w: 200, h: 40, color: 1},
+                {x: 2200, y: 420, w: 350, h: 40, color: 2},
+                {x: 2650, y: 330, w: 200, h: 40, color: 0},
+                {x: 2950, y: 380, w: 300, h: 40, color: 1},
+                {x: 3350, y: 300, w: 400, h: 40, color: 2},
+                {x: 3850, y: 420, w: 300, h: 40, color: 0},
+                {x: 4250, y: 350, w: 1000, h: 40, color: 1}
+            ]
+        }
+    ];
+
+    // --- VARIÁVEIS DO MOTOR DE JOGO ---
+    let mode = 'campaign'; // 'campaign' ou 'infinite'
+    let currentLvlIndex = 0;
+    let activeSkin = 0;
+
+    let player;
+    let bots = [];
+    let platforms = [];
+    let particles = [];
+    let cameraX = 0;
+    let isPlaying = false;
+    let distanceTraveled = 0;
+    let finishX = 0;
+    
+    // Parâmetros de física ajustados para sensação de velocidade
+    const GRAVITY = 0.6;
+    const JUMP_FORCE = -12.5;
+
+    // --- CLASSE DO JOGADOR ---
+    class Player {
+        constructor() {
+            this.x = 100;
+            this.y = 200;
+            this.vx = 8.5; // Velocidade base de corrida rápida
+            this.vy = 0;
+            this.width = 42;
+            this.height = 42;
+            this.colorIndex = 0; // Começa Rosa
+            this.isGrounded = false;
+            this.doubleJumpsLeft = 1;
+            this.alive = true;
+            this.rot = 0; // Rotação para flips ao saltar
+        }
+
+        update() {
+            if (!this.alive) return;
+
+            // Gravidade e velocidade vertical
+            this.vy += GRAVITY;
+            this.y += this.vy;
+            this.x += this.vx;
+
+            // Rotação estilosa no ar
+            if (!this.isGrounded) {
+                this.rot += 0.08;
+            } else {
+                this.rot = 0;
             }
-        ];
-        
-        function drawBackground() {
-            backgrounds[currentMap]();
-            
-            // Detalhes extras para qualidade
-            ctx.fillStyle = 'rgba(255,255,255,0.1)';
-            for (let i = 0; i < 40; i++) {
-                ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 3, 3);
+
+            // Morte por queda
+            if (this.y > GAME_HEIGHT + 100) {
+                this.die("Caíste no vácuo do ciberespaço!");
+            }
+
+            // Gerar partículas de rasto neon
+            if (this.isGrounded && Math.random() < 0.4) {
+                spawnRunningParticles(this.x, this.y + this.height, COLORS[this.colorIndex].hex);
             }
         }
-        
-        function drawPlayer() {
+
+        jump() {
+            if (!this.alive) return;
+
+            if (this.isGrounded) {
+                this.vy = JUMP_FORCE;
+                this.isGrounded = false;
+                playSound('jump');
+                spawnJumpParticles(this.x + this.width/2, this.y + this.height, COLORS[this.colorIndex].hex);
+            } else if (this.doubleJumpsLeft > 0) {
+                this.vy = JUMP_FORCE * 0.9;
+                this.doubleJumpsLeft--;
+                playSound('jump');
+                // Partículas adicionais para o duplo salto
+                spawnJumpParticles(this.x + this.width/2, this.y + this.height/2, "#ffffff");
+            }
+        }
+
+        switchColor() {
+            if (!this.alive) return;
+            this.colorIndex = (this.colorIndex + 1) % 3;
+            playSound('switch');
+            spawnSwitchParticles(this.x + this.width/2, this.y + this.height/2, COLORS[this.colorIndex].hex);
+        }
+
+        die(reason) {
+            this.alive = false;
+            playSound('explode');
+            spawnExplosionParticles(this.x + this.width/2, this.y + this.height/2, COLORS[this.colorIndex].hex);
+            
+            setTimeout(() => {
+                document.getElementById('game-over-reason').innerText = reason;
+                showOverlay('game-over-screen');
+            }, 800);
+        }
+    }
+
+    // --- CLASSE DOS BOTS (FANTASMAS) ---
+    class Bot {
+        constructor(name, colorIndex, speedOffset) {
+            this.name = name;
+            this.x = 100;
+            this.y = 200;
+            this.vx = 8.5 + speedOffset; // Velocidades ligeiramente diferentes
+            this.vy = 0;
+            this.width = 32;
+            this.height = 32;
+            this.colorIndex = colorIndex;
+            this.isGrounded = false;
+            this.alive = true;
+        }
+
+        update() {
+            if (!this.alive) return;
+
+            this.vy += GRAVITY;
+            this.y += this.vy;
+            this.x += this.vx;
+
+            if (this.y > GAME_HEIGHT + 100) {
+                this.alive = false;
+            }
+
+            // Inteligência Artificial do Bot: Sensor de plataformas futuras
+            let upcomingPlatform = null;
+            let currentPlatform = null;
+            let checkAheadDistance = 120;
+
+            for (let p of platforms) {
+                // Verificar se está em cima de alguma plataforma
+                if (this.x + this.width > p.x && this.x < p.x + p.w) {
+                    if (Math.abs((this.y + this.height) - p.y) < 6) {
+                        currentPlatform = p;
+                    }
+                }
+                // Previsão de plataformas à frente
+                if (this.x + this.width + checkAheadDistance > p.x && this.x + checkAheadDistance < p.x + p.w) {
+                    upcomingPlatform = p;
+                }
+            }
+
+            // Saltos Automáticos e Trocas de Cor Inteligentes
+            if (currentPlatform) {
+                this.isGrounded = true;
+                this.vy = 0;
+                this.y = currentPlatform.y - this.height;
+
+                // Salta se a plataforma atual estiver a acabar e houver um abismo
+                if (this.x + this.width > currentPlatform.x + currentPlatform.w - 80) {
+                    this.vy = JUMP_FORCE * (0.9 + Math.random()*0.15); // Ligeiramente aleatório
+                    this.isGrounded = false;
+                }
+            } else {
+                this.isGrounded = false;
+            }
+
+            // Se detetar plataforma à frente com cor diferente, muda preventivamente
+            if (upcomingPlatform && this.colorIndex !== upcomingPlatform.color) {
+                if (Math.random() < 0.08) { // Pequeno delay artificial para parecer humano
+                    this.colorIndex = upcomingPlatform.color;
+                }
+            }
+        }
+
+        draw() {
+            if (!this.alive) return;
+            drawChameleonEntity(this.x - cameraX, this.y, this.width, this.height, this.colorIndex, false, this.name);
+        }
+    }
+
+    // --- SISTEMA DE PARTÍCULAS ---
+    class Particle {
+        constructor(x, y, color, vx, vy, sizeDecay = 0.15) {
+            this.x = x;
+            this.y = y;
+            this.color = color;
+            this.vx = vx;
+            this.vy = vy;
+            this.size = Math.random() * 5 + 3;
+            this.alpha = 1;
+            this.decay = Math.random() * 0.02 + 0.015;
+            this.sizeDecay = sizeDecay;
+        }
+
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.alpha -= this.decay;
+            this.size -= this.sizeDecay;
+        }
+
+        draw() {
             ctx.save();
-            ctx.translate(player.x, player.y);
-            ctx.rotate(player.angle);
-            
-            // Corpo base (chameleon branco)
-            ctx.fillStyle = '#eeeeee';
-            ctx.beginPath();
-            ctx.ellipse(0, 0, player.size/2, player.size/1.6, 0, 0, Math.PI*2);
-            ctx.fill();
-            
-            // Cabeça
-            ctx.fillStyle = '#dddddd';
-            ctx.beginPath();
-            ctx.arc(35, -15, 25, 0, Math.PI*2);
-            ctx.fill();
-            
-            // Olhos
-            ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.arc(45, -22, 8, 0, Math.PI*2);
-            ctx.fill();
-            ctx.fillStyle = '#fff';
-            ctx.beginPath();
-            ctx.arc(47, -24, 3, 0, Math.PI*2);
-            ctx.fill();
-            
-            // Aplicar pintura
-            ctx.globalAlpha = 0.9;
-            playerPaint.forEach((color, key) => {
-                const [px, py] = key.split(',').map(Number);
-                ctx.fillStyle = color;
-                ctx.fillRect(px - player.x + 20, py - player.y - 40, 12, 12);
-            });
-            ctx.globalAlpha = 1;
-            
+            ctx.globalAlpha = this.alpha;
+            ctx.fillStyle = this.color;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = this.color;
+            ctx.fillRect(this.x - cameraX, this.y, this.size, this.size);
             ctx.restore();
         }
+    }
+
+    function spawnRunningParticles(x, y, color) {
+        particles.push(new Particle(x, y, color, -Math.random()*4 - 1, -Math.random()*2));
+    }
+
+    function spawnJumpParticles(x, y, color) {
+        for (let i = 0; i < 12; i++) {
+            particles.push(new Particle(x, y, color, (Math.random()-0.5)*6, -Math.random()*3 - 2));
+        }
+    }
+
+    function spawnSwitchParticles(x, y, color) {
+        for (let i = 0; i < 15; i++) {
+            let angle = Math.random() * Math.PI * 2;
+            let speed = Math.random() * 4 + 2;
+            particles.push(new Particle(x, y, color, Math.cos(angle)*speed, Math.sin(angle)*speed, 0.1));
+        }
+    }
+
+    function spawnExplosionParticles(x, y, color) {
+        for (let i = 0; i < 40; i++) {
+            let angle = Math.random() * Math.PI * 2;
+            let speed = Math.random() * 8 + 3;
+            particles.push(new Particle(x, y, color, Math.cos(angle)*speed, Math.sin(angle)*speed, 0.08));
+        }
+    }
+
+    // --- RENDERIZADORES DE ENTIDADES ---
+    function drawChameleonEntity(x, y, w, h, colorIndex, isPlayer, name = "", angle = 0) {
+        const baseColor = COLORS[colorIndex].hex;
+        const glowColor = COLORS[colorIndex].glow;
+
+        ctx.save();
+        ctx.translate(x + w/2, y + h/2);
+        ctx.rotate(angle);
+
+        // Sombras e brilhos neon
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = glowColor;
+
+        // Corpo Principal adaptado conforme a Skin selecionada
+        ctx.fillStyle = baseColor;
         
-        function drawBots() {
-            bots.forEach(bot => {
-                ctx.save();
-                ctx.translate(bot.x, bot.y);
-                
-                // Seeker (figura vermelha simples)
-                ctx.fillStyle = '#ff4444';
-                ctx.fillRect(-25, -45, 50, 90);
-                
-                // Cabeça
-                ctx.beginPath();
-                ctx.arc(0, -55, 20, 0, Math.PI*2);
-                ctx.fill();
-                
-                ctx.restore();
+        if (activeSkin === 0) { // Camaleão clássico e estilizado
+            ctx.beginPath();
+            ctx.roundRect(-w/2, -h/2, w, h, 8);
+            ctx.fill();
+
+            // Olho grande e expressivo
+            ctx.fillStyle = "#ffffff";
+            ctx.beginPath();
+            ctx.arc(w/4, -h/6, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#000";
+            ctx.beginPath();
+            ctx.arc(w/4 + 1, -h/6, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cauda espiral neon
+            ctx.strokeStyle = baseColor;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(-w/2, h/4, 8, 0, Math.PI * 1.5, true);
+            ctx.stroke();
+
+        } else if (activeSkin === 1) { // Robô Cúbico Futurista
+            ctx.fillRect(-w/2, -h/2, w, h);
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(-w/2 + 2, -h/2 + 2, w - 4, h - 4);
+
+            // Olho robótico retangular (visor)
+            ctx.fillStyle = "#000";
+            ctx.fillRect(w/12, -h/4, w/3, h/4);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(w/6, -h/5, w/6, h/8);
+
+        } else if (activeSkin === 2) { // Dino Chibi
+            // Cabeça e corpo
+            ctx.beginPath();
+            ctx.roundRect(-w/2, -h/2, w, h, 12);
+            ctx.fill();
+
+            // Pequenos espinhos nas costas
+            ctx.fillStyle = "#ffffff";
+            ctx.beginPath();
+            ctx.moveTo(-w/2, -h/4);
+            ctx.lineTo(-w/2 - 6, -h/8);
+            ctx.lineTo(-w/2, 0);
+            ctx.moveTo(-w/2, 0);
+            ctx.lineTo(-w/2 - 6, h/8);
+            ctx.lineTo(-w/2, h/4);
+            ctx.fill();
+
+            // Olho animado
+            ctx.fillStyle = "#ffffff";
+            ctx.beginPath();
+            ctx.arc(w/5, -h/6, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#000";
+            ctx.beginPath();
+            ctx.arc(w/5, -h/6, 2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        ctx.restore();
+
+        // Nome sobre o corredor (se for um Bot)
+        if (!isPlayer && name) {
+            ctx.save();
+            ctx.fillStyle = "rgba(255,255,255,0.45)";
+            ctx.font = "bold 11px monospace";
+            ctx.textAlign = "center";
+            ctx.fillText(name, x + w/2, y - 12);
+            ctx.restore();
+        }
+    }
+
+    // --- GESTÃO DE NÍVEIS E PROCEDURAL ---
+    function buildCampaignLevel(index) {
+        const data = LEVELS[index];
+        platforms = data.platforms.map(p => ({...p}));
+        finishX = data.finishX;
+    }
+
+    function generateInfiniteChunk(startX) {
+        // Gera novos blocos infinitamente à frente do jogador
+        let currentX = startX;
+        for (let i = 0; i < 8; i++) {
+            let width = Math.random() * 250 + 150;
+            let gap = Math.random() * 140 + 80;
+            let height = Math.random() * 120 + 300; // Alturas seguras
+            let color = Math.floor(Math.random() * 3);
+
+            platforms.push({
+                x: currentX,
+                y: height,
+                w: width,
+                h: 40,
+                color: color
             });
+            currentX += width + gap;
         }
-        
-        function gameLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawBackground();
-            drawPlayer();
-            drawBots();
-            
-            // Movimento simples do jogador (WASD)
-            if (keys['w'] || keys['ArrowUp']) player.y -= 5;
-            if (keys['s'] || keys['ArrowDown']) player.y += 5;
-            if (keys['a'] || keys['ArrowLeft']) { player.x -= 5; player.angle = -0.2; }
-            if (keys['d'] || keys['ArrowRight']) { player.x += 5; player.angle = 0.2; }
-            
-            // Limites
-            player.x = Math.max(50, Math.min(canvas.width - 50, player.x));
-            player.y = Math.max(50, Math.min(canvas.height - 50, player.y));
-            
-            if (gameRunning) {
-                requestAnimationFrame(gameLoop);
+        return currentX;
+    }
+
+    // --- LOOP PRINCIPAL DO JOGO ---
+    let lastTime = 0;
+    let infiniteNextX = 0;
+
+    function gameLoop(timestamp) {
+        if (!isPlaying) return;
+
+        // Limpar tela
+        ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+        // Fundo Cyberpunk (Efeito Paralaxe Suave)
+        drawBackground();
+
+        // Atualizar jogador
+        player.update();
+
+        // Câmera segue o jogador suavemente (Lerp)
+        cameraX += (player.x - cameraX - 180) * 0.12;
+
+        // Limitar câmara para não andar para trás
+        if (cameraX < 0) cameraX = 0;
+
+        // Atualizar Bots
+        let botsAlive = 0;
+        bots.forEach(bot => {
+            bot.update();
+            bot.draw();
+            if (bot.alive) botsAlive++;
+        });
+        document.getElementById('bots-count').innerText = botsAlive;
+
+        // Gerar mais mapa dinâmico se for modo Infinito
+        if (mode === 'infinite') {
+            if (player.x + 1000 > infiniteNextX) {
+                infiniteNextX = generateInfiniteChunk(infiniteNextX);
             }
+            // Manter apenas plataformas próximas em memória para desempenho
+            platforms = platforms.filter(p => p.x + p.w > cameraX - 200);
         }
-        
-        let keys = {};
-        window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
-        window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
-        
-        // Pintura com mouse
-        canvas.addEventListener('mousedown', e => {
-            if (!isHider || !gameRunning) return;
-            painting = true;
-            paintAt(e);
+
+        // Desenhar e testar colisões nas plataformas
+        drawPlatforms();
+
+        // Resolver colisões do Jogador com plataformas
+        checkPlayerCollisions();
+
+        // Desenhar e atualizar Partículas
+        particles.forEach((p, index) => {
+            p.update();
+            p.draw();
+            if (p.alpha <= 0 || p.size <= 0) {
+                particles.splice(index, 1);
+            }
         });
-        
-        canvas.addEventListener('mousemove', e => {
-            if (painting) paintAt(e);
-        });
-        
-        canvas.addEventListener('mouseup', () => painting = false);
-        canvas.addEventListener('mouseleave', () => painting = false);
-        
-        function paintAt(e) {
-            const rect = canvas.getBoundingClientRect();
-            const mx = e.clientX - rect.left;
-            const my = e.clientY - rect.top;
+
+        // Desenhar Jogador
+        if (player.alive) {
+            drawChameleonEntity(player.x - cameraX, player.y, player.width, player.height, player.colorIndex, true, "", player.rot);
+        }
+
+        // Atualizar Distância e HUD
+        distanceTraveled = Math.floor(player.x / 10);
+        document.getElementById('meters').innerText = distanceTraveled;
+
+        // Condição de Vitória (Apenas Modo Campanha)
+        if (mode === 'campaign' && player.x >= finishX && player.alive) {
+            winGame();
+            return;
+        }
+
+        requestAnimationFrame(gameLoop);
+    }
+
+    // --- CORES & PLATAFORMAS ---
+    function drawPlatforms() {
+        platforms.forEach(p => {
+            const hexColor = COLORS[p.color].hex;
+            const glowColor = COLORS[p.color].glow;
+
+            ctx.save();
+            ctx.fillStyle = hexColor;
             
-            // Pintar área ao redor do cursor se perto do jogador
-            const dx = mx - player.x;
-            const dy = my - player.y;
-            if (Math.sqrt(dx*dx + dy*dy) < player.size * 1.2) {
-                for (let i = -12; i < 12; i += 4) {
-                    for (let j = -12; j < 12; j += 4) {
-                        if (Math.random() > 0.4) {
-                            const key = `${Math.floor(player.x + dx + i)},${Math.floor(player.y + dy + j)}`;
-                            playerPaint.set(key, currentColor);
-                        }
+            // Caixa externa com glow brilhante
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = glowColor;
+            ctx.fillRect(p.x - cameraX, p.y, p.w, p.h);
+
+            // Detalhe interno tecnológico futurista
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+            ctx.fillRect(p.x - cameraX + 4, p.y + 4, p.w - 8, p.h - 8);
+
+            // Linha de energia no topo da plataforma
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(p.x - cameraX, p.y, p.w, 4);
+
+            ctx.restore();
+        });
+
+        // Desenhar a linha de meta no Modo Campanha
+        if (mode === 'campaign') {
+            ctx.save();
+            ctx.strokeStyle = "#00ff66";
+            ctx.lineWidth = 5;
+            ctx.setLineDash([10, 10]);
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = "#00ff66";
+            ctx.beginPath();
+            ctx.moveTo(finishX - cameraX, 0);
+            ctx.lineTo(finishX - cameraX, GAME_HEIGHT);
+            ctx.stroke();
+            ctx.restore();
+        }
+    }
+
+    function checkPlayerCollisions() {
+        if (!player.alive) return;
+
+        let onGroundThisFrame = false;
+
+        for (let p of platforms) {
+            // Caixa de colisão simples (AABB)
+            if (player.x + player.width > p.x && player.x < p.x + p.w) {
+                // Se o jogador estiver a cair em direção à plataforma
+                if (player.vy >= 0 && player.y + player.height - player.vy <= p.y + 12 && player.y + player.height >= p.y) {
+                    
+                    // TESTE CRÍTICO DE CORES: Corresponder ou explodir!
+                    if (player.colorIndex === p.color) {
+                        player.y = p.y - player.height;
+                        player.vy = 0;
+                        onGroundThisFrame = true;
+                        player.doubleJumpsLeft = 1; // Recarregar duplo salto ao tocar no chão correto
+                    } else {
+                        player.die("Cores não correspondentes! Tentaste aterrar em " + COLORS[p.color].name + " sendo " + COLORS[player.colorIndex].name + ".");
+                        return;
                     }
                 }
             }
         }
-        
-        function setColor(color) {
-            currentColor = color;
+
+        player.isGrounded = onGroundThisFrame;
+    }
+
+    // --- LINDO DESENHO DE FUNDO ---
+    function drawBackground() {
+        // Gradiente futurista escuro
+        let bgGrad = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
+        bgGrad.addColorStop(0, "#080911");
+        bgGrad.addColorStop(1, "#121424");
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+        // Estrelas distantes / Pontos de ciberespaço com paralaxe lento
+        ctx.fillStyle = "rgba(0, 243, 255, 0.3)";
+        for (let i = 0; i < 20; i++) {
+            let starX = (i * 150 - cameraX * 0.1) % (GAME_WIDTH + 100);
+            if (starX < -10) starX += GAME_WIDTH + 100;
+            ctx.fillRect(starX, (i * 27) % GAME_HEIGHT, 3, 3);
         }
-        
-        function clearPaint() {
-            playerPaint.clear();
+
+        // Montanhas/Estruturas ao fundo (Paralaxe médio)
+        ctx.fillStyle = "rgba(16, 18, 36, 0.6)";
+        for (let i = 0; i < 5; i++) {
+            let width = 300;
+            let hX = (i * 400 - cameraX * 0.3) % (GAME_WIDTH + width);
+            if (hX < -width) hX += GAME_WIDTH + width;
+            ctx.fillRect(hX, GAME_HEIGHT - 180, width, 180);
         }
-        
-        function randomPaint() {
-            clearPaint();
-            const colors = ['#ff0000','#00ff00','#0000ff','#ffff00','#ff00ff'];
-            for (let i = 0; i < 120; i++) {
-                const key = `${Math.floor(Math.random()*player.size*1.5 - player.size/2)},${Math.floor(Math.random()*player.size*1.5 - player.size/2)}`;
-                playerPaint.set(key, colors[Math.floor(Math.random()*colors.length)]);
-            }
+    }
+
+    // --- FLUXO DE TELAS ---
+    function showOverlay(id) {
+        document.getElementById('main-menu').classList.add('hidden');
+        document.getElementById('game-over-screen').classList.add('hidden');
+        document.getElementById('victory-screen').classList.add('hidden');
+        document.getElementById('hud').classList.add('hidden');
+
+        if (id) {
+            document.getElementById(id).classList.remove('hidden');
         }
-        
-        function startTimer() {
-            timeLeft = 60;
-            document.getElementById('timer').textContent = `Tempo: ${timeLeft}s`;
+    }
+
+    function setSkin(index) {
+        activeSkin = index;
+        document.getElementById('skin-0').classList.remove('active');
+        document.getElementById('skin-1').classList.remove('active');
+        document.getElementById('skin-2').classList.remove('active');
+        document.getElementById('skin-' + index).classList.add('active');
+    }
+
+    function startGame(selectedMode, levelIndex = 0) {
+        initAudio();
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
+        mode = selectedMode;
+        currentLvlIndex = levelIndex;
+        isPlaying = true;
+        particles = [];
+        cameraX = 0;
+
+        player = new Player();
+
+        if (mode === 'campaign') {
+            buildCampaignLevel(currentLvlIndex);
             
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').textContent = `Tempo: ${timeLeft}s`;
-                
-                if (timeLeft <= 0) {
-                    endRound();
-                }
-            }, 1000);
+            // Ativar bots que competem de verdade contigo!
+            bots = [
+                new Bot("FANTASMA NEON", 1, -0.4),
+                new Bot("BOT CHROMA", 2, 0.1)
+            ];
+        } else {
+            // Modo Infinito
+            platforms = [
+                {x: 0, y: 420, w: 800, h: 40, color: 0}
+            ];
+            infiniteNextX = 800;
+            infiniteNextX = generateInfiniteChunk(infiniteNextX);
+            bots = []; // Sem bots competitivos no modo infinito (foco em sobrevivência)
+        }
+
+        showOverlay(null); // Esconder todos os painéis
+        document.getElementById('hud').classList.remove('hidden');
+        
+        requestAnimationFrame(gameLoop);
+    }
+
+    function retryGame() {
+        startGame(mode, currentLvlIndex);
+    }
+
+    function showMainMenu() {
+        isPlaying = false;
+        showOverlay('main-menu');
+    }
+
+    function winGame() {
+        isPlaying = false;
+        playSound('victory');
+        
+        // Se houver mais níveis, mostra botão do próximo
+        if (currentLvlIndex < LEVELS.length - 1) {
+            document.getElementById('next-lvl-btn').style.display = 'inline-block';
+        } else {
+            document.getElementById('next-lvl-btn').style.display = 'none';
         }
         
-        function startGame() {
-            gameRunning = true;
-            playerPaint.clear();
-            player.x = 300 + Math.random() * 600;
-            player.y = 250 + Math.random() * 300;
-            
-            // Gerar bots
-            bots = [];
-            for (let i = 0; i < botCount; i++) {
-                bots.push({
-                    x: 100 + Math.random() * (canvas.width - 200),
-                    y: 100 + Math.random() * (canvas.height - 200)
-                });
-            }
-            
-            startTimer();
-            document.getElementById('status').textContent = isHider ? "Pinte e esconda-se!" : "Encontre os camaleões!";
-            gameLoop();
+        showOverlay('victory-screen');
+    }
+
+    function nextLevel() {
+        if (currentLvlIndex < LEVELS.length - 1) {
+            startGame('campaign', currentLvlIndex + 1);
         }
-        
-        function endRound() {
-            gameRunning = false;
-            clearInterval(timerInterval);
-            document.getElementById('status').textContent = isHider ? "Fim da rodada! Você sobreviveu?" : "Rodada terminada!";
+    }
+
+    // --- CONFIGURAÇÃO DE INPUTS ---
+
+    // CONTROLOS POR TECLADO
+    window.addEventListener('keydown', (e) => {
+        if (!isPlaying) return;
+
+        if (e.code === 'Space') {
+            e.preventDefault();
+            player.switchColor();
         }
-        
-        function toggleRole() {
-            isHider = !isHider;
-            document.getElementById('mode').textContent = isHider ? "Hider" : "Seeker";
-            document.getElementById('status').textContent = "Papel trocado!";
+        if (e.code === 'ArrowUp' || e.code === 'KeyW') {
+            e.preventDefault();
+            player.jump();
         }
+    });
+
+    // CONTROLOS POR CLIQUE DE RATO (Fácil de jogar no PC)
+    canvas.addEventListener('mousedown', (e) => {
+        if (!isPlaying) return;
         
-        function changeMap(mapIndex) {
-            currentMap = mapIndex;
-            if (gameRunning) startGame();
+        // Clique botão esquerdo -> Troca Cor | Clique botão direito -> Salta
+        if (e.button === 0) {
+            player.switchColor();
+        } else if (e.button === 2) {
+            player.jump();
         }
-        
-        function updateBots(val) {
-            botCount = parseInt(val);
-            document.getElementById('bot-count').textContent = botCount;
+    });
+
+    // Bloquear menu de contexto padrão do rato
+    canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+    // CONTROLOS TÁTEIS (Para smartphones/tablets)
+    canvas.addEventListener('touchstart', (e) => {
+        if (!isPlaying) return;
+        e.preventDefault();
+
+        const rect = canvas.getBoundingClientRect();
+        const touchX = e.touches[0].clientX - rect.left;
+
+        // Se o toque for no lado esquerdo do ecrã -> Troca de Cor
+        if (touchX < rect.width / 2) {
+            player.switchColor();
+        } else { // Lado direito -> Salto
+            player.jump();
         }
-        
-        // Inicialização
-        window.onload = () => {
-            document.getElementById('status').textContent = "Bem-vindo ao Meccha Chameleon! Clique em Novo Jogo.";
-            // Demo inicial
-            drawBackground();
-            drawPlayer();
-        };
-        
-        // Dicas de alta qualidade
-        console.log("%cMeccha Chameleon HTML - Divirta-se! Use WASD para mover e clique para pintar.", "color:#00ffff; font-size:16px");
-    </script>
+    }, {passive: false});
+
+</script>
 </body>
 </html>
