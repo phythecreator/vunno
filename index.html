@@ -2,1017 +2,324 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chameleon Neon Run - Premium Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meccha Chameleon 3D - Edição Única</title>
     <style>
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
+        body { margin:0; padding:0; overflow:hidden; background:#000; font-family:Arial; }
+        header {
+            position: absolute; top: 0; left: 0; right: 0;
+            background: linear-gradient(#ff00aa, #00ffff);
+            padding: 12px; text-align: center; font-size: 26px;
+            font-weight: bold; z-index: 100; text-shadow: 0 0 15px #fff;
         }
-        body {
-            margin: 0;
-            background: #0a0b10;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            overflow: hidden;
+        #ui {
+            position: absolute; top: 70px; left: 15px; background: rgba(0,0,0,0.75);
+            padding: 15px; border-radius: 10px; z-index: 100; color: white;
         }
-        #game-wrapper {
-            position: relative;
-            width: 960px;
-            height: 540px;
-            box-shadow: 0 0 40px rgba(0, 243, 255, 0.25);
-            border-radius: 16px;
-            overflow: hidden;
-            border: 3px solid #1a1c29;
-            background: #11121a;
+        button {
+            background:#ff00aa; color:white; border:none; padding:10px 18px;
+            margin:5px; border-radius:6px; font-size:16px; cursor:pointer;
         }
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
+        button:hover { background:#00ffff; color:#000; }
+        #timer {
+            position: absolute; top: 15px; right: 20px; font-size: 32px;
+            font-weight: bold; color: #ff0; text-shadow: 0 0 10px #f00; z-index: 100;
         }
-        /* Telas de Interface sobrepostas ao Canvas */
-        .overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 11, 16, 0.92);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            transition: all 0.3s ease;
+        #status {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.8); padding: 12px 30px; border-radius: 12px;
+            font-size: 24px; font-weight: bold; z-index: 100;
         }
-        .hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        h1 {
-            font-size: 48px;
-            margin-bottom: 5px;
-            background: linear-gradient(45deg, #ff007f, #00f3ff, #fffb00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            text-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
-        }
-        .subtitle {
-            font-size: 14px;
-            color: #8a8fbc;
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-        }
-        .btn {
-            background: linear-gradient(135deg, #1f2136, #121324);
-            border: 2px solid #00f3ff;
-            color: #00f3ff;
-            padding: 14px 40px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
-            margin: 10px;
-            min-width: 200px;
-            text-align: center;
-        }
-        .btn:hover {
-            background: #00f3ff;
-            color: #0a0b10;
-            box-shadow: 0 0 25px #00f3ff;
-            transform: translateY(-2px);
-        }
-        .btn-pink {
-            border-color: #ff007f;
-            color: #ff007f;
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.1);
-        }
-        .btn-pink:hover {
-            background: #ff007f;
-            color: #0a0b10;
-            box-shadow: 0 0 25px #ff007f;
-        }
-        .row {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-        /* Painel Superior de Informações (HUD) */
-        #hud {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            display: flex;
-            justify-content: space-between;
-            z-index: 5;
-            pointer-events: none;
-            font-family: monospace;
-            font-size: 18px;
-            font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-        }
-        .hud-item {
-            background: rgba(18, 19, 35, 0.7);
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        /* Painel lateral de customização */
-        .shop-box {
-            background: rgba(20, 22, 38, 0.8);
-            border: 1px solid #2d314e;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 15px;
-            width: 80%;
-            max-width: 600px;
-        }
-        .shop-title {
-            text-align: center;
-            margin-bottom: 15px;
-            font-weight: bold;
-            color: #8a8fbc;
-        }
-        .skin-option {
-            padding: 8px 16px;
-            margin: 5px;
-            background: #151728;
-            border: 1px solid #3d416e;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.2s;
-            display: inline-block;
-        }
-        .skin-option.active {
-            border-color: #00f3ff;
-            background: rgba(0, 243, 255, 0.15);
-        }
-        /* Mobile Controls Overlay */
-        #mobile-inst {
-            display: none;
-            position: absolute;
-            bottom: 10px;
-            width: 100%;
-            text-align: center;
-            color: rgba(255,255,255,0.4);
-            font-size: 12px;
-            pointer-events: none;
-        }
-        @media (max-width: 980px) {
-            #game-wrapper {
-                width: 100vw;
-                height: 56.25vw; /* Manter aspecto 16:9 */
-                border-radius: 0;
-                border: none;
-            }
-            #mobile-inst {
-                display: block;
-            }
+        .color-btn {
+            width: 45px; height: 45px; border: 3px solid white;
+            border-radius: 50%; display: inline-block; margin: 4px; cursor: pointer;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 </head>
 <body>
-
-<div id="game-wrapper">
-    <!-- Painel Superior de Jogo -->
-    <div id="hud" class="hidden">
-        <div class="hud-item" id="score-box">METROS: <span id="meters">0</span>m</div>
-        <div class="hud-item" style="color: #ff007f;">BOTS ATIVOS: <span id="bots-count">2</span></div>
-    </div>
-
-    <!-- Tela Inicial / Menu -->
-    <div id="main-menu" class="overlay">
-        <h1>CHAMELEON RUN</h1>
-        <div class="subtitle">PREMIUM NEON EDITION</div>
-        
-        <div class="row">
-            <button class="btn btn-pink" onclick="startGame('campaign', 0)">Nível 1 (Groves)</button>
-            <button class="btn btn-pink" onclick="startGame('campaign', 1)">Nível 2 (Matrix)</button>
-            <button class="btn btn-pink" onclick="startGame('campaign', 2)">Nível 3 (Gauntlet)</button>
-        </div>
-        <div class="row">
-            <button class="btn" onclick="startGame('infinite')">Modo Infinito</button>
-        </div>
-
-        <div class="shop-box">
-            <div class="shop-title">SELECIONA O TEU MODELO (SKIN):</div>
-            <div style="text-align: center;">
-                <div class="skin-option active" id="skin-0" onclick="setSkin(0)">CAMALEÃO CLÁSSICO</div>
-                <div class="skin-option" id="skin-1" onclick="setSkin(1)">ROBÔ CÚBICO</div>
-                <div class="skin-option" id="skin-2" onclick="setSkin(2)">CHIBI DINOSAUR</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tela de Game Over -->
-    <div id="game-over-screen" class="overlay hidden">
-        <h1 id="game-over-title" style="background: linear-gradient(45deg, #ff0055, #ff5500);">COLISÃO DETETADA!</h1>
-        <div class="subtitle" id="game-over-reason">Troca de cor incorreta ou queda no abismo.</div>
-        <div class="row">
-            <button class="btn" onclick="retryGame()">TENTAR NOVAMENTE</button>
-            <button class="btn btn-pink" onclick="showMainMenu()">VOLTAR AO MENU</button>
-        </div>
-    </div>
-
-    <!-- Tela de Vitória -->
-    <div id="victory-screen" class="overlay hidden">
-        <h1 style="background: linear-gradient(45deg, #00ff66, #00f3ff);">NÍVEL CONCLUÍDO!</h1>
-        <div class="subtitle">Mostraste quem manda nas cores!</div>
-        <div class="row">
-            <button class="btn btn-pink" id="next-lvl-btn" onclick="nextLevel()">PRÓXIMO NÍVEL</button>
-            <button class="btn" onclick="showMainMenu()">MENU PRINCIPAL</button>
-        </div>
-    </div>
-
-    <div id="mobile-inst">Toque à esquerda para trocar de cor | Toque à direita para saltar</div>
-    <canvas id="gameCanvas"></canvas>
-</div>
-
-<script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
+    <header>MECCHA CHAMELEON 3D - Alta Qualidade</header>
     
-    // Configurações lógicas internas (16:9)
-    const GAME_WIDTH = 960;
-    const GAME_HEIGHT = 540;
-    canvas.width = GAME_WIDTH;
-    canvas.height = GAME_HEIGHT;
+    <div id="timer">Tempo: 90s</div>
+    <div id="ui">
+        <button onclick="startGame()">Novo Jogo</button>
+        <button onclick="toggleRole()">Trocar Papel</button>
+        <div style="margin:10px 0;">
+            Mapa: 
+            <button onclick="changeMap(0)">Sala</button>
+            <button onclick="changeMap(1)">Floresta</button>
+            <button onclick="changeMap(2)">Neon</button>
+        </div>
+        <div>Bots: <span id="bot-count">5</span></div>
+    </div>
+    <div id="status">Carregando 3D...</div>
 
-    // --- CORES DO JOGO ---
-    const COLORS = [
-        { hex: "#ff007f", name: "Rosa Neon", glow: "rgba(255, 0, 127, 0.8)" },   // Cor 0
-        { hex: "#fffb00", name: "Amarelo Neon", glow: "rgba(255, 251, 0, 0.8)" }, // Cor 1
-        { hex: "#00f3ff", name: "Cyan Elétrico", glow: "rgba(0, 243, 255, 0.8)" } // Cor 2
-    ];
+    <script>
+        let scene, camera, renderer;
+        let playerModel, playerPaintMesh;
+        let bots = [];
+        let isHider = true;
+        let timeLeft = 90;
+        let timerInterval, gameRunning = false;
+        let currentMap = 0;
+        let currentColor = 0xffffff;
+        let keys = {};
+        
+        function initThree() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            document.body.appendChild(renderer.domElement);
 
-    // --- AUDIO SYNTHESIZER (Web Audio API) ---
-    let audioCtx = null;
-    function initAudio() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            // Luzes
+            const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambient);
+            const directional = new THREE.DirectionalLight(0xffffff, 0.8);
+            directional.position.set(10, 20, 10);
+            directional.castShadow = true;
+            scene.add(directional);
+
+            camera.position.set(0, 8, 15);
+            camera.lookAt(0, 2, 0);
         }
-    }
 
-    function playSound(type) {
-        if (!audioCtx || audioCtx.state === 'suspended') return;
-        const osc = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        osc.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-
-        const now = audioCtx.currentTime;
-
-        if (type === 'jump') {
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(150, now);
-            osc.frequency.exponentialRampToValueAtTime(500, now + 0.15);
-            gainNode.gain.setValueAtTime(0.15, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-            osc.start(now);
-            osc.stop(now + 0.15);
-        } else if (type === 'switch') {
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(600, now);
-            osc.frequency.setValueAtTime(900, now + 0.05);
-            gainNode.gain.setValueAtTime(0.08, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-            osc.start(now);
-            osc.stop(now + 0.1);
-        } else if (type === 'explode') {
-            // Som de explosão sintetizado com frequência decrescente
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(180, now);
-            osc.frequency.linearRampToValueAtTime(30, now + 0.5);
-            gainNode.gain.setValueAtTime(0.4, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
-            osc.start(now);
-            osc.stop(now + 0.5);
-        } else if (type === 'victory') {
-            const arpeggio = [261.63, 329.63, 392.00, 523.25]; // Acorde de Dó Maior
-            arpeggio.forEach((freq, i) => {
-                const o = audioCtx.createOscillator();
-                const g = audioCtx.createGain();
-                o.connect(g);
-                g.connect(audioCtx.destination);
-                o.frequency.setValueAtTime(freq, now + i * 0.08);
-                g.gain.setValueAtTime(0.1, now + i * 0.08);
-                g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.2);
-                o.start(now + i * 0.08);
-                o.stop(now + i * 0.08 + 0.2);
+        function createPlayer() {
+            if (playerModel) scene.remove(playerModel);
+            
+            // Corpo principal (Chameleon-like)
+            const group = new THREE.Group();
+            
+            // Corpo
+            const bodyGeo = new THREE.CapsuleGeometry(1.2, 2.8, 8, 16);
+            const bodyMat = new THREE.MeshPhongMaterial({ color: 0xeeeeee, shininess: 10 });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            body.position.y = 2;
+            body.castShadow = true;
+            group.add(body);
+            
+            // Cabeça
+            const headGeo = new THREE.SphereGeometry(1.1, 32, 32);
+            const head = new THREE.Mesh(headGeo, bodyMat);
+            head.position.set(1.8, 3.5, 0);
+            group.add(head);
+            
+            // Olhos
+            const eyeMat = new THREE.MeshPhongMaterial({ color: 0x000000 });
+            const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.35, 16, 16), eyeMat);
+            eyeL.position.set(2.4, 3.8, 0.6);
+            group.add(eyeL);
+            const eyeR = eyeL.clone();
+            eyeR.position.z = -0.6;
+            group.add(eyeR);
+            
+            playerModel = group;
+            scene.add(playerModel);
+            
+            // Camada de pintura (semi-transparente)
+            const paintGeo = new THREE.CapsuleGeometry(1.25, 2.85, 8, 16);
+            const paintMat = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.85,
+                shininess: 30
             });
-        }
-    }
-
-    // --- BASE DE DADOS DOS NÍVEIS ---
-    const LEVELS = [
-        {
-            name: "Groves",
-            finishX: 3500,
-            platforms: [
-                {x: 0, y: 420, w: 600, h: 40, color: 0},
-                {x: 700, y: 380, w: 450, h: 40, color: 1},
-                {x: 1250, y: 320, w: 400, h: 40, color: 0},
-                {x: 1750, y: 400, w: 500, h: 40, color: 1},
-                {x: 2350, y: 340, w: 300, h: 40, color: 2},
-                {x: 2750, y: 380, w: 800, h: 40, color: 0}
-            ]
-        },
-        {
-            name: "Matrix",
-            finishX: 4300,
-            platforms: [
-                {x: 0, y: 420, w: 500, h: 40, color: 1},
-                {x: 600, y: 350, w: 300, h: 40, color: 0},
-                {x: 1000, y: 420, w: 400, h: 40, color: 2},
-                {x: 1500, y: 300, w: 350, h: 40, color: 1},
-                {x: 1950, y: 380, w: 500, h: 40, color: 0},
-                {x: 2550, y: 320, w: 250, h: 40, color: 2},
-                {x: 2900, y: 400, w: 400, h: 40, color: 1},
-                {x: 3400, y: 320, w: 900, h: 40, color: 0}
-            ]
-        },
-        {
-            name: "Gauntlet",
-            finishX: 5200,
-            platforms: [
-                {x: 0, y: 420, w: 400, h: 40, color: 2},
-                {x: 500, y: 340, w: 250, h: 40, color: 0},
-                {x: 850, y: 420, w: 250, h: 40, color: 1},
-                {x: 1200, y: 310, w: 300, h: 40, color: 2},
-                {x: 1600, y: 380, w: 200, h: 40, color: 0},
-                {x: 1900, y: 300, w: 200, h: 40, color: 1},
-                {x: 2200, y: 420, w: 350, h: 40, color: 2},
-                {x: 2650, y: 330, w: 200, h: 40, color: 0},
-                {x: 2950, y: 380, w: 300, h: 40, color: 1},
-                {x: 3350, y: 300, w: 400, h: 40, color: 2},
-                {x: 3850, y: 420, w: 300, h: 40, color: 0},
-                {x: 4250, y: 350, w: 1000, h: 40, color: 1}
-            ]
-        }
-    ];
-
-    // --- VARIÁVEIS DO MOTOR DE JOGO ---
-    let mode = 'campaign'; // 'campaign' ou 'infinite'
-    let currentLvlIndex = 0;
-    let activeSkin = 0;
-
-    let player;
-    let bots = [];
-    let platforms = [];
-    let particles = [];
-    let cameraX = 0;
-    let isPlaying = false;
-    let distanceTraveled = 0;
-    let finishX = 0;
-    
-    // Parâmetros de física ajustados para sensação de velocidade
-    const GRAVITY = 0.6;
-    const JUMP_FORCE = -12.5;
-
-    // --- CLASSE DO JOGADOR ---
-    class Player {
-        constructor() {
-            this.x = 100;
-            this.y = 200;
-            this.vx = 8.5; // Velocidade base de corrida rápida
-            this.vy = 0;
-            this.width = 42;
-            this.height = 42;
-            this.colorIndex = 0; // Começa Rosa
-            this.isGrounded = false;
-            this.doubleJumpsLeft = 1;
-            this.alive = true;
-            this.rot = 0; // Rotação para flips ao saltar
+            playerPaintMesh = new THREE.Mesh(paintGeo, paintMat);
+            playerPaintMesh.position.copy(body.position);
+            scene.add(playerPaintMesh);
         }
 
-        update() {
-            if (!this.alive) return;
-
-            // Gravidade e velocidade vertical
-            this.vy += GRAVITY;
-            this.y += this.vy;
-            this.x += this.vx;
-
-            // Rotação estilosa no ar
-            if (!this.isGrounded) {
-                this.rot += 0.08;
-            } else {
-                this.rot = 0;
+        function createEnvironment(map) {
+            // Limpar cena anterior (exceto player)
+            while(scene.children.length > 3) {
+                scene.remove(scene.children[3]);
             }
-
-            // Morte por queda
-            if (this.y > GAME_HEIGHT + 100) {
-                this.die("Caíste no vácuo do ciberespaço!");
-            }
-
-            // Gerar partículas de rasto neon
-            if (this.isGrounded && Math.random() < 0.4) {
-                spawnRunningParticles(this.x, this.y + this.height, COLORS[this.colorIndex].hex);
-            }
-        }
-
-        jump() {
-            if (!this.alive) return;
-
-            if (this.isGrounded) {
-                this.vy = JUMP_FORCE;
-                this.isGrounded = false;
-                playSound('jump');
-                spawnJumpParticles(this.x + this.width/2, this.y + this.height, COLORS[this.colorIndex].hex);
-            } else if (this.doubleJumpsLeft > 0) {
-                this.vy = JUMP_FORCE * 0.9;
-                this.doubleJumpsLeft--;
-                playSound('jump');
-                // Partículas adicionais para o duplo salto
-                spawnJumpParticles(this.x + this.width/2, this.y + this.height/2, "#ffffff");
-            }
-        }
-
-        switchColor() {
-            if (!this.alive) return;
-            this.colorIndex = (this.colorIndex + 1) % 3;
-            playSound('switch');
-            spawnSwitchParticles(this.x + this.width/2, this.y + this.height/2, COLORS[this.colorIndex].hex);
-        }
-
-        die(reason) {
-            this.alive = false;
-            playSound('explode');
-            spawnExplosionParticles(this.x + this.width/2, this.y + this.height/2, COLORS[this.colorIndex].hex);
             
-            setTimeout(() => {
-                document.getElementById('game-over-reason').innerText = reason;
-                showOverlay('game-over-screen');
-            }, 800);
-        }
-    }
-
-    // --- CLASSE DOS BOTS (FANTASMAS) ---
-    class Bot {
-        constructor(name, colorIndex, speedOffset) {
-            this.name = name;
-            this.x = 100;
-            this.y = 200;
-            this.vx = 8.5 + speedOffset; // Velocidades ligeiramente diferentes
-            this.vy = 0;
-            this.width = 32;
-            this.height = 32;
-            this.colorIndex = colorIndex;
-            this.isGrounded = false;
-            this.alive = true;
-        }
-
-        update() {
-            if (!this.alive) return;
-
-            this.vy += GRAVITY;
-            this.y += this.vy;
-            this.x += this.vx;
-
-            if (this.y > GAME_HEIGHT + 100) {
-                this.alive = false;
-            }
-
-            // Inteligência Artificial do Bot: Sensor de plataformas futuras
-            let upcomingPlatform = null;
-            let currentPlatform = null;
-            let checkAheadDistance = 120;
-
-            for (let p of platforms) {
-                // Verificar se está em cima de alguma plataforma
-                if (this.x + this.width > p.x && this.x < p.x + p.w) {
-                    if (Math.abs((this.y + this.height) - p.y) < 6) {
-                        currentPlatform = p;
-                    }
+            if (map === 0) { // Sala
+                const floor = new THREE.Mesh(
+                    new THREE.PlaneGeometry(60, 60),
+                    new THREE.MeshPhongMaterial({ color: 0x334455 })
+                );
+                floor.rotation.x = -Math.PI / 2;
+                floor.receiveShadow = true;
+                scene.add(floor);
+                
+                // Sofá
+                const sofa = new THREE.Mesh(new THREE.BoxGeometry(8, 4, 4), new THREE.MeshPhongMaterial({color:0xff4488}));
+                sofa.position.set(-12, 2, 0);
+                scene.add(sofa);
+            } 
+            else if (map === 1) { // Floresta
+                const floor = new THREE.Mesh(
+                    new THREE.PlaneGeometry(60, 60),
+                    new THREE.MeshPhongMaterial({ color: 0x113322 })
+                );
+                floor.rotation.x = -Math.PI / 2;
+                scene.add(floor);
+                
+                for (let i = 0; i < 25; i++) {
+                    const tree = new THREE.Mesh(
+                        new THREE.CylinderGeometry(1.2, 2, 9, 8),
+                        new THREE.MeshPhongMaterial({color: 0x228822})
+                    );
+                    tree.position.set((Math.random()-0.5)*40, 4.5, (Math.random()-0.5)*40);
+                    scene.add(tree);
                 }
-                // Previsão de plataformas à frente
-                if (this.x + this.width + checkAheadDistance > p.x && this.x + checkAheadDistance < p.x + p.w) {
-                    upcomingPlatform = p;
-                }
-            }
-
-            // Saltos Automáticos e Trocas de Cor Inteligentes
-            if (currentPlatform) {
-                this.isGrounded = true;
-                this.vy = 0;
-                this.y = currentPlatform.y - this.height;
-
-                // Salta se a plataforma atual estiver a acabar e houver um abismo
-                if (this.x + this.width > currentPlatform.x + currentPlatform.w - 80) {
-                    this.vy = JUMP_FORCE * (0.9 + Math.random()*0.15); // Ligeiramente aleatório
-                    this.isGrounded = false;
-                }
-            } else {
-                this.isGrounded = false;
-            }
-
-            // Se detetar plataforma à frente com cor diferente, muda preventivamente
-            if (upcomingPlatform && this.colorIndex !== upcomingPlatform.color) {
-                if (Math.random() < 0.08) { // Pequeno delay artificial para parecer humano
-                    this.colorIndex = upcomingPlatform.color;
-                }
+            } 
+            else { // Neon
+                const floor = new THREE.Mesh(
+                    new THREE.PlaneGeometry(60, 60),
+                    new THREE.MeshPhongMaterial({ color: 0x112233, emissive: 0x00aaff })
+                );
+                floor.rotation.x = -Math.PI / 2;
+                scene.add(floor);
+                
+                const light = new THREE.PointLight(0x00ffff, 2, 100);
+                light.position.set(0, 10, 0);
+                scene.add(light);
             }
         }
 
-        draw() {
-            if (!this.alive) return;
-            drawChameleonEntity(this.x - cameraX, this.y, this.width, this.height, this.colorIndex, false, this.name);
+        function createBots(count) {
+            bots.forEach(b => scene.remove(b));
+            bots = [];
+            
+            for (let i = 0; i < count; i++) {
+                const botGroup = new THREE.Group();
+                
+                const body = new THREE.Mesh(
+                    new THREE.BoxGeometry(2.2, 4, 2.2),
+                    new THREE.MeshPhongMaterial({ color: 0xff2222 })
+                );
+                body.position.y = 2;
+                botGroup.add(body);
+                
+                const head = new THREE.Mesh(
+                    new THREE.SphereGeometry(1.1, 20, 20),
+                    new THREE.MeshPhongMaterial({ color: 0xff4444 })
+                );
+                head.position.y = 4.8;
+                botGroup.add(head);
+                
+                botGroup.position.set(
+                    (Math.random() - 0.5) * 30,
+                    0,
+                    (Math.random() - 0.5) * 25
+                );
+                scene.add(botGroup);
+                bots.push(botGroup);
+            }
         }
-    }
 
-    // --- SISTEMA DE PARTÍCULAS ---
-    class Particle {
-        constructor(x, y, color, vx, vy, sizeDecay = 0.15) {
-            this.x = x;
-            this.y = y;
-            this.color = color;
-            this.vx = vx;
-            this.vy = vy;
-            this.size = Math.random() * 5 + 3;
-            this.alpha = 1;
-            this.decay = Math.random() * 0.02 + 0.015;
-            this.sizeDecay = sizeDecay;
+        function paintPlayer() {
+            if (!playerPaintMesh) return;
+            playerPaintMesh.material.color.set(currentColor);
         }
 
-        update() {
-            this.x += this.vx;
-            this.y += this.vy;
-            this.alpha -= this.decay;
-            this.size -= this.sizeDecay;
+        function startGame() {
+            if (!scene) initThree();
+            
+            createPlayer();
+            createEnvironment(currentMap);
+            createBots(5);
+            gameRunning = true;
+            timeLeft = 90;
+            
+            document.getElementById('status').textContent = isHider ? "Pinte o seu Chameleon 3D!" : "Procure os escondidos!";
+            startTimer();
+            animate();
         }
 
-        draw() {
-            ctx.save();
-            ctx.globalAlpha = this.alpha;
-            ctx.fillStyle = this.color;
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = this.color;
-            ctx.fillRect(this.x - cameraX, this.y, this.size, this.size);
-            ctx.restore();
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = `Tempo: ${timeLeft}s`;
+                if (timeLeft <= 0) endRound();
+            }, 1000);
         }
-    }
 
-    function spawnRunningParticles(x, y, color) {
-        particles.push(new Particle(x, y, color, -Math.random()*4 - 1, -Math.random()*2));
-    }
-
-    function spawnJumpParticles(x, y, color) {
-        for (let i = 0; i < 12; i++) {
-            particles.push(new Particle(x, y, color, (Math.random()-0.5)*6, -Math.random()*3 - 2));
+        function endRound() {
+            gameRunning = false;
+            clearInterval(timerInterval);
+            document.getElementById('status').textContent = "Fim da Rodada!";
         }
-    }
 
-    function spawnSwitchParticles(x, y, color) {
-        for (let i = 0; i < 15; i++) {
-            let angle = Math.random() * Math.PI * 2;
-            let speed = Math.random() * 4 + 2;
-            particles.push(new Particle(x, y, color, Math.cos(angle)*speed, Math.sin(angle)*speed, 0.1));
+        function toggleRole() {
+            isHider = !isHider;
+            document.getElementById('status').textContent = isHider ? "Modo Hider ativado" : "Modo Seeker ativado";
         }
-    }
 
-    function spawnExplosionParticles(x, y, color) {
-        for (let i = 0; i < 40; i++) {
-            let angle = Math.random() * Math.PI * 2;
-            let speed = Math.random() * 8 + 3;
-            particles.push(new Particle(x, y, color, Math.cos(angle)*speed, Math.sin(angle)*speed, 0.08));
+        function changeMap(n) {
+            currentMap = n;
+            if (gameRunning) {
+                createEnvironment(n);
+            }
         }
-    }
 
-    // --- RENDERIZADORES DE ENTIDADES ---
-    function drawChameleonEntity(x, y, w, h, colorIndex, isPlayer, name = "", angle = 0) {
-        const baseColor = COLORS[colorIndex].hex;
-        const glowColor = COLORS[colorIndex].glow;
+        function animate() {
+            if (!gameRunning) return;
+            
+            requestAnimationFrame(animate);
+            
+            // Movimento do jogador
+            const speed = 0.4;
+            if (keys['w'] || keys['ArrowUp']) playerModel.position.z -= speed;
+            if (keys['s'] || keys['ArrowDown']) playerModel.position.z += speed;
+            if (keys['a'] || keys['ArrowLeft']) playerModel.position.x -= speed;
+            if (keys['d'] || keys['ArrowRight']) playerModel.position.x += speed;
+            
+            // Rotação suave
+            if (keys['a'] || keys['ArrowLeft']) playerModel.rotation.y = 1.2;
+            else if (keys['d'] || keys['ArrowRight']) playerModel.rotation.y = -1.2;
+            else playerModel.rotation.y *= 0.9;
+            
+            renderer.render(scene, camera);
+        }
 
-        ctx.save();
-        ctx.translate(x + w/2, y + h/2);
-        ctx.rotate(angle);
-
-        // Sombras e brilhos neon
-        ctx.shadowBlur = 18;
-        ctx.shadowColor = glowColor;
-
-        // Corpo Principal adaptado conforme a Skin selecionada
-        ctx.fillStyle = baseColor;
+        window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
+        window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
         
-        if (activeSkin === 0) { // Camaleão clássico e estilizado
-            ctx.beginPath();
-            ctx.roundRect(-w/2, -h/2, w, h, 8);
-            ctx.fill();
-
-            // Olho grande e expressivo
-            ctx.fillStyle = "#ffffff";
-            ctx.beginPath();
-            ctx.arc(w/4, -h/6, 6, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = "#000";
-            ctx.beginPath();
-            ctx.arc(w/4 + 1, -h/6, 2.5, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Cauda espiral neon
-            ctx.strokeStyle = baseColor;
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.arc(-w/2, h/4, 8, 0, Math.PI * 1.5, true);
-            ctx.stroke();
-
-        } else if (activeSkin === 1) { // Robô Cúbico Futurista
-            ctx.fillRect(-w/2, -h/2, w, h);
-            ctx.strokeStyle = "#ffffff";
-            ctx.lineWidth = 2;
-            ctx.strokeRect(-w/2 + 2, -h/2 + 2, w - 4, h - 4);
-
-            // Olho robótico retangular (visor)
-            ctx.fillStyle = "#000";
-            ctx.fillRect(w/12, -h/4, w/3, h/4);
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(w/6, -h/5, w/6, h/8);
-
-        } else if (activeSkin === 2) { // Dino Chibi
-            // Cabeça e corpo
-            ctx.beginPath();
-            ctx.roundRect(-w/2, -h/2, w, h, 12);
-            ctx.fill();
-
-            // Pequenos espinhos nas costas
-            ctx.fillStyle = "#ffffff";
-            ctx.beginPath();
-            ctx.moveTo(-w/2, -h/4);
-            ctx.lineTo(-w/2 - 6, -h/8);
-            ctx.lineTo(-w/2, 0);
-            ctx.moveTo(-w/2, 0);
-            ctx.lineTo(-w/2 - 6, h/8);
-            ctx.lineTo(-w/2, h/4);
-            ctx.fill();
-
-            // Olho animado
-            ctx.fillStyle = "#ffffff";
-            ctx.beginPath();
-            ctx.arc(w/5, -h/6, 5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = "#000";
-            ctx.beginPath();
-            ctx.arc(w/5, -h/6, 2, 0, Math.PI * 2);
-            ctx.fill();
-        }
-
-        ctx.restore();
-
-        // Nome sobre o corredor (se for um Bot)
-        if (!isPlayer && name) {
-            ctx.save();
-            ctx.fillStyle = "rgba(255,255,255,0.45)";
-            ctx.font = "bold 11px monospace";
-            ctx.textAlign = "center";
-            ctx.fillText(name, x + w/2, y - 12);
-            ctx.restore();
-        }
-    }
-
-    // --- GESTÃO DE NÍVEIS E PROCEDURAL ---
-    function buildCampaignLevel(index) {
-        const data = LEVELS[index];
-        platforms = data.platforms.map(p => ({...p}));
-        finishX = data.finishX;
-    }
-
-    function generateInfiniteChunk(startX) {
-        // Gera novos blocos infinitamente à frente do jogador
-        let currentX = startX;
-        for (let i = 0; i < 8; i++) {
-            let width = Math.random() * 250 + 150;
-            let gap = Math.random() * 140 + 80;
-            let height = Math.random() * 120 + 300; // Alturas seguras
-            let color = Math.floor(Math.random() * 3);
-
-            platforms.push({
-                x: currentX,
-                y: height,
-                w: width,
-                h: 40,
-                color: color
-            });
-            currentX += width + gap;
-        }
-        return currentX;
-    }
-
-    // --- LOOP PRINCIPAL DO JOGO ---
-    let lastTime = 0;
-    let infiniteNextX = 0;
-
-    function gameLoop(timestamp) {
-        if (!isPlaying) return;
-
-        // Limpar tela
-        ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-
-        // Fundo Cyberpunk (Efeito Paralaxe Suave)
-        drawBackground();
-
-        // Atualizar jogador
-        player.update();
-
-        // Câmera segue o jogador suavemente (Lerp)
-        cameraX += (player.x - cameraX - 180) * 0.12;
-
-        // Limitar câmara para não andar para trás
-        if (cameraX < 0) cameraX = 0;
-
-        // Atualizar Bots
-        let botsAlive = 0;
-        bots.forEach(bot => {
-            bot.update();
-            bot.draw();
-            if (bot.alive) botsAlive++;
+        // Controles de cor
+        window.setColor = function(hex) {
+            currentColor = hex;
+            paintPlayer();
+        };
+        
+        // UI de cores
+        const colorsDiv = document.createElement('div');
+        colorsDiv.style.position = 'absolute';
+        colorsDiv.style.bottom = '30px';
+        colorsDiv.style.left = '50%';
+        colorsDiv.style.transform = 'translateX(-50%)';
+        colorsDiv.style.zIndex = '100';
+        document.body.appendChild(colorsDiv);
+        
+        const colorList = [0xffffff, 0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff, 0xff8800];
+        colorList.forEach(c => {
+            const btn = document.createElement('div');
+            btn.className = 'color-btn';
+            btn.style.backgroundColor = '#' + c.toString(16).padStart(6,'0');
+            btn.onclick = () => setColor(c);
+            colorsDiv.appendChild(btn);
         });
-        document.getElementById('bots-count').innerText = botsAlive;
-
-        // Gerar mais mapa dinâmico se for modo Infinito
-        if (mode === 'infinite') {
-            if (player.x + 1000 > infiniteNextX) {
-                infiniteNextX = generateInfiniteChunk(infiniteNextX);
-            }
-            // Manter apenas plataformas próximas em memória para desempenho
-            platforms = platforms.filter(p => p.x + p.w > cameraX - 200);
-        }
-
-        // Desenhar e testar colisões nas plataformas
-        drawPlatforms();
-
-        // Resolver colisões do Jogador com plataformas
-        checkPlayerCollisions();
-
-        // Desenhar e atualizar Partículas
-        particles.forEach((p, index) => {
-            p.update();
-            p.draw();
-            if (p.alpha <= 0 || p.size <= 0) {
-                particles.splice(index, 1);
+        
+        // Inicialização
+        window.onload = () => {
+            initThree();
+            createEnvironment(0);
+            createPlayer();
+            document.getElementById('status').textContent = "Pronto! Clique em Novo Jogo para começar.";
+        };
+        
+        window.addEventListener('resize', () => {
+            if (camera && renderer) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
             }
         });
-
-        // Desenhar Jogador
-        if (player.alive) {
-            drawChameleonEntity(player.x - cameraX, player.y, player.width, player.height, player.colorIndex, true, "", player.rot);
-        }
-
-        // Atualizar Distância e HUD
-        distanceTraveled = Math.floor(player.x / 10);
-        document.getElementById('meters').innerText = distanceTraveled;
-
-        // Condição de Vitória (Apenas Modo Campanha)
-        if (mode === 'campaign' && player.x >= finishX && player.alive) {
-            winGame();
-            return;
-        }
-
-        requestAnimationFrame(gameLoop);
-    }
-
-    // --- CORES & PLATAFORMAS ---
-    function drawPlatforms() {
-        platforms.forEach(p => {
-            const hexColor = COLORS[p.color].hex;
-            const glowColor = COLORS[p.color].glow;
-
-            ctx.save();
-            ctx.fillStyle = hexColor;
-            
-            // Caixa externa com glow brilhante
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = glowColor;
-            ctx.fillRect(p.x - cameraX, p.y, p.w, p.h);
-
-            // Detalhe interno tecnológico futurista
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
-            ctx.fillRect(p.x - cameraX + 4, p.y + 4, p.w - 8, p.h - 8);
-
-            // Linha de energia no topo da plataforma
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(p.x - cameraX, p.y, p.w, 4);
-
-            ctx.restore();
-        });
-
-        // Desenhar a linha de meta no Modo Campanha
-        if (mode === 'campaign') {
-            ctx.save();
-            ctx.strokeStyle = "#00ff66";
-            ctx.lineWidth = 5;
-            ctx.setLineDash([10, 10]);
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = "#00ff66";
-            ctx.beginPath();
-            ctx.moveTo(finishX - cameraX, 0);
-            ctx.lineTo(finishX - cameraX, GAME_HEIGHT);
-            ctx.stroke();
-            ctx.restore();
-        }
-    }
-
-    function checkPlayerCollisions() {
-        if (!player.alive) return;
-
-        let onGroundThisFrame = false;
-
-        for (let p of platforms) {
-            // Caixa de colisão simples (AABB)
-            if (player.x + player.width > p.x && player.x < p.x + p.w) {
-                // Se o jogador estiver a cair em direção à plataforma
-                if (player.vy >= 0 && player.y + player.height - player.vy <= p.y + 12 && player.y + player.height >= p.y) {
-                    
-                    // TESTE CRÍTICO DE CORES: Corresponder ou explodir!
-                    if (player.colorIndex === p.color) {
-                        player.y = p.y - player.height;
-                        player.vy = 0;
-                        onGroundThisFrame = true;
-                        player.doubleJumpsLeft = 1; // Recarregar duplo salto ao tocar no chão correto
-                    } else {
-                        player.die("Cores não correspondentes! Tentaste aterrar em " + COLORS[p.color].name + " sendo " + COLORS[player.colorIndex].name + ".");
-                        return;
-                    }
-                }
-            }
-        }
-
-        player.isGrounded = onGroundThisFrame;
-    }
-
-    // --- LINDO DESENHO DE FUNDO ---
-    function drawBackground() {
-        // Gradiente futurista escuro
-        let bgGrad = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
-        bgGrad.addColorStop(0, "#080911");
-        bgGrad.addColorStop(1, "#121424");
-        ctx.fillStyle = bgGrad;
-        ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-
-        // Estrelas distantes / Pontos de ciberespaço com paralaxe lento
-        ctx.fillStyle = "rgba(0, 243, 255, 0.3)";
-        for (let i = 0; i < 20; i++) {
-            let starX = (i * 150 - cameraX * 0.1) % (GAME_WIDTH + 100);
-            if (starX < -10) starX += GAME_WIDTH + 100;
-            ctx.fillRect(starX, (i * 27) % GAME_HEIGHT, 3, 3);
-        }
-
-        // Montanhas/Estruturas ao fundo (Paralaxe médio)
-        ctx.fillStyle = "rgba(16, 18, 36, 0.6)";
-        for (let i = 0; i < 5; i++) {
-            let width = 300;
-            let hX = (i * 400 - cameraX * 0.3) % (GAME_WIDTH + width);
-            if (hX < -width) hX += GAME_WIDTH + width;
-            ctx.fillRect(hX, GAME_HEIGHT - 180, width, 180);
-        }
-    }
-
-    // --- FLUXO DE TELAS ---
-    function showOverlay(id) {
-        document.getElementById('main-menu').classList.add('hidden');
-        document.getElementById('game-over-screen').classList.add('hidden');
-        document.getElementById('victory-screen').classList.add('hidden');
-        document.getElementById('hud').classList.add('hidden');
-
-        if (id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-    }
-
-    function setSkin(index) {
-        activeSkin = index;
-        document.getElementById('skin-0').classList.remove('active');
-        document.getElementById('skin-1').classList.remove('active');
-        document.getElementById('skin-2').classList.remove('active');
-        document.getElementById('skin-' + index).classList.add('active');
-    }
-
-    function startGame(selectedMode, levelIndex = 0) {
-        initAudio();
-        if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-
-        mode = selectedMode;
-        currentLvlIndex = levelIndex;
-        isPlaying = true;
-        particles = [];
-        cameraX = 0;
-
-        player = new Player();
-
-        if (mode === 'campaign') {
-            buildCampaignLevel(currentLvlIndex);
-            
-            // Ativar bots que competem de verdade contigo!
-            bots = [
-                new Bot("FANTASMA NEON", 1, -0.4),
-                new Bot("BOT CHROMA", 2, 0.1)
-            ];
-        } else {
-            // Modo Infinito
-            platforms = [
-                {x: 0, y: 420, w: 800, h: 40, color: 0}
-            ];
-            infiniteNextX = 800;
-            infiniteNextX = generateInfiniteChunk(infiniteNextX);
-            bots = []; // Sem bots competitivos no modo infinito (foco em sobrevivência)
-        }
-
-        showOverlay(null); // Esconder todos os painéis
-        document.getElementById('hud').classList.remove('hidden');
-        
-        requestAnimationFrame(gameLoop);
-    }
-
-    function retryGame() {
-        startGame(mode, currentLvlIndex);
-    }
-
-    function showMainMenu() {
-        isPlaying = false;
-        showOverlay('main-menu');
-    }
-
-    function winGame() {
-        isPlaying = false;
-        playSound('victory');
-        
-        // Se houver mais níveis, mostra botão do próximo
-        if (currentLvlIndex < LEVELS.length - 1) {
-            document.getElementById('next-lvl-btn').style.display = 'inline-block';
-        } else {
-            document.getElementById('next-lvl-btn').style.display = 'none';
-        }
-        
-        showOverlay('victory-screen');
-    }
-
-    function nextLevel() {
-        if (currentLvlIndex < LEVELS.length - 1) {
-            startGame('campaign', currentLvlIndex + 1);
-        }
-    }
-
-    // --- CONFIGURAÇÃO DE INPUTS ---
-
-    // CONTROLOS POR TECLADO
-    window.addEventListener('keydown', (e) => {
-        if (!isPlaying) return;
-
-        if (e.code === 'Space') {
-            e.preventDefault();
-            player.switchColor();
-        }
-        if (e.code === 'ArrowUp' || e.code === 'KeyW') {
-            e.preventDefault();
-            player.jump();
-        }
-    });
-
-    // CONTROLOS POR CLIQUE DE RATO (Fácil de jogar no PC)
-    canvas.addEventListener('mousedown', (e) => {
-        if (!isPlaying) return;
-        
-        // Clique botão esquerdo -> Troca Cor | Clique botão direito -> Salta
-        if (e.button === 0) {
-            player.switchColor();
-        } else if (e.button === 2) {
-            player.jump();
-        }
-    });
-
-    // Bloquear menu de contexto padrão do rato
-    canvas.addEventListener('contextmenu', e => e.preventDefault());
-
-    // CONTROLOS TÁTEIS (Para smartphones/tablets)
-    canvas.addEventListener('touchstart', (e) => {
-        if (!isPlaying) return;
-        e.preventDefault();
-
-        const rect = canvas.getBoundingClientRect();
-        const touchX = e.touches[0].clientX - rect.left;
-
-        // Se o toque for no lado esquerdo do ecrã -> Troca de Cor
-        if (touchX < rect.width / 2) {
-            player.switchColor();
-        } else { // Lado direito -> Salto
-            player.jump();
-        }
-    }, {passive: false});
-
-</script>
+    </script>
 </body>
 </html>
