@@ -1,11 +1,13 @@
-<!DOCTYPE html>
-<html lang="pt">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Clean Chat - Tung, Noob & Luffy</title>
-<style>
-/* CSS MINIMALISTA APPLE-LIKE */
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Clean Chat - Tung, Noob & Luffy</title>
+
+    <!-- COLA O TEU SCRIPT DO MONETAG AQUI (Fica perfeito neste local) -->
+    <script src="https://quge5.com" data-zone="273898" async data-cfasync="false"></script>
+
+    <style>
+    /* CSS MINIMALISTA APPLE-LIKE */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
@@ -709,37 +711,39 @@ function closeChat() {
   document.getElementById('selection-screen').style.display = 'flex';
 }
 
-/* SISTEMA DA LOJA */
+// --- SISTEMA DA LOJA & INTEGRAÇÃO MONETAG ---
 function openShop() {
-  document.getElementById('shop-modal').style.display = 'flex';
-  document.getElementById('shop-title').innerText = uiTexts[currentLang].shopTitle;
-  document.getElementById('shop-warning').innerText = uiTexts[currentLang].shopWarning;
-  document.getElementById('shop-item-name').innerText = uiTexts[currentLang].items[currentChar];
-  updateShopButtons();
-  document.getElementById('close-shop-text').innerText = uiTexts[currentLang].closeShop;
+    document.getElementById('shop-modal').style.display = 'flex';
+    document.getElementById('shop-title').innerText = uiTexts[currentLang].shopTitle;
+    document.getElementById('shop-warning').innerText = uiTexts[currentLang].shopWarning;
+    document.getElementById('shop-item-name').innerText = uiTexts[currentLang].items[currentChar];
+    updateShopButtons();
+    document.getElementById('close-shop-text').innerText = uiTexts[currentLang].closeShop;
 }
 
 function closeShop() { 
-  document.getElementById('shop-modal').style.display = 'none'; 
+    document.getElementById('shop-modal').style.display = 'none'; 
 }
+
+function watchAd() {
+    window.open('https://vunno.eu', '_blank'); 
     adCount++;
-    alert(uiTexts[currentLang].adMessage);
     updateShopButtons();
+}
 
 function updateShopButtons() {
-  document.getElementById('watch-ad-btn').innerHTML = `${uiTexts[currentLang].watchAd} (<span id="ad-count">${adCount}</span>/2)`;
-  document.getElementById('buy-item-btn').innerText = uiTexts[currentLang].buyGive;
-  document.getElementById('buy-item-btn').disabled = (adCount < 2);
+    document.getElementById('watch-ad-btn').innerHTML = `${uiTexts[currentLang].watchAd} (<span id="ad-count">${adCount}</span>/2)`;
+    document.getElementById('buy-item-btn').innerText = uiTexts[currentLang].buyGive;
+    document.getElementById('buy-item-btn').disabled = (adCount < 2);
 }
 
 function buyItem() {
-  if (adCount >= 2) {
-    adCount -= 2;
-    closeShop();
-    triggerGiftReaction();
-  }
+    if (adCount >= 2) {
+        adCount -= 2;
+        closeShop();
+        triggerGiftReaction();
+    }
 }
-
 function triggerGiftReaction() {
   showTypingIndicator();
   setTimeout(() => {
