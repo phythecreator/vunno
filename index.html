@@ -20,15 +20,13 @@
             --hover-bg: #f5f5f7;
             --shop-bg: #ff9500;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
         body, html {
             background-color: var(--bg-color);
             color: var(--text-main);
@@ -574,10 +572,12 @@
                     "Estás a falar do One Piece? É que eu não percebi nada do que disseste!"
                 ]
             }
-        };
+           }
+};
 
-        // NOVA BASE DE DADOS EXPANDIDA (Mais palavras-chave e respostas!)
-           en: {
+const brain = {
+    en: {
+
       tung: [
         { keys: ["hi", "hello", "hey", "yo", "sup", "morning", "afternoon", "evening", "greetings", "welcome", "aloh", "who are you", "howdy", "hiya", "heyy", "heyoo", "wazzup", "whats up"], ans: "hi! so happy you texted. i am tung tung sahur, how are the vibes?" },
         { keys: ["good", "fine", "ok", "not bad", "mood", "great", "awesome", "perfect", "amazing", "alright", "chill", "cool", "fantastic", "wonderful", "splendid", "gucci", "chillin", "valid"], ans: "Perfect! What's your aesthetic?" },
