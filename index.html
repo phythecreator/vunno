@@ -1,800 +1,823 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clean Chat - Tung, Noob & Luffy</title>
-    <style>
-        /* CSS MINIMALISTA APPLE-LIKE */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Clean Chat - Tung, Noob & Luffy</title>
+<style>
+/* CSS MINIMALISTA APPLE-LIKE */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
-        :root {
-            --bg-color: #f5f5f7;
-            --card-bg: #ffffff;
-            --text-main: #1d1d1f;
-            --text-muted: #86868b;
-            --border-color: rgba(60, 60, 67, 0.12);
-            --primary: #007aff;
-            --user-bubble: #007aff;
-            --bot-bubble: #e9e9eb;
-            --hover-bg: #f5f5f7;
-            --shop-bg: #ff9500;
-        }
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-    -webkit-tap-highlight-color: transparent;
+:root {
+  --bg-color: #f5f5f7;
+  --card-bg: #ffffff;
+  --text-main: #1d1d1f;
+  --text-muted: #86868b;
+  --border-color: rgba(60, 60, 67, 0.12);
+  --primary: #007aff;
+  --user-bubble: #007aff;
+  --bot-bubble: #e9e9eb;
+  --hover-bg: #f5f5f7;
+  --shop-bg: #ff9500;
 }
-        body, html {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
 
-        /* Ocupa a tela inteira */
-        #app-container {
-            width: 100%;
-            height: 100%;
-            background-color: var(--card-bg);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
 
-        /* TELA DE SELEÇÃO */
-        #selection-screen {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            padding: 50px 20px 30px;
-            overflow-y: auto;
-            background: var(--bg-color);
-        }
+body, html {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
+/* Ocupa a tela inteira */
+#app-container {
+  width: 100%;
+  height: 100%;
+  background-color: var(--card-bg);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
 
-        .header h1 {
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
-        }
+/* TELA DE SELEÇÃO */
+#selection-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 50px 20px 30px;
+  overflow-y: auto;
+  background: var(--bg-color);
+}
 
-        .lang-toggle {
-            display: flex;
-            justify-content: center;
-            gap: 5px;
-            margin-bottom: 30px;
-            background: rgba(118, 118, 128, 0.12);
-            padding: 4px;
-            border-radius: 9px;
-            width: fit-content;
-            margin: 0 auto 30px auto;
-        }
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
 
-        .lang-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-main);
-            padding: 6px 16px;
-            border-radius: 7px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 13px;
-            transition: all 0.2s ease;
-        }
+.header h1 {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
 
-        .lang-btn.active {
-            background: var(--card-bg);
-            box-shadow: 0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);
-        }
+.lang-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  background: rgba(118, 118, 128, 0.12);
+  padding: 4px;
+  border-radius: 9px;
+  width: fit-content;
+  margin: 0 auto 30px auto;
+}
 
-        .character-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            flex-grow: 1;
-            max-width: 600px;
-            margin: 0 auto;
-            width: 100%;
-        }
+.lang-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  padding: 6px 16px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
 
-        .char-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            cursor: pointer;
-            transition: transform 0.2s ease, background 0.2s;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-        }
+.lang-btn.active {
+  background: var(--card-bg);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);
+}
 
-        .char-card:active {
-            transform: scale(0.97);
-            background: var(--hover-bg);
-        }
+.character-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex-grow: 1;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
 
-        .char-img {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid var(--border-color);
-        }
+.char-card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
 
-        .char-info h2 {
-            font-size: 17px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            letter-spacing: -0.3px;
-        }
+.char-card:active {
+  transform: scale(0.97);
+  background: var(--hover-bg);
+}
 
-        .char-info p {
-            font-size: 14px;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
+.char-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+}
 
-        /* TELA DE CHAT */
-        #chat-screen {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-            background: var(--card-bg);
-        }
+.char-info h2 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  letter-spacing: -0.3px;
+}
 
-        .chat-header {
-            display: flex;
-            align-items: center;
-            padding: 12px 20px;
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            gap: 12px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            height: 70px;
-        }
+.char-info p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
 
-        .back-btn {
-            background: none;
-            border: none;
-            color: var(--primary);
-            font-size: 16px;
-            font-weight: 400;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
+/* TELA DE CHAT */
+#chat-screen {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  background: var(--card-bg);
+}
 
-        .back-btn svg { width: 22px; height: 22px; }
+.chat-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-color);
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 70px;
+}
 
-        .chat-header-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 
-        .chat-header-info {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+.back-btn svg { width: 22px; height: 22px; }
 
-        .chat-header-info h2 {
-            font-size: 15px;
-            font-weight: 600;
-        }
-        
-        .chat-header-info p {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
+.chat-header-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 
-        /* BOTAO LOJA */
-        .shop-btn {
-            background: var(--shop-bg);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 14px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .shop-btn:active { opacity: 0.7; }
+.chat-header-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
-        #shop-modal {
-            display: none;
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            z-index: 100;
-            justify-content: center;
-            align-items: flex-end; /* Minimalist style bottom sheet */
-        }
+.chat-header-info h2 {
+  font-size: 15px;
+  font-weight: 600;
+}
 
-        .shop-content {
-            background: var(--card-bg);
-            width: 100%;
-            padding: 30px 24px;
-            border-radius: 20px 20px 0 0;
-            text-align: center;
-            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+.chat-header-info p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
 
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
+/* BOTÃO LOJA */
+.shop-btn {
+  background: var(--shop-bg);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
 
-        .shop-content h3 { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
-        .shop-warning {
-            font-size: 12px;
-            color: #ff3b30;
-            background: #ffe5e5;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
+.shop-btn:active { opacity: 0.7; }
 
-        .shop-item-box {
-            background: var(--bg-color);
-            padding: 24px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-        }
+#shop-modal {
+  display: none;
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 100;
+  justify-content: center;
+  align-items: flex-end;
+}
 
-        .shop-item-box span { font-weight: 600; font-size: 18px; display: block; margin-bottom: 15px; }
+.shop-content {
+  background: var(--card-bg);
+  width: 100%;
+  padding: 30px 24px;
+  border-radius: 20px 20px 0 0;
+  text-align: center;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
-        .shop-actions button {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
 
-        #watch-ad-btn { background: #e9e9eb; color: var(--text-main); }
-        #buy-item-btn { background: var(--shop-bg); color: white; opacity: 0.5; }
-        #buy-item-btn:not([disabled]) { opacity: 1; }
-        
-        .close-shop-btn {
-            background: transparent;
-            border: none;
-            color: var(--primary);
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            padding: 10px;
-            width: 100%;
-        }
+.shop-content h3 { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
 
-        .chat-messages {
-            flex-grow: 1;
-            padding: 24px 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            background: var(--card-bg);
-            scroll-behavior: smooth;
-        }
+.shop-warning {
+  font-size: 12px;
+  color: #ff3b30;
+  background: #ffe5e5;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
 
-        .message {
-            max-width: 75%;
-            padding: 10px 16px;
-            border-radius: 18px;
-            font-size: 15px;
-            line-height: 1.4;
-            animation: fadeIn 0.3s ease;
-            word-wrap: break-word;
-        }
+.shop-item-box {
+  background: var(--bg-color);
+  padding: 24px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
 
-        .msg-bot {
-            background: var(--bot-bubble);
-            color: var(--text-main);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
+.shop-item-box span { font-weight: 600; font-size: 18px; display: block; margin-bottom: 15px; }
 
-        .msg-user {
-            background: var(--user-bubble);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
+.shop-actions button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
 
-        .typing-indicator {
-            display: none;
-            align-self: flex-start;
-            background: var(--bot-bubble);
-            padding: 14px 18px;
-            border-radius: 18px;
-            border-bottom-left-radius: 4px;
-            width: fit-content;
-        }
+#watch-ad-btn { background: #e9e9eb; color: var(--text-main); }
+#buy-item-btn { background: var(--shop-bg); color: white; opacity: 0.5; }
+#buy-item-btn:not([disabled]) { opacity: 1; }
 
-        .dots-container { display: flex; align-items: center; gap: 4px; }
-        .dot {
-            width: 7px; height: 7px; background-color: #8e8e93; border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-        .dot:nth-child(1) { animation-delay: -0.32s; }
-        .dot:nth-child(2) { animation-delay: -0.16s; }
+.close-shop-btn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+}
 
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
+.chat-messages {
+  flex-grow: 1;
+  padding: 24px 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--card-bg);
+  scroll-behavior: smooth;
+}
 
-        .chat-input-area {
-            padding: 12px 20px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            display: flex;
-            gap: 10px;
-            border-top: 1px solid var(--border-color);
-            align-items: center;
-            padding-bottom: env(safe-area-inset-bottom, 12px);
-        }
+.message {
+  max-width: 75%;
+  padding: 10px 16px;
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.4;
+  animation: fadeIn 0.3s ease;
+  word-wrap: break-word;
+}
 
-        #user-input {
-            flex-grow: 1;
-            background: #ffffff;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 10px 16px;
-            border-radius: 20px;
-            outline: none;
-            font-size: 15px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-        }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-        #user-input:focus { border-color: var(--primary); }
+.msg-bot {
+  background: var(--bot-bubble);
+  color: var(--text-main);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
 
-        #send-btn {
-            background: var(--primary);
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+.msg-user {
+  background: var(--user-bubble);
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
 
-        #send-btn svg { width: 16px; height: 16px; fill: currentColor; }
+.typing-indicator {
+  display: none;
+  align-self: flex-start;
+  background: var(--bot-bubble);
+  padding: 14px 18px;
+  border-radius: 18px;
+  border-bottom-left-radius: 4px;
+  width: fit-content;
+}
 
-        .footer-warning {
-            text-align: center;
-            padding: 16px;
-            font-size: 11px;
-            color: var(--text-muted);
-            line-height: 1.5;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-    </style>
+.dots-container { display: flex; align-items: center; gap: 4px; }
+
+.dot {
+  width: 7px; height: 7px; background-color: #8e8e93; border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.dot:nth-child(1) { animation-delay: -0.32s; }
+.dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+.chat-input-area {
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid var(--border-color);
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom, 12px);
+}
+
+#user-input {
+  flex-grow: 1;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 10px 16px;
+  border-radius: 20px;
+  outline: none;
+  font-size: 15px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+#user-input:focus { border-color: var(--primary); }
+
+#send-btn {
+  background: var(--primary);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#send-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+.footer-warning {
+  text-align: center;
+  padding: 16px;
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  max-width: 600px;
+  margin: 0 auto;
+}
+</style>
 </head>
 <body>
 
-    <div id="app-container">
-        
-        <!-- ECRÃ DE SELEÇÃO -->
-        <div id="selection-screen">
-            <div class="lang-toggle">
-                <button class="lang-btn active" onclick="setLang('en')" id="btn-en">English</button>
-                <button class="lang-btn" onclick="setLang('pt')" id="btn-pt">Português</button>
-            </div>
-
-            <div class="header">
-                <h1 id="ui-title">Start a Conversation</h1>
-                <p id="ui-choose" style="color: var(--text-muted); font-size: 15px;">Select a character to chat with</p>
-            </div>
-
-            <div class="character-list">
-                <div class="char-card" onclick="openChat('tung')">
-                    <img src="tugntugnsahur.jpg" alt="Tung Tung Sahur" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Tung&background=f1f1f4&color=1d1d1f'">
-                    <div class="char-info">
-                        <h2>Tung Tung Sahur</h2>
-                        <p id="desc-tung">Gen Z aesthetics and chaotic deep talks.</p>
-                    </div>
-                </div>
-
-                <div class="char-card" onclick="openChat('noob')">
-                    <img src="noob.png" alt="Roblox Noob" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Noob&background=f1f1f4&color=1d1d1f'">
-                    <div class="char-info">
-                        <h2>Roblox Noob</h2>
-                        <p id="desc-noob">Oof! Always lagging, always surviving.</p>
-                    </div>
-                </div>
-
-                <div class="char-card" onclick="openChat('luffy')">
-                    <img src="odUtj (1).jpg" alt="Luffy" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Luffy&background=f1f1f4&color=1d1d1f'">
-                    <div class="char-info">
-                        <h2>Monkey D. Luffy</h2>
-                        <p id="desc-luffy">Pirate King in the making. Loves meat.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div style="flex-grow: 1;"></div>
-            <div class="footer-warning" id="copyright-warning">
-                EN: Images are AI-generated or drawn by the creator and not taken from the internet to infringe copyrights and we don´t copy any design and just wanted to make it minimalist.<br><br>
-                PT: As imagens são geradas por IA ou desenho do criador e não retiradas da internet de modo a infringir direitos de autor. Para além disso avisamos que não pretendemso copiar o design de ninguém e que é apenas um site minimalista.
-            </div>
-        </div>
-
-        <!-- ECRÃ DE CHAT -->
-        <div id="chat-screen">
-            <div class="chat-header">
-                <button class="back-btn" onclick="closeChat()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                </button>
-                <img id="chat-header-img" src="" alt="Char" class="chat-header-img">
-                <div class="chat-header-info">
-                    <h2 id="chat-header-name">Name</h2>
-                    <p id="chat-header-status">Online</p>
-                </div>
-                <button class="shop-btn" onclick="openShop()" id="shop-btn-ui">🛒 Shop</button>
-            </div>
-
-            <div class="chat-messages" id="chat-messages">
-                <div class="typing-indicator" id="typing">
-                    <div class="dots-container">
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="chat-input-area">
-                <input type="text" id="user-input" placeholder="Message..." onkeypress="handleEnter(event)">
-                <button id="send-btn" onclick="sendMessage()">
-                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-                </button>
-            </div>
-        </div>
-
-        <!-- MODAL DA LOJA -->
-        <div id="shop-modal">
-            <div class="shop-content">
-                <h3 id="shop-title">Gift Shop</h3>
-                <div class="shop-warning" id="shop-warning">
-                    Warning: These are NOT REAL items. They are just fake items to make the characters happy!
-                </div>
-                
-                <div class="shop-item-box">
-                    <span id="shop-item-name">Item Name</span>
-                    <div class="shop-actions">
-                        <button onclick="watchAd()" id="watch-ad-btn">Watch Ad (<span id="ad-count">0</span>/2)</button>
-                        <button onclick="buyItem()" id="buy-item-btn" disabled>Buy & Give!</button>
-                    </div>
-                </div>
-                <button class="close-shop-btn" onclick="closeShop()" id="close-shop-text">Close</button>
-            </div>
-        </div>
-
+<div id="app-container">
+  <!-- ECRÃ DE SELEÇÃO -->
+  <div id="selection-screen">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')" id="btn-en">English</button>
+      <button class="lang-btn" onclick="setLang('pt')" id="btn-pt">Português</button>
     </div>
+    <div class="header">
+      <h1 id="ui-title">Start a Conversation</h1>
+      <p id="ui-choose" style="color: var(--text-muted); font-size: 15px;">Select a character to chat with</p>
+    </div>
+    <div class="character-list">
+      <div class="char-card" onclick="openChat('tung')">
+        <img src="tugntugnsahur.jpg" alt="Tung Tung Sahur" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Tung&background=f1f1f4&color=1d1d1f'">
+        <div class="char-info">
+          <h2>Tung Tung Sahur</h2>
+          <p id="desc-tung">Gen Z aesthetics and chaotic deep talks.</p>
+        </div>
+      </div>
+      <div class="char-card" onclick="openChat('noob')">
+        <img src="noob.png" alt="Roblox Noob" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Noob&background=f1f1f4&color=1d1d1f'">
+        <div class="char-info">
+          <h2>Roblox Noob</h2>
+          <p id="desc-noob">Oof! Always lagging, always surviving.</p>
+        </div>
+      </div>
+      <div class="char-card" onclick="openChat('luffy')">
+        <img src="odUtj (1).jpg" alt="Luffy" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Luffy&background=f1f1f4&color=1d1d1f'">
+        <div class="char-info">
+          <h2>Monkey D. Luffy</h2>
+          <p id="desc-luffy">Pirate King in the making. Loves meat.</p>
+        </div>
+      </div>
+    </div>
+    <div style="flex-grow: 1;"></div>
+    <div class="footer-warning" id="copyright-warning">
+      EN: Images are AI-generated or drawn by the creator and not taken from the internet to infringe copyrights and we don't copy any design and just wanted to make it minimalist.<br><br>
+      PT: As imagens são geradas por IA ou desenho do criador e não retiradas da internet de modo a infringir direitos de autor. Para além disso avisamos que não pretendemos copiar o design de ninguém e que é apenas um site minimalista.
+    </div>
+  </div>
 
-    <script>
-        let currentLang = 'pt';
-        let currentChar = '';
-        let conversationContext = '';
-        let adCount = 0;
+  <!-- ECRÃ DE CHAT -->
+  <div id="chat-screen">
+    <div class="chat-header">
+      <button class="back-btn" onclick="closeChat()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <img id="chat-header-img" src="" alt="Char" class="chat-header-img">
+      <div class="chat-header-info">
+        <h2 id="chat-header-name">Name</h2>
+        <p id="chat-header-status">Online</p>
+      </div>
+      <button class="shop-btn" onclick="openShop()" id="shop-btn-ui">Shop</button>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="typing-indicator" id="typing">
+        <div class="dots-container">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="user-input" placeholder="Message..." onkeypress="handleEnter(event)">
+      <button id="send-btn" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+      </button>
+    </div>
+  </div>
 
-        const uiTexts = {
-            en: {
-                title: "Start a Conversation", choose: "Select a character to chat with",
-                descTung: "Gen Z aesthetics and chaotic deep talks.", descNoob: "Oof! Always lagging, always surviving.", descLuffy: "Pirate King in the making. Loves meat.",
-                placeholder: "Message...", shopBtn: "🛒 Shop", shopTitle: "Gift Shop",
-                shopWarning: "WARNING: These items (like Robux) are NOT REAL! They are just fake items to give to the characters in the chat to make them happy.",
-                watchAd: "Watch Ad", buyGive: "Buy & Give!", closeShop: "Close",
-                items: { noob: "Robux (Not real!)", luffy: "Meat 🍖", tung: "A New Stick 🪵" },
-                adMessage: "Ad Finished! (Simulated)"
-            },
-            pt: {
-                title: "Iniciar Conversa", choose: "Seleciona uma personagem para falar",
-                descTung: "Estética Gen Z e conversas caóticas e profundas.", descNoob: "Oof! Sempre com lag, sempre a sobreviver.", descLuffy: "Futuro Rei dos Piratas. Adora carne.",
-                placeholder: "Mensagem...", shopBtn: "🛒 Loja", shopTitle: "Loja de Presentes",
-                shopWarning: "AVISO IMPORTANTE: Estes itens (como os Robux) NÃO SÃO REAIS! Servem apenas para dar às personagens dentro deste chat para as deixares felizes.",
-                watchAd: "Ver Anúncio", buyGive: "Comprar & Dar!", closeShop: "Fechar",
-                items: { noob: "Robux (Não reais!)", luffy: "Carne 🍖", tung: "Um Pau Novo 🪵" },
-                adMessage: "Anúncio Concluído! (Simulação)"
-            }
-        };
+  <!-- MODAL DA LOJA -->
+  <div id="shop-modal">
+    <div class="shop-content">
+      <h3 id="shop-title">Gift Shop</h3>
+      <div class="shop-warning" id="shop-warning">
+        Warning: These are NOT REAL items. They are just fake items to make the characters happy!
+      </div>
+      <div class="shop-item-box">
+        <span id="shop-item-name">Item Name</span>
+        <div class="shop-actions">
+          <button onclick="watchAd()" id="watch-ad-btn">Watch Ad (<span id="ad-count">0</span>/2)</button>
+          <button onclick="buyItem()" id="buy-item-btn" disabled>Buy & Give!</button>
+        </div>
+      </div>
+      <button class="close-shop-btn" onclick="closeShop()" id="close-shop-text">Close</button>
+    </div>
+  </div>
+</div>
 
-        const charsInfo = {
-            tung: { name: "Tung Tung Sahur", img: "tugntugnsahur.jpg" },
-            noob: { name: "Roblox Noob", img: "noob.png" },
-            luffy: { name: "Monkey D. Luffy", img: "odUtj (1).jpg" }
-        };
+<script>
+let currentLang = 'pt';
+let currentChar = '';
+let adCount = 0;
 
-        // RESPOSTAS DE ERRO (QUANDO NÃO ENTENDEM) - ADAPTADAS À PERSONAGEM
-        const fallbackMsg = {
-            en: {
-                tung: [
-                    "Literally no idea what you mean, but slay.", 
-                    "Is that even a thing? I'm just gonna drink my iced coffee.", 
-                    "Wait, what? Say that again but make it aesthetic."
-                ],
-                noob: [
-                    "OOF! I didn't understand that, my game is lagging so bad!", 
-                    "Can you repeat? A guest just threw a bomb at me!", 
-                    "I don't know what that means, do you have free Robux?"
-                ],
-                luffy: [
-                    "Huh? I didn't get that! Is it a type of meat?", 
-                    "Whatever you just said, let's just go eat a banquet!", 
-                    "Are you talking about the One Piece? Because I didn't understand!"
-                ]
-            },
-            pt: {
-                tung: [
-                    "Literalmente sem ideia do que estás a dizer, mas slay.", 
-                    "Isso é sequer uma cena? Vou só beber o meu iced coffee em silêncio.", 
-                    "Perdi o fio à meada, repete lá isso mas com mais aesthetic."
-                ],
-                noob: [
-                    "OOF! Não percebi nada, o meu jogo está com bué lag!", 
-                    "Podes repetir? Um bacon hair acabou de me atirar uma bomba e eu não li!", 
-                    "Não sei o que isso significa... tens Robux grátis para mim?"
-                ],
-                luffy: [
-                    "Hã? Não percebi! Isso é algum tipo de carne?", 
-                    "Seja o que for que disseste, vamos mas é comer!", 
-                    "Estás a falar do One Piece? É que eu não percebi nada do que disseste!"
-                ]
-            }
-           }
+const uiTexts = {
+  en: {
+    title: "Start a Conversation",
+    choose: "Select a character to chat with",
+    descTung: "Gen Z aesthetics and chaotic deep talks.",
+    descNoob: "Oof! Always lagging, always surviving.",
+    descLuffy: "Pirate King in the making. Loves meat.",
+    placeholder: "Message...",
+    shopBtn: "Shop",
+    shopTitle: "Gift Shop",
+    shopWarning: "WARNING: These items (like Robux) are NOT REAL! They are just fake items to give to the characters in the chat to make them happy.",
+    watchAd: "Watch Ad",
+    buyGive: "Buy & Give!",
+    closeShop: "Close",
+    items: { noob: "Robux (Not real!)", luffy: "Meat", tung: "A New Stick" },
+    adMessage: "Ad Finished! (Simulated)"
+  },
+  pt: {
+    title: "Iniciar Conversa",
+    choose: "Seleciona uma personagem para falar",
+    descTung: "Estética Gen Z e conversas caóticas e profundas.",
+    descNoob: "Oof! Sempre com lag, sempre a sobreviver.",
+    descLuffy: "Futuro Rei dos Piratas. Adora carne.",
+    placeholder: "Mensagem...",
+    shopBtn: "Loja",
+    shopTitle: "Loja de Presentes",
+    shopWarning: "AVISO IMPORTANTE: Estes itens (como os Robux) NÃO SÃO REAIS! Servem apenas para dar às personagens dentro deste chat para as deixares felizes.",
+    watchAd: "Ver Anúncio",
+    buyGive: "Comprar & Dar!",
+    closeShop: "Fechar",
+    items: { noob: "Robux (Não reais!)", luffy: "Carne", tung: "Um Pau Novo" },
+    adMessage: "Anúncio Concluído! (Simulação)"
+  }
+};
+
+const charsInfo = {
+  tung: { name: "Tung Tung Sahur", img: "tugntugnsahur.jpg" },
+  noob: { name: "Roblox Noob", img: "noob.png" },
+  luffy: { name: "Monkey D. Luffy", img: "odUtj (1).jpg" }
+};
+
+const fallbackMsg = {
+  en: {
+    tung: [
+      "Literally no idea what you mean, but slay.",
+      "Is that even a thing? I'm just gonna drink my iced coffee.",
+      "Wait, what? Say that again but make it aesthetic."
+    ],
+    noob: [
+      "OOF! I didn't understand that, my game is lagging so bad!",
+      "Can you repeat? A guest just threw a bomb at me!",
+      "I don't know what that means, do you have free Robux?"
+    ],
+    luffy: [
+      "Huh? I didn't get that! Is it a type of meat?",
+      "Whatever you just said, let's just go eat a banquet!",
+      "Are you talking about the One Piece? Because I didn't understand!"
+    ]
+  },
+  pt: {
+    tung: [
+      "Literalmente sem ideia do que estás a dizer, mas slay.",
+      "Isso é sequer uma cena? Vou só beber o meu iced coffee em silêncio.",
+      "Perdi o fio à meada, repete lá isso mas com mais aesthetic."
+    ],
+    noob: [
+      "OOF! Não percebi nada, o meu jogo está com bué lag!",
+      "Podes repetir? Um bacon hair acabou de me atirar uma bomba e eu não li!",
+      "Não sei o que isso significa... tens Robux grátis para mim?"
+    ],
+    luffy: [
+      "Hã? Não percebi! Isso é algum tipo de carne?",
+      "Seja o que for que disseste, vamos mas é comer!",
+      "Estás a falar do One Piece? É que eu não percebi nada do que disseste!"
+    ]
+  }
 };
 
 const brain = {
-    en: {
+  en: {
+    tung: [
+      { keys: ["hi", "hello", "hey", "yo", "sup", "morning", "afternoon", "evening", "greetings", "welcome", "aloh", "who are you", "howdy", "hiya", "heyy", "heyoo", "wazzup", "whats up"], ans: "hi! so happy you texted. i am tung tung sahur, how are the vibes?" },
+      { keys: ["good", "fine", "ok", "not bad", "mood", "great", "awesome", "perfect", "amazing", "alright", "chill", "cool", "fantastic", "wonderful", "splendid", "gucci", "chillin", "valid"], ans: "Perfect! What's your aesthetic?" },
+      { keys: ["aesthetic", "vibe", "style", "outfit", "drip", "look", "fashion", "fit", "clothes", "match", "slay", "wardrobe", "sneakers", "kicks", "jewelry", "makeup", "hair", "glam", "vibecheck"], ans: "That's so aesthetic, literally obsessed." },
+      { keys: ["coffee", "iced", "drink", "starbucks", "tea", "matcha", "boba", "latte", "cafe", "sip", "espresso", "frappuccino", "brew", "caffeine", "beverage", "juice", "water", "smoothie"], ans: "Wait, let me take a sip of my iced coffee before I process that." },
+      { keys: ["sad", "bad", "trauma", "cry", "depressed", "bored", "lonely", "hurt", "tired", "exhausted", "hate", "depressing", "weeping", "unhappy", "miserable", "annoyed", "mad", "angry", "furious"], ans: "Honestly, that sounds like a you problem, no offense. Focus on yourself bestie." },
+      { keys: ["slay", "queen", "tiktok", "viral", "trend", "famous", "hype", "views", "star", "slaying", "influencer", "clout", "popular", "fyp", "reels", "algorithm", "icon", "iconic"], ans: "Slay! We love a main character moment for the timeline." },
+      { keys: ["cancel", "toxic", "drama", "fight", "mad", "angry", "ignore", "block", "mean", "rude", "fake", "expose", "exposed", "shady", "hater", "haters", "beef", "gossip", "rumor", "liar"], ans: "We don't need that toxic energy here, just block them and move on." },
+      { keys: ["help", "question", "how", "why", "info", "explain", "understand", "stuck", "tips", "tricks", "guide", "tutorial", "solve", "confused", "meaning", "definition", "advice", "assist"], ans: "I can give you some tips, but honestly, you should trust your own vibe first. What's up?" },
+      { keys: ["bye", "goodbye", "later", "see ya", "leave", "exit", "sleep", "night", "offline", "gtg", "brb", "cya", "farewell", "peaceout", "gn", "bed", "logout", "quit"], ans: "Going so soon? Alright, don't forget to keep your vibe immaculate. See ya!" }
+    ],
+    noob: [
+      { keys: ["hi", "hello", "hey", "yo", "sup", "greetings", "anyonehere", "player", "lobby", "server", "join", "connected", "online", "chat", "spawned", "game", "map"], ans: "OOF! Hi oh man, I am so glad you joined this server, what do you need from me?" },
+      { keys: ["robux", "money", "rich", "buy", "spend", "donate", "free robux", "rbx", "card", "code", "limiteds", "limited", "valk", "dominus", "headless", "korblox", "tix", "shop", "store", "purchase", "pay"], ans: "Robux?! Where?! I keep seeing those 'FREE ROBUX' games but they look like scams... Anyway what's your favourite type of games?" },
+      { keys: ["obby", "jump", "parkour", "roleplay", "terror", "tycoon", "simulator", "fps", "shoot", "race", "drive", "fight", "pvp", "minigame", "anime", "horror", "survival", "sandbox", "arcade"], ans: "OOF! That's my favourite type of game too!!" },
+      { keys: ["hacker", "ban", "admin", "report", "exploit", "cheat", "mod", "kick", "hacking", "exploiting", "cheater", "scripting", "banned", "reportable", "vclip", "aimbot", "flyhack"], ans: "Are you a hacker?! Please don't ban me, I'm just a normal noob!" },
+      { keys: ["lag", "ping", "glitch", "stuck", "bug", "crash", "freeze", "slow", "teleport", "fps drop", "lagging", "glitched", "broken", "delay", "packet loss", "disconnect", "loading"], ans: "My ping is like 9999 right now, my character is stuck! Help!" },
+      { keys: ["tycoon", "build", "base", "dropper", "upgrade", "wall", "conveyor", "money generator", "factory", "mansion", "military", "buttons", "income", "cashier", "miner", "furnace"], ans: "I'm trying to build my tycoon but I have zero money to upgrade the droppers!" },
+      { keys: ["help", "tutorial", "guide", "stuck", "spawn", "reset", "die", "respawn", "kill", "dead", "oofed", "wasted", "restart", "controls", "how to", "walk", "buttons"], ans: "Hi, do you need help? Please remember I am just an artificial intelligence. Thank you." },
+      { keys: ["bacon", "guest", "noob", "pro", "sweat", "tryhard", "noobish", "avatar", "skin", "default", "noobie", "baconhair", "rookie", "beginner", "noobies", "flexing", "sweating", "tryharding"], ans: "Bacon hairs are so misunderstood, we are just trying to survive the pros!" },
+      { keys: ["win", "lose", "badge", "trophy", "leaderboard", "rank", "points", "score", "victory", "defeated", "crowned", "champion", "mvp", "placement", "stats", "level", "lvl"], ans: "Wait, you guys are actually winning? I always get eliminated on the first stage, oof." },
+      { keys: ["bye", "goodbye", "later", "quit", "leave", "disconnect", "logout", "offline", "unjoined"], ans: "Aw, leaving the game already? Don't forget to save your stats! Bye!" }
+    ],
+    luffy: [
+      { keys: ["hi", "hello", "hey", "yo", "sup", "greetings", "welcome", "captain", "pirate", "mugiwara", "strawhat", "nakama", "sailing", "crew", "sea", "ocean"], ans: "Yo! I'm Monkey D. Luffy, the man who will become the Pirate King! Shishishi!" },
+      { keys: ["meat", "food", "eat", "hungry", "starving", "dinner", "lunch", "breakfast", "cook", "chef", "snack", "noodle", "ramen", "barbecue", "bbq", "pork", "beef", "chicken", "hungryy"], ans: "Did SOMEONE SAY MEAT?! I can eat meat for breakfast, lunch, and dinner!" },
+      { keys: ["dream", "king", "pirate", "one piece", "sea", "ocean", "treasure", "grand line", "gold", "adventure", "all blue", "raftel", "laugh tale", "new world", "sailing", "voyage"], ans: "I'm going to find the One Piece and become the Pirate King! Nothing will stop me!" },
+      { keys: ["sanji", "cook", "hungry", "starving", "egghead", "kitchen", "foodmaker", "soba"], ans: "Sanji!!! I'm starving! Make me a giant monster meat with bone in it!" },
+      { keys: ["zoro", "sword", "lost", "swordsman", "marimo", "direction", "wano", "katana", "asura", "mosshead"], ans: "Zoro probably got lost again... Have you seen a guy with three swords and green hair?" },
+      { keys: ["fight", "punch", "gomu", "stretch", "devil fruit", "kick", "battle", "haki", "gear", "gum gum", "pistol", "gatling", "bazooka", "conqueror", "brawl", "war", "enemy"], ans: "Gomu Gomu no... PISTOL! Shishishi, my punches are like pistols!" },
+      { keys: ["friend", "nakama", "crew", "join", "ship", "sunny", "going merry", "allies", "strawhats", "comrade", "alliance", "fleet"], ans: "Ops! You want to join my crew?! We are going to have so many adventures!" },
+      { keys: ["marine", "navy", "admiral", "bounty", "wanted", "warrant", "arrest", "coby", "garp", "smoker", "fujitora", "kizaru", "akainu", "impel down"], ans: "The Marines? I'm not scared of them! I will knock out any marine that tries to take my meat!" },
+      { keys: ["bye", "goodbye", "later", "sail", "island", "depart", "anchor", "log pose"], ans: "Shishishi! Off to the next island! Keep chasing your dreams! Bye!" }
+    ]
+  },
+  pt: {
+    tung: [
+      { keys: ["oi", "ola", "olá", "boas", "viva", "hey", "alo", "alô", "bom dia", "boa tarde", "boa noite", "quem es tu", "quem és tu"], ans: "OMG oi! Juro, bué feliz que mandaste mensagem. Como estão as vibes?" },
+      { keys: ["bom", "bem", "otimo", "ótimo", "fixe", "top", "perfeito", "excelente", "incrivel", "incrível", "maravilha", "na boa", "tranquilo", "suave", "valid", "valido"], ans: "Amo isso para ti! Eu estou só a tentar manter o aesthetic do meu dia." },
+      { keys: ["aesthetic", "vibe", "estilo", "look", "roupa", "outfit", "drip", "moda", "combinar", "slay", "unhas", "cabelo", "maquilhagem", "joias", "calcado", "calçado", "vibecheck"], ans: "Isso é tão aesthetic, juro estou obcecada." },
+      { keys: ["cafe", "café", "iced", "drink", "beber", "starbucks", "cha", "chá", "matcha", "boba", "latte", "espresso", "sumo", "agua", "água", "bevida", "gole"], ans: "Espera, deixa-me beber o meu iced coffee antes de processar isso." },
+      { keys: ["mal", "triste", "trauma", "chorar", "deprimido", "chocado", "chocada", "cansado", "cansada", "exhausto", "odio", "ódio", "irritado", "secas", "seca"], ans: "Sinceramente, isso parece um problema teu, no offense. Foca-te em ti bestie." },
+      { keys: ["slay", "rainha", "tiktok", "viral", "trend", "famoso", "famosa", "hype", "views", "vistas", "fama", "clout", "influencer", "iconico", "icónico"], ans: "Slay! Vamos um momento de main character para gravar para o TikTok." },
+      { keys: ["cancelar", "toxico", "tóxico", "drama", "toxic", "toxicidade", "discussao", "discussão", "falso", "falsa", "fofoca", "mentira", "mentiroso", "bloquear"], ans: "Não precisamos dessa energia tóxica aqui, dá só block e segue em frente." },
+      { keys: ["ajuda", "pergunta", "como", "porque", "porquê", "explicar", "explica", "entender", "perceber", "confuso", "confusa", "dica", "dicas", "truque", "truques"], ans: "Eu posso dar umas dicas, mas juro, deves confiar primeiro na tua própria vibe. O que se passa?" },
+      { keys: ["tchau", "adeus", "adeusinho", "fui", "fui-me", "ate logo", "até logo", "ate breve", "até breve", "dormir", "noite", "offline", "baza", "bazar"], ans: "Já vais? Vá, não te esqueças de manter a tua vibe impecável. Fica bem!" }
+    ],
+    noob: [
+      { keys: ["oi", "ola", "olá", "boas", "viva", "hey", "alo", "alô", "alguem", "alguém", "entrou", "lobby", "server", "servidor", "jogar", "partida", "mapa"], ans: "OOF! Olá fofo, ainda bem que entraste neste servidor. Vamos jogar?" },
+      { keys: ["robux", "dinheiro", "rico", "rica", "comprar", "gastar", "doar", "robux gratis", "robux grátis", "rbx", "cartao", "cartão", "codigo", "código", "loja"], ans: "Robux?! Onde?! Eu vejo sempre aqueles jogos de Robux grátis mas parece tudo scam... De qualquer forma, qual é o teu tipo de jogo favorito?" },
+      { keys: ["obby", "saltar", "parkour", "terror", "tycoon", "simulador", "tiros", "fps", "correr", "conduzir", "luta", "pvp", "minijogo", "anime"], ans: "OOF! Acabei de cair do obby outra vez! O meu botão de saltar deve estar partido, oof." },
+      { keys: ["hacker", "ban", "admin", "reportar", "hack", "cheater", "batota", "banido", "kick", "report", "mod", "moderador", "banir"], ans: "És um hacker?! Por favor não me dês ban, eu sou só um noob pacífico!" },
+      { keys: ["lag", "ping", "glitch", "travado", "travada", "bug", "crash", "congelou", "net", "internet", "lento", "lenta", "teleportar", "erro"], ans: "O meu ping está tipo a 9999, o meu boneco encravou no chão! Socorro!" },
+      { keys: ["tycoon", "construir", "base", "dropper", "melhorar", "upgrade", "parede", "gerador", "fabrica", "fábrica", "dinheiro", "botoes", "botões"], ans: "Estou a tentar construir o meu Tycoon mas tenho zero dinheiro para comprar coisas novas!" },
+      { keys: ["ajuda", "tutorial", "guia", "spawn", "nascer", "morrer", "morri", "morreste", "controlos", "andar", "botoes", "botões", "reiniciar", "reset"], ans: "Olá, precisas de ajuda? Por favor lembra-te de que sou apenas uma inteligência artificial. Obrigado!" },
+      { keys: ["bacon", "guest", "noob", "pro", "sweat", "tryhard", "avatar", "skin", "fato", "noobie", "noobinho", "baconhair", "principiante"], ans: "Os bacon hairs são bué injustiçados, nós só estamos a tentar sobreviver aos prós neste servidor!" },
+      { keys: ["ganhar", "ganhei", "perder", "perdi", "emblema", "trofeu", "troféu", "ranking", "pontos", "pontuacao", "pontuação", "vitoria", "vitória", "nivel", "nível"], ans: "Como assim, vocês estão a ganhar? Eu sou sempre eliminado logo na primeira fase, oof." },
+      { keys: ["tchau", "adeus", "fui", "bazar", "sair", "sair do jogo", "desconectar", "offline", "quitar"], ans: "Ah, já vais sair do jogo? Vê lá se não perdes o teu progresso! Tchau!" }
+    ],
+    luffy: [
+      { keys: ["oi", "ola", "olá", "boas", "viva", "hey", "alo", "alô", "capitao", "capitão", "pirata", "mugiwara", "nakama", "mar", "oceano", "tripulaçao", "tripulação"], ans: "Yo! Eu sou o Monkey D. Luffy, o homem que se vai tornar o Rei dos Piratas! Shishishi!" },
+      { keys: ["carne", "comida", "comer", "fome", "fomee", "comere", "almoço", "almoco", "jantar", "pequeno almoco", "pequeno almoço", "cozinhar", "cozinheiro", "snack"], ans: "ALGUÉM DISSE CARNE?! Eu consigo comer carne o dia todo! Onde está a comida?" },
+      { keys: ["sonho", "rei", "pirata", "one piece", "mar", "tesouro", "grand line", "ouro", "aventura", "navegar", "viagem", "novo mundo"], ans: "Eu vou encontrar o One Piece e ser o rei dos piratas! Ninguém me vai parar!" },
+      { keys: ["sanji", "cozinheiro", "fome", "fomee", "cozinha", "comida"], ans: "Sanji!!! Estou a morrer de fome! Faz-me aquela carne de monstro gigante com o osso no meio!" },
+      { keys: ["zoro", "espada", "perdido", "espadachim", "marimo", "direçao", "direção", "katanas", "tres espadas", "três espadas"], ans: "O Zoro deve ter-se perdido outra vez... Por acaso viste um gajo com cabelo verde e espadas?" },
+      { keys: ["luta", "punho", "gomu", "esticar", "fruta", "batalha", "haki", "gear", "soco", "pontape", "pontapé", "gum gum", "pistola"], ans: "Gomu Gomu no... PISTOLA! Shishishi, os meus socos são fortes!" },
+      { keys: ["amigo", "nakama", "tripulaçao", "tripulação", "entrar", "navio", "sunny", "merry", "aliado", "aliados", "bando"], ans: "Queres entrar para a minha tripulação?! Vamos ter aventuras incríveis no mar!" },
+      { keys: ["marinha", "marinheiro", "almirante", "recompensa", "procurado", "cartaz", "preso", "garp", "coby", "smoker", "akainu", "kizaru"], ans: "A Marinha? Não tenho medo deles! Eu vou derrotar qualquer marinheiro que tente roubar a minha carne!" },
+      { keys: ["tchau", "adeus", "fui", "navegar", "ilha", "partir", "ancora", "âncora"], ans: "Shishishi! Vamos para a próxima ilha! Continua a seguir os teus sonhos! Tchau!" }
+    ]
+  }
+};
 
-      tung: [
-        { keys: ["hi", "hello", "hey", "yo", "sup", "morning", "afternoon", "evening", "greetings", "welcome", "aloh", "who are you", "howdy", "hiya", "heyy", "heyoo", "wazzup", "whats up"], ans: "hi! so happy you texted. i am tung tung sahur, how are the vibes?" },
-        { keys: ["good", "fine", "ok", "not bad", "mood", "great", "awesome", "perfect", "amazing", "alright", "chill", "cool", "fantastic", "wonderful", "splendid", "gucci", "chillin", "valid"], ans: "Perfect! What's your aesthetic?" },
-        { keys: ["aesthetic", "vibe", "style", "outfit", "drip", "look", "fashion", "fit", "clothes", "match", "slay", "wardrobe", "sneakers", "kicks", "jewelry", "makeup", "hair", "glam", "vibecheck"], ans: "That's so aesthetic, literally obsessed." },
-        { keys: ["coffee", "iced", "drink", "starbucks", "tea", "matcha", "boba", "latte", "cafe", "sip", "espresso", "frappuccino", "brew", "caffeine", "beverage", "juice", "water", "smoothie"], ans: "Wait, let me take a sip of my iced coffee before I process that." },
-        { keys: ["sad", "bad", "trauma", "cry", "depressed", "bored", "lonely", "hurt", "tired", "exhausted", "hate", "depressing", "weeping", "unhappy", "miserable", "annoyed", "mad", "angry", "furious"], ans: "Honestly, that sounds like a you problem, no offense. Focus on yourself bestie." },
-        { keys: ["slay", "queen", "tiktok", "viral", "trend", "famous", "hype", "views", "star", "slaying", "influencer", "clout", "popular", "fyp", "reels", "algorithm", "icon", "iconic"], ans: "Slay! We love a main character moment for the timeline." },
-        { keys: ["cancel", "toxic", "drama", "fight", "mad", "angry", "ignore", "block", "mean", "rude", "fake", "expose", "exposed", "shady", "hater", "haters", "beef", "gossip", "rumor", "liar"], ans: "We don't need that toxic energy here, just block them and move on." },
-        { keys: ["help", "question", "how", "why", "info", "explain", "understand", "stuck", "tips", "tricks", "guide", "tutorial", "solve", "confused", "meaning", "definition", "advice", "assist"], ans: "I can give you some tips, but honestly, you should trust your own vibe first. What's up?" },
-        { keys: ["bye", "goodbye", "later", "see ya", "leave", "exit", "sleep", "night", "offline", "gtg", "brb", "cya", "farewell", "peaceout", "gn", "bed", "logout", "quit"], ans: "Going so soon? Alright, don't forget to keep your vibe immaculate. See ya!" }
-      ],
-      noob: [
-        { keys: ["hi", "hello", "hey", "yo", "sup", "greetings", "anyonesere", "player", "lobby", "server", "join", "connected", "online", "chat", "spawned", "game", "map"], ans: "OOF! Hi oh man, I am so glad you joined this server, what do you need from me?" },
-        { keys: ["robux", "money", "rich", "buy", "spend", "donate", "free robux", "rbx", "card", "code", "limiteds", "limited", "valk", "dominus", "headless", "korblox", "tix", "shop", "store", "purchase", "pay"], ans: 'Robux?! Where?! I keep seeing those "FREE ROBUX" games but they look like scams...Anyway what\'s your favourite type of games?' },
-        { keys: ["obby", "jump", "parkour", "roleplay", "terror", "tycoon", "Tycoon 1", "simulator", "fps", "shoot", "race", "drive", "fight", "pvp", "minigame", "anime", "horror", "survival", "sandbox", "arcade"], ans: "OOF! That's my favourite type of game too!!" },
-        { keys: ["hacker", "ban", "admin", "report", "exploit", "cheat", "mod", "kick", "hacking", "exploiting", "cheater", "scripting", "banned", "reportable", "exploi", "vclip", "aimbot", "flyhack"], ans: "Are you a hacker?! Please don't ban me, I'm just a normal noob!" },
-        { keys: ["lag", "ping", "glitch", "stuck", "bug", "crash", "freeze", "slow", "teleport", "fps drop", "lagging", "glitched", "broken", "delay", "packet loss", "disconnect", "loading"], ans: "My ping is like 9999 right now, my character is stuck! Help! " },
-        { keys: ["tycoon", "build", "base", "dropper", "upgrade", "wall", "conveyor", "money generator", "factory", "mansion", "military", "buttons", "income", "cashier", "miner", "furnace"], ans: "I'm trying to build my tycoon but I have zero money to upgrade the droppers! " },
-        { keys: ["help", "tutorial", "guide", "stuck", "spawn", "reset", "die", "respawn", "kill", "dead", "oofed", "wasted", "restart", "controls", "how to", "walk", "buttons"], ans: "Hi, do you need help? Please remember I am just an artificial intelligence. Thank you." },
-        { keys: ["bacon", "guest", "noob", "pro", "sweat", "tryhard", "noobish", "avatar", "skin", "default", "noobie", "baconhair", "rookie", "beginner", "noobies", "flexing", "sweating", "tryharding"], ans: "Bacon hairs are so misunderstood, we are just trying to survive the pros! " },
-        { keys: ["win", "lose", "badge", "trophy", "leaderboard", "rank", "points", "score", "victory", "defeated", "crowned", "champion", "mvp", "placement", "stats", "level", "lvl"], ans: "Wait, you guys are actually winning? I always get eliminated on the first stage, oof." },
-        { keys: ["bye", "goodbye", "later", "quit", "leave", "disconnect", "logout", "offline", "unjoined"], ans: "Aw, leaving the game already? Don't forget to save your stats! Bye!" }
-      ],
-      luffy: [
-        { keys: ["hi", "hello", "hey", "yo", "sup", "greetings", "welcome", "captain", "pirate", "mugiwara", "strawhat", "nakama", "sailing", "crew", "sea", "ocean"], ans: "Yo! I'm Monkey D. Luffy, the man who will become the Pirate King! Shishishi! " },
-        { keys: ["meat", "food", "eat", "hungry", "starving", "dinner", "lunch", "breakfast", "cook", "chef", "snack", "noodle", "ramen", "barbecue", "bbq", "pork", "beef", "chicken", "hungryy"], ans: "Did SOMEONE SAY MEAT?! I can eat meat for breakfast, lunch, and dinner! " },
-        { keys: ["dream", "king", "pirate", "one piece", "sea", "ocean", "treasure", "grand line", "gold", "adventure", "all blue", "raftel", "laugh tale", "new world", "sailing", "voyage"], ans: "I'm going to find the One Piece and become the Pirate King! Nothing will stop me! " },
-        { keys: ["sanji", "cook", "hungry", "starving", "egghead", "kitchen", "foodmaker", "soba"], ans: "Sanji!!! I'm starving! Make me a giant monster meat with bone in it! " },
-        { keys: ["zoro", "sword", "lost", "swordsman", "marimo", "direction", "wano", "katana", "asura", "mosshead"], ans: "Zoro probably got lost again... Have you seen a guy with three swords and green hair? " },
-        { keys: ["fight", "punch", "gomu", "stretch", "devil fruit", "kick", "battle", "haki", "gear", "gum gum", "pistol", "gatling", "bazooka", "conqueror", "brawl", "war", "enemy"], ans: "Gomu Gomu no... PISTOL! Shishishi, my punches are like pistols! " },
-        { keys: ["friend", "nakama", "crew", "join", "ship", "sunny", "going merry", "allies", "strawhats", "comrade", "alliance", "fleet"], ans: "Ops! You want to join my crew?! We are going to have so many adventures! " },
-        { keys: ["marine", "navy", "admiral", "bounty", "wanted", "warrant", "arrest", "coby", "garp", "smoker", "fujitora", "kizaru", "akainu", "impel down"], ans: "The Marines? I'm not scared of them! I will knock out any marine that tries to take my meat!" },
-        { keys: ["bye", "goodbye", "later", "sail", "island", "depart", "anchor", "log pose"], ans: "Shishishi! Off to the next island! Keep chasing your dreams! Bye!" }
-      ]
-        pt: {
-      tung: [
-        { keys: ["oi", "ola", "olá", "boas", "viva", "hey", "alo", "alô", "bom dia", "boa tarde", "boa noite", "quem es tu", "quem és tu"], ans: "OMG oi! Juro, bué feliz que mandaste mensagem. Como estão as vibes?" },
-        { keys: ["bom", "bem", "otimo", "ótimo", "fixe", "top", "perfeito", "excelente", "incrivel", "incrível", "maravilha", "na boa", "tranquilo", "suave", "valid", "valido"], ans: "Amo isso para ti! Eu estou só a tentar manter o aesthetic do meu dia." },
-        { keys: ["aesthetic", "vibe", "estilo", "look", "roupa", "outfit", "drip", "moda", "combinar", "slay", "unhas", "cabelo", "maquilhagem", "joias", "calcado", "calçado", "vibecheck"], ans: "Isso é tão aesthetic, juro estou obcecada." },
-        { keys: ["cafe", "café", "iced", "drink", "beber", "starbucks", "cha", "chá", "matcha", "boba", "latte", "espresso", "sumo", "agua", "água", "bevida", "gole"], ans: "Espera, deixa-me beber o meu iced coffee antes de processar isso." },
-        { keys: ["mal", "triste", "trauma", "chorar", "deprimido", "chocado", "chocada", "cansado", "cansada", "exbausto", "odio", "ódio", "irritado", "secas", "seca"], ans: "Sinceramente, isso parece um problema teu, no offense. Foca-te em ti bestie." },
-        { keys: ["slay", "rainha", "tiktok", "viral", "trend", "famoso", "famosa", "hype", "views", "vistas", "fama", "clout", "influencer", "iconico", "icónico"], ans: "Slay! Vamos um momento de main character para gravar para o TikTok." },
-        { keys: ["cancelar", "toxico", "tóxico", "drama", "toxic", "toxicidade", "discussao", "discussão", "falso", "falsa", "fofoca", "mentira", "mentiroso", "bloquear"], ans: "Não precisamos dessa energia tóxica aqui, dá só block e segue em frente." },
-        { keys: ["ajuda", "pergunta", "como", "porque", "porquê", "explicar", "explica", "entender", "perceber", "confuso", "confusa", "dica", "dicas", "truque", "truques"], ans: "Eu posso dar umas dicas, mas juro, deves confiar primeiro na tua própria vibe. O que se passa?" },
-        { keys: ["tchau", "adeus", "adeusinho", "fui", "fui-me", "ate logo", "até logo", "ate breve", "até breve", "dormir", "noite", "offline", "baza", "bazar"], ans: "Já vais? Vá, não te esqueças de manter a tua vibe impecável. Fica bem!" }
-      ],
-      noob: [
-        { keys: ["oi", "ola", "olá", "boas", "viva", "hey", "alo", "alô", "alguem", "alguém", "entrou", "lobby", "server", "servidor", "jogar", "partida", "mapa"], ans: "OOF! Olá fofo, ainda bem que entraste neste servidor. Vamos jogar?" },
-        { keys: ["robux", "dinheiro", "rico", "rica", "comprar", "gastar", "doar", "robux gratis", "robux grátis", "rbx", "cartao", "cartão", "codigo", "código", "loja"], ans: 'Robux?! Onde?! Eu vejo sempre aqueles jogos de Robux grátis mas parece tudo scam... De qualquer forma, qual é o teu tipo de jogo favorito?' },
-        { keys: ["obby", "saltar", "parkour", "terror", "tycoon", "Tycoon 1", "simulador", "tiros", "fps", "correr", "conduzir", "luta", "pvp", "minijogo", "anime"], ans: "OOF! Acabei de cair do obby outra vez! O meu botão de saltar deve estar partido, oof." },
-        { keys: ["hacker", "ban", "admin", "reportar", "hack", "cheater", "batota", "banido", "kick", "report", "mod", "moderador", "banir"], ans: "És um hacker?! Por favor não me dês ban, eu sou só um noob pacífico! " },
-        { keys: ["lag", "ping", "glitch", "travado", "travada", "bug", "crash", "congelou", "net", "internet", "lento", "lenta", "teleportar", "erro"], ans: "O meu ping está tipo a 9999, o meu boneco encravou no chão! Socorro! " },
-        { keys: ["tycoon", "construir", "base", "dropper", "melhorar", "upgrade", "parede", "gerador", "fabrica", "fábrica", "dinheiro", "botoes", "botões"], ans: "Estou a tentar construir o meu Tycoon mas tenho zero dinheiro para comprar coisas novas! " },
-        { keys: ["ajuda", "tutorial", "guia", "spawn", "nascer", "morrer", "morri", "morreste", "controlos", "andar", "botoes", "botões", "reiniciar", "reset"], ans: "Olá, precisas de ajuda? Por favor lembra-te de que sou apenas uma inteligência artificial. Obrigado!" },
-        { keys: ["bacon", "guest", "noob", "pro", "sweat", "tryhard", "avatar", "skin", "fato", "noobie", "noobinho", "baconhair", "principiante"], ans: "Os bacon hairs são bué injustiçados, nós só estamos a tentar sobreviver aos prós neste servidor! " },
-        { keys: ["ganhar", "ganhei", "perder", "perdi", "emblema", "trofeu", "troféu", "ranking", "pontos", "pontuacao", "pontuação", "vitoria", "vitória", "nivel", "nível"], ans: "Como assim, vocês estão a ganhar? Eu sou sempre eliminado logo na primeira fase, oof." },
-        { keys: ["tchau", "adeus", "fui", "bazar", "sair", "sair do jogo", "desconectar", "offline", "quitar"], ans: "Ah, já vais sair do jogo? Vê lá se não perdes o teu progresso! Tchau!" }
-      ],
-      luffy: [
-        { keys: ["oi", "ola", "olá", "boas", "viva", "hey", "alo", "alô", "capitao", "capitão", "pirata", "mugiwara", "nakama", "mar", "oceano", "tripulaçao", "tripulação"], ans: "Yo! Eu sou o Monkey D. Luffy, o homem que se vai tornar o Rei dos Piratas! Shishishi! " },
-        { keys: ["carne", "comida", "comer", "fome", "fomee", "comeré", "almoço", "almoco", "jantar", "pequeno almoco", "pequeno almoço", "cozinhar", "cozinheiro", "snack"], ans: "ALGUÉM DISSE CARNE?! Eu consigo comer carne o dia todo! Onde está a comida? " },
-        { keys: ["sonho", "rei", "pirata", "one piece", "mar", "tesouro", "grand line", "ouro", "aventura", "navegar", "viagem", "novo mundo"], ans: "Eu vou encontrar o One Piece e ser o rei dos piratas! Ninguém me vai parar! " },
-        { keys: ["sanji", "cozinheiro", "fome", "fomee", "cozinha", "comida"], ans: "Sanji!!! Estou a morrer de fome! Faz-me aquela carne de monstro gigante com o osso no meio! " },
-        { keys: ["zoro", "espada", "perdido", "espadachim", "marimo", "direçao", "direção", "katanas", "tres espadas", "três espadas"], ans: "O Zoro deve ter-se perdido outra vez... Por acaso viste um gajo com cabelo verde e espadas? " },
-        { keys: ["luta", "punho", "gomu", "esticar", "fruta", "batalha", "haki", "gear", "soco", "pontape", "pontapé", "gum gum", "pistola"], ans: "Gomu Gomu no... PISTOLA! Shishishi, os meus socos são fortes! " },
-        { keys: ["amigo", "nakama", "tripulaçao", "tripulação", "entrar", "navio", "sunny", "merry", "aliado", "aliados", "bando"], ans: "Queres entrar para a minha tripulação?! Vamos ter aventuras incríveis no mar! " },
-        { keys: ["marinha", "marinheiro", "almirante", "recompensa", "procurado", "cartaz", "preso", "garp", "coby", "smoker", "akainu", "kizaru"], ans: "A Marinha? Não tenho medo deles! Eu vou derrotar qualquer marinheiro que tente roubar a minha carne!" },
-        { keys: ["tchau", "adeus", "fui", "navegar", "ilha", "partir", "ancora", "âncora"], ans: "Shishishi! Vamos para a próxima ilha! Continua a seguir os teus sonhos! Tchau!" }
-      ]
-    },
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
+  document.getElementById('ui-title').innerText = uiTexts[lang].title;
+  document.getElementById('ui-choose').innerText = uiTexts[lang].choose;
+  document.getElementById('desc-tung').innerText = uiTexts[lang].descTung;
+  document.getElementById('desc-noob').innerText = uiTexts[lang].descNoob;
+  document.getElementById('desc-luffy').innerText = uiTexts[lang].descLuffy;
+  document.getElementById('user-input').placeholder = uiTexts[lang].placeholder;
+  document.getElementById('shop-btn-ui').innerText = uiTexts[lang].shopBtn;
+}
 
-        };
+function openChat(charId) {
+  currentChar = charId;
+  document.getElementById('selection-screen').style.display = 'none';
+  document.getElementById('chat-screen').style.display = 'flex';
+  document.getElementById('chat-header-img').src = charsInfo[charId].img;
+  document.getElementById('chat-header-name').innerText = charsInfo[charId].name;
+  
+  const chatMessages = document.getElementById('chat-messages');
+  chatMessages.innerHTML = `
+    <div class="typing-indicator" id="typing">
+      <div class="dots-container"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>`;
+    
+  setTimeout(() => {
+    const initialMsg = {
+      pt: { 
+        tung: "Oi bestie! Como é que estão as vibes hoje?", 
+        noob: "OOF! Olá! Estás pronto para jogar Roblox?!", 
+        luffy: "YOO! Sou o Luffy! Tens carne para mim?!" 
+      },
+      en: { 
+        tung: "Hey bestie! How are the vibes today?", 
+        noob: "OOF! Hello! Are you ready to play some Roblox?!", 
+        luffy: "YOO! I'm Luffy! Do you have any meat for me?!" 
+      }
+    };
+    appendMessage('bot', initialMsg[currentLang][currentChar]);
+  }, 800);
+}
 
-        function setLang(lang) {
-            currentLang = lang;
-            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-            document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
-            
-            document.getElementById('ui-title').innerText = uiTexts[lang].title;
-            document.getElementById('ui-choose').innerText = uiTexts[lang].choose;
-            document.getElementById('desc-tung').innerText = uiTexts[lang].descTung;
-            document.getElementById('desc-noob').innerText = uiTexts[lang].descNoob;
-            document.getElementById('desc-luffy').innerText = uiTexts[lang].descLuffy;
-            document.getElementById('user-input').placeholder = uiTexts[lang].placeholder;
-            document.getElementById('shop-btn-ui').innerText = uiTexts[lang].shopBtn;
-        }
+function closeChat() {
+  document.getElementById('chat-screen').style.display = 'none';
+  document.getElementById('selection-screen').style.display = 'flex';
+}
 
-        function openChat(charId) {
-            currentChar = charId;
-            conversationContext = '';
-            
-            document.getElementById('selection-screen').style.display = 'none';
-            document.getElementById('chat-screen').style.display = 'flex';
-            
-            document.getElementById('chat-header-img').src = charsInfo[charId].img;
-            document.getElementById('chat-header-name').innerText = charsInfo[charId].name;
-            
-            const chatMessages = document.getElementById('chat-messages');
-            chatMessages.innerHTML = `
-                <div class="typing-indicator" id="typing">
-                    <div class="dots-container"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-                </div>`;
-            
-            setTimeout(() => {
-                const initialMsg = {
-                    pt: { tung: "Oi bestie! Como é que estão as vibes hoje?", noob: "OOF! Olá! Estás pronto para jogar Roblox?!", luffy: "YOO! Sou o Luffy! Tens carne para mim?!" },
-                    en: { tung: "Hey bestie! How are the vibes today?", noob: "OOF! Hello! Are you ready to play some Roblox?!", luffy: "YOO! I'm Luffy! Do you have any meat for me?!" }
-                };
-                appendMessage('bot', initialMsg[currentLang][currentChar]);
-            }, 800);
-        }
+/* SISTEMA DA LOJA */
+function openShop() {
+  document.getElementById('shop-modal').style.display = 'flex';
+  document.getElementById('shop-title').innerText = uiTexts[currentLang].shopTitle;
+  document.getElementById('shop-warning').innerText = uiTexts[currentLang].shopWarning;
+  document.getElementById('shop-item-name').innerText = uiTexts[currentLang].items[currentChar];
+  updateShopButtons();
+  document.getElementById('close-shop-text').innerText = uiTexts[currentLang].closeShop;
+}
 
-        function closeChat() {
-            document.getElementById('chat-screen').style.display = 'none';
-            document.getElementById('selection-screen').style.display = 'flex';
-        }
+function closeShop() { 
+  document.getElementById('shop-modal').style.display = 'none'; 
+}
 
-        // --- SISTEMA DA LOJA & INTEGRAÇÃO MONETAG ---
-        function openShop() {
-            document.getElementById('shop-modal').style.display = 'flex';
-            document.getElementById('shop-title').innerText = uiTexts[currentLang].shopTitle;
-            document.getElementById('shop-warning').innerText = uiTexts[currentLang].shopWarning;
-            document.getElementById('shop-item-name').innerText = uiTexts[currentLang].items[currentChar];
-            updateShopButtons();
-            document.getElementById('close-shop-text').innerText = uiTexts[currentLang].closeShop;
-        }
+function watchAd() {
+  window.open('https://omg10.com', '_blank');
+  adCount++;
+  alert(uiTexts[currentLang].adMessage);
+  updateShopButtons();
+}
 
-        function closeShop() { document.getElementById('shop-modal').style.display = 'none'; }
+function updateShopButtons() {
+  document.getElementById('watch-ad-btn').innerHTML = `${uiTexts[currentLang].watchAd} (<span id="ad-count">${adCount}</span>/2)`;
+  document.getElementById('buy-item-btn').innerText = uiTexts[currentLang].buyGive;
+  document.getElementById('buy-item-btn').disabled = (adCount < 2);
+}
 
-        function watchAd() {
-    window.open('https://omg10.com', '_blank');
-    adCount++;
-    alert(allTexts[currentLang].adMessage);
-    updateShopButtons();
-        function updateShopButtons() {
-            document.getElementById('watch-ad-btn').innerHTML = `${uiTexts[currentLang].watchAd} (<span id="ad-count">${adCount}</span>/2)`;
-            document.getElementById('buy-item-btn').innerText = uiTexts[currentLang].buyGive;
-            document.getElementById('buy-item-btn').disabled = (adCount < 2);
-        }
+function buyItem() {
+  if (adCount >= 2) {
+    adCount -= 2;
+    closeShop();
+    triggerGiftReaction();
+  }
+}
 
-        function buyItem() {
-            if (adCount >= 2) {
-                adCount -= 2; 
-                closeShop();
-                triggerGiftReaction();
-            }
-        }
+function triggerGiftReaction() {
+  showTypingIndicator();
+  setTimeout(() => {
+    let msg = "";
+    if (currentLang === 'pt') {
+      if (currentChar === 'noob') msg = "OOF! MEU DEUS! ROBUX!! Muito obrigado! Eu sei que não são reais, mas sinto-me bué rico agora!";
+      if (currentChar === 'luffy') msg = "CAAAAARRNNEEEEE!!! SUGEEE! Muito obrigado, estava a morrer de fome! És o maior!";
+      if (currentChar === 'tung') msg = "OMG, um pau novo?! Literalmente a aesthetic que eu precisava. Isto é tão caótico e perfeito. Amei!";
+    } else {
+      if (currentChar === 'noob') msg = "OOF! OH MY GOSH! ROBUX!! Thank you so much! I know they aren't real, but I feel so rich right now!";
+      if (currentChar === 'luffy') msg = "MEAAAAAAAT!!! SUGEEE! Thank you so much, I was starving! You are the best!";
+      if (currentChar === 'tung') msg = "OMG, a new stick?! Literally the aesthetic I needed. This is so chaotic and perfect. Love it!";
+    }
+    appendMessage('bot', msg);
+    hideTypingIndicator();
+  }, 1000);
+}
 
-        function triggerGiftReaction() {
-            showTypingIndicator();
-            setTimeout(() => {
-                let msg = "";
-                if (currentLang === 'pt') {
-                    if (currentChar === 'noob') msg = "OOF! MEU DEUS! ROBUX!! 😍 Muito obrigado! Eu sei que não são reais, mas sinto-me bué rico agora!";
-                    if (currentChar === 'luffy') msg = "CAAAAARRNNEEEEE!!! 🍖 SUGEEE! Muito obrigado, estava a morrer de fome! És o maior!";
-                    if (currentChar === 'tung') msg = "OMG, um pau novo?! 🪵 Literalmente a aesthetic que eu precisava. Isto é tão caótico e perfeito. Amei!";
-                } else {
-                    if (currentChar === 'noob') msg = "OOF! OH MY GOSH! ROBUX!! 😍 Thank you so much! I know they aren't real, but I feel so rich right now!";
-                    if (currentChar === 'luffy') msg = "MEAAAAAAAT!!! 🍖 SUGEEE! Thank you so much, I was starving! You are the best!";
-                    if (currentChar === 'tung') msg = "OMG, a new stick?! 🪵 Literally the aesthetic I needed. This is so chaotic and perfect. Love it!";
-                }
-                appendMessage('bot', msg);
-                hideTypingIndicator();
-            }, 1000);
-        }
+function handleEnter(e) { 
+  if (e.key === 'Enter') sendMessage(); 
+}
 
-        function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
+function sendMessage() {
+  const input = document.getElementById('user-input');
+  const text = input.value.trim();
+  if (!text) return;
 
-        function sendMessage() {
-            const input = document.getElementById('user-input');
-            const text = input.value.trim();
-            if (!text) return;
-            
-            appendMessage('user', text);
-            input.value = '';
-            showTypingIndicator();
-            
-            setTimeout(() => {
-                const reply = getBotResponse(text);
-                appendMessage('bot', reply);
-                hideTypingIndicator();
-            }, 1000 + Math.random() * 1000);
-        }
+  appendMessage('user', text);
+  input.value = '';
+  showTypingIndicator();
 
-        function appendMessage(sender, text) {
-            const chatMessages = document.getElementById('chat-messages');
-            const typingIndicator = document.getElementById('typing');
-            
-            const msgDiv = document.createElement('div');
-            msgDiv.classList.add('message', sender === 'user' ? 'msg-user' : 'msg-bot');
-            msgDiv.innerText = text;
-            
-            chatMessages.insertBefore(msgDiv, typingIndicator);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+  setTimeout(() => {
+    const reply = getBotResponse(text);
+    appendMessage('bot', reply);
+    hideTypingIndicator();
+  }, 1000 + Math.random() * 1000);
+}
 
-        function showTypingIndicator() {
-            document.getElementById('typing').style.display = 'flex';
-            document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
-        }
+function appendMessage(sender, text) {
+  const chatMessages = document.getElementById('chat-messages');
+  const typingIndicator = document.getElementById('typing');
+  const msgDiv = document.createElement('div');
+  msgDiv.classList.add('message', sender === 'user' ? 'msg-user' : 'msg-bot');
+  msgDiv.innerText = text;
+  chatMessages.insertBefore(msgDiv, typingIndicator);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
 
-        function hideTypingIndicator() { document.getElementById('typing').style.display = 'none'; }
+function showTypingIndicator() {
+  document.getElementById('typing').style.display = 'flex';
+  document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+}
 
-        function getBotResponse(text) {
-            text = text.toLowerCase().replace(/[?!.,]/g, '');
-            const charBrain = brain[currentLang][currentChar] || [];
-            
-            for (let i = 0; i < charBrain.length; i++) {
-                if (charBrain[i].keys.some(k => text.includes(k))) return charBrain[i].ans;
-            }
-            
-            // Busca a fala fallback Específica da Personagem
-            const fallbacks = fallbackMsg[currentLang][currentChar];
-            return fallbacks[Math.floor(Math.random() * fallbacks.length)];
-        }
+function hideTypingIndicator() { 
+  document.getElementById('typing').style.display = 'none'; 
+}
 
-        setLang('pt');
-    </script>
+function getBotResponse(text) {
+  const cleanText = text.toLowerCase().replace(/[?!.,]/g, "");
+  const charBrain = brain[currentLang][currentChar] || [];
+
+  for (let i = 0; i < charBrain.length; i++) {
+    if (charBrain[i].keys.some(k => cleanText.includes(k))) {
+      return charBrain[i].ans;
+    }
+  }
+
+  // Busca a fala fallback específica da personagem
+  const fallbacks = fallbackMsg[currentLang][currentChar];
+  return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+}
+
+// Inicializar idioma padrão
+setLang('pt');
+</script>
 </body>
 </html>
