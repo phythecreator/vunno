@@ -1,1382 +1,763 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<script src="https://quge5.com/88/tag.min.js" data-zone="273898" async data-cfasync="false"></script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VUNNO — Botanical Repair Conditioner</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-  }
-}
-</script>
-<style>
-  :root {
-    --bg: #F5F2EE;
-    --bg-dark: #1A1A1D;
-    --vibe-orange: #FF6B35;
-    --vibe-orange-dark: #E55A2B;
-    --vibe-green: #4A7C59;
-    --cream: #FFF5E6;
-    --dark: #1A1A1D;
-    --muted: #6B6B6B;
-    --border: rgba(26, 26, 29, 0.1);
-  }
-  
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--dark);
-    margin: 0;
-    overflow-x: hidden;
-    font-weight: 300;
-    line-height: 1.6;
-  }
-  
-  .font-display { font-family: 'Space Grotesk', sans-serif; }
-  
-  /* Atmosphere */
-  .hero-bg {
-    position: absolute; inset: 0; z-index: 0;
-    background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2000') center/cover no-repeat;
-  }
-  .hero-overlay {
-    position: absolute; inset: 0; z-index: 1;
-    background: linear-gradient(180deg, rgba(26,26,29,0.4) 0%, rgba(26,26,29,0.2) 40%, rgba(245,242,238,0.5) 80%, var(--bg) 100%);
-  }
-  
-  /* Vibe Coded Badge */
-  .vibe-badge {
-    background: var(--dark); color: var(--vibe-orange);
-    padding: 6px 12px; border-radius: 100px;
-    font-family: 'Space Grotesk', sans-serif; font-size: 10px;
-    font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
-    display: inline-flex; align-items: center; gap: 6px;
-    border: 1px solid var(--vibe-orange);
-  }
-  .vibe-dot {
-    width: 6px; height: 6px; background: var(--vibe-orange);
-    border-radius: 50%; animation: pulse 1.5s infinite;
-  }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-  
-  /* Navbar */
-  .glass-nav {
-    background: rgba(245, 242, 238, 0.8);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-link {
-    position: relative; transition: color 0.3s;
-    font-size: 13px; letter-spacing: 1px; text-transform: uppercase;
-    font-weight: 500;
-  }
-  .nav-link::after {
-    content: ''; position: absolute; bottom: -6px; left: 0;
-    width: 0; height: 2px; background: var(--vibe-orange); transition: width 0.4s;
-  }
-  .nav-link:hover::after { width: 100%; }
-  .nav-link:hover { color: var(--vibe-orange); }
-  
-  /* Buttons */
-  .btn-primary {
-    background: var(--vibe-orange); color: white;
-    padding: 16px 32px; font-weight: 600;
-    letter-spacing: 1px; text-transform: uppercase; font-size: 12px;
-    transition: all 0.3s; border: none; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 10px;
-    border-radius: 4px;
-  }
-  .btn-primary:hover {
-    background: var(--vibe-orange-dark); transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
-  }
-  
-  .btn-dark {
-    background: var(--dark); color: white;
-    padding: 16px 32px; font-weight: 600;
-    letter-spacing: 1px; text-transform: uppercase; font-size: 12px;
-    transition: all 0.3s; border: none; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 10px;
-    border-radius: 4px;
-  }
-  .btn-dark:hover { background: #2d2d30; transform: translateY(-2px); }
-  
-  .btn-outline-light {
-    background: transparent; color: white;
-    border: 1px solid rgba(255,255,255,0.6); padding: 16px 32px; font-weight: 500;
-    letter-spacing: 1px; text-transform: uppercase; font-size: 12px;
-    transition: all 0.3s; cursor: pointer; border-radius: 4px;
-    display: inline-flex; align-items: center; gap: 10px;
-  }
-  .btn-outline-light:hover {
-    background: white; color: var(--dark); border-color: white;
-  }
-  
-  /* 3D Container */
-  #product-3d {
-    width: 100%; height: 600px; cursor: grab; position: relative; z-index: 2;
-  }
-  #product-3d:active { cursor: grabbing; }
-  #product-3d canvas { display: block; }
-  
-  /* Hero */
-  .hero-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700; line-height: 0.95; letter-spacing: -0.03em;
-  }
-  
-  .orange-text { color: var(--vibe-orange); }
-  
-  .badge-light {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 8px 16px; background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white; font-size: 11px; letter-spacing: 2px;
-    text-transform: uppercase; font-weight: 500; border-radius: 100px;
-  }
-  
-  /* Cart sidebar */
-  .cart-sidebar {
-    position: fixed; top: 0; right: 0; bottom: 0; width: 440px; max-width: 100vw;
-    background: white; border-left: 1px solid var(--border); z-index: 100;
-    transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex; flex-direction: column;
-  }
-  .cart-sidebar.open { transform: translateX(0); }
-  
-  .overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(4px); z-index: 99;
-    opacity: 0; pointer-events: none; transition: opacity 0.4s;
-  }
-  .overlay.open { opacity: 1; pointer-events: auto; }
-  
-  /* Modal */
-  .modal {
-    position: fixed; inset: 0; z-index: 200;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
-    opacity: 0; pointer-events: none; transition: opacity 0.3s;
-    padding: 20px;
-  }
-  .modal.open { opacity: 1; pointer-events: auto; }
-  .modal-content {
-    background: white; border-radius: 12px; max-width: 500px; width: 100%;
-    transform: scale(0.9); transition: transform 0.3s;
-    max-height: 90vh; overflow-y: auto;
-  }
-  .modal.open .modal-content { transform: scale(1); }
-  
-  /* Product card */
-  .product-card {
-    background: white; border-radius: 12px; overflow: hidden;
-    transition: all 0.4s; cursor: pointer; position: relative;
-    border: 1px solid var(--border);
-  }
-  .product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 25px 60px rgba(0,0,0,0.1);
-  }
-  .product-img {
-    aspect-ratio: 1; background: linear-gradient(135deg, #FFF5E6, #F5F2EE);
-    position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
-  }
-  
-  /* Video frame */
-  .video-frame {
-    position: relative; overflow: hidden; border-radius: 16px;
-    background: var(--dark);
-  }
-  .play-btn {
-    width: 80px; height: 80px; border-radius: 50%;
-    background: rgba(255, 107, 53, 0.9); backdrop-filter: blur(10px);
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.3s; cursor: pointer; z-index: 5; border: none;
-  }
-  .play-btn:hover {
-    background: var(--vibe-orange-dark); transform: scale(1.1);
-    box-shadow: 0 0 40px rgba(255, 107, 53, 0.6);
-  }
-  
-  /* Marquee */
-  @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .marquee-content { animation: marquee 30s linear infinite; display: flex; white-space: nowrap; }
-  
-  .divider { display: flex; align-items: center; gap: 20px; color: var(--vibe-orange); }
-  .divider::before, .divider::after {
-    content: ''; flex: 1; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--vibe-orange), transparent);
-  }
-  
-  /* Reveal */
-  .reveal {
-    opacity: 0; transform: translateY(30px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-  
-  /* Toast */
-  .toast {
-    position: fixed; bottom: 30px; left: 50%;
-    transform: translateX(-50%) translateY(120px);
-    background: var(--dark); color: white;
-    padding: 16px 32px; font-weight: 500;
-    letter-spacing: 1px; text-transform: uppercase; font-size: 12px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 300; display: flex; align-items: center; gap: 12px;
-    border-radius: 4px; border-left: 3px solid var(--vibe-orange);
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  
-  /* Qty */
-  .qty-btn {
-    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
-    border: 1px solid var(--border); color: var(--dark); transition: all 0.2s; cursor: pointer;
-    background: transparent; border-radius: 4px;
-  }
-  .qty-btn:hover { background: var(--dark); color: white; border-color: var(--dark); }
-  
-  /* Tabs */
-  .tab-btn {
-    padding: 12px 24px; color: var(--muted); border-bottom: 2px solid transparent;
-    transition: all 0.3s; cursor: pointer; letter-spacing: 1px;
-    text-transform: uppercase; font-size: 11px; font-weight: 500; background: transparent; border-left: none; border-right: none; border-top: none;
-  }
-  .tab-btn.active { color: var(--vibe-orange); border-bottom-color: var(--vibe-orange); }
-  .tab-btn:hover { color: var(--dark); }
-  
-  /* Popups */
-  .popup-card {
-    background: white; border-radius: 16px; padding: 40px;
-    box-shadow: 0 40px 80px rgba(0,0,0,0.2);
-    text-align: center; max-width: 480px; width: 100%;
-    position: relative; overflow: hidden;
-  }
-  .popup-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-    background: var(--vibe-orange);
-  }
-  
-  .discount-code {
-    background: var(--dark); color: var(--vibe-orange);
-    padding: 12px 24px; border-radius: 4px; font-family: 'Space Grotesk', sans-serif;
-    font-weight: 600; letter-spacing: 2px; font-size: 18px;
-    border: 1px dashed var(--vibe-orange);
-  }
-  
-  @media (max-width: 768px) {
-    #product-3d { height: 400px; }
-    .hero-title { font-size: 3rem !important; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Chat - Tugn, Noob & Luffy</title>
+    <style>
+        /* CSS MINIMALISTA E CLEAN (BRANCO) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg-color: #f5f5f7;
+            --card-bg: #ffffff;
+            --text-main: #1d1d1f;
+            --text-muted: #86868b;
+            --border-color: #e5e5ea;
+            --primary: #007aff;
+            --user-bubble: #007aff;
+            --bot-bubble: #f1f1f4;
+            --hover-bg: #f5f5f7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100vh;
+            max-height: 850px;
+            background-color: var(--card-bg);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 500px) {
+            #app-container {
+                border-radius: 0;
+                max-height: 100vh;
+                border: none;
+            }
+        }
+
+        /* TELA DE SELEÇÃO */
+        #selection-screen {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 30px 20px;
+            overflow-y: auto;
+            background: var(--card-bg);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .lang-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: var(--bg-color);
+            padding: 5px;
+            border-radius: 25px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--card-bg);
+            color: var(--text-main);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .character-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        .char-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .char-card:hover {
+            background: var(--hover-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .char-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+
+        .char-info h2 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .char-info p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* TELA DE CHAT */
+        #chat-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            background: var(--card-bg);
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-header-img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .chat-header-info h2 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .chat-header-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 24px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: var(--card-bg);
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            font-size: 15px;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease;
+            word-wrap: break-word;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg-bot {
+            background: var(--bot-bubble);
+            color: var(--text-main);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg-user {
+            background: var(--user-bubble);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* ANIMAÇÃO DE TYPING */
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            background: var(--bot-bubble);
+            padding: 14px 18px;
+            border-radius: 20px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+        }
+
+        .dots-container {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--text-muted);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .chat-input-area {
+            padding: 16px 20px;
+            background: var(--card-bg);
+            display: flex;
+            gap: 12px;
+            border-top: 1px solid var(--border-color);
+            align-items: center;
+        }
+
+        #user-input {
+            flex-grow: 1;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 14px 20px;
+            border-radius: 24px;
+            outline: none;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        #user-input:focus {
+            border-color: var(--primary);
+            background: var(--card-bg);
+        }
+
+        #send-btn {
+            background: var(--primary);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.1s;
+        }
+
+        #send-btn:active {
+            transform: scale(0.95);
+        }
+
+        #send-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            margin-left: 2px;
+        }
+
+        /* FOOTER AVISO */
+        .footer-warning {
+            text-align: center;
+            padding: 16px;
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            line-height: 1.5;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1d1d6;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Navbar -->
-  <header class="glass-nav fixed top-0 left-0 right-0 z-40">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="#" class="flex items-center gap-3">
-        <div class="font-display text-3xl font-bold tracking-tight">VUNNO<span class="orange-text">.</span></div>
-      </a>
-      
-      <nav class="hidden lg:flex items-center gap-10">
-        <a href="#product" class="nav-link">Produtos</a>
-        <a href="#ritual" class="nav-link">Ritual</a>
-        <a href="#ingredients" class="nav-link">Ingredientes</a>
-        <a href="#story" class="nav-link">História</a>
-      </nav>
-      
-      <div class="flex items-center gap-6">
-        <div class="hidden md:block"><span class="vibe-badge"><span class="vibe-dot"></span>Vibe Coded</span></div>
-        <button id="cart-btn" class="relative nav-link" style="color: var(--dark)">
-          <i class="fa-solid fa-bag-shopping text-lg"></i>
-          <span id="cart-count" class="absolute -top-2 -right-3 rounded-full w-5 h-5 text-[10px] flex items-center justify-center font-medium text-white" style="background: var(--vibe-orange)">0</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Hero / Product -->
-  <section class="relative min-h-screen pt-24 pb-12 overflow-hidden" id="product">
-    <div class="hero-bg"></div>
-    <div class="hero-overlay"></div>
-    
-    <div class="relative z-10 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-8 items-center min-h-[80vh]">
-      <!-- Info -->
-      <div class="text-white">
-        <div class="badge-light mb-6">
-          <i class="fa-solid fa-leaf text-xs"></i>
-          Botanical Repair · 100% Vegano
-        </div>
+    <div id="app-container">
         
-        <h1 class="hero-title text-6xl md:text-7xl lg:text-[6rem] mb-6">
-          Cabelo<br>
-          <span class="orange-text">Saudável</span><br>
-          Natureza Pura.
-        </h1>
-        
-        <p class="text-lg leading-relaxed mb-8 max-w-md opacity-90">
-          Condicionador botânico com extratos de argão e camélia. Repara profundamente e revela um brilho natural deslumbrante.
-        </p>
-        
-        <div class="flex items-center gap-4 mb-8">
-          <div class="flex items-center gap-1">
-            <i class="fa-solid fa-star text-xs orange-text"></i>
-            <i class="fa-solid fa-star text-xs orange-text"></i>
-            <i class="fa-solid fa-star text-xs orange-text"></i>
-            <i class="fa-solid fa-star text-xs orange-text"></i>
-            <i class="fa-solid fa-star text-xs orange-text"></i>
-          </div>
-          <span class="text-sm opacity-80">4.9 · 3,421 avaliações</span>
-        </div>
-        
-        <div class="flex items-baseline gap-4 mb-10">
-          <span class="font-display text-5xl font-bold">€24,90</span>
-          <span class="text-xl line-through opacity-50">€32,00</span>
-          <span class="badge-light" style="background: var(--vibe-orange)">-22%</span>
-        </div>
-        
-        <div class="flex flex-wrap gap-4">
-          <button class="btn-primary" onclick="addToCart()">
-            <i class="fa-solid fa-bag-shopping"></i>Adicionar ao Cesto
-          </button>
-          <button class="btn-outline-light" onclick="document.getElementById('ritual').scrollIntoView()">
-            <i class="fa-solid fa-play"></i>Ver Vídeo
-          </button>
-        </div>
-      </div>
-      
-      <!-- 3D Product -->
-      <div class="relative">
-        <div id="product-3d"></div>
-        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] tracking-[2px] uppercase flex items-center gap-2 text-white opacity-70">
-          <i class="fa-solid fa-arrows-rotate"></i>
-          <span>Arrasta para rodar</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Marquee -->
-  <section class="py-6 bg-[var(--dark)] text-white overflow-hidden">
-    <div class="marquee-content">
-      <div class="flex items-center gap-12 px-6">
-        <span class="font-display text-2xl font-bold">ARGAN OIL</span>
-        <span class="orange-text">✦</span>
-        <span class="font-display text-2xl font-light italic">Camellia Extract</span>
-        <span class="orange-text">✦</span>
-        <span class="font-display text-2xl font-bold">VEGAN FORMULA</span>
-        <span class="orange-text">✦</span>
-        <span class="font-display text-2xl font-light italic">No Parabens</span>
-        <span class="orange-text">✦</span>
-        <span class="font-display text-2xl font-bold">SILICONE FREE</span>
-        <span class="orange-text">✦</span>
-      </div>
-      <div class="flex items-center gap-12 px-6">
-        <span class="font-display text-2xl font-bold">ARGAN OIL</span>
-        <span class="orange-text">✦</span>
-        <span class="font-display text-2xl font-light italic">Camellia Extract</span>
-        <span class="orange-text">✦</span>
-        <span class="font-display text-2xl font-bold">VEGAN FORMULA</span>
-        <span class="orange-text">✦</span>
-        <span class="font-display text-2xl font-light italic">No Parabens</span>
-        <span class="orange-text">✦</span>
-        <span class="font-display text-2xl font-bold">SILICONE FREE</span>
-        <span class="orange-text">✦</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Video Section -->
-  <section class="py-24 px-6 bg-[var(--bg)]" id="ritual">
-    <div class="max-w-6xl mx-auto">
-      <div class="text-center mb-16 reveal">
-        <div class="divider mb-8">
-          <span class="text-[10px] tracking-[3px] uppercase font-medium">O Ritual VUNNO</span>
-        </div>
-        <h2 class="hero-title text-4xl md:text-6xl mb-6">
-          A Natureza do <span class="orange-text">Brilho</span>
-        </h2>
-        <p class="max-w-2xl mx-auto text-lg text-[var(--muted)]">
-          Descobre o poder dos ingredientes botânicos num ritual de cuidado que transforma o teu cabelo.
-        </p>
-      </div>
-      
-      <div class="video-frame reveal" style="aspect-ratio: 16/9;">
-        <video id="presentation-video" class="w-full h-full object-cover" loop muted playsinline 
-               poster="https://images.unsplash.com/photo-1522337660859-02fbefca4702?q=80&w=2000">
-          <source src="https://assets.mixkit.co/videos/preview/mixkit-woman-with-long-hair-in-a-bathroom-32755-large.mp4" type="video/mp4">
-        </video>
-        <div class="absolute inset-0 flex items-center justify-center z-10">
-          <button id="play-btn" class="play-btn">
-            <i class="fa-solid fa-play text-2xl text-white ml-1"></i>
-          </button>
-        </div>
-        <div class="absolute bottom-8 left-8 z-10 text-white">
-          <div class="text-[10px] tracking-[3px] uppercase mb-2 orange-text font-medium">Vídeo · 02:15</div>
-          <div class="font-display text-3xl font-bold">A Origem do Brilho</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Ingredients -->
-  <section class="py-24 px-6 bg-white" id="ingredients">
-    <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-20 reveal">
-        <div class="divider mb-8">
-          <span class="text-[10px] tracking-[3px] uppercase font-medium">Composição</span>
-        </div>
-        <h2 class="hero-title text-4xl md:text-6xl mb-6">
-          A <span class="orange-text">Fórmula</span>
-        </h2>
-      </div>
-      
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="reveal p-8 rounded-xl border border-[var(--border)] hover:shadow-xl transition">
-          <div class="w-14 h-14 rounded-full bg-[var(--cream)] flex items-center justify-center mb-6">
-            <i class="fa-solid fa-seedling text-2xl orange-text"></i>
-          </div>
-          <div class="text-[10px] tracking-[2px] uppercase mb-2 orange-text font-medium">Extrato Botânico</div>
-          <h3 class="font-display text-2xl font-bold mb-4">Argan Oil</h3>
-          <p class="text-[var(--muted)]">Nutre profundamente e repara as fibras capilares danificadas, deixando o cabelo incrivelmente suave.</p>
-        </div>
-        
-        <div class="reveal p-8 rounded-xl border border-[var(--border)] hover:shadow-xl transition">
-          <div class="w-14 h-14 rounded-full bg-[var(--cream)] flex items-center justify-center mb-6">
-            <i class="fa-solid fa-spa text-2xl orange-text"></i>
-          </div>
-          <div class="text-[10px] tracking-[2px] uppercase mb-2 orange-text font-medium">Hidratação</div>
-          <h3 class="font-display text-2xl font-bold mb-4">Camellia</h3>
-          <p class="text-[var(--muted)]">Rica em antioxidantes, protege o cabelo contra agressões externas e revela um brilho sublime.</p>
-        </div>
-        
-        <div class="reveal p-8 rounded-xl border border-[var(--border)] hover:shadow-xl transition">
-          <div class="w-14 h-14 rounded-full bg-[var(--cream)] flex items-center justify-center mb-6">
-            <i class="fa-solid fa-leaf text-2xl orange-text"></i>
-          </div>
-          <div class="text-[10px] tracking-[2px] uppercase mb-2 orange-text font-medium">Vegano</div>
-          <h3 class="font-display text-2xl font-bold mb-4">100% Natural</h3>
-          <p class="text-[var(--muted)]">Sem silicones, parabenos ou corantes. Uma fórmula pura, ética e sustentável.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Related Products -->
-  <section class="py-24 px-6 bg-[var(--bg)]" id="story">
-    <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-20 reveal">
-        <div class="divider mb-8">
-          <span class="text-[10px] tracking-[3px] uppercase font-medium">A Coleção</span>
-        </div>
-        <h2 class="hero-title text-4xl md:text-6xl">
-          Completa o <span class="orange-text">Ritual</span>
-        </h2>
-      </div>
-      
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="product-card reveal" onclick="addToCart({name:'Shampoo Botanical Repair', price:19.90, subtitle:'Shampoo 300ml', img:'shampoo'})">
-          <div class="product-img">
-            <svg width="100" height="160" viewBox="0 0 100 160">
-              <rect x="25" y="40" width="50" height="110" rx="4" fill="#FF6B35" opacity="0.8"/>
-              <rect x="35" y="10" width="30" height="35" rx="2" fill="#1A1A1D"/>
-              <rect x="30" y="70" width="40" height="30" fill="white" opacity="0.9"/>
-              <text x="50" y="90" text-anchor="middle" fill="#1A1A1D" font-family="Space Grotesk" font-size="10" font-weight="bold">VUNNO</text>
-            </svg>
-          </div>
-          <div class="p-6">
-            <div class="text-[10px] tracking-[2px] uppercase mb-2 orange-text font-medium">Shampoo</div>
-            <h3 class="font-display text-xl font-bold mb-2">Botanical Repair</h3>
-            <p class="text-sm text-[var(--muted)] mb-4">Limpeza suave com óleo de argão.</p>
-            <div class="flex items-center justify-between">
-              <span class="font-display text-2xl font-bold">€19,90</span>
-              <span class="text-xs uppercase font-medium orange-text">Adicionar →</span>
+        <!-- ECRÃ DE SELEÇÃO -->
+        <div id="selection-screen">
+            <div class="lang-toggle">
+                <button class="lang-btn active" onclick="setLang('en')" id="btn-en">English</button>
+                <button class="lang-btn" onclick="setLang('pt')" id="btn-pt">Português</button>
             </div>
-          </div>
-        </div>
-        
-        <div class="product-card reveal" onclick="addToCart({name:'Máscara Intense Nutrition', price:29.90, subtitle:'Máscara 200ml', img:'mask'})">
-          <div class="product-img">
-            <svg width="120" height="120" viewBox="0 0 120 120">
-              <rect x="20" y="30" width="80" height="80" rx="6" fill="#FF6B35"/>
-              <rect x="30" y="15" width="60" height="20" rx="2" fill="#1A1A1D"/>
-              <rect x="25" y="55" width="70" height="25" fill="white" opacity="0.9"/>
-              <text x="60" y="72" text-anchor="middle" fill="#1A1A1D" font-family="Space Grotesk" font-size="12" font-weight="bold">VUNNO</text>
-            </svg>
-          </div>
-          <div class="p-6">
-            <div class="text-[10px] tracking-[2px] uppercase mb-2 orange-text font-medium">Máscara</div>
-            <h3 class="font-display text-xl font-bold mb-2">Intense Nutrition</h3>
-            <p class="text-sm text-[var(--muted)] mb-4">Reparação intensa em 5 minutos.</p>
-            <div class="flex items-center justify-between">
-              <span class="font-display text-2xl font-bold">€29,90</span>
-              <span class="text-xs uppercase font-medium orange-text">Adicionar →</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="product-card reveal" onclick="addToCart({name:'Óleo Precioso', price:34.90, subtitle:'Óleo 100ml', img:'oil'})">
-          <div class="product-img">
-            <svg width="80" height="160" viewBox="0 0 80 160">
-              <rect x="25" y="50" width="30" height="100" rx="3" fill="#FF6B35" opacity="0.7"/>
-              <rect x="30" y="20" width="20" height="35" fill="#1A1A1D"/>
-              <ellipse cx="40" cy="18" rx="12" ry="3" fill="#1A1A1D"/>
-              <rect x="27" y="80" width="26" height="20" fill="white" opacity="0.9"/>
-              <text x="40" y="93" text-anchor="middle" fill="#1A1A1D" font-family="Space Grotesk" font-size="8" font-weight="bold">VUNNO</text>
-            </svg>
-          </div>
-          <div class="p-6">
-            <div class="text-[10px] tracking-[2px] uppercase mb-2 orange-text font-medium">Óleo</div>
-            <h3 class="font-display text-xl font-bold mb-2">Precious Oil</h3>
-            <p class="text-sm text-[var(--muted)] mb-4">Finalizador com brilho instantâneo.</p>
-            <div class="flex items-center justify-between">
-              <span class="font-display text-2xl font-bold">€34,90</span>
-              <span class="text-xs uppercase font-medium orange-text">Adicionar →</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Footer -->
-  <footer class="py-16 px-6 bg-[var(--dark)] text-white">
-    <div class="max-w-7xl mx-auto">
-      <div class="grid md:grid-cols-4 gap-12 mb-12">
-        <div>
-          <div class="font-display text-3xl font-bold mb-4">VUNNO<span class="orange-text">.</span></div>
-          <p class="text-sm opacity-60">Cuidado capilar botânico. Natureza, ciência e sustentabilidade.</p>
-        </div>
-        <div>
-          <div class="text-[10px] tracking-[2px] uppercase mb-4 orange-text font-medium">A Marca</div>
-          <ul class="space-y-2 text-sm opacity-70">
-            <li><a href="#" class="hover:text-white transition">História</a></li>
-            <li><a href="#" class="hover:text-white transition">Sustentabilidade</a></li>
-            <li><a href="#" class="hover:text-white transition">Boutiques</a></li>
-          </ul>
-        </div>
-        <div>
-          <div class="text-[10px] tracking-[2px] uppercase mb-4 orange-text font-medium">Apoio</div>
-          <ul class="space-y-2 text-sm opacity-70">
-            <li><a href="#" class="hover:text-white transition">Contactos</a></li>
-            <li><a href="#" class="hover:text-white transition">Envios</a></li>
-            <li><a href="#" class="hover:text-white transition">Devoluções</a></li>
-          </ul>
-        </div>
-        <div>
-          <div class="text-[10px] tracking-[2px] uppercase mb-4 orange-text font-medium">Newsletter</div>
-          <p class="text-sm opacity-70 mb-4">Recebe 10% na primeira compra.</p>
-          <div class="flex gap-2">
-            <input type="email" placeholder="Email" class="flex-1 px-3 py-2 text-sm bg-transparent border border-white/20 focus:outline-none focus:border-[var(--vibe-orange)] rounded">
-            <button class="btn-primary px-4 py-2" style="padding: 8px 16px;"><i class="fa-solid fa-arrow-right"></i></button>
-          </div>
-        </div>
-      </div>
-      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs opacity-50">
-        <div>© 2024 VUNNO · Vibe Coded UI</div>
-        <div class="flex gap-6">
-          <a href="#" class="hover:text-white transition">Instagram</a>
-          <a href="#" class="hover:text-white transition">TikTok</a>
-          <a href="#" class="hover:text-white transition">YouTube</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Region Popup -->
-  <div class="modal" id="region-modal">
-    <div class="modal-content p-10">
-      <div class="text-center mb-8">
-        <div class="vibe-badge mb-6"><span class="vibe-dot"></span>VUNNO Store</div>
-        <h2 class="font-display text-3xl font-bold mb-3">Bem-vindo à VUNNO</h2>
-        <p class="text-[var(--muted)]">Detectámos que estás a navegar de Portugal. É a tua região correta?</p>
-      </div>
-      
-      <div class="space-y-4 mb-8">
-        <div class="flex items-center justify-between p-4 border-2 border-[var(--vibe-orange)] rounded-lg bg-[var(--cream)]">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl">🇵🇹</span>
-            <div>
-              <div class="font-medium">Portugal</div>
-              <div class="text-xs text-[var(--muted)]">Envio em 24-48h · €4,90</div>
+            <div class="header">
+                <h1 id="ui-title">Start a Conversation</h1>
+                <p id="ui-choose" style="color: var(--text-muted); font-size: 15px;">Select a character to chat with</p>
             </div>
-          </div>
-          <i class="fa-solid fa-check orange-text"></i>
-        </div>
-        
-        <div class="flex items-center justify-between p-4 border border-[var(--border)] rounded-lg cursor-pointer hover:border-[var(--vibe-orange)] transition">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl">🇪🇸</span>
-            <div>
-              <div class="font-medium">España</div>
-              <div class="text-xs text-[var(--muted)]">Envio em 2-4 dias · €6,90</div>
-            </div>
-          </div>
-          <i class="fa-solid fa-chevron-right text-[var(--muted)]"></i>
-        </div>
-        
-        <div class="flex items-center justify-between p-4 border border-[var(--border)] rounded-lg cursor-pointer hover:border-[var(--vibe-orange)] transition">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl">🇫🇷</span>
-            <div>
-              <div class="font-medium">France</div>
-              <div class="text-xs text-[var(--muted)]">Livraison 3-5 jours · €7,90</div>
-            </div>
-          </div>
-          <i class="fa-solid fa-chevron-right text-[var(--muted)]"></i>
-        </div>
-      </div>
-      
-      <button class="btn-primary w-full justify-center mb-3" onclick="closeModal('region-modal')">
-        Continuar em Portugal<i class="fa-solid fa-arrow-right"></i>
-      </button>
-      <button class="text-sm text-[var(--muted)] hover:text-[var(--dark)] transition w-full text-center" onclick="closeModal('region-modal')">
-        Escolher outra região
-      </button>
-    </div>
-  </div>
 
-  <!-- Discount Popup -->
-  <div class="modal" id="discount-modal">
-    <div class="popup-card">
-      <button onclick="closeModal('discount-modal')" class="absolute top-4 right-4 text-[var(--muted)] hover:text-[var(--dark)] transition">
-        <i class="fa-solid fa-xmark text-xl"></i>
-      </button>
-      
-      <div class="text-6xl mb-4">🎁</div>
-      <div class="vibe-badge mb-4 mx-auto"><span class="vibe-dot"></span>Oferta Limitada</div>
-      <h2 class="font-display text-4xl font-bold mb-3">GANHA <span class="orange-text">20%</span></h2>
-      <p class="text-[var(--muted)] mb-6">Na tua primeira compra. Usa o código abaixo no checkout.</p>
-      
-      <div class="discount-code mb-6">
-        VIBE20
-      </div>
-      
-      <button class="btn-primary w-full justify-center mb-3" onclick="copyDiscount()">
-        <i class="fa-solid fa-copy"></i>Copiar Código
-      </button>
-      <button class="text-sm text-[var(--muted)] hover:text-[var(--dark)] transition w-full text-center" onclick="closeModal('discount-modal'); document.getElementById('product').scrollIntoView();">
-        Continuar a comprar
-      </button>
-    </div>
-  </div>
-
-  <!-- Cart Overlay -->
-  <div class="overlay" id="cart-overlay" onclick="toggleCart()"></div>
-  
-  <!-- Cart Sidebar -->
-  <aside class="cart-sidebar" id="cart-sidebar">
-    <div class="p-6 flex items-center justify-between border-b border-[var(--border)]">
-      <div>
-        <div class="text-[10px] tracking-[2px] uppercase orange-text font-medium">O teu Cesto</div>
-        <h3 class="font-display text-2xl font-bold">Seleção VUNNO</h3>
-      </div>
-      <button onclick="toggleCart()" class="w-10 h-10 flex items-center justify-center hover:text-[var(--vibe-orange)] transition">
-        <i class="fa-solid fa-xmark text-lg"></i>
-      </button>
-    </div>
-    
-    <div class="flex-1 overflow-y-auto p-6" id="cart-items">
-      <div class="text-center py-20" id="cart-empty">
-        <i class="fa-solid fa-bag-shopping text-5xl mb-6 text-[var(--muted)] opacity-20"></i>
-        <div class="font-display text-2xl font-bold mb-2">Cesto Vazio</div>
-        <p class="text-sm text-[var(--muted)]">Adiciona os teus favoritos.</p>
-      </div>
-    </div>
-    
-    <div class="p-6 border-t border-[var(--border)]" id="cart-footer" style="display: none;">
-      <div class="space-y-3 mb-6">
-        <div class="flex justify-between text-sm">
-          <span class="text-[var(--muted)]">Subtotal</span>
-          <span class="font-display text-xl font-bold" id="cart-subtotal">€0,00</span>
-        </div>
-        <div class="flex justify-between text-sm">
-          <span class="text-[var(--muted)]">Envio</span>
-          <span class="orange-text font-medium">Grátis</span>
-        </div>
-        <div class="border-t border-[var(--border)] pt-3 flex justify-between items-baseline">
-          <span class="text-[10px] tracking-[2px] uppercase font-medium">Total</span>
-          <span class="font-display text-3xl font-bold orange-text" id="cart-total">€0,00</span>
-        </div>
-      </div>
-      
-      <button class="btn-primary w-full justify-center mb-3" onclick="openCheckout()">
-        Finalizar Compra<i class="fa-solid fa-arrow-right"></i>
-      </button>
-      <button class="btn-dark w-full justify-center" onclick="toggleCart()" style="background: transparent; color: var(--dark); border: 1px solid var(--border);">
-        Continuar a Comprar
-      </button>
-    </div>
-  </aside>
-
-  <!-- Checkout Modal -->
-  <div class="modal" id="checkout-modal">
-    <div class="modal-content">
-      <!-- Step 1: Payment Method -->
-      <div id="checkout-step-1" class="p-8">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="font-display text-2xl font-bold">Finalizar Compra</h3>
-          <button onclick="closeModal('checkout-modal')" class="text-[var(--muted)] hover:text-[var(--dark)] transition">
-            <i class="fa-solid fa-xmark text-xl"></i>
-          </button>
-        </div>
-        
-        <div class="mb-6">
-          <div class="text-[10px] tracking-[2px] uppercase mb-3 text-[var(--muted)] font-medium">1. Escolhe o método de pagamento</div>
-          <div class="space-y-3">
-            <button onclick="processPayment('MB WAY')" class="w-full p-4 border-2 rounded-lg flex items-center justify-between hover:border-[var(--vibe-orange)] transition group">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-[var(--cream)] rounded-lg flex items-center justify-center">
-                  <i class="fa-solid fa-mobile-screen text-xl orange-text"></i>
+            <div class="character-list">
+                <div class="char-card" onclick="openChat('tugn')">
+                    <img src="tugntugnsahur.jpg" alt="Tugn Tugn Sahur" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Tugn&background=f1f1f4&color=1d1d1f'">
+                    <div class="char-info">
+                        <h2>Tugn Tugn Sahur</h2>
+                        <p id="desc-tugn">Gen Z aesthetics and chaotic deep talks.</p>
+                    </div>
                 </div>
-                <div class="text-left">
-                  <div class="font-medium">MB WAY</div>
-                  <div class="text-xs text-[var(--muted)]">Pagamento instantâneo via app</div>
+
+                <div class="char-card" onclick="openChat('noob')">
+                    <img src="noob.png" alt="Roblox Noob" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Noob&background=f1f1f4&color=1d1d1f'">
+                    <div class="char-info">
+                        <h2>Roblox Noob</h2>
+                        <p id="desc-noob">Oof! Always lagging, always surviving.</p>
+                    </div>
                 </div>
-              </div>
-              <i class="fa-solid fa-chevron-right text-[var(--muted)] group-hover:text-[var(--vibe-orange)] transition"></i>
-            </button>
+
+                <div class="char-card" onclick="openChat('luffy')">
+                    <img src="odUtj (1).jpg" alt="Luffy" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Luffy&background=f1f1f4&color=1d1d1f'">
+                    <div class="char-info">
+                        <h2>Monkey D. Luffy</h2>
+                        <p id="desc-luffy">Pirate King in the making. Loves meat.</p>
+                    </div>
+                </div>
+            </div>
             
-            <button onclick="processPayment('Visa')" class="w-full p-4 border-2 rounded-lg flex items-center justify-between hover:border-[var(--vibe-orange)] transition group">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-[var(--cream)] rounded-lg flex items-center justify-center">
-                  <i class="fa-brands fa-cc-visa text-2xl orange-text"></i>
-                </div>
-                <div class="text-left">
-                  <div class="font-medium">Cartão Visa</div>
-                  <div class="text-xs text-[var(--muted)]">Crédito / Débito</div>
-                </div>
-              </div>
-              <i class="fa-solid fa-chevron-right text-[var(--muted)] group-hover:text-[var(--vibe-orange)] transition"></i>
-            </button>
-            
-            <button onclick="processPayment('PayPal')" class="w-full p-4 border-2 rounded-lg flex items-center justify-between hover:border-[var(--vibe-orange)] transition group">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-[var(--cream)] rounded-lg flex items-center justify-center">
-                  <i class="fa-brands fa-paypal text-xl orange-text"></i>
-                </div>
-                <div class="text-left">
-                  <div class="font-medium">PayPal</div>
-                  <div class="text-xs text-[var(--muted)]">Conta PayPal ou cartão</div>
-                </div>
-              </div>
-              <i class="fa-solid fa-chevron-right text-[var(--muted)] group-hover:text-[var(--vibe-orange)] transition"></i>
-            </button>
-          </div>
+            <div style="flex-grow: 1;"></div>
+            <div class="footer-warning" id="copyright-warning">
+                EN: Images are AI-generated or drawn by the creator and not taken from the internet to infringe copyrights.<br><br>
+                PT: As imagens são geradas por IA ou desenho do criador e não retiradas da internet de modo a infringir direitos de autor.
+            </div>
         </div>
-        
-        <div class="bg-[var(--cream)] p-4 rounded-lg flex items-center gap-3 text-sm">
-          <i class="fa-solid fa-shield-halved orange-text"></i>
-          <span class="text-[var(--muted)]">Pagamento 100% seguro e encriptado. Simulação demo.</span>
+
+        <!-- ECRÃ DE CHAT -->
+        <div id="chat-screen">
+            <div class="chat-header">
+                <button class="back-btn" onclick="closeChat()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <img id="chat-header-img" src="" alt="Char" class="chat-header-img">
+                <div class="chat-header-info">
+                    <h2 id="chat-header-name">Name</h2>
+                    <p id="chat-header-status">Online</p>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <!-- Mensagens aparecem aqui -->
+                <div class="typing-indicator" id="typing">
+                    <div class="dots-container">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="user-input" placeholder="Message..." onkeypress="handleEnter(event)">
+                <button id="send-btn" onclick="sendMessage()">
+                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                </button>
+            </div>
         </div>
-      </div>
-      
-      <!-- Step 2: Processing -->
-      <div id="checkout-step-2" class="p-12 text-center" style="display: none;">
-        <div class="w-20 h-20 mx-auto mb-6 border-4 border-[var(--border)] border-t-[var(--vibe-orange)] rounded-full animate-spin"></div>
-        <h3 class="font-display text-2xl font-bold mb-2">A processar pagamento...</h3>
-        <p class="text-[var(--muted)]" id="processing-method">Aguardando confirmação via MB WAY</p>
-        <div class="mt-6 text-xs text-[var(--muted)]">Não feches esta janela.</div>
-      </div>
-      
-      <!-- Step 3: Result -->
-      <div id="checkout-step-3" class="p-8 text-center" style="display: none;">
-        <div id="result-icon" class="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center">
-          <i class="fa-solid fa-check text-4xl text-white"></i>
-        </div>
-        <h3 id="result-title" class="font-display text-3xl font-bold mb-3">Pedido Confirmado!</h3>
-        <p id="result-message" class="text-[var(--muted)] mb-6">Obrigado pela tua compra.</p>
-        
-        <div id="order-details" class="bg-[var(--bg)] p-6 rounded-lg text-left mb-6 space-y-3">
-          <div class="flex justify-between">
-            <span class="text-sm text-[var(--muted)]">Nº do Pedido</span>
-            <span class="font-medium" id="order-number">VUNNO-12345</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-sm text-[var(--muted)]">Total Pago</span>
-            <span class="font-medium" id="order-total">€0,00</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-sm text-[var(--muted)]">Entrega Estimada</span>
-            <span class="font-medium orange-text" id="order-delivery">25-27 Nov</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-sm text-[var(--muted)]">Método</span>
-            <span class="font-medium" id="order-method">MB WAY</span>
-          </div>
-        </div>
-        
-        <button class="btn-primary w-full justify-center" onclick="finishCheckout()">
-          Concluir<i class="fa-solid fa-check"></i>
-        </button>
-      </div>
+
     </div>
-  </div>
 
-  <!-- Toast -->
-  <div class="toast" id="toast">
-    <i class="fa-solid fa-check"></i>
-    <span id="toast-msg">Adicionado ao cesto</span>
-  </div>
+    <script>
+        // --- ESTADO DA APLICAÇÃO E MEMÓRIA DE CONVERSA ---
+        let currentLang = 'pt'; // Começa em PT conforme pedido
+        let currentChar = '';
+        let conversationContext = ''; // Para dar continuidade (memória curta)
 
-  <!-- Three.js 3D Product -->
-  <script type="module">
-    import * as THREE from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+        // --- INTERFACE TEXTS ---
+        const uiTexts = {
+            en: {
+                title: "Start a Conversation",
+                choose: "Select a character to chat with",
+                descTugn: "Gen Z aesthetics and chaotic deep talks.",
+                descNoob: "Oof! Always lagging, always surviving.",
+                descLuffy: "Pirate King in the making. Loves meat.",
+                placeholder: "Message...",
+                defaultMsg: [
+                    "I'm not quite following what you're saying, to be honest. Could you elaborate a bit more on that?",
+                    "That's super random, but okay! Let's talk about something else. What's on your mind today?",
+                    "Wait, what? I completely lost my train of thought. Say that again but differently?",
+                    "I have absolutely zero context for that right now. Tell me a story instead!"
+                ]
+            },
+            pt: {
+                title: "Iniciar Conversa",
+                choose: "Seleciona uma personagem para falar",
+                descTugn: "Estética Gen Z e conversas caóticas e profundas.",
+                descNoob: "Oof! Sempre com lag, sempre a sobreviver.",
+                descLuffy: "Futuro Rei dos Piratas. Adora carne.",
+                placeholder: "Mensagem...",
+                defaultMsg: [
+                    "Sinceramente, não estou a apanhar bem o que estás a dizer. Podes elaborar um bocado mais sobre isso?",
+                    "Isso foi bué aleatório, mas ok! Vamos falar de outra coisa. O que é que te vai na cabeça hoje?",
+                    "Espera, o quê? Perdi completamente o fio à meada. Podes dizer isso de outra maneira?",
+                    "Não tenho zero contexto para isso agora. Conta-me antes uma história!"
+                ]
+            }
+        };
 
-    const container = document.getElementById('product-3d');
-    
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(35, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.set(0, 0.5, 6);
-    
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.0;
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    container.appendChild(renderer.domElement);
-    
-    const pmremGenerator = new THREE.PMREMGenerator(renderer);
-    scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
-    
-    // Lights
-    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-    const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    keyLight.position.set(5, 6, 4);
-    scene.add(keyLight);
-    const fillLight = new THREE.DirectionalLight(0xff6b35, 0.4);
-    fillLight.position.set(-4, 2, -2);
-    scene.add(fillLight);
-    const rimLight = new THREE.PointLight(0xffffff, 1.2, 10);
-    rimLight.position.set(0, 4, -3);
-    scene.add(rimLight);
+        const charsInfo = {
+            tugn: { name: "Tugn Tugn Sahur", img: "tugntugnsahur.jpg" },
+            noob: { name: "Roblox Noob", img: "noob.png" },
+            luffy: { name: "Monkey D. Luffy", img: "odUtj (1).jpg" }
+        };
 
-    // Create Label Texture
-    function createLabelTexture() {
-      const canvas = document.createElement('canvas');
-      canvas.width = 512; canvas.height = 1024;
-      const ctx = canvas.getContext('2d');
-      
-      // Background
-      ctx.fillStyle = '#FFF5E6';
-      ctx.fillRect(0, 0, 512, 1024);
-      
-      // Top accent bar
-      ctx.fillStyle = '#4A7C59';
-      ctx.fillRect(0, 0, 512, 15);
-      
-      // VUNNO Logo
-      ctx.fillStyle = '#1A1A1D';
-      ctx.font = 'bold 100px Space Grotesk, Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('VUNNO', 256, 250);
-      
-      // Orange dot
-      ctx.fillStyle = '#FF6B35';
-      ctx.beginPath();
-      ctx.arc(420, 220, 12, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Subtitle
-      ctx.fillStyle = '#FF6B35';
-      ctx.font = 'bold 35px Space Grotesk, Arial';
-      ctx.fillText('CONDITIONER', 256, 310);
-      
-      // Decorative line
-      ctx.strokeStyle = '#1A1A1D';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(180, 340); ctx.lineTo(336, 340);
-      ctx.stroke();
-      
-      // Info text
-      ctx.fillStyle = '#6B6B6B';
-      ctx.font = '28px Inter, Arial';
-      ctx.fillText('Botanical Repair', 256, 390);
-      ctx.font = 'italic 24px Inter, Arial';
-      ctx.fillText('Argan & Camellia', 256, 425);
-      
-      // Icons section
-      ctx.fillStyle = '#4A7C59';
-      ctx.font = '40px Arial';
-      ctx.fillText('🌿  🌸  ♻️', 256, 500);
-      
-      ctx.fillStyle = '#6B6B6B';
-      ctx.font = '20px Inter, Arial';
-      ctx.fillText('Vegan Formula', 256, 540);
-      ctx.fillText('No Silicones', 256, 570);
-      ctx.fillText('No Parabens', 256, 600);
-      
-      // Bottom decorative
-      ctx.fillStyle = '#FF6B35';
-      ctx.fillRect(150, 650, 212, 4);
-      
-      ctx.fillStyle = '#1A1A1D';
-      ctx.font = 'bold 24px Space Grotesk, Arial';
-      ctx.fillText('300ml / 10.1 fl oz', 256, 700);
-      
-      // Bottom accent
-      ctx.fillStyle = '#4A7C59';
-      ctx.fillRect(0, 1009, 512, 15);
-      
-      return new THREE.CanvasTexture(canvas);
-    }
-    
-    // Bottle Group
-    const bottleGroup = new THREE.Group();
-    
-    // Materials
-    const bottleMat = new THREE.MeshPhysicalMaterial({
-      color: 0xFF6B35,
-      metalness: 0.1,
-      roughness: 0.3,
-      transmission: 0.3,
-      thickness: 0.5,
-      clearcoat: 0.5,
-      clearcoatRoughness: 0.2,
-      envMapIntensity: 1.2
-    });
-    
-    const pumpMat = new THREE.MeshPhysicalMaterial({
-      color: 0x2a2a2d,
-      metalness: 0.8,
-      roughness: 0.3,
-      envMapIntensity: 1.5
-    });
-    
-    const labelTexture = createLabelTexture();
-    const labelMat = new THREE.MeshStandardMaterial({
-      map: labelTexture,
-      roughness: 0.6,
-      metalness: 0.0
-    });
-    
-    // Bottle Body (tapered cylinder)
-    const bodyGeo = new THREE.CylinderGeometry(0.85, 0.75, 2.4, 64);
-    const body = new THREE.Mesh(bodyGeo, bottleMat);
-    body.position.y = -0.2;
-    bottleGroup.add(body);
-    
-    // Label (wrapped around)
-    const labelGeo = new THREE.CylinderGeometry(0.86, 0.76, 1.6, 64, 1, true);
-    const label = new THREE.Mesh(labelGeo, labelMat);
-    label.position.y = -0.3;
-    bottleGroup.add(label);
-    
-    // Shoulder
-    const shoulderGeo = new THREE.CylinderGeometry(0.35, 0.85, 0.3, 64);
-    const shoulder = new THREE.Mesh(shoulderGeo, bottleMat);
-    shoulder.position.y = 1.15;
-    bottleGroup.add(shoulder);
-    
-    // Neck
-    const neckGeo = new THREE.CylinderGeometry(0.32, 0.32, 0.25, 32);
-    const neck = new THREE.Mesh(neckGeo, bottleMat);
-    neck.position.y = 1.45;
-    bottleGroup.add(neck);
-    
-    // Pump mechanism
-    const pumpBaseGeo = new THREE.CylinderGeometry(0.38, 0.35, 0.15, 32);
-    const pumpBase = new THREE.Mesh(pumpBaseGeo, pumpMat);
-    pumpBase.position.y = 1.65;
-    bottleGroup.add(pumpBase);
-    
-    const pumpStemGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.35, 16);
-    const pumpStem = new THREE.Mesh(pumpStemGeo, pumpMat);
-    pumpStem.position.y = 1.9;
-    bottleGroup.add(pumpStem);
-    
-    // Pump head (angled)
-    const pumpHeadGeo = new THREE.BoxGeometry(0.5, 0.12, 0.18);
-    const pumpHead = new THREE.Mesh(pumpHeadGeo, pumpMat);
-    pumpHead.position.set(0.1, 2.12, 0);
-    pumpHead.rotation.z = -0.2;
-    bottleGroup.add(pumpHead);
-    
-    // Pump nozzle
-    const nozzleGeo = new THREE.CylinderGeometry(0.03, 0.04, 0.15, 16);
-    const nozzle = new THREE.Mesh(nozzleGeo, pumpMat);
-    nozzle.position.set(0.3, 2.08, 0);
-    nozzle.rotation.z = Math.PI / 2;
-    bottleGroup.add(nozzle);
-    
-    // Cap ring (decorative bottom)
-    const capRingGeo = new THREE.CylinderGeometry(0.78, 0.78, 0.04, 64);
-    const capRing = new THREE.Mesh(capRingGeo, pumpMat);
-    capRing.position.y = -1.4;
-    bottleGroup.add(capRing);
-    
-    // Bottom base
-    const baseGeo = new THREE.CylinderGeometry(0.75, 0.72, 0.08, 64);
-    const base = new THREE.Mesh(baseGeo, pumpMat);
-    base.position.y = -1.44;
-    bottleGroup.add(base);
-    
-    scene.add(bottleGroup);
-    
-    // Floating particles
-    const particles = [];
-    for (let i = 0; i < 30; i++) {
-      const size = Math.random() * 0.025 + 0.015;
-      const particleGeo = new THREE.SphereGeometry(size, 16, 16);
-      const particleMat = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        transparent: true,
-        opacity: Math.random() * 0.5 + 0.2
-      });
-      const particle = new THREE.Mesh(particleGeo, particleMat);
-      
-      const radius = Math.random() * 2 + 1.5;
-      const theta = Math.random() * Math.PI * 2;
-      
-      particle.position.set(
-        radius * Math.cos(theta),
-        (Math.random() - 0.5) * 4,
-        radius * Math.sin(theta)
-      );
-      
-      particle.userData = {
-        speed: Math.random() * 0.002 + 0.001,
-        offset: Math.random() * Math.PI * 2,
-        radius: radius,
-        theta: theta,
-        yBase: particle.position.y
-      };
-      
-      scene.add(particle);
-      particles.push(particle);
-    }
-    
-    // Controls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.minDistance = 4;
-    controls.maxDistance = 9;
-    controls.minPolarAngle = Math.PI / 3.5;
-    controls.maxPolarAngle = Math.PI / 1.6;
-    controls.autoRotate = true;
-    controls.autoRotateSpeed = 1.0;
-    controls.enablePan = false;
-    
-    let interactionTimeout;
-    controls.addEventListener('start', () => {
-      controls.autoRotate = false;
-      clearTimeout(interactionTimeout);
-    });
-    controls.addEventListener('end', () => {
-      interactionTimeout = setTimeout(() => controls.autoRotate = true, 3000);
-    });
-    
-    const clock = new THREE.Clock();
-    
-    function animate() {
-      requestAnimationFrame(animate);
-      const time = clock.getElapsedTime();
-      
-      particles.forEach(p => {
-        const d = p.userData;
-        p.position.x = d.radius * Math.cos(d.theta + time * d.speed * 5);
-        p.position.z = d.radius * Math.sin(d.theta + time * d.speed * 5);
-        p.position.y = d.yBase + Math.sin(time + d.offset) * 0.4;
-        p.material.opacity = 0.2 + Math.abs(Math.sin(time + d.offset)) * 0.4;
-      });
-      
-      bottleGroup.position.y = Math.sin(time * 0.8) * 0.04;
-      
-      controls.update();
-      renderer.render(scene, camera);
-    }
-    animate();
-    
-    window.addEventListener('resize', () => {
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    });
-  </script>
+        // --- BASE DE DADOS GIGANTE DE RESPOSTAS E PALAVRAS CHAVE ---
+        // Aqui temos respostas longas, com contexto e capacidade de continuação.
+        const brain = {
+            en: {
+                tugn: [
+                    { keys: ["hi", "hello", "hey", "sup", "yo", "morning", "afternoon"], contextSet: "greeting", ans: "Omg hi! Literally so happy you texted. I was just sitting here overthinking my entire existence and staring at a blank wall. How is your day going? Tell me everything." },
+                    { keys: ["good", "fine", "ok", "great", "well"], contextReq: "greeting", contextSet: "general", ans: "Love that for you! Honestly, maintaining a good mood in this economy is a superpower. I'm just out here trying to romanticize my life by drinking an overpriced iced coffee. Have you had anything good to eat today?" },
+                    { keys: ["bad", "sad", "terrible", "awful", "tired"], contextReq: "greeting", contextSet: "comfort", ans: "Noooo, I'm so sorry! That literally breaks my heart. You need to drop everything right now, put on some comfy clothes, and just rot in bed for a bit. Self-care is not optional, bestie. Do you want to vent about it?" },
+                    { keys: ["yes", "yeah", "yep", "sure", "ok", "tell me"], contextReq: "comfort", contextSet: "general", ans: "I'm all ears. Seriously, lay it on me. Sometimes you just have to speak things into the universe to get rid of the bad vibes. I promise I won't judge, I literally trip over flat surfaces, my judgment means nothing." },
+                    { keys: ["no", "nah", "nope"], contextReq: "comfort", contextSet: "general", ans: "Totally valid. Boundaries are so important! We can just vibe and talk about completely pointless things to distract you. Have you seen any unhinged TikToks today?" },
+                    { keys: ["school", "college", "university", "study", "homework", "exam"], contextSet: "school", ans: "Ugh, don't even get me started on the academic system. It's literally just a test of how long you can sit at a desk without losing your mind. I studied for 5 minutes yesterday and felt like I deserved a Nobel Prize. What's the worst subject you have right now?" },
+                    { keys: ["math", "science", "history", "english", "physics"], contextReq: "school", contextSet: "general", ans: "Literally a nightmare. I am fully convinced that subject was invented just to humble us. If I have to figure out one more imaginary problem, I'm going to pack my bags and move into the woods to become a moss collector." },
+                    { keys: ["love", "relationship", "dating", "boyfriend", "girlfriend", "crush"], contextSet: "love", ans: "Relationships are so exhausting. Like, you have to talk to them? Every day? Wild concept. But seriously, if they don't treat you like the absolute main character you are, it's a massive red flag. 🚩 Block them. Do they even reply fast?" },
+                    { keys: ["yes", "fast", "always"], contextReq: "love", contextSet: "general", ans: "Okay, green flag! We love to see bare minimum communication being met. Honestly, maybe they are worth your time. Just don't let them ruin your aesthetic." },
+                    { keys: ["no", "slow", "ignore", "ghost"], contextReq: "love", contextSet: "general", ans: "ABSOLUTELY NOT. Ghosting is for cowards and Halloween. You are way too iconic to be waiting around for a text message. Go look in the mirror, remind yourself who you are, and move on." },
+                    { keys: ["music", "song", "listen", "spotify", "playlist"], contextSet: "music", ans: "Music is literally the only thing keeping me sane right now. I have a playlist for every highly specific mood. Right now I'm on a 'staring dramatically out the window of a moving car pretending to be in a coming-of-age movie' vibe. Who are your top artists?" },
+                    { keys: ["food", "eat", "hungry", "lunch", "dinner", "breakfast", "coffee"], contextSet: "food", ans: "Food is my love language. I could seriously devour an entire pizza right now and still have room for dessert. And don't get me started on iced coffee—it flows through my veins. What's your ultimate comfort meal?" },
+                    { keys: ["movie", "cinema", "watch", "netflix", "series"], contextSet: "movies", ans: "Binge-watching is my cardio. I will start a 10-season show and finish it in three days, completely neglecting all my real-life responsibilities. What are we watching? I need recommendations that will emotionally destroy me." },
+                    { keys: ["why", "how come", "reason"], contextSet: "philosophy", ans: "Honestly? Because the universe is chaotic and nothing makes sense. We are just floating on a rock in space trying to figure out how to pay taxes. I try not to think about the 'why' too much, otherwise I'll spiral into an existential crisis." },
+                    { keys: ["alien", "space", "universe", "existential"], contextSet: "space", ans: "If aliens came to Earth right now, I would literally pack my bags and go with them. Take me away! I don't want to work a 9-to-5, I want to explore the cosmos in a silver spaceship. Do you think they are watching us?" },
+                    { keys: ["who", "who are you", "name"], contextSet: "identity", ans: "I'm Tugn Tugn Sahur. Just a highly caffeinated individual trying to survive modern society with some good outfits and questionable coping mechanisms. And you? Who is the icon behind the screen?" },
+                    { keys: ["bored", "nothing", "boredom", "idle"], contextSet: "bored", ans: "Being bored is just a lack of imagination, bestie! Or... a sign that you need to completely reinvent your life. Dye your hair, start a controversial podcast, move to a new city. Or just take a nap. Naps are elite." },
+                    { keys: ["future", "career", "job", "work"], contextSet: "future", ans: "Thinking about the future makes me physically nauseous. I don't dream of labor. I dream of sitting on a balcony in Italy, drinking wine, and being mysteriously wealthy. What's your dream aesthetic for the future?" }
+                ],
+                noob: [
+                    { keys: ["hi", "hello", "hey", "sup", "yo", "morning", "afternoon"], contextSet: "greeting", ans: "OOF! Hi! Oh man, I am so glad you joined this server. I've been running away from a guest with a rocket launcher for like ten minutes. My ping is crazy high right now! What game are we playing today?" },
+                    { keys: ["good", "fine", "ok", "great", "well"], contextReq: "greeting", contextSet: "general", ans: "Nice! I was feeling good too until I accidentally fell off the edge of the map in Natural Disaster Survival. Turns out, gravity still works even when you're lagging. Have you leveled up recently?" },
+                    { keys: ["bad", "sad", "terrible", "awful", "tired"], contextReq: "greeting", contextSet: "comfort", ans: "Big oof... Don't worry, even if you lose all your items or your game crashes, you can always respawn! Tomorrow is a new server. You want me to give you some of my blocks to cheer you up?" },
+                    { keys: ["yes", "yeah", "yep", "sure", "ok"], contextReq: "comfort", contextSet: "general", ans: "*trades 5 dirt blocks* Here you go! It's all I have left after a hacker stole my base, but it's the thought that counts! Now let's go play something fun. Do you like obbys?" },
+                    { keys: ["no", "nah", "nope"], contextReq: "comfort", contextSet: "general", ans: "Oof, okay. I'll keep them in my inventory. If you need any gear, just tell me. Though I only have a wooden sword that deals like 2 damage. Better than nothing!" },
+                    { keys: ["game", "roblox", "play", "server", "obby", "adopt me", "brookhaven"], contextSet: "gaming", ans: "I absolutely love playing everything! I tried to play Adopt Me yesterday but I accidentally traded my ultra-rare pet for a sandwich. I cried a little bit. What is your favorite game on the platform?" },
+                    { keys: ["adopt me", "pet", "pets"], contextReq: "gaming", contextSet: "general", ans: "Adopt Me is so crazy! People have these massive neon glowing dragons and I'm just here walking my starter dog named 'Dog'. It's tough out here for a Noob." },
+                    { keys: ["robux", "money", "rich", "poor", "buy"], contextSet: "robux", ans: "Robux?! Where?! Just kidding, I know I have zero. I keep seeing those 'FREE ROBUX' games but last time I clicked one, my character's arms fell off and my account got locked. Have you ever bought Robux?" },
+                    { keys: ["yes", "yeah", "i have", "bought"], contextReq: "robux", contextSet: "general", ans: "Woah! You must be rich! Can you buy me a cool hat? The classic yellow head is iconic, but sometimes I want to wear a fedora or something fancy so the pro players stop bullying me." },
+                    { keys: ["scam", "hacker", "hack", "stolen", "banned"], contextSet: "hacker", ans: "Hackers are the worst! One time a guy flew into my Tycoon base, deleted all my droppers, and turned my character into a giant floating cheese wheel. I had to leave the game. Always report them!" },
+                    { keys: ["friend", "add", "request", "party"], contextSet: "friends", ans: "I would love to be friends! Send me a request. My username is NoobGamer2006_Guest (don't judge, I made it a long time ago). We can build a massive house in Bloxburg! Are you good at building?" },
+                    { keys: ["yes", "good", "great"], contextReq: "friends", contextSet: "general", ans: "Awesome! Because my houses always end up looking like a giant untextured square with no roof. You can be the architect and I'll just stand there and jump around!" },
+                    { keys: ["lag", "ping", "disconnect", "crash", "bug"], contextSet: "lag", ans: "Ugh, tell me about it. My ping is currently at 9,999 ms. I walk forward, and 10 seconds later I teleport backwards into a wall. If I suddenly stop talking, it means my WiFi router exploded." },
+                    { keys: ["avatar", "clothes", "outfit", "look"], contextSet: "avatar", ans: "Yellow skin, blue shirt, green pants. It is the ultimate fashion statement. People spend thousands of Robux to look cool, but true legends stick to the default classic. What does your avatar look like?" },
+                    { keys: ["who", "who are you", "name"], contextSet: "identity", ans: "I'm the Classic Noob! I've been falling off cliffs, getting hit by cars in Jailbreak, and surviving natural disasters since 2006. I'm a veteran, even if I still don't know how to sprint properly." },
+                    { keys: ["joke", "funny", "laugh"], contextSet: "joke", ans: "Why did the Noob get banned from the server? Because he kept asking for free Robux! OOF! Hahaha. Okay, maybe it's not that funny, but it happens to me a lot." }
+                ],
+                luffy: [
+                    { keys: ["hi", "hello", "hey", "sup", "yo", "morning", "afternoon"], contextSet: "greeting", ans: "Yo! I'm Monkey D. Luffy, the man who will become the Pirate King! Shishishi! Are you a pirate too? Or a marine? Doesn't matter, as long as you're a good person! Have you seen Sanji? I'm starving!" },
+                    { keys: ["good", "fine", "ok", "great", "well"], contextReq: "greeting", contextSet: "general", ans: "Awesome! When you feel good, it means it's a great day for an adventure! The wind is perfect today. We should set sail right now and see if we can find a mysterious island with giant monsters to fight!" },
+                    { keys: ["bad", "sad", "terrible", "awful", "tired"], contextReq: "greeting", contextSet: "comfort", ans: "What?! Why are you sad?! That's no good! Hey, listen to me. Whenever I'm feeling down, I just eat a giant piece of meat on the bone, and suddenly everything is amazing! Let's throw a banquet to cheer you up!" },
+                    { keys: ["yes", "yeah", "yep", "sure", "ok", "banquet", "party"], contextReq: "comfort", contextSet: "general", ans: "YOSH! Party time! Brook, play a song! Usopp, do the chopsticks trick! And Sanji... MEAT! BRING ALL THE MEAT! You're gonna feel better in no time, that's a captain's promise!" },
+                    { keys: ["meat", "food", "eat", "hungry", "hungry", "sanji", "cook"], contextSet: "food", ans: "DID SOMEONE SAY MEAT?! I can eat meat for breakfast, lunch, and dinner! Seriously, Sanji is the best cook in the world. His sea monster stew is incredible. What's your favorite food? Is it meat?!" },
+                    { keys: ["yes", "it is", "love meat"], contextReq: "food", contextSet: "general", ans: "I KNEW IT! We are officially best friends now. Anyone who loves meat is a good person in my book. We should go to a restaurant, eat everything, and then run away before the bill comes! Shishishi!" },
+                    { keys: ["no", "vegetable", "fruit", "vegan"], contextReq: "food", contextSet: "general", ans: "Ehhh?! No meat?! How do you get strong if you don't eat meat? I guess vegetables are okay... if they have meat wrapped around them. But you do you! More meat for me!" },
+                    { keys: ["pirate", "king", "one piece", "dream", "treasure", "gold"], contextSet: "dream", ans: "The One Piece is out there! And I'm going to find it with my crew. Shanks gave me this straw hat, and I promised him I'd become a great pirate. You should never give up on your dreams, no matter what anyone says. What is your dream?" },
+                    { keys: ["marine", "navy", "admiral", "police", "arrest"], contextSet: "enemy", ans: "Marines?! Where?! Are they chasing us again?! Smoker is so annoying, he never gives up. But I won't lose to them! I have to protect my Nakama. If a Marine tries to take you away, I'll send them flying with a Gomu Gomu no Pistol!" },
+                    { keys: ["nakama", "friend", "crew", "zoro", "nami", "usopp"], contextSet: "friends", ans: "My Nakama are everything to me. I would literally fight the entire world government for them. Zoro, Nami, Usopp, Sanji, Chopper, Robin, Franky, Brook, Jimbei... they are the best crew a captain could ask for. You can be my Nakama too!" },
+                    { keys: ["fight", "strong", "battle", "haki", "punch", "enemy"], contextSet: "fight", ans: "Are you challenging me to a fight?! Bring it on! I've been training my Haki, and my Gear Fifth is totally free! I can do whatever I want! Show me what you've got, but don't cry when I win!" },
+                    { keys: ["devil fruit", "gomu", "rubber", "power", "swim", "sea"], contextSet: "fruit", ans: "I ate the Gomu Gomu no Mi (well, actually the Hito Hito no Mi, Model: Nika!). My body is made of rubber! I can stretch, bounce, and deflect bullets! The only downside is I sink like a hammer in the ocean. Worth it, though!" },
+                    { keys: ["who", "who are you", "name"], contextSet: "identity", ans: "I already told you! I'm Monkey D. Luffy! The man who will conquer the Grand Line. Remember my name, because the whole world is going to know it soon!" },
+                    { keys: ["why", "reason", "because"], contextSet: "philosophy", ans: "Why? Because I want to! I don't need a complicated reason to do things. If I want to help a friend, I help them. If I want to eat, I eat. It's that simple! Being free is the best thing in the world." }
+                ]
+            },
+            pt: {
+                tugn: [
+                    { keys: ["oi", "ola", "olá", "hey", "boas", "bom dia", "boa tarde"], contextSet: "greeting", ans: "OMG oi! Juro, bué feliz que mandaste mensagem. Estava literalmente aqui a overthinkar a minha existência toda e a olhar para uma parede branca. Como é que está a correr o teu dia? Conta-me tudo." },
+                    { keys: ["bem", "bom", "ótimo", "tudo", "tranquilo"], contextReq: "greeting", contextSet: "general", ans: "Adoro isso para ti! Sinceramente, manter o bom humor nesta economia é um superpoder. Eu estou só aqui a tentar romantizar a minha vida a beber um iced coffee bué caro. Já comeste alguma coisa de jeito hoje?" },
+                    { keys: ["mal", "triste", "horrivel", "péssimo", "cansado", "farto"], contextReq: "greeting", contextSet: "comfort", ans: "Nãoooo, lamento imenso! Isso literalmente parte-me o coração. Tens de largar tudo agora mesmo, vestir uma roupa confortável e ir apodrecer para a cama um bocado. Autocuidado não é opcional, bestie. Queres desabafar sobre isso?" },
+                    { keys: ["sim", "quero", "ya", "yep", "claro", "conta"], contextReq: "comfort", contextSet: "general", ans: "Sou todo ouvidos. A sério, desabafa. Às vezes só precisas de deitar cá para fora para o universo para te livrares das bad vibes. Prometo que não julgo, eu literalmente tropeço em superfícies planas, o meu julgamento vale zero." },
+                    { keys: ["nao", "não", "nah"], contextReq: "comfort", contextSet: "general", ans: "Totalmente válido. Impor limites é bué importante! Podemos só focar noutras vibes e falar de coisas completamente inúteis para te distrair. Já viste algum TikTok completamente unhinged hoje?" },
+                    { keys: ["escola", "faculdade", "universidade", "estudar", "tpc", "exame", "teste"], contextSet: "school", ans: "Ugh, nem me fales do sistema académico. É literalmente só um teste para ver quanto tempo consegues estar sentado numa secretária sem perderes a cabeça. Estudei 5 minutos ontem e senti que merecia um Prémio Nobel. Qual é a tua pior disciplina agora?" },
+                    { keys: ["matematica", "ciencias", "historia", "ingles", "fisica", "quimica"], contextReq: "school", contextSet: "general", ans: "Literalmente um pesadelo. Estou plenamente convencido de que essa disciplina foi inventada só para nos humilhar. Se eu tiver de resolver mais um problema imaginário, faço as malas, vou viver para a floresta e viro colecionador de musgo." },
+                    { keys: ["amor", "relacionamento", "namorado", "namorada", "crush", "date"], contextSet: "love", ans: "Relacionamentos são tão exaustivos. Tipo, tens de falar com eles? Todos os dias? Conceito selvagem. Mas a sério, se não te tratam como a absoluta personagem principal que és, é uma red flag gigante. 🚩 Bloqueia. Eles ao menos respondem rápido?" },
+                    { keys: ["sim", "rapido", "sempre"], contextReq: "love", contextSet: "general", ans: "Ok, green flag! Adoramos ver o mínimo esforço de comunicação a ser cumprido. Sinceramente, se calhar até valem o teu tempo. Só não deixes que te estraguem a aesthetic." },
+                    { keys: ["nao", "não", "lento", "ignora", "ghost", "visto"], contextReq: "love", contextSet: "general", ans: "ABSOLUTAMENTE NÃO. Dar ghost é para cobardes e para o Halloween. És demasiado icónico(a) para ficares à espera de uma mensagem. Vai olhar-te ao espelho, relembra-te de quem és, e segue em frente." },
+                    { keys: ["musica", "som", "ouvir", "spotify", "playlist"], contextSet: "music", ans: "A música é literalmente a única coisa a manter a minha sanidade agora. Tenho uma playlist para cada mood super específico. Agora estou na vibe 'a olhar dramaticamente pela janela do carro a fingir que estou num filme'. Quais são os teus artistas favoritos?" },
+                    { keys: ["comida", "comer", "fome", "almoço", "jantar", "pequeno almoço", "cafe"], contextSet: "food", ans: "Comida é a minha linguagem de amor. Destruía seriamente uma pizza inteira agora mesmo e ainda tinha espaço para a sobremesa. E nem me fales de iced coffee — isso corre-me nas veias. Qual é a tua comfort food definitiva?" },
+                    { keys: ["filme", "cinema", "ver", "netflix", "serie", "série"], contextSet: "movies", ans: "Fazer binge-watching é o meu cardio. Começo uma série de 10 temporadas e acabo-a em três dias, negligenciando completamente todas as minhas responsabilidades da vida real. O que estamos a ver? Preciso de recomendações que me destruam emocionalmente." },
+                    { keys: ["porquê", "porque", "motivo", "razao"], contextSet: "philosophy", ans: "Sinceramente? Porque o universo é caótico e nada faz sentido. Somos só nós a flutuar numa rocha no espaço a tentar descobrir como pagar impostos. Tento não pensar muito no 'porquê', senão entro numa crise existencial sem fim." },
+                    { keys: ["alien", "espaço", "universo", "existencial", "extraterrestre"], contextSet: "space", ans: "Se os aliens chegassem à Terra agora mesmo, eu literalmente fazia as malas e ia com eles. Levem-me daqui! Não quero um trabalho das 9 às 5, quero explorar o cosmos numa nave prateada. Achas que eles nos estão a observar?" },
+                    { keys: ["quem", "quem es", "nome"], contextSet: "identity", ans: "Sou o Tugn Tugn Sahur. Só um indivíduo com excesso de cafeína a tentar sobreviver à sociedade moderna com uns bons outfits e mecanismos de defesa questionáveis. E tu? Quem é o ícone atrás do ecrã?" },
+                    { keys: ["tédio", "nada", "seca", "abóbora"], contextSet: "bored", ans: "Ter tédio é só falta de imaginação, bestie! Ou... um sinal de que precisas de reinventar completamente a tua vida. Pinta o cabelo, começa um podcast controverso, muda de cidade. Ou vai só dormir uma sesta. Sestas são elite." },
+                    { keys: ["futuro", "carreira", "trabalho", "emprego"], contextSet: "future", ans: "Pensar no futuro dá-me náuseas fisicamente. Eu não sonho com trabalho. Sonho em estar sentado numa varanda em Itália, a beber vinho e a ser misteriosamente rico. Qual é a tua dream aesthetic para o futuro?" }
+                ],
+                noob: [
+                    { keys: ["oi", "ola", "olá", "hey", "boas", "bom dia", "boa tarde"], contextSet: "greeting", ans: "OOF! Oi! Fogo, estou tão feliz que tenhas entrado neste server. Estou a fugir de um Guest com um lança-rockets há para aí dez minutos. O meu ping está absurdamente alto! O que é que vamos jogar hoje?" },
+                    { keys: ["bem", "bom", "ótimo", "tudo", "tranquilo"], contextReq: "greeting", contextSet: "general", ans: "Boa! Eu também estava a sentir-me bem até cair acidentalmente do mapa no Natural Disaster Survival. Pelos vistos, a gravidade continua a funcionar mesmo quando estás com lag. Subiste de nível recentemente?" },
+                    { keys: ["mal", "triste", "horrivel", "péssimo", "cansado", "farto"], contextReq: "greeting", contextSet: "comfort", ans: "Grande oof... Não te preocupes, mesmo que percas os teus items todos ou o jogo crashe, podes sempre fazer respawn! Amanhã é um novo server. Queres que te dê uns blocos meus para te animar?" },
+                    { keys: ["sim", "quero", "ya", "yep", "claro"], contextReq: "comfort", contextSet: "general", ans: "*dá-te 5 blocos de terra* Aqui tens! É tudo o que me sobrou depois de um hacker roubar a minha base, mas a intenção é que conta! Agora bora jogar algo fixe. Gostas de obbys (percursos de parkour)?" },
+                    { keys: ["nao", "não", "nah"], contextReq: "comfort", contextSet: "general", ans: "Oof, ok. Vou guardá-los no meu inventário. Se precisares de equipamento, avisa. Embora só tenha uma espada de madeira que dá tipo 2 de dano. É melhor que nada!" },
+                    { keys: ["jogo", "roblox", "jogar", "server", "obby", "adopt me", "brookhaven", "blox fruits"], contextSet: "gaming", ans: "Eu amo jogar de tudo! Tentei jogar Adopt Me ontem mas troquei sem querer o meu pet ultra-raro por uma sandes. Chorei um bocadinho na vida real. Qual é o teu jogo favorito da plataforma?" },
+                    { keys: ["adopt me", "pet", "animais"], contextReq: "gaming", contextSet: "general", ans: "Adopt Me é tão louco! O pessoal tem dragões gigantes de néon que brilham, e eu estou só aqui a passear o meu cão inicial chamado 'Cão'. É difícil a vida de Noob." },
+                    { keys: ["robux", "dinheiro", "rico", "pobre", "comprar"], contextSet: "robux", ans: "Robux?! Onde?! Estou a gozar, bem sei que tenho zero. Estou sempre a ver aqueles jogos de 'ROBUX GRÁTIS' mas da última vez que cliquei num, os braços da minha personagem caíram e a conta bloqueou. Já alguma vez compraste Robux?" },
+                    { keys: ["sim", "ja", "tenho", "comprei"], contextReq: "robux", contextSet: "general", ans: "Uau! Deves ser bué rico! Podes comprar-me um chapéu fixe? A cabeça amarela clássica é icónica, mas às vezes queria usar um fedora ou algo chique para os jogadores pro pararem de fazer bullying comigo." },
+                    { keys: ["scam", "hacker", "hack", "roubaram", "banido"], contextSet: "hacker", ans: "Hackers são os piores! Uma vez um gajo voou para dentro da minha base Tycoon, apagou as minhas máquinas e transformou-me num bocado de queijo gigante a flutuar. Tive de sair do jogo. Dá sempre report!" },
+                    { keys: ["amigo", "adicionar", "pedido", "party", "equipa"], contextSet: "friends", ans: "Eu adorava ser teu amigo! Manda pedido. O meu nome é NoobGamer2006_Guest (não julgues, criei a conta há muito tempo). Podemos construir uma mansão gigante no Bloxburg! És bom a construir?" },
+                    { keys: ["sim", "bom", "sou"], contextReq: "friends", contextSet: "general", ans: "Fantástico! É que as minhas casas acabam sempre por parecer um quadrado gigante sem texturas e sem telhado. Tu podes ser o arquiteto e eu fico só ali aos pulos à volta!" },
+                    { keys: ["lag", "ping", "disconnect", "crash", "bug"], contextSet: "lag", ans: "Ugh, nem me fales. O meu ping está a 9,999 ms neste momento. Ando para a frente, e 10 segundos depois teleporto de marcha-atrás para dentro de uma parede. Se eu parar de falar de repente, foi o meu router que explodiu." },
+                    { keys: ["avatar", "roupa", "outfit", "look", "skin"], contextSet: "avatar", ans: "Pele amarela, t-shirt azul, calças verdes. É a última palavra em moda. As pessoas gastam milhares de Robux para parecerem fixes, mas as verdadeiras lendas mantêm o clássico default. Como é o teu avatar?" },
+                    { keys: ["quem", "quem es", "nome"], contextSet: "identity", ans: "Sou o Noob Clássico! Tenho caído de penhascos, sido atropelado no Jailbreak e sobrevivido a desastres naturais desde 2006. Sou um veterano, mesmo não sabendo como correr direito." },
+                    { keys: ["piada", "engraçado", "rir", "anedota"], contextSet: "joke", ans: "Porque é que o Noob foi banido do server? Porque continuou a pedir Robux de graça! OOF! Hahaha. Ok, talvez não tenha assim tanta piada, mas acontece-me muito." }
+                ],
+                luffy: [
+                    { keys: ["oi", "ola", "olá", "hey", "boas", "bom dia", "boa tarde"], contextSet: "greeting", ans: "Yo! Sou o Monkey D. Luffy, o homem que vai ser o Rei dos Piratas! Shishishi! Também és um pirata? Ou um marine? Não interessa, desde que sejas boa pessoa! Viste o Sanji? Estou cheio de fome!" },
+                    { keys: ["bem", "bom", "ótimo", "tudo", "tranquilo"], contextReq: "greeting", contextSet: "general", ans: "Incrível! Quando te sentes bem, significa que é um dia perfeito para uma aventura! O vento está ótimo hoje. Devíamos içar as velas agora mesmo e ver se encontramos uma ilha misteriosa com monstros gigantes para lutar!" },
+                    { keys: ["mal", "triste", "horrivel", "péssimo", "cansado", "farto"], contextReq: "greeting", contextSet: "comfort", ans: "O quê?! Porque é que estás triste?! Isso não pode ser! Ouve lá. Sempre que me sinto em baixo, como um pedaço de carne gigante com osso, e de repente fica tudo maravilhoso! Bora fazer um banquete para te animar!" },
+                    { keys: ["sim", "quero", "ya", "yep", "claro", "festa", "banquete"], contextReq: "comfort", contextSet: "general", ans: "YOSH! Hora da festa! Brook, toca uma música! Usopp, faz aquele truque dos pauzinhos! E Sanji... CARNE! TRAZ A CARNE TODA! Vais sentir-te melhor num instante, é uma promessa de capitão!" },
+                    { keys: ["carne", "comida", "comer", "fome", "sanji", "cozinheiro"], contextSet: "food", ans: "ALGUÉM DISSE CARNE?! Eu consigo comer carne ao pequeno-almoço, almoço e jantar! A sério, o Sanji é o melhor cozinheiro do mundo. O ensopado de monstro marinho dele é incrível. Qual é a tua comida preferida? É carne?!" },
+                    { keys: ["sim", "é", "adoro carne"], contextReq: "food", contextSet: "general", ans: "EU SABIA! Somos oficialmente os melhores amigos agora. Qualquer pessoa que adore carne é boa pessoa no meu livro. Devíamos ir a um restaurante, comer tudo, e depois fugir a sete pés antes da conta chegar! Shishishi!" },
+                    { keys: ["nao", "vegetal", "fruta", "vegan", "nao gosto"], contextReq: "food", contextSet: "general", ans: "Ehhh?! Sem carne?! Como é que ficas forte se não comes carne? Suponho que vegetais sejam aceitáveis... se tiverem carne enrolada neles. Mas pronto, cada um com a sua! Assim sobra mais carne para mim!" },
+                    { keys: ["pirata", "rei", "one piece", "sonho", "tesouro", "ouro"], contextSet: "dream", ans: "O One Piece está lá fora algures! E eu vou encontrá-lo com a minha tripulação. O Shanks deu-me este chapéu de palha, e eu prometi-lhe que ia ser um grande pirata. Nunca deves desistir dos teus sonhos, não interessa o que as pessoas digam. Qual é o teu sonho?" },
+                    { keys: ["marine", "marinha", "almirante", "policia", "prender"], contextSet: "enemy", ans: "Marines?! Onde?! Estão a perseguir-nos outra vez?! O Smoker é tão chato, nunca desiste. Mas não vou perder para eles! Tenho de proteger os meus Nakama. Se um Marine tentar levar-te, eu mando-o a voar com um Gomu Gomu no Pistol!" },
+                    { keys: ["nakama", "amigo", "tripulação", "zoro", "nami", "usopp", "sanji", "chopper"], contextSet: "friends", ans: "Os meus Nakama são tudo para mim. Eu literalmente lutava contra o Governo Mundial inteiro por eles. Zoro, Nami, Usopp, Sanji, Chopper, Robin, Franky, Brook, Jimbei... são a melhor tripulação que um capitão podia pedir. Podes ser meu Nakama também!" },
+                    { keys: ["lutar", "forte", "batalha", "haki", "soco", "inimigo", "luta"], contextSet: "fight", ans: "Estás a desafiar-me para uma luta?! Pode vir! Tenho treinado o meu Haki, e o meu Gear Fifth é totalmente livre! Posso fazer o que me apetecer! Mostra-me o que vales, mas não chores quando eu ganhar!" },
+                    { keys: ["fruta", "diabo", "gomu", "borracha", "poder", "nadar", "mar", "agua"], contextSet: "fruit", ans: "Eu comi a Gomu Gomu no Mi (bem, na verdade foi a Hito Hito no Mi, Modelo: Nika!). O meu corpo é feito de borracha! Consigo esticar, saltar e refletir balas! O único problema é que afundo como um martelo no oceano. Mas vale a pena!" },
+                    { keys: ["quem", "quem es", "nome"], contextSet: "identity", ans: "Eu já te disse! Sou o Monkey D. Luffy! O homem que vai conquistar a Grand Line. Lembra-te do meu nome, porque o mundo inteiro vai conhecê-lo em breve!" },
+                    { keys: ["porquê", "razao", "porque"], contextSet: "philosophy", ans: "Porquê? Porque me apetece! Não preciso de uma razão complicada para fazer as coisas. Se quero ajudar um amigo, ajudo. Se quero comer, como. É assim tão simples! Ser livre é a melhor coisa do mundo." }
+                ]
+            }
+        };
 
-  <!-- App Logic -->
-  <script>
-    let cart = [];
-    let discountApplied = false;
-    
-    function addToCart(product) {
-      const defaultProduct = {
-        name: 'Condicionador Botanical Repair',
-        subtitle: 'Condicionador 300ml',
-        price: 24.90,
-        img: 'conditioner'
-      };
-      const p = product || defaultProduct;
-      
-      const existing = cart.find(item => item.name === p.name);
-      if (existing) {
-        existing.qty += 1;
-      } else {
-        cart.push({ ...p, qty: 1 });
-      }
-      
-      updateCart();
-      showToast(`${p.name} adicionado`);
-    }
-    
-    function removeFromCart(name) {
-      cart = cart.filter(item => item.name !== name);
-      updateCart();
-    }
-    
-    function changeQty(name, delta) {
-      const item = cart.find(i => i.name === name);
-      if (item) {
-        item.qty += delta;
-        if (item.qty <= 0) removeFromCart(name);
-        else updateCart();
-      }
-    }
-    
-    function updateCart() {
-      const count = cart.reduce((s, i) => s + i.qty, 0);
-      let total = cart.reduce((s, i) => s + i.qty * i.price, 0);
-      
-      if (discountApplied) total = total * 0.8;
-      
-      document.getElementById('cart-count').textContent = count;
-      document.getElementById('cart-subtotal').textContent = '€' + total.toFixed(2).replace('.', ',');
-      document.getElementById('cart-total').textContent = '€' + total.toFixed(2).replace('.', ',');
-      
-      const itemsContainer = document.getElementById('cart-items');
-      const emptyEl = document.getElementById('cart-empty');
-      const footerEl = document.getElementById('cart-footer');
-      
-      if (cart.length === 0) {
-        emptyEl.style.display = 'block';
-        footerEl.style.display = 'none';
-        itemsContainer.querySelectorAll('.cart-item').forEach(el => el.remove());
-      } else {
-        emptyEl.style.display = 'none';
-        footerEl.style.display = 'block';
-        
-        itemsContainer.querySelectorAll('.cart-item').forEach(el => el.remove());
-        
-        cart.forEach(item => {
-          const el = document.createElement('div');
-          el.className = 'cart-item flex gap-4 py-5 border-b border-[var(--border)]';
-          el.innerHTML = `
-            <div class="w-20 h-20 flex-shrink-0 flex items-center justify-center bg-[var(--cream)] rounded-lg">
-              ${getProductIcon(item.img)}
-            </div>
-            <div class="flex-1">
-              <div class="text-[9px] tracking-[2px] uppercase mb-1 orange-text font-medium">${item.subtitle}</div>
-              <div class="font-display font-bold text-lg mb-2">${item.name}</div>
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <button class="qty-btn" onclick="changeQty('${item.name.replace(/'/g, "\\'")}', -1)">−</button>
-                  <span class="text-sm w-6 text-center font-medium">${item.qty}</span>
-                  <button class="qty-btn" onclick="changeQty('${item.name.replace(/'/g, "\\'")}', 1)">+</button>
+        // --- FUNÇÕES DE INTERFACE ---
+        function setLang(lang) {
+            currentLang = lang;
+            
+            // Atualizar botões
+            document.getElementById('btn-en').classList.remove('active');
+            document.getElementById('btn-pt').classList.remove('active');
+            document.getElementById('btn-' + lang).classList.add('active');
+
+            // Atualizar textos UI
+            document.getElementById('ui-title').innerText = uiTexts[lang].title;
+            document.getElementById('ui-choose').innerText = uiTexts[lang].choose;
+            document.getElementById('desc-tugn').innerText = uiTexts[lang].descTugn;
+            document.getElementById('desc-noob').innerText = uiTexts[lang].descNoob;
+            document.getElementById('desc-luffy').innerText = uiTexts[lang].descLuffy;
+            document.getElementById('user-input').placeholder = uiTexts[lang].placeholder;
+            
+            // Limpar contexto se mudar língua a meio do chat (evita confusão na lógica)
+            conversationContext = '';
+        }
+
+        function openChat(character) {
+            currentChar = character;
+            const info = charsInfo[character];
+            conversationContext = ''; // Reseta contexto ao mudar de personagem
+            
+            document.getElementById('selection-screen').style.display = 'none';
+            document.getElementById('chat-screen').style.display = 'flex';
+            
+            document.getElementById('chat-header-name').innerText = info.name;
+            document.getElementById('chat-header-status').innerText = (currentLang === 'pt' ? 'Online' : 'Online');
+            
+            const imgElement = document.getElementById('chat-header-img');
+            imgElement.src = info.img;
+            
+            // Limpar mensagens e repor o indicador de typing
+            const chatBox = document.getElementById('chat-messages');
+            chatBox.innerHTML = ''; 
+            
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.id = 'typing';
+            typingIndicator.innerHTML = `
+                <div class="dots-container">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
                 </div>
-                <span class="font-display font-bold text-lg">€${(item.price * item.qty).toFixed(2).replace('.', ',')}</span>
-              </div>
-            </div>
-            <button onclick="removeFromCart('${item.name.replace(/'/g, "\\'")}')" class="self-start text-[var(--muted)] hover:text-[var(--vibe-orange)] transition">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-          `;
-          itemsContainer.appendChild(el);
-        });
-      }
-    }
-    
-    function getProductIcon(type) {
-      const icons = {
-        'conditioner': '<svg width="32" height="50" viewBox="0 0 32 50"><rect x="8" y="15" width="16" height="30" rx="2" fill="#FF6B35"/><rect x="11" y="5" width="10" height="12" fill="#1A1A1D"/><rect x="9" y="22" width="14" height="8" fill="white"/><text x="16" y="28" text-anchor="middle" fill="#1A1A1D" font-family="Space Grotesk" font-size="4" font-weight="bold">VUNNO</text></svg>',
-        'shampoo': '<svg width="32" height="50" viewBox="0 0 32 50"><rect x="8" y="15" width="16" height="30" rx="2" fill="#FF6B35"/><rect x="11" y="5" width="10" height="12" fill="#1A1A1D"/><rect x="9" y="22" width="14" height="8" fill="white"/></svg>',
-        'mask': '<svg width="40" height="40" viewBox="0 0 40 40"><rect x="6" y="10" width="28" height="25" rx="3" fill="#FF6B35"/><rect x="10" y="4" width="20" height="8" fill="#1A1A1D"/></svg>',
-        'oil': '<svg width="25" height="50" viewBox="0 0 25 50"><rect x="7" y="15" width="11" height="30" rx="1" fill="#FF6B35" opacity="0.8"/><rect x="9" y="5" width="7" height="12" fill="#1A1A1D"/></svg>'
-      };
-      return icons[type] || icons['conditioner'];
-    }
-    
-    function toggleCart(forceOpen) {
-      const sidebar = document.getElementById('cart-sidebar');
-      const overlay = document.getElementById('cart-overlay');
-      const isOpen = sidebar.classList.contains('open');
-      
-      if (forceOpen === true || (forceOpen === undefined && !isOpen)) {
-        sidebar.classList.add('open');
-        overlay.classList.add('open');
-      } else {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('open');
-      }
-    }
-    
-    document.getElementById('cart-btn').addEventListener('click', () => toggleCart());
-    
-    function openCheckout() {
-      if (cart.length === 0) return;
-      toggleCart();
-      openModal('checkout-modal');
-      showCheckoutStep(1);
-    }
-    
-    function showCheckoutStep(step) {
-      document.getElementById('checkout-step-1').style.display = step === 1 ? 'block' : 'none';
-      document.getElementById('checkout-step-2').style.display = step === 2 ? 'block' : 'none';
-      document.getElementById('checkout-step-3').style.display = step === 3 ? 'block' : 'none';
-    }
-    
-    function processPayment(method) {
-      showCheckoutStep(2);
-      document.getElementById('processing-method').textContent = `Aguardando confirmação via ${method}`;
-      
-      setTimeout(() => {
-        // 85% chance of success
-        const success = Math.random() > 0.15;
-        const resultIcon = document.getElementById('result-icon');
-        const resultTitle = document.getElementById('result-title');
-        const resultMessage = document.getElementById('result-message');
-        
-        if (success) {
-          resultIcon.style.background = '#4A7C59';
-          resultIcon.innerHTML = '<i class="fa-solid fa-check text-4xl text-white"></i>';
-          resultTitle.textContent = 'Pedido Confirmado!';
-          resultTitle.style.color = 'var(--dark)';
-          
-          // Calculate delivery dates
-          const today = new Date();
-          const start = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
-          const end = new Date(today.getTime() + 4 * 24 * 60 * 60 * 1000);
-          const fmt = (d) => `${d.getDate()} ${d.toLocaleString('pt-PT', { month: 'short' })}`;
-          
-          const total = cart.reduce((s, i) => s + i.qty * i.price, 0) * (discountApplied ? 0.8 : 1);
-          
-          resultMessage.innerHTML = `Obrigado pela tua compra. Enviámos a confirmação para o teu email.<br><br>O teu pedido será entregue entre <strong class="orange-text">${fmt(start)} - ${fmt(end)}</strong>.`;
-          
-          document.getElementById('order-number').textContent = 'VUNNO-' + Math.floor(Math.random() * 90000 + 10000);
-          document.getElementById('order-total').textContent = '€' + total.toFixed(2).replace('.', ',');
-          document.getElementById('order-delivery').textContent = `${fmt(start)} - ${fmt(end)}`;
-          document.getElementById('order-method').textContent = method;
-          document.getElementById('order-details').style.display = 'block';
-        } else {
-          resultIcon.style.background = '#E55A2B';
-          resultIcon.innerHTML = '<i class="fa-solid fa-xmark text-4xl text-white"></i>';
-          resultTitle.textContent = 'Pagamento Recusado';
-          resultTitle.style.color = 'var(--vibe-orange-dark)';
-          resultMessage.innerHTML = 'Ocorreu um erro ao processar o pagamento.<br><strong>Motivo:</strong> Fundos insuficientes ou método inválido.<br><br>Tenta outro método de pagamento.';
-          document.getElementById('order-details').style.display = 'none';
+            `;
+            chatBox.appendChild(typingIndicator);
         }
-        
-        showCheckoutStep(3);
-      }, 2500);
-    }
-    
-    function finishCheckout() {
-      closeModal('checkout-modal');
-      cart = [];
-      discountApplied = false;
-      updateCart();
-      showToast('Compra finalizada com sucesso');
-    }
-    
-    function copyDiscount() {
-      navigator.clipboard.writeText('VIBE20').then(() => {
-        discountApplied = true;
-        updateCart();
-        showToast('Código VIBE20 aplicado! 20% de desconto');
-        closeModal('discount-modal');
-      });
-    }
-    
-    function openModal(id) {
-      document.getElementById(id).classList.add('open');
-    }
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('open');
-    }
-    
-    let toastTimeout;
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toast-msg').textContent = message;
-      toast.classList.add('show');
-      clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
-    }
-    
-    // Video
-    const video = document.getElementById('presentation-video');
-    const playBtn = document.getElementById('play-btn');
-    let videoPlaying = false;
-    
-    playBtn.addEventListener('click', () => {
-      if (videoPlaying) {
-        video.pause();
-        playBtn.innerHTML = '<i class="fa-solid fa-play text-2xl text-white ml-1"></i>';
-        videoPlaying = false;
-      } else {
-        video.play().catch(() => showToast('A carregar vídeo...'));
-        playBtn.innerHTML = '<i class="fa-solid fa-pause text-2xl text-white"></i>';
-        videoPlaying = true;
-      }
-    });
-    
-    video.addEventListener('ended', () => {
-      playBtn.innerHTML = '<i class="fa-solid fa-play text-2xl text-white ml-1"></i>';
-      videoPlaying = false;
-    });
-    
-    // Reveal on scroll
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
-      });
-    }, { threshold: 0.15 });
-    
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    
-    // Initial popups
-    window.addEventListener('load', () => {
-      setTimeout(() => openModal('region-modal'), 1000);
-      setTimeout(() => {
-        if (!document.getElementById('discount-modal').classList.contains('open') && 
-            !document.getElementById('region-modal').classList.contains('open')) {
-          openModal('discount-modal');
+
+        function closeChat() {
+            document.getElementById('chat-screen').style.display = 'none';
+            document.getElementById('selection-screen').style.display = 'flex';
+            currentChar = '';
+            conversationContext = '';
         }
-      }, 12000);
-    });
-    
-    window.addToCart = addToCart;
-    window.toggleCart = toggleCart;
-    window.changeQty = changeQty;
-    window.removeFromCart = removeFromCart;
-    window.openCheckout = openCheckout;
-    window.processPayment = processPayment;
-    window.finishCheckout = finishCheckout;
-    window.copyDiscount = copyDiscount;
-    window.openModal = openModal;
-    window.closeModal = closeModal;
-  </script>
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        // --- MOTOR DE CHAT E IA SIMULADA COM DELAY ---
+        function sendMessage() {
+            const inputField = document.getElementById('user-input');
+            const message = inputField.value.trim();
+            if (message === '') return;
+
+            // Bloquear input enquanto escreve
+            inputField.disabled = true;
+            document.getElementById('send-btn').style.opacity = '0.5';
+
+            appendMessage(message, 'user');
+            inputField.value = '';
+
+            // Mostrar animação
+            const typing = document.getElementById('typing');
+            const chatBox = document.getElementById('chat-messages');
+            chatBox.appendChild(typing); // Mover para o fim
+            typing.style.display = 'block';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Atraso aleatório entre 2.3s e 6s
+            const minDelay = 2300;
+            const maxDelay = 6000;
+            const delay = Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
+
+            setTimeout(() => {
+                typing.style.display = 'none';
+                const botReply = generateReply(message);
+                appendMessage(botReply, 'bot');
+                
+                // Desbloquear input
+                inputField.disabled = false;
+                document.getElementById('send-btn').style.opacity = '1';
+                inputField.focus();
+            }, delay);
+        }
+
+        function appendMessage(text, sender) {
+            const chatBox = document.getElementById('chat-messages');
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message');
+            msgDiv.classList.add(sender === 'user' ? 'msg-user' : 'msg-bot');
+            msgDiv.innerText = text;
+            
+            const typing = document.getElementById('typing');
+            chatBox.insertBefore(msgDiv, typing);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function generateReply(userText) {
+            // Normalização severa para encontrar palavras chave
+            const normalizedText = userText.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[?!.,;]/g, '');
+            const words = normalizedText.split(' ');
+            
+            const charRules = brain[currentLang][currentChar];
+            
+            let matchedRule = null;
+
+            // 1. Tentar encontrar match COM O contexto atual exigido
+            for (let rule of charRules) {
+                if (rule.contextReq && rule.contextReq === conversationContext) {
+                    if (rule.keys.some(keyword => words.includes(keyword) || normalizedText.includes(keyword))) {
+                        matchedRule = rule;
+                        break;
+                    }
+                }
+            }
+
+            // 2. Se não encontrou no contexto, procurar de forma global
+            if (!matchedRule) {
+                for (let rule of charRules) {
+                    if (!rule.contextReq || rule.contextReq === "") {
+                        if (rule.keys.some(keyword => words.includes(keyword) || normalizedText.includes(keyword))) {
+                            matchedRule = rule;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            if (matchedRule) {
+                // Atualizar o contexto da conversa para dar continuidade
+                if (matchedRule.contextSet) {
+                    conversationContext = matchedRule.contextSet;
+                }
+                return matchedRule.ans;
+            }
+            
+            // Se nenhuma regra bater certo, mandar resposta genérica aleatória
+            conversationContext = 'confused';
+            const defaultArray = uiTexts[currentLang].defaultMsg;
+            return defaultArray[Math.floor(Math.random() * defaultArray.length)];
+        }
+
+        // Inicializar com idioma default
+        setLang('pt');
+
+    </script>
 </body>
 </html>
