@@ -708,29 +708,10 @@
         function closeShop() { document.getElementById('shop-modal').style.display = 'none'; }
 
         function watchAd() {
-            if (adCount >= 2) return;
-
-            // ====================================================================
-            // CONFIGURAÇÃO MONETAG (Rewarded Video) AQUI:
-            // ====================================================================
-            // Substitui o código abaixo pela chamada do SDK da Monetag.
-            // Exemplo de como deves fazer (depende da doc da Monetag):
-            // 
-            // showMonetagAd().then((success) => {
-            //      if(success) {
-            //          adCount++;
-            //          updateShopButtons();
-            //      }
-            // });
-            // ====================================================================
-            
-            // CÓDIGO TEMPORÁRIO (Apaga isto quando colocares o script da Monetag)
-            alert(uiTexts[currentLang].adMessage);
-            adCount++;
-            updateShopButtons();
-            // --------------------------------------------------------------------
-        }
-
+    window.open('https://omg10.com', '_blank');
+    adCount++;
+    alert(allTexts[currentLang].adMessage);
+    updateShopButtons();
         function updateShopButtons() {
             document.getElementById('watch-ad-btn').innerHTML = `${uiTexts[currentLang].watchAd} (<span id="ad-count">${adCount}</span>/2)`;
             document.getElementById('buy-item-btn').innerText = uiTexts[currentLang].buyGive;
