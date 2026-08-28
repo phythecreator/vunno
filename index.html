@@ -576,34 +576,64 @@
             }
         };
 
-        // Base de dados de conhecimento mantida igual (abreviada aqui para o exemplo funcionar na íntegra, com Tung atualizada)
+        // NOVA BASE DE DADOS EXPANDIDA (Mais palavras-chave e respostas!)
         const brain = {
             en: {
                 tung: [
                     { keys: ["hi", "hello", "hey"], ans: "Omg hi! Literally so happy you texted. How are the vibes?" },
-                    { keys: ["good", "fine", "ok"], ans: "Love that for you! I'm just out here trying to romanticize my life." }
+                    { keys: ["good", "fine", "ok"], ans: "Love that for you! I'm just out here trying to romanticize my life." },
+                    { keys: ["aesthetic", "vibe", "style", "outfit"], ans: "That's so aesthetic, literally obsessed." },
+                    { keys: ["coffee", "iced", "drink", "starbucks"], ans: "Wait, let me take a sip of my iced coffee before I process that." },
+                    { keys: ["sad", "bad", "trauma", "cry"], ans: "Honestly, that sounds like a you problem, no offense. Focus on yourself bestie." },
+                    { keys: ["slay", "queen", "tiktok", "viral"], ans: "Slay! We love a main character moment for the timeline." },
+                    { keys: ["cancel", "toxic", "drama"], ans: "We don't need that toxic energy here, just block them and move on." }
                 ],
                 noob: [
                     { keys: ["hi", "hello", "hey"], ans: "OOF! Hi! Oh man, I am so glad you joined this server." },
-                    { keys: ["robux", "money"], ans: "Robux?! Where?! I keep seeing those FREE ROBUX games..." }
+                    { keys: ["robux", "money", "rich"], ans: "Robux?! Where?! I keep seeing those FREE ROBUX games but they look like scams..." },
+                    { keys: ["obby", "jump", "parkour"], ans: "OOF! I just fell off the obby again! It's way too hard!" },
+                    { keys: ["hacker", "ban", "admin", "report"], ans: "Are you a hacker?! Please don't ban me, I'm just a normal noob!" },
+                    { keys: ["lag", "ping", "glitch", "stuck"], ans: "My ping is like 9999 right now, my character is stuck! Help!" },
+                    { keys: ["tycoon", "build", "base"], ans: "I'm trying to build my Tycoon but I have zero money to upgrade the droppers!" },
+                    { keys: ["bacon", "guest", "noob", "pro"], ans: "Bacon hairs are so misunderstood, we are just trying to survive the pros!" }
                 ],
                 luffy: [
                     { keys: ["hi", "hello", "hey"], ans: "Yo! I'm Monkey D. Luffy, the man who will become the Pirate King! Shishishi!" },
-                    { keys: ["meat", "food"], ans: "DID SOMEONE SAY MEAT?! I can eat meat for breakfast, lunch, and dinner!" }
+                    { keys: ["meat", "food", "eat"], ans: "DID SOMEONE SAY MEAT?! I can eat meat for breakfast, lunch, and dinner!" },
+                    { keys: ["dream", "king", "pirate", "one piece", "sea"], ans: "I'm going to find the One Piece and become the Pirate King! Nothing will stop me!" },
+                    { keys: ["sanji", "cook", "hungry", "starving"], ans: "Sanji!! I'm starving! Make me a giant monster meat with bone in it!" },
+                    { keys: ["zoro", "sword", "lost"], ans: "Zoro probably got lost again... Have you seen a guy with three swords and green hair?" },
+                    { keys: ["fight", "punch", "gomu", "stretch", "devil fruit"], ans: "Gomu Gomu no... PISTOL! Shishishi, my punches are like pistols!" },
+                    { keys: ["friend", "nakama", "crew"], ans: "You want to join my crew?! We are going to have so many adventures!" }
                 ]
             },
             pt: {
                 tung: [
                     { keys: ["oi", "ola", "olá"], ans: "OMG oi! Juro, bué feliz que mandaste mensagem. Como estão as vibes?" },
-                    { keys: ["bem", "bom", "ótimo"], ans: "Amo isso para ti! Eu estou só a tentar manter o aesthetic do meu dia." }
+                    { keys: ["bem", "bom", "ótimo", "fixe"], ans: "Amo isso para ti! Eu estou só a tentar manter o aesthetic do meu dia." },
+                    { keys: ["aesthetic", "vibe", "estilo", "look"], ans: "Isso é tão aesthetic, juro estou obcecada." },
+                    { keys: ["cafe", "café", "iced", "beber", "starbucks"], ans: "Espera, deixa-me beber o meu iced coffee antes de processar isso." },
+                    { keys: ["mal", "triste", "trauma", "chorar"], ans: "Sinceramente, isso parece um problema teu, no offense. Foca-te em ti bestie." },
+                    { keys: ["slay", "rainha", "tiktok", "viral"], ans: "Slay! Amamos um momento de main character para gravar." },
+                    { keys: ["cancelar", "toxico", "drama", "tóxico"], ans: "Não precisamos dessa energia tóxica aqui, dá só block e segue em frente." }
                 ],
                 noob: [
                     { keys: ["oi", "ola", "olá"], ans: "OOF! Olá! Fogo, ainda bem que entraste neste server. Vamos jogar?" },
-                    { keys: ["robux", "dinheiro"], ans: "Robux?! Onde?! Vejo sempre aqueles jogos de ROBUX GRÁTIS..." }
+                    { keys: ["robux", "dinheiro", "rico"], ans: "Robux?! Onde?! Vejo sempre aqueles jogos de ROBUX GRÁTIS mas parece tudo scam..." },
+                    { keys: ["obby", "saltar", "parkour", "cair"], ans: "OOF! Acabei de cair do obby outra vez! É bué difícil passar isto!" },
+                    { keys: ["hacker", "ban", "admin", "reportar"], ans: "És hacker?! Por favor não me dês ban, sou só um noob pacífico!" },
+                    { keys: ["lag", "ping", "travar", "encravado"], ans: "O meu ping está tipo a 9999, o meu boneco encravou no chão! Socorro!" },
+                    { keys: ["tycoon", "construir", "base"], ans: "Estou a tentar construir o meu Tycoon mas tenho zero dinheiro para comprar coisas novas!" },
+                    { keys: ["bacon", "guest", "noob", "pro"], ans: "Os bacon hairs sofrem bué, estamos só a tentar sobreviver aos pros neste server!" }
                 ],
                 luffy: [
                     { keys: ["oi", "ola", "olá"], ans: "Yo! Eu sou o Monkey D. Luffy, o homem que se vai tornar o Rei dos Piratas!" },
-                    { keys: ["carne", "comida", "fome"], ans: "ALGUÉM DISSE CARNE?! Eu consigo comer carne o dia todo! Onde está o Sanji?" }
+                    { keys: ["carne", "comida", "fome", "comer"], ans: "ALGUÉM DISSE CARNE?! Eu consigo comer carne o dia todo! Onde está a comida?" },
+                    { keys: ["sonho", "rei", "pirata", "one piece", "mar"], ans: "Eu vou encontrar o One Piece e ser o Rei dos Piratas! Ninguém me vai parar!" },
+                    { keys: ["sanji", "cozinheiro", "fome", "fominto"], ans: "Sanji!! Estou a morrer de fome! Faz-me aquela carne de monstro gigante com o osso no meio!" },
+                    { keys: ["zoro", "espada", "perdido"], ans: "O Zoro deve ter-se perdido outra vez... Por acaso viste um gajo com cabelo verde e espadas?" },
+                    { keys: ["lutar", "soco", "gomu", "esticar", "fruta"], ans: "Gomu Gomu no... PISTOL! Shishishi, os meus socos esticam, sabias?" },
+                    { keys: ["amigo", "nakama", "tripulação"], ans: "Queres entrar para a minha tripulação?! Vamos ter aventuras incríveis no mar!" }
                 ]
             }
         };
@@ -674,10 +704,10 @@
             // Exemplo de como deves fazer (depende da doc da Monetag):
             // 
             // showMonetagAd().then((success) => {
-            //     if(success) {
-            //         adCount++;
-            //         updateShopButtons();
-            //     }
+            //      if(success) {
+            //          adCount++;
+            //          updateShopButtons();
+            //      }
             // });
             // ====================================================================
             
