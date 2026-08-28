@@ -2,599 +2,838 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chat RPG: Luffy, Noob & Tung Tung</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Chat - Tugn, Noob & Luffy</title>
     <style>
-        /* =========================================================
-           ESTILOS BASE E RESET (TELA CHEIA)
-           ========================================================= */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body, html { width: 100vw; height: 100vh; overflow: hidden; background-color: #1e272e; display: flex; flex-direction: column; }
+        /* CSS MINIMALISTA E CLEAN (BRANCO) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg-color: #f5f5f7;
+            --card-bg: #ffffff;
+            --text-main: #1d1d1f;
+            --text-muted: #86868b;
+            --border-color: #e5e5ea;
+            --primary: #007aff;
+            --user-bubble: #007aff;
+            --bot-bubble: #f1f1f4;
+            --hover-bg: #f5f5f7;
+            --shop-bg: #ff9500;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100vh;
+            max-height: 850px;
+            background-color: var(--card-bg);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 500px) {
+            #app-container {
+                border-radius: 0;
+                max-height: 100vh;
+                border: none;
+            }
+        }
+
+        /* TELA DE SELEÇÃO */
+        #selection-screen {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 30px 20px;
+            overflow-y: auto;
+            background: var(--card-bg);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .lang-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: var(--bg-color);
+            padding: 5px;
+            border-radius: 25px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--card-bg);
+            color: var(--text-main);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .character-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        .char-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .char-card:hover {
+            background: var(--hover-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .char-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+
+        .char-info h2 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .char-info p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* TELA DE CHAT */
+        #chat-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            background: var(--card-bg);
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-header-img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .chat-header-info {
+            flex-grow: 1;
+        }
+
+        .chat-header-info h2 {
+            font-size: 16px;
+            font-weight: 600;
+        }
         
-        /* =========================================================
-           CABEÇALHO (STATUS, XP, MOEDAS, NÍVEL)
-           ========================================================= */
-        #header { 
-            background: #2f3640; color: #f5f6fa; padding: 15px 20px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 20; border-bottom: 3px solid #e1b12c;
+        .chat-header-info p {
+            font-size: 12px;
+            color: var(--text-muted);
         }
-        .stats-container { display: flex; flex-direction: column; gap: 5px; }
-        .stats-row { display: flex; gap: 15px; font-weight: bold; font-size: 1.1em; }
-        .stat-badge { background: #353b48; padding: 6px 12px; border-radius: 8px; border: 1px solid #718093; display: flex; align-items: center; gap: 5px;}
+
+        /* BOTÃO E MODAL DA LOJA */
+        .shop-btn {
+            background: var(--shop-bg);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.1s;
+        }
+        .shop-btn:active { transform: scale(0.95); }
+
+        #shop-modal {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .shop-content {
+            background: var(--card-bg);
+            width: 85%;
+            padding: 24px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .shop-content h3 { font-size: 20px; margin-bottom: 8px; }
+        .shop-warning {
+            font-size: 12px;
+            color: #ff3b30;
+            background: #ffe5e5;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .shop-item-box {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .shop-item-box span { font-weight: 600; font-size: 18px; display: block; margin-bottom: 15px; }
+
+        .shop-actions button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        #watch-ad-btn { background: #e5e5ea; color: var(--text-main); }
+        #buy-item-btn { background: var(--shop-bg); color: white; opacity: 0.5; }
+        #buy-item-btn:not([disabled]) { opacity: 1; }
         
-        /* BARRA DE XP */
-        .xp-bar-container { width: 100%; height: 8px; background: #718093; border-radius: 4px; overflow: hidden; margin-top: 5px; }
-        .xp-bar-fill { height: 100%; background: #4cd137; width: 0%; transition: width 0.3s ease; }
-
-        .btn-loja { 
-            background: linear-gradient(135deg, #f1c40f, #e67e22); color: #2c3e50; 
-            border: none; padding: 10px 20px; font-weight: 900; border-radius: 8px; 
-            cursor: pointer; font-size: 1.1em; text-transform: uppercase;
-            box-shadow: 0 4px 0 #d35400; transition: all 0.1s;
-        }
-        .btn-loja:active { transform: translateY(4px); box-shadow: 0 0 0 #d35400; }
-
-        /* =========================================================
-           ÁREA DO CHAT
-           ========================================================= */
-        #chat-box { 
-            flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; 
-            flex-direction: column; gap: 12px; background: #2f3542; 
-            scroll-behavior: smooth;
-        }
-        
-        /* Custom Scrollbar */
-        #chat-box::-webkit-scrollbar { width: 8px; }
-        #chat-box::-webkit-scrollbar-track { background: #1e272e; }
-        #chat-box::-webkit-scrollbar-thumb { background: #718093; border-radius: 4px; }
-
-        .msg-wrapper { display: flex; flex-direction: column; max-width: 85%; animation: slideIn 0.3s ease-out; }
-        .msg-wrapper.user { align-self: flex-end; align-items: flex-end; }
-        .msg-wrapper.bot { align-self: flex-start; align-items: flex-start; }
-
-        .msg { padding: 12px 18px; border-radius: 18px; line-height: 1.5; font-size: 1.05em; position: relative; word-wrap: break-word;}
-        .msg.user { background: #4cd137; color: #1e272e; border-bottom-right-radius: 2px; font-weight: 500;}
-        .msg.bot { background: #f5f6fa; color: #2f3542; border-bottom-left-radius: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
-        
-        .msg.system { 
-            align-self: center; background: #e1b12c; color: #2f3542; 
-            font-weight: bold; text-align: center; border-radius: 20px; 
-            font-size: 0.9em; padding: 8px 20px; max-width: 90%;
-            border: 2px dashed #d35400;
+        .close-shop-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
         }
 
-        .bot-name { font-weight: 900; margin-bottom: 4px; font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px;}
-        .name-luffy { color: #c0392b; }
-        .name-noob { color: #2980b9; }
-        .name-tung { color: #27ae60; }
-        .name-system { color: #8e44ad; }
-
-        /* =========================================================
-           INDICADOR DE DIGITAÇÃO ("A escrever...")
-           ========================================================= */
-        #typing-indicator { 
-            display: none; padding: 10px 15px; background: rgba(245, 246, 250, 0.1); 
-            border-radius: 15px; color: #a4b0be; font-style: italic; font-size: 0.9em; 
-            align-self: flex-start; margin-bottom: 10px;
-        }
-        .dots::after { content: ''; animation: typing 1.5s infinite; }
-        @keyframes typing { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } 100% { content: ''; } }
-
-        /* =========================================================
-           ÁREA DE INPUT (TECLADO)
-           ========================================================= */
-        #input-area { 
-            display: flex; padding: 15px 20px; background: #2f3640; 
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.5); z-index: 20; gap: 10px;
-        }
-        #msg-input { 
-            flex-grow: 1; padding: 15px; border: 2px solid #718093; 
-            border-radius: 25px; outline: none; font-size: 1.1em; 
-            background: #f5f6fa; color: #2f3542; transition: border 0.3s;
-        }
-        #msg-input:focus { border-color: #4cd137; }
-        #send-btn { 
-            background: #4cd137; color: #1e272e; border: none; 
-            padding: 0 25px; border-radius: 25px; cursor: pointer; 
-            font-weight: 900; font-size: 1.1em; text-transform: uppercase; 
-            transition: all 0.2s; box-shadow: 0 4px 0 #44bd32;
-        }
-        #send-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #44bd32; }
-
-        /* =========================================================
-           MODAL DA LOJA
-           ========================================================= */
-        #store-modal { 
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            background: #f5f6fa; width: 95%; max-width: 600px; max-height: 80vh; overflow-y: auto;
-            padding: 25px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); 
-            z-index: 100; border: 4px solid #e1b12c;
-        }
-        .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #dcdde1; padding-bottom: 10px;}
-        .store-header h2 { color: #2f3542; font-size: 1.8em;}
-        .close-btn { 
-            background: #e84118; color: white; border: none; width: 40px; height: 40px; 
-            border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1.2em;
-        }
-        
-        /* BOTÃO DE ANÚNCIO / MONETAG */
-        .btn-ad { 
-            background: linear-gradient(90deg, #9b59b6, #8e44ad) !important; 
-            color: white; width: 100%; padding: 15px !important; margin-bottom: 20px; 
-            font-size: 1.2em; font-weight: 900; border: none; border-radius: 10px;
-            cursor: pointer; box-shadow: 0 5px 15px rgba(155, 89, 182, 0.4);
-            animation: pulse 2s infinite; text-transform: uppercase;
+        .chat-messages {
+            flex-grow: 1;
+            padding: 24px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: var(--card-bg);
         }
 
-        .store-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        .store-item { 
-            background: #ffffff; border: 2px solid #dcdde1; padding: 15px; 
-            border-radius: 12px; display: flex; justify-content: space-between; 
-            align-items: center; transition: transform 0.2s;
+        .message {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            font-size: 15px;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease;
+            word-wrap: break-word;
         }
-        .store-item:hover { transform: scale(1.02); border-color: #3498db; }
-        .item-info { display: flex; flex-direction: column; }
-        .item-name { font-weight: 900; font-size: 1.2em; color: #2f3542; }
-        .item-desc { font-size: 0.9em; color: #7f8fa6; }
-        .item-price { color: #e1b12c; font-weight: bold; margin-top: 5px; }
-        
-        .store-item button { 
-            background: #3498db; color: white; border: none; padding: 10px 20px; 
-            border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1em;
-            box-shadow: 0 3px 0 #2980b9;
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .store-item button:active { transform: translateY(3px); box-shadow: none; }
 
-        /* Animações */
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
-        
-        /* Overlay Fundo Escuro */
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 90; }
+        .msg-bot {
+            background: var(--bot-bubble);
+            color: var(--text-main);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
 
+        .msg-user {
+            background: var(--user-bubble);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* ANIMAÇÃO DE TYPING */
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            background: var(--bot-bubble);
+            padding: 14px 18px;
+            border-radius: 20px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+        }
+
+        .dots-container {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--text-muted);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .chat-input-area {
+            padding: 16px 20px;
+            background: var(--card-bg);
+            display: flex;
+            gap: 12px;
+            border-top: 1px solid var(--border-color);
+            align-items: center;
+        }
+
+        #user-input {
+            flex-grow: 1;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 14px 20px;
+            border-radius: 24px;
+            outline: none;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        #user-input:focus {
+            border-color: var(--primary);
+            background: var(--card-bg);
+        }
+
+        #send-btn {
+            background: var(--primary);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.1s;
+        }
+
+        #send-btn:active { transform: scale(0.95); }
+        #send-btn svg { width: 20px; height: 20px; fill: currentColor; margin-left: 2px; }
+
+        .footer-warning {
+            text-align: center;
+            padding: 16px;
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            line-height: 1.5;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d1d6; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <!-- CABEÇALHO -->
-    <div id="header">
-        <div class="stats-container">
-            <div class="stats-row">
-                <span class="stat-badge" id="moedas-display">💰 0</span>
-                <span class="stat-badge" id="nivel-display">🏆 Nv. 1</span>
-            </div>
-            <div class="xp-bar-container" title="Barra de Experiência">
-                <div class="xp-bar-fill" id="xp-bar"></div>
-            </div>
-        </div>
-        <button class="btn-loja" onclick="toggleLoja()">🛒 Loja</button>
-    </div>
-
-    <!-- ÁREA DO CHAT -->
-    <div id="chat-box">
-        <!-- Indicador de digitação (escondido por padrão) -->
-        <div id="typing-indicator">Alguém está a escrever<span class="dots"></span></div>
-    </div>
-
-    <!-- ÁREA DO TECLADO -->
-    <div id="input-area">
-        <input type="text" id="msg-input" placeholder="Escreve aqui a tua mensagem..." autocomplete="off">
-        <button id="send-btn">ENVIAR</button>
-    </div>
-
-    <!-- OVERLAY ESCURO PARA A LOJA -->
-    <div id="overlay" onclick="toggleLoja()"></div>
-
-    <!-- LOJA (MODAL) -->
-    <div id="store-modal">
-        <div class="store-header">
-            <h2>🛒 Mercado Central</h2>
-            <button class="close-btn" onclick="toggleLoja()">X</button>
-        </div>
+    <div id="app-container">
         
-        <!-- ==========================================
-             BOTÃO DA MONETAG - COLOCA O TEU LINK AQUI
-             ========================================== -->
-        <button class="btn-ad" onclick="verAnuncio()">📺 Ver Anúncio (+50 Moedas)</button>
-        
-        <div class="store-grid">
-            <div class="store-item">
-                <div class="item-info">
-                    <span class="item-name">🍖 Pedaço de Carne Gigante</span>
-                    <span class="item-desc">A comida favorita do Luffy.</span>
-                    <span class="item-price">💰 15 Moedas</span>
+        <!-- ECRÃ DE SELEÇÃO -->
+        <div id="selection-screen">
+            <div class="lang-toggle">
+                <button class="lang-btn active" onclick="setLang('en')" id="btn-en">English</button>
+                <button class="lang-btn" onclick="setLang('pt')" id="btn-pt">Português</button>
+            </div>
+
+            <div class="header">
+                <h1 id="ui-title">Start a Conversation</h1>
+                <p id="ui-choose" style="color: var(--text-muted); font-size: 15px;">Select a character to chat with</p>
+            </div>
+
+            <div class="character-list">
+                <div class="char-card" onclick="openChat('tugn')">
+                    <img src="tugntugnsahur.jpg" alt="Tugn Tugn Sahur" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Tugn&background=f1f1f4&color=1d1d1f'">
+                    <div class="char-info">
+                        <h2>Tugn Tugn Sahur</h2>
+                        <p id="desc-tugn">Gen Z aesthetics and chaotic deep talks.</p>
+                    </div>
                 </div>
-                <button onclick="comprarItem('Carne', 15, 'Luffy')">Comprar</button>
+
+                <div class="char-card" onclick="openChat('noob')">
+                    <img src="noob.png" alt="Roblox Noob" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Noob&background=f1f1f4&color=1d1d1f'">
+                    <div class="char-info">
+                        <h2>Roblox Noob</h2>
+                        <p id="desc-noob">Oof! Always lagging, always surviving.</p>
+                    </div>
+                </div>
+
+                <div class="char-card" onclick="openChat('luffy')">
+                    <img src="odUtj (1).jpg" alt="Luffy" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Luffy&background=f1f1f4&color=1d1d1f'">
+                    <div class="char-info">
+                        <h2>Monkey D. Luffy</h2>
+                        <p id="desc-luffy">Pirate King in the making. Loves meat.</p>
+                    </div>
+                </div>
             </div>
             
-            <div class="store-item">
-                <div class="item-info">
-                    <span class="item-name">💵 Cartão de 1000 Robux</span>
-                    <span class="item-desc">Para o Noob comprar skins.</span>
-                    <span class="item-price">💰 20 Moedas</span>
-                </div>
-                <button onclick="comprarItem('Robux', 20, 'Noob')">Comprar</button>
-            </div>
-
-            <div class="store-item">
-                <div class="item-info">
-                    <span class="item-name">🥚 Um Ovo Novo e Brilhante</span>
-                    <span class="item-desc">Deixa o Tung Tung feliz.</span>
-                    <span class="item-price">💰 25 Moedas</span>
-                </div>
-                <button onclick="comprarItem('Ovo', 25, 'Tung')">Comprar</button>
-            </div>
-
-            <div class="store-item">
-                <div class="item-info">
-                    <span class="item-name">⚔️ Espada Katana</span>
-                    <span class="item-desc">O Luffy pode guardar para o Zoro.</span>
-                    <span class="item-price">💰 50 Moedas</span>
-                </div>
-                <button onclick="comprarItem('Katana', 50, 'Luffy')">Comprar</button>
-            </div>
-
-            <div class="store-item">
-                <div class="item-info">
-                    <span class="item-name">🎮 Conta VIP no Roblox</span>
-                    <span class="item-desc">O Noob vai enlouquecer.</span>
-                    <span class="item-price">💰 100 Moedas</span>
-                </div>
-                <button onclick="comprarItem('VIP', 100, 'Noob')">Comprar</button>
+            <div style="flex-grow: 1;"></div>
+            <div class="footer-warning" id="copyright-warning">
+                EN: Images are AI-generated or drawn by the creator and not taken from the internet to infringe copyrights.<br><br>
+                PT: As imagens são geradas por IA ou desenho do criador e não retiradas da internet de modo a infringir direitos de autor.
             </div>
         </div>
+
+        <!-- ECRÃ DE CHAT -->
+        <div id="chat-screen">
+            <div class="chat-header">
+                <button class="back-btn" onclick="closeChat()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <img id="chat-header-img" src="" alt="Char" class="chat-header-img">
+                <div class="chat-header-info">
+                    <h2 id="chat-header-name">Name</h2>
+                    <p id="chat-header-status">Online</p>
+                </div>
+                <button class="shop-btn" onclick="openShop()" id="shop-btn-ui">🛒 Shop</button>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <div class="typing-indicator" id="typing">
+                    <div class="dots-container">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="user-input" placeholder="Message..." onkeypress="handleEnter(event)">
+                <button id="send-btn" onclick="sendMessage()">
+                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- MODAL DA LOJA -->
+        <div id="shop-modal">
+            <div class="shop-content">
+                <h3 id="shop-title">Gift Shop</h3>
+                <div class="shop-warning" id="shop-warning">
+                    Warning: These are NOT REAL items. They are just fake items to make the characters happy!
+                </div>
+                
+                <div class="shop-item-box">
+                    <span id="shop-item-name">Item Name</span>
+                    <div class="shop-actions">
+                        <button onclick="watchAd()" id="watch-ad-btn">Watch Ad (<span id="ad-count">0</span>/2)</button>
+                        <button onclick="buyItem()" id="buy-item-btn" disabled>Buy & Give!</button>
+                    </div>
+                </div>
+                <button class="close-shop-btn" onclick="closeShop()" id="close-shop-text">Close</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        /* =========================================================
-           ESTADO DO JOGO (SISTEMA DE PROGRESSÃO)
-           ========================================================= */
-        let gameState = {
-            moedas: 0,
-            xp: 0,
-            nivel: 1,
-            xpProximoNivel: 100,
-            interacoes: 0
+        // --- ESTADO DA APLICAÇÃO E MEMÓRIA DE CONVERSA ---
+        let currentLang = 'pt'; // Começa em PT
+        let currentChar = '';
+        let conversationContext = '';
+        let adCount = 0; // Contador de anúncios da loja
+
+        // --- INTERFACE TEXTS ---
+        const uiTexts = {
+            en: {
+                title: "Start a Conversation",
+                choose: "Select a character to chat with",
+                descTugn: "Gen Z aesthetics and chaotic deep talks.",
+                descNoob: "Oof! Always lagging, always surviving.",
+                descLuffy: "Pirate King in the making. Loves meat.",
+                placeholder: "Message...",
+                shopBtn: "🛒 Shop",
+                shopTitle: "Gift Shop",
+                shopWarning: "WARNING: These items (like Robux) are NOT REAL! They are just fake items to give to the characters in the chat to make them happy.",
+                watchAd: "Watch Ad",
+                buyGive: "Buy & Give!",
+                closeShop: "Close",
+                items: {
+                    noob: "Robux (Not real!)",
+                    luffy: "Meat 🍖",
+                    tugn: "A New Stick 🪵"
+                },
+                adMessage: "Watching an ad... (1/2 done!)",
+                defaultMsg: [
+                    "I'm not quite following what you're saying, to be honest. Could you elaborate a bit more on that?",
+                    "That's super random, but okay! Let's talk about something else. What's on your mind today?",
+                    "Wait, what? I completely lost my train of thought. Say that again but differently?",
+                    "I have absolutely zero context for that right now. Tell me a story instead!"
+                ]
+            },
+            pt: {
+                title: "Iniciar Conversa",
+                choose: "Seleciona uma personagem para falar",
+                descTugn: "Estética Gen Z e conversas caóticas e profundas.",
+                descNoob: "Oof! Sempre com lag, sempre a sobreviver.",
+                descLuffy: "Futuro Rei dos Piratas. Adora carne.",
+                placeholder: "Mensagem...",
+                shopBtn: "🛒 Loja",
+                shopTitle: "Loja de Presentes",
+                shopWarning: "AVISO IMPORTANTE: Estes itens (como os Robux) NÃO SÃO REAIS! Servem apenas para dar às personagens dentro deste chat para as deixares felizes.",
+                watchAd: "Ver Anúncio",
+                buyGive: "Comprar & Dar!",
+                closeShop: "Fechar",
+                items: {
+                    noob: "Robux (Não reais!)",
+                    luffy: "Carne 🍖",
+                    tugn: "Um Pau Novo 🪵"
+                },
+                adMessage: "A ver anúncio... (1/2 concluído!)",
+                defaultMsg: [
+                    "Sinceramente, não estou a apanhar bem o que estás a dizer. Podes elaborar um bocado mais sobre isso?",
+                    "Isso foi bué aleatório, mas ok! Vamos falar de outra coisa. O que é que te vai na cabeça hoje?",
+                    "Espera, o quê? Perdi completamente o fio à meada. Podes dizer isso de outra maneira?",
+                    "Não tenho zero contexto para isso agora. Conta-me antes uma história!"
+                ]
+            }
         };
 
-        // Elementos DOM
-        const chatBox = document.getElementById("chat-box");
-        const msgInput = document.getElementById("msg-input");
-        const sendBtn = document.getElementById("send-btn");
-        const typingIndicator = document.getElementById("typing-indicator");
-        const overlay = document.getElementById("overlay");
-        const storeModal = document.getElementById("store-modal");
+        const charsInfo = {
+            tugn: { name: "Tugn Tugn Sahur", img: "tugntugnsahur.jpg" },
+            noob: { name: "Roblox Noob", img: "noob.png" },
+            luffy: { name: "Monkey D. Luffy", img: "odUtj (1).jpg" }
+        };
 
-        /* =========================================================
-           SISTEMA DE ANÚNCIOS (MONETAG)
-           ========================================================= */
-        function verAnuncio() {
-            // AQUI METES O TEU LINK DA MONETAG
-            const linkMonetag = "https://TEU_LINK_AQUI.com"; 
-            window.open(linkMonetag, '_blank'); 
+        // --- BASE DE DADOS DE RESPOSTAS (EXPANDIDA COM MAIS PALAVRAS) ---
+        const brain = {
+            en: {
+                tugn: [
+                    { keys: ["hi", "hello", "hey", "sup", "yo", "morning", "afternoon", "vibes", "slay", "tea"], contextSet: "greeting", ans: "Omg hi! Literally so happy you texted. I was just sitting here overthinking my entire existence. How is your day going? Spill the tea." },
+                    { keys: ["good", "fine", "ok", "great", "well", "aesthetic", "slaying"], contextReq: "greeting", contextSet: "general", ans: "Love that for you! Honestly, maintaining a good mood in this economy is a superpower. I'm just out here trying to romanticize my life by drinking an overpriced iced coffee." },
+                    { keys: ["bad", "sad", "terrible", "awful", "tired", "depressed"], contextReq: "greeting", contextSet: "comfort", ans: "Noooo, I'm so sorry! That literally breaks my heart. You need to put on comfy clothes and just rot in bed for a bit. Self-care is not optional, bestie!" },
+                    { keys: ["school", "college", "university", "study", "homework", "exam", "grades"], contextSet: "school", ans: "Ugh, don't even get me started on the academic system. It's literally just a test of how long you can sit at a desk without losing your mind. What's the worst subject you have?" },
+                    { keys: ["love", "relationship", "dating", "boyfriend", "girlfriend", "crush", "red flag", "gossip"], contextSet: "love", ans: "Relationships are so exhausting. If they don't treat you like the absolute main character, it's a massive red flag. 🚩 Block them. Tell me all the gossip!" },
+                    { keys: ["music", "song", "listen", "spotify", "playlist", "vibe"], contextSet: "music", ans: "Music is literally the only thing keeping me sane right now. I have a playlist for every highly specific mood. Who are your top artists?" }
+                ],
+                noob: [
+                    { keys: ["hi", "hello", "hey", "sup", "yo", "morning", "afternoon", "noob", "pro", "server"], contextSet: "greeting", ans: "OOF! Hi! Oh man, I am so glad you joined this server. I've been running away from a guest with a rocket launcher! What game are we playing today?" },
+                    { keys: ["game", "roblox", "play", "server", "obby", "adopt me", "brookhaven", "tycoon"], contextSet: "gaming", ans: "I absolutely love playing everything! I tried to play Adopt Me yesterday but I accidentally traded my ultra-rare pet for a sandwich. What is your favorite game?" },
+                    { keys: ["robux", "money", "rich", "poor", "buy", "robux free"], contextSet: "robux", ans: "Robux?! Where?! I keep seeing those 'FREE ROBUX' games but last time I clicked one, my character's arms fell off! Have you ever bought Robux?" },
+                    { keys: ["lag", "ping", "disconnect", "crash", "bug", "glitch"], contextSet: "lag", ans: "Ugh, tell me about it. My ping is currently at 9,999 ms. I walk forward, and 10 seconds later I teleport backwards into a wall." },
+                    { keys: ["friend", "add", "request", "party", "team"], contextSet: "friends", ans: "I would love to be friends! Send me a request. My username is NoobGamer2006_Guest. We can build a massive house in Bloxburg!" }
+                ],
+                luffy: [
+                    { keys: ["hi", "hello", "hey", "sup", "yo", "morning", "afternoon", "pirate", "king"], contextSet: "greeting", ans: "Yo! I'm Monkey D. Luffy, the man who will become the Pirate King! Shishishi! Are you a pirate too? Or a marine? Have you seen Sanji? I'm starving!" },
+                    { keys: ["meat", "food", "eat", "hungry", "sanji", "cook", "feast"], contextSet: "food", ans: "DID SOMEONE SAY MEAT?! I can eat meat for breakfast, lunch, and dinner! Seriously, Sanji is the best cook in the world. What's your favorite food? Is it meat?!" },
+                    { keys: ["pirate", "king", "one piece", "dream", "treasure", "gold", "grand line", "shanks"], contextSet: "dream", ans: "The One Piece is out there! And I'm going to find it with my crew. Shanks gave me this straw hat. What is your dream?" },
+                    { keys: ["marine", "navy", "admiral", "police", "arrest", "bounty"], contextSet: "enemy", ans: "Marines?! Where?! Are they chasing us again?! I won't lose to them! I have to protect my Nakama and raise my bounty!" },
+                    { keys: ["fight", "strong", "battle", "haki", "punch", "enemy", "sword"], contextSet: "fight", ans: "Are you challenging me to a fight?! Bring it on! I've been training my Haki, and my Gear Fifth is totally free! Show me what you've got!" }
+                ]
+            },
+            pt: {
+                tugn: [
+                    { keys: ["oi", "ola", "olá", "hey", "boas", "bom dia", "boa tarde", "vibes", "novidades", "tudo bem"], contextSet: "greeting", ans: "OMG oi! Juro, bué feliz que mandaste mensagem. Estava literalmente aqui a overthinkar a minha existência toda e a olhar para uma parede branca. Como é que está a correr o teu dia? Conta-me as novidades!" },
+                    { keys: ["bem", "bom", "ótimo", "tudo", "tranquilo", "perfeito"], contextReq: "greeting", contextSet: "general", ans: "Amo isso para ti! Sinceramente, manter o bom humor nesta economia é um superpoder. Eu estou só aqui a tentar romantizar a minha vida a beber um café gelado caríssimo." },
+                    { keys: ["mal", "triste", "horrivel", "cansada", "cansado", "depressão", "caos"], contextReq: "greeting", contextSet: "comfort", ans: "Nãoooo, lamento imenso! Isso parte-me literalmente o coração. Precisas de parar tudo, vestir uma roupa confortável e ficar a apodrecer na cama um bocado. Autocuidado não é opcional, bestie!" },
+                    { keys: ["escola", "faculdade", "estudar", "teste", "exame", "trabalho", "notas"], contextSet: "school", ans: "Ugh, nem me fales do sistema académico. É literalmente só um teste para ver quanto tempo consegues estar sentado sem perder a sanidade mental. Qual é a tua pior disciplina agora?" },
+                    { keys: ["amor", "namorado", "namorada", "crush", "relacionamento", "red flag"], contextSet: "love", ans: "Relações são tão exaustivas. Tipo, tens de falar com eles? Todos os dias? Conceito selvagem. Mas a sério, se não te tratam como a personagem principal que és, é uma red flag enorme. 🚩 Bloqueia já." },
+                    { keys: ["musica", "som", "spotify", "playlist", "ouvir", "serie", "filme"], contextSet: "music", ans: "Música e séries são a única coisa que me mantém sã neste momento. Tenho uma playlist para cada mood bué específico. O que andas a ouvir ou ver?" },
+                    { keys: ["comida", "comer", "fome", "cafe", "jantar", "almoco"], contextSet: "food", ans: "Comida é a minha linguagem do amor. Devorava uma pizza inteira agora mesmo e ainda tinha espaço para a sobremesa. E nem me fales de café gelado... é o que corre nas minhas veias." },
+                    { keys: ["futuro", "trabalho", "carreira", "vida"], contextSet: "future", ans: "Pensar no futuro dá-me literalmente náuseas. Eu não sonho com trabalho. Sonho em estar numa varanda em Itália, a beber vinho e a ser misteriosamente rica." }
+                ],
+                noob: [
+                    { keys: ["oi", "ola", "olá", "hey", "boas", "bom dia", "boa tarde", "noob", "pro"], contextSet: "greeting", ans: "OOF! Olá! Fogo, ainda bem que entraste neste server. Estava a fugir de um guest com um lança-rockets há dez minutos! Que jogo vamos jogar hoje?" },
+                    { keys: ["jogo", "jogar", "roblox", "adopt me", "brookhaven", "tycoon", "obby"], contextSet: "gaming", ans: "Eu adoro jogar de tudo! Tentei jogar Adopt Me ontem, mas sem querer troquei o meu pet super raro por uma sandes. Chorei um bocadinho. Qual é o teu jogo favorito?" },
+                    { keys: ["robux", "dinheiro", "rico", "pobre", "comprar", "gratis"], contextSet: "robux", ans: "Robux?! Onde?! Estou a brincar, eu sei que tenho zero. Vejo sempre aqueles jogos de 'ROBUX GRÁTIS', mas da última vez que cliquei num, os braços do meu boneco caíram! Já alguma vez compraste Robux?" },
+                    { keys: ["lag", "net", "travar", "ping", "bug", "cair", "crash"], contextSet: "lag", ans: "Ugh, nem me digas nada. O meu ping está em 9,999 ms. Eu ando para a frente, e 10 segundos depois teletransporto-me de costas contra uma parede. Se eu parar de falar, o meu router explodiu." },
+                    { keys: ["amigo", "pedido", "adicionar", "equipa", "jogar junto"], contextSet: "friends", ans: "Adorava ser teu amigo! Manda-me pedido. O meu nick é NoobGamer2006_Guest. Podemos construir uma casa gigante no Bloxburg! És bom a construir?" },
+                    { keys: ["roupa", "avatar", "skin", "vestir"], contextSet: "avatar", ans: "Pele amarela, camisola azul, calças verdes. É o pico da moda! O pessoal gasta milhares de Robux, mas as verdadeiras lendas usam a roupa clássica." }
+                ],
+                luffy: [
+                    { keys: ["oi", "ola", "olá", "hey", "boas", "bom dia", "boa tarde", "rei", "pirata"], contextSet: "greeting", ans: "Yo! Eu sou o Monkey D. Luffy, o homem que se vai tornar o Rei dos Piratas! Shishishi! Também és pirata? Ou da Marinha? Não interessa, desde que sejas boa pessoa! Já viste o Sanji? Estou cheio de fome!" },
+                    { keys: ["carne", "comida", "fome", "comer", "sanji", "banquete", "jantar"], contextSet: "food", ans: "ALGUÉM DISSE CARNE?! Eu consigo comer carne ao pequeno-almoço, almoço e jantar! O Sanji é o melhor cozinheiro do mundo. Qual é a tua comida favorita? É carne, não é?!" },
+                    { keys: ["sonho", "one piece", "tesouro", "grand line", "ouro", "shanks"], contextSet: "dream", ans: "O One Piece existe! E eu vou encontrá-lo com a minha tripulação. O Shanks deu-me este chapéu de palha e eu prometi que me ia tornar num grande pirata. Qual é o teu sonho?" },
+                    { keys: ["marinha", "inimigo", "policia", "prender", "recompensa"], contextSet: "enemy", ans: "A Marinha?! Onde?! Estão atrás de nós outra vez?! O Smoker é tão chato. Mas eu não vou perder! Tenho de proteger os meus Nakamas e aumentar a minha recompensa!" },
+                    { keys: ["amigo", "nakama", "zoro", "nami", "equipa", "tripulacao"], contextSet: "friends", ans: "Os meus Nakama são tudo para mim. Lutaria contra o Governo Mundial inteiro por eles! O Zoro, a Nami, o Usopp... Podes ser meu Nakama também!" },
+                    { keys: ["luta", "batalha", "forte", "haki", "soco", "fruta", "borracha"], contextSet: "fight", ans: "Estás a desafiar-me para uma luta?! Anda lá! Eu ando a treinar o meu Haki e a minha Gear 5 é incrível! Sou um homem-borracha, mostra lá o que vales!" }
+                ]
+            }
+        };
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
             
-            // Recompensas
-            ganharMoedas(50);
-            ganharXP(20);
-            addSystemMessage("🎉 Assiste ao anúncio na outra aba! Recebeste +50 Moedas e +20 XP!");
-        }
-
-        /* =========================================================
-           FUNÇÕES DE INTERFACE E PROGRESSÃO
-           ========================================================= */
-        function updateUI() {
-            document.getElementById("moedas-display").innerText = `💰 ${gameState.moedas}`;
-            document.getElementById("nivel-display").innerText = `🏆 Nv. ${gameState.nivel}`;
+            document.getElementById('ui-title').innerText = uiTexts[lang].title;
+            document.getElementById('ui-choose').innerText = uiTexts[lang].choose;
+            document.getElementById('desc-tugn').innerText = uiTexts[lang].descTugn;
+            document.getElementById('desc-noob').innerText = uiTexts[lang].descNoob;
+            document.getElementById('desc-luffy').innerText = uiTexts[lang].descLuffy;
+            document.getElementById('user-input').placeholder = uiTexts[lang].placeholder;
             
-            let percentagemXP = (gameState.xp / gameState.xpProximoNivel) * 100;
-            document.getElementById("xp-bar").style.width = `${percentagemXP}%`;
+            document.getElementById('shop-btn-ui').innerText = uiTexts[lang].shopBtn;
         }
 
-        function ganharMoedas(qtd) {
-            gameState.moedas += qtd;
-            updateUI();
-        }
-
-        function ganharXP(qtd) {
-            gameState.xp += qtd;
-            if (gameState.xp >= gameState.xpProximoNivel) {
-                gameState.xp -= gameState.xpProximoNivel;
-                gameState.nivel++;
-                gameState.xpProximoNivel = Math.floor(gameState.xpProximoNivel * 1.5); // Níveis ficam mais difíceis
-                addSystemMessage(`🌟 SUBISTE PARA O NÍVEL ${gameState.nivel}! 🌟`);
-                ganharMoedas(20); // Bónus de level up
-            }
-            updateUI();
-        }
-
-        function toggleLoja() {
-            if (storeModal.style.display === "block") {
-                storeModal.style.display = "none";
-                overlay.style.display = "none";
-            } else {
-                storeModal.style.display = "block";
-                overlay.style.display = "block";
-            }
-        }
-
-        /* =========================================================
-           SISTEMA DE COMPRAS E REAÇÕES
-           ========================================================= */
-        function comprarItem(item, preco, personagemId) {
-            if (gameState.moedas >= preco) {
-                gameState.moedas -= preco;
-                ganharXP(30);
-                toggleLoja();
-                updateUI();
-                
-                addSystemMessage(`Compraste [${item}] para o ${personagemId}!`);
-                
-                // Reações simuladas com atraso para parecer real
-                showTyping();
-                setTimeout(() => {
-                    hideTyping();
-                    if (personagemId === 'Luffy') {
-                        if (item === 'Carne') addBotMessage("Luffy", "SUGEEEEEE! CARNEEE! 🍖 Vou devorar tudo! És o melhor parceiro do mundo!", "name-luffy");
-                        if (item === 'Katana') addBotMessage("Luffy", "Uau, uma Katana fixe! ⚔️ Vou guardar para o Zoro, ele vai adorar. Obrigado!", "name-luffy");
-                    } else if (personagemId === 'Noob') {
-                        if (item === 'Robux') addBotMessage("Noob", "OOF! 😍 ROBUX!!! Agora posso comprar aquela skin épica do Ninja! GG!", "name-noob");
-                        if (item === 'VIP') addBotMessage("Noob", "MEU DEUS! VIP NO ROBLOX! 😎 Sou o jogador mais pro do servidor agora. OOF MÁXIMO!", "name-noob");
-                    } else if (personagemId === 'Tung') {
-                        if (item === 'Ovo') addBotMessage("Tung Tung Sahur", "TUNG TUNG SAHUR! 🥚 UM OVO! Lindo, perfeito, maravilhoso! Pulo, pulo de alegria! Tung!", "name-tung");
-                    }
-                }, 2000);
-            } else {
-                alert(`Faltam-te ${preco - gameState.moedas} moedas! Clica em "Ver Anúncio" para ganhares mais dinheiro.`);
-            }
-        }
-
-        /* =========================================================
-           LIMPEZA DE TEXTO (IGNORAR ACENTOS E MAIÚSCULAS)
-           ========================================================= */
-        function normalizarTexto(texto) {
-            return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
-        }
-
-        // Função para verificar se a palavra está na frase (usando Regex para não confundir palavras)
-        // Ex: "ola" não vai ativar se escreveres "bolacha"
-        function contemPalavra(frase, palavrasArray) {
-            return palavrasArray.some(palavra => {
-                const regex = new RegExp(`\\b${palavra}\\b`, 'i');
-                return regex.test(frase);
-            });
-        }
-
-        /* =========================================================
-           O "CÉREBRO" (MEGABANCO DE PALAVRAS E RESPOSTAS)
-           ========================================================= */
-        const cerebro = [
-            {
-                categoria: "saudacao",
-                keywords: ["ola", "oi", "hey", "hi", "hello", "boas", "bom dia", "boa tarde", "boa noite", "salve", "eai", "opa", "tudo bem", "como vai", "wassup", "sup", "olazinho"],
-                respostas: [
-                    { bot: "Luffy", class: "name-luffy", text: ["Yooosh! Olá!", "Oi oi! Tens carne aí?", "Olá! Queres entrar para o meu bando?", "Shishishi! Boas!"] },
-                    { bot: "Noob", class: "name-noob", text: ["Oof! Olá parceiro!", "Boas! Estás pronto para um minigame?", "Oi! Vamos jogar Roblox?"] },
-                    { bot: "Tung", class: "name-tung", text: ["Tung Tung Sahur! Olá!", "Tung! Uma saudação feliz para ti!", "Sahur! Olá humano!"] }
-                ]
-            },
-            {
-                categoria: "como_estas",
-                keywords: ["como estas", "como andas", "tudo fixe", "how are you", "tudo bom", "bem", "como te sentes", "estas bom"],
-                respostas: [
-                    { bot: "Luffy", class: "name-luffy", text: ["Estou cheio de energia! Só preciso de carne!", "Estou ótimo! Pronto para zarpar!"] },
-                    { bot: "Noob", class: "name-noob", text: ["Estou um bocado triste, morri no Adopt Me... Oof.", "Estou espetacular! Ganhei um pvp!"] },
-                    { bot: "Tung", class: "name-tung", text: ["Tung Tung Sahur! Estou muito feliz hoje!", "Tung! O meu ovo está seguro, por isso estou bem!"] }
-                ]
-            },
-            {
-                categoria: "fome_comida",
-                keywords: ["fome", "comer", "comida", "lanche", "jantar", "almocar", "petisco", "hungry", "food", "eat", "carne", "meat", "frango", "batata", "pizza", "hamburger", "bebida", "agua", "beber"],
-                respostas: [
-                    { bot: "Luffy", class: "name-luffy", text: ["CARNE?! Onde?! Dá-me logo!", "Estou sempre com fome. Vai à loja comprar-me carne, por favor!", "Sanji, comida!! Ah, espera, tu não és o Sanji..."] },
-                    { bot: "Noob", class: "name-noob", text: ["No Roblox a comida é quadrada. Sabias?", "Prefiro Robux a comida, honestamente. Oof."] }
-                ]
-            },
-            {
-                categoria: "roblox_jogos",
-                keywords: ["roblox", "jogo", "jogar", "game", "play", "minecraft", "bloxburg", "adopt me", "jailbreak", "brookhaven", "jogos", "gamer", "skin", "robux", "pc", "consola", "playstation", "xbox"],
-                respostas: [
-                    { bot: "Noob", class: "name-noob", text: ["Adoro Roblox! Qual é o teu jogo favorito? O meu é Brookhaven!", "Oof, queres jogar comigo? Sou muito pro!", "Preciso de mais Robux para uma skin do Doge!"] },
-                    { bot: "Luffy", class: "name-luffy", text: ["Jogos? Isso come-se? Prefiro explorar o mar e lutar contra marinheiros!"] }
-                ]
-            },
-            {
-                categoria: "luffy_lore",
-                keywords: ["luffy", "chapel de palha", "pirata", "rei dos piratas", "one piece", "borracha", "gomu gomu", "mugiwara", "zoro", "nami", "sanji", "usopp", "anime", "manga"],
-                respostas: [
-                    { bot: "Luffy", class: "name-luffy", text: ["Eu sou o Monkey D. Luffy e vou ser o Rei dos Piratas!", "Gomu Gomu noooo... PISTOL!", "Não toques no meu chapéu de palha, o Shanks deu-mo!"] }
-                ]
-            },
-            {
-                categoria: "tung_lore",
-                keywords: ["tung", "tung tung", "sahur", "dinossauro", "bicho", "ovo", "egg", "engracado", "estranho", "criatura"],
-                respostas: [
-                    { bot: "Tung", class: "name-tung", text: ["TUNG TUNG SAHUR! Eu protejo o grande OVO!", "Não sou estranho, sou um Tung! Tung Tung!", "Danço à volta do ovo! Sahur!"] }
-                ]
-            },
-            {
-                categoria: "despedida",
-                keywords: ["adeus", "tchau", "bye", "goodbye", "ate logo", "see you", "xau", "fui", "dormir", "vou deitar", "sair", "quit"],
-                respostas: [
-                    { bot: "Luffy", class: "name-luffy", text: ["Vais embora? Deixa carne antes de ir!", "Até à próxima ilha, parceiro!"] },
-                    { bot: "Noob", class: "name-noob", text: ["Oof, vais dar disconnect? Tchauzinho!", "Vemo-nos no próximo server!"] },
-                    { bot: "Tung", class: "name-tung", text: ["Tung Tung... Adeus humano!", "Volta depressa! Tung!"] }
-                ]
-            },
-            {
-                categoria: "xingamentos",
-                keywords: ["feio", "bobo", "estupido", "idiota", "lixo", "odeio", "mau", "chato", "burro", "noob", "nabo", "otario"],
-                respostas: [
-                    { bot: "Noob", class: "name-noob", text: ["Oof! Não precisas de ser tóxico no chat, reportado!", "Estou triste agora... Oof."] },
-                    { bot: "Luffy", class: "name-luffy", text: ["Queres lutar? Eu não perco para ti!", "Não sejas assim, vamos ser amigos!"] },
-                    { bot: "Tung", class: "name-tung", text: ["Tung Tung chora... Porque és mau?"] }
-                ]
-            },
-            {
-                categoria: "elogios",
-                keywords: ["lindo", "bonito", "inteligente", "fixe", "legal", "incrivel", "amo", "adoro", "melhor", "top", "perfeito"],
-                respostas: [
-                    { bot: "Luffy", class: "name-luffy", text: ["Shishishi! Obrigado! Tu também és muito fixe!", "Se achas isso, dá-me carne!"] },
-                    { bot: "Noob", class: "name-noob", text: ["Oof, obrigado! És um jogador épico!", "Wow, um elogio! GG!"] },
-                    { bot: "Tung", class: "name-tung", text: ["TUNG TUNG! Muito obrigado, humano simpático!"] }
-                ]
-            },
-            {
-                categoria: "dinheiro_loja",
-                keywords: ["comprar", "loja", "moedas", "dinheiro", "anuncio", "pontos", "compras", "item", "pobre", "rico", "money"],
-                respostas: [
-                    { bot: "Sistema", class: "name-system", text: ["Clica no botão '🛒 Loja' no topo da tela para comprar itens para os personagens! Podes ganhar moedas grátis vendo um anúncio!"] },
-                    { bot: "Noob", class: "name-noob", text: ["Vai à loja e compra-me Robux! Anda lá, please! Oof!"] }
-                ]
-            }
-        ];
-
-        /* =========================================================
-           SISTEMA DE MENSAGENS E PROCESSAMENTO
-           ========================================================= */
-        function scrollParaFundo() {
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function addUserMessage(texto) {
-            const div = document.createElement("div");
-            div.className = "msg-wrapper user";
-            div.innerHTML = `<div class="msg user">${texto}</div>`;
-            chatBox.insertBefore(div, typingIndicator);
-            scrollParaFundo();
-        }
-
-        function addBotMessage(nome, texto, classeCor) {
-            const div = document.createElement("div");
-            div.className = "msg-wrapper bot";
-            if (nome === "Sistema") {
-                div.innerHTML = `<div class="msg system">${texto}</div>`;
-            } else {
-                div.innerHTML = `<div class="msg bot"><div class="bot-name ${classeCor}">${nome}</div>${texto}</div>`;
-            }
-            chatBox.insertBefore(div, typingIndicator);
-            scrollParaFundo();
-        }
-
-        function addSystemMessage(texto) {
-            addBotMessage("Sistema", texto, "name-system");
-        }
-
-        function showTyping() {
-            typingIndicator.style.display = "block";
-            scrollParaFundo();
-        }
-
-        function hideTyping() {
-            typingIndicator.style.display = "none";
-        }
-
-        // Escolher resposta aleatória de um array
-        function respostaAleatoria(arrayTextos) {
-            return arrayTextos[Math.floor(Math.random() * arrayTextos.length)];
-        }
-
-        function processarMensagem() {
-            const textoOriginal = msgInput.value;
-            if (textoOriginal.trim() === "") return;
-
-            // Envia a mensagem do utilizador
-            addUserMessage(textoOriginal);
-            msgInput.value = "";
-            msgInput.focus();
+        function openChat(charId) {
+            currentChar = charId;
+            conversationContext = '';
             
-            // Recompensas por falar
-            ganharXP(5); 
-            gameState.interacoes++;
-
-            const textoLimpo = normalizarTexto(textoOriginal);
-            let categoriasEncontradas = [];
-
-            // Varre o cérebro à procura de correspondências
-            cerebro.forEach(cat => {
-                if (contemPalavra(textoLimpo, cat.keywords)) {
-                    categoriasEncontradas.push(cat);
-                }
-            });
-
-            showTyping();
-
-            // Tempo de "pensamento" aleatório (1 a 2.5 segundos)
-            const tempoEspera = Math.floor(Math.random() * 1500) + 1000;
-
+            document.getElementById('selection-screen').style.display = 'none';
+            document.getElementById('chat-screen').style.display = 'flex';
+            
+            document.getElementById('chat-header-img').src = charsInfo[charId].img;
+            document.getElementById('chat-header-name').innerText = charsInfo[charId].name;
+            
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = `
+                <div class="typing-indicator" id="typing">
+                    <div class="dots-container">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>`;
+            
             setTimeout(() => {
-                hideTyping();
-
-                if (categoriasEncontradas.length > 0) {
-                    // Escolhe uma das categorias encontradas aleatoriamente (caso o utilizador misture temas)
-                    const catEscolhida = respostaAleatoria(categoriasEncontradas);
-                    
-                    // Escolhe que bot vai responder dentro dessa categoria
-                    const botEscolhido = respostaAleatoria(catEscolhida.respostas);
-                    const frase = respostaAleatoria(botEscolhido.text);
-                    
-                    addBotMessage(botEscolhido.bot, frase, botEscolhido.class);
-
-                    // Chance de 30% de um segundo bot entrar na conversa
-                    if (Math.random() < 0.3 && catEscolhida.respostas.length > 1) {
-                        setTimeout(() => {
-                            showTyping();
-                            setTimeout(() => {
-                                hideTyping();
-                                const outroBot = respostaAleatoria(catEscolhida.respostas.filter(b => b.bot !== botEscolhido.bot));
-                                if (outroBot) {
-                                    const outraFrase = respostaAleatoria(outroBot.text);
-                                    addBotMessage(outroBot.bot, outraFrase, outroBot.class);
-                                }
-                            }, 1000);
-                        }, 500);
+                const initialMsg = {
+                    pt: {
+                        tugn: "Oi bestie! Como é que estão as vibes hoje?",
+                        noob: "OOF! Olá! Estás pronto para jogar Roblox?!",
+                        luffy: "YOO! Sou o Luffy! Tens carne para mim?!"
+                    },
+                    en: {
+                        tugn: "Hey bestie! How are the vibes today?",
+                        noob: "OOF! Hello! Are you ready to play some Roblox?!",
+                        luffy: "YOO! I'm Luffy! Do you have any meat for me?!"
                     }
+                };
+                appendMessage('bot', initialMsg[currentLang][currentChar]);
+            }, 800);
+        }
 
+        function closeChat() {
+            document.getElementById('chat-screen').style.display = 'none';
+            document.getElementById('selection-screen').style.display = 'flex';
+        }
+
+        // --- SISTEMA DA LOJA (SHOP) ---
+        function openShop() {
+            document.getElementById('shop-modal').style.display = 'flex';
+            document.getElementById('shop-title').innerText = uiTexts[currentLang].shopTitle;
+            document.getElementById('shop-warning').innerText = uiTexts[currentLang].shopWarning;
+            document.getElementById('shop-item-name').innerText = uiTexts[currentLang].items[currentChar];
+            
+            updateShopButtons();
+            
+            document.getElementById('close-shop-text').innerText = uiTexts[currentLang].closeShop;
+        }
+
+        function closeShop() {
+            document.getElementById('shop-modal').style.display = 'none';
+        }
+
+        function watchAd() {
+            if (adCount < 2) {
+                adCount++;
+                alert(uiTexts[currentLang].adMessage);
+                updateShopButtons();
+            }
+        }
+
+        function updateShopButtons() {
+            document.getElementById('watch-ad-btn').innerHTML = `${uiTexts[currentLang].watchAd} (<span id="ad-count">${adCount}</span>/2)`;
+            document.getElementById('buy-item-btn').innerText = uiTexts[currentLang].buyGive;
+            
+            if (adCount >= 2) {
+                document.getElementById('buy-item-btn').disabled = false;
+            } else {
+                document.getElementById('buy-item-btn').disabled = true;
+            }
+        }
+
+        function buyItem() {
+            if (adCount >= 2) {
+                adCount -= 2; // gasta os anúncios
+                closeShop();
+                triggerGiftReaction();
+            }
+        }
+
+        function triggerGiftReaction() {
+            showTypingIndicator();
+            setTimeout(() => {
+                let msg = "";
+                if (currentLang === 'pt') {
+                    if (currentChar === 'noob') msg = "OOF! MEU DEUS! ROBUX!! 😍 Muito obrigado! Eu sei que não são reais, mas sinto-me bué rico agora! És o melhor!";
+                    if (currentChar === 'luffy') msg = "CAAAAARRNNEEEEE!!! 🍖 SUGEEE! Muito obrigado, estava a morrer de fome! És oficialmente o meu Nakama favorito!";
+                    if (currentChar === 'tugn') msg = "OMG, um pau novo?! 🪵 Literalmente a aesthetic que eu precisava para a minha coleção. Isto é tão caótico e perfeito. Amei, bestie!";
                 } else {
-                    // SE NÃO ENTENDER NENHUMA DAS 150+ PALAVRAS
-                    const respostasDefault = [
-                        { bot: "Tung", class: "name-tung", text: "Tung Tung? Não percebi o que escreveste... Tens a certeza que não queres ir à Loja?" },
-                        { bot: "Noob", class: "name-noob", text: "Oof! A minha net está com lag, repete lá o que disseste?" },
-                        { bot: "Luffy", class: "name-luffy", text: "Hã? Do que estás a falar? Tens comida ou não?" }
-                    ];
-                    const rep = respostaAleatoria(respostasDefault);
-                    addBotMessage(rep.bot, rep.text, rep.class);
+                    if (currentChar === 'noob') msg = "OOF! OH MY GOSH! ROBUX!! 😍 Thank you so much! I know they aren't real, but I feel so rich right now! You're the best!";
+                    if (currentChar === 'luffy') msg = "MEAAAAAAAT!!! 🍖 SUGEEE! Thank you so much, I was starving! You are officially my favorite Nakama!";
+                    if (currentChar === 'tugn') msg = "OMG, a new stick?! 🪵 Literally the aesthetic I needed for my collection. This is so chaotic and perfect. Love it, bestie!";
                 }
-            }, tempoEspera);
+                appendMessage('bot', msg);
+                hideTypingIndicator();
+            }, 1000);
         }
 
-        /* =========================================================
-           EVENTOS
-           ========================================================= */
-        sendBtn.addEventListener("click", processarMensagem);
-        msgInput.addEventListener("keypress", function(e) {
-            if (e.key === "Enter") {
-                processarMensagem();
-            }
-        });
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
 
-        // MENSAGEM INICIAL DE BOAS VINDAS
-        window.onload = () => {
-            showTyping();
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            appendMessage('user', text);
+            input.value = '';
+            
+            showTypingIndicator();
             setTimeout(() => {
-                hideTyping();
-                addBotMessage("Sistema", "Dica: Tenta dizer 'olá', perguntar 'como estás', falar de 'Roblox', 'fome' ou dar-lhes 'elogios' e vê como reagem!", "name-system");
+                const reply = getBotResponse(text);
+                appendMessage('bot', reply);
+                hideTypingIndicator();
+            }, 1000 + Math.random() * 1000);
+        }
+
+        function appendMessage(sender, text) {
+            const chatMessages = document.getElementById('chat-messages');
+            const typingIndicator = document.getElementById('typing');
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message', sender === 'user' ? 'msg-user' : 'msg-bot');
+            msgDiv.innerText = text;
+            
+            chatMessages.insertBefore(msgDiv, typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const typing = document.getElementById('typing');
+            typing.style.display = 'flex';
+            document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typing').style.display = 'none';
+        }
+
+        function getBotResponse(text) {
+            text = text.toLowerCase().replace(/[?!.,]/g, '');
+            const charBrain = brain[currentLang][currentChar];
+            
+            for (let i = 0; i < charBrain.length; i++) {
+                const memory = charBrain[i];
+                const matchesKey = memory.keys.some(k => text.includes(k));
                 
-                setTimeout(() => {
-                    showTyping();
-                    setTimeout(() => {
-                        hideTyping();
-                        addBotMessage("Tung", "TUNG TUNG SAHUR! Bem-vindo! Usa a loja ali em cima para nos dares presentes e interage connosco para ganhares XP!", "name-tung");
-                    }, 1200);
-                }, 1000);
-                
-            }, 1000);
-        };
+                if (matchesKey) {
+                    if (memory.contextReq && memory.contextReq !== conversationContext) continue;
+                    if (memory.contextSet) conversationContext = memory.contextSet;
+                    return memory.ans;
+                }
+            }
+            
+            const defaultArray = uiTexts[currentLang].defaultMsg;
+            return defaultArray[Math.floor(Math.random() * defaultArray.length)];
+        }
+
+        // Initialize Lang
+        setLang('pt');
     </script>
 </body>
 </html>
