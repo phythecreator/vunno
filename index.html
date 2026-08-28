@@ -722,13 +722,9 @@ function openShop() {
 function closeShop() { 
   document.getElementById('shop-modal').style.display = 'none'; 
 }
-
-function watchAd() {
-  window.open('https://omg10.com', '_blank');
-  adCount++;
-  alert(uiTexts[currentLang].adMessage);
-  updateShopButtons();
-}
+    adCount++;
+    alert(uiTexts[currentLang].adMessage);
+    updateShopButtons();
 
 function updateShopButtons() {
   document.getElementById('watch-ad-btn').innerHTML = `${uiTexts[currentLang].watchAd} (<span id="ad-count">${adCount}</span>/2)`;
@@ -749,11 +745,11 @@ function triggerGiftReaction() {
   setTimeout(() => {
     let msg = "";
     if (currentLang === 'pt') {
-      if (currentChar === 'noob') msg = "OOF! MEU DEUS! ROBUX!! Muito obrigado! Eu sei que não são reais, mas sinto-me bué rico agora!";
+      if (currentChar === 'noob') msg = "OOF! UHUHUHUHU! ROBUX!! Muito obrigado! Eu sei que não são reais, mas sinto-me bué rico agora!";
       if (currentChar === 'luffy') msg = "CAAAAARRNNEEEEE!!! SUGEEE! Muito obrigado, estava a morrer de fome! És o maior!";
-      if (currentChar === 'tung') msg = "OMG, um pau novo?! Literalmente a aesthetic que eu precisava. Isto é tão caótico e perfeito. Amei!";
+      if (currentChar === 'tung') msg = "OMG, um pau de madeira  novo?! Era exatamente isto que precisava !! Muito obrigado!";
     } else {
-      if (currentChar === 'noob') msg = "OOF! OH MY GOSH! ROBUX!! Thank you so much! I know they aren't real, but I feel so rich right now!";
+      if (currentChar === 'noob') msg = "OOF! I CAN´T BELIEVE THIS! ROBUX!! Thank you so much! Am i rich now? ";
       if (currentChar === 'luffy') msg = "MEAAAAAAAT!!! SUGEEE! Thank you so much, I was starving! You are the best!";
       if (currentChar === 'tung') msg = "OMG, a new stick?! Literally the aesthetic I needed. This is so chaotic and perfect. Love it!";
     }
