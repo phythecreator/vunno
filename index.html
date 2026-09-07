@@ -6,7 +6,7 @@
 <title>Simulador de Árbitro VAR - Multi-Jogador Online</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Teko:wght@600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<!-- Biblioteca para conexão online P2P em tempo real entre telemóveis -->
+<!-- Biblioteca PeerJS carregada obrigatoriamente via HTTPS -->
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
 <style>
@@ -108,9 +108,6 @@ button {
   width: 100%; background: rgba(255,255,255,0.05); color: var(--text-main);
   font-weight: 600; padding: 10px; border: 1px solid rgba(255,255,255,0.12); margin-top: 10px;
 }
-
-.btn-row { display: flex; gap: 8px; margin-top: 8px; }
-.btn-row > button { flex: 1; margin-top: 0; }
 
 .room-code {
   font-family: 'Teko', sans-serif; font-size: 40px; letter-spacing: .15em; text-align: center;
@@ -323,7 +320,6 @@ button {
 </div>
 
 <script>
-/* SCENARIOS TÁTICOS */
 const SCENARIOS = [
   { 
     id:1, correct:'nada', 
@@ -372,7 +368,6 @@ const DECISION_META = {
   golo: { emoji:'⚽', label: 'Golo Válido' }
 };
 
-/* ESTADO GLOBAL DO JOGO */
 const myPlayerId = 'p_' + Math.random().toString(36).slice(2, 9);
 let playerName = '';
 let roomCode = '';
@@ -383,17 +378,22 @@ let guestConnections = [];
 let autoJoinCode = null;
 
 let state = {
-  status: 'LOBBY', // LOBBY, PLAYING, REVEAL, FINAL
+  status: 'LOBBY',
   totalRounds: 8,
   currentRound: 0,
   roundStartedAt: 0,
-  players: [], // { id, name, score }
-  answers: {}  // { roundIdx: { playerId: decision } }
+  players: [],
+  answers: {}
 };
 
 let roundTimerInterval = null;
 
-/* DETETA LINK DO WHATSAPP DO TIPO ?room=ABCDE */
+// Configuração segura do PeerJS
+const peerConfig = {
+  secure: true,
+  port: 443
+};
+
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const code = params.get('room');
@@ -429,16 +429,14 @@ function goToChoice() {
   show('screen-choice');
 }
 
-/* CRIAR SALA ONLINE VIA PEERJS */
 function createRoomOnline() {
   isHost = true;
   roomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
   state.totalRounds = parseInt(document.getElementById('input-rounds').value, 10);
   state.players = [{ id: myPlayerId, name: playerName, score: 0 }];
 
-  // Peer ID único para a sala
   const peerId = 'refsim2026-' + roomCode;
-  peer = new Peer(peerId);
+  peer = new Peer(peerId, peerConfig);
 
   peer.on('open', () => {
     document.getElementById('lobby-code').textContent = roomCode;
@@ -458,21 +456,20 @@ function createRoomOnline() {
 
   peer.on('error', (err) => {
     if (err.type === 'unavailable-id') {
-      createRoomOnline(); // Tenta outro código se houver colisão
+      createRoomOnline();
     } else {
-      alert('Erro de rede: ' + err.message);
+      alert('Erro de ligação: ' + err.message);
     }
   });
 }
 
-/* ENTRAR NA SALA ONLINE */
 function joinRoomOnline() {
   isHost = false;
   const code = (autoJoinCode || document.getElementById('input-joincode').value).trim().toUpperCase();
   if (code.length < 4) return alert('Código de sala inválido!');
   roomCode = code;
 
-  peer = new Peer();
+  peer = new Peer(peerConfig);
   peer.on('open', () => {
     const targetPeerId = 'refsim2026-' + roomCode;
     hostConn = peer.connect(targetPeerId);
@@ -489,7 +486,7 @@ function joinRoomOnline() {
     });
 
     hostConn.on('close', () => {
-      alert('O criador da sala fechou o jogo.');
+      alert('O criador da sala fechou a ligação.');
     });
   });
 
@@ -498,7 +495,6 @@ function joinRoomOnline() {
   });
 }
 
-/* PROCESSAMENTO NO HOST (CRIADOR DA SALA) */
 function handleHostMessage(conn, data) {
   if (data.type === 'JOIN') {
     if (!state.players.find(p => p.id === data.playerId)) {
@@ -511,7 +507,6 @@ function handleHostMessage(conn, data) {
     if (!state.answers[state.currentRound]) state.answers[state.currentRound] = {};
     state.answers[state.currentRound][data.playerId] = data.decision;
     
-    // Se todos responderem, revela logo a decisão
     if (Object.keys(state.answers[state.currentRound]).length >= state.players.length) {
       calculateScoresAndReveal();
     } else {
@@ -527,7 +522,6 @@ function broadcastState() {
   }
 }
 
-/* SINCRONIZAÇÃO DA INTERFACE COM O ESTADO */
 function syncUI() {
   if (state.status === 'LOBBY') {
     document.getElementById('lobby-code').textContent = roomCode;
@@ -636,7 +630,6 @@ function calculateScoresAndReveal() {
   const scenario = SCENARIOS[state.currentRound % SCENARIOS.length];
   const roundAnswers = state.answers[state.currentRound] || {};
 
-  // Atualiza a pontuação (+3 pontos por decisão correta)
   state.players.forEach(p => {
     if (roundAnswers[p.id] === scenario.correct) {
       p.score += 3;
@@ -715,12 +708,13 @@ function renderFinal() {
 }
 
 function shareWhatsApp() {
-  const link = window.location.origin + window.location.pathname + '?room=' + roomCode;
+  // Constrói o link com protocolo seguro (HTTPS)
+  const protocol = window.location.protocol === 'http:' ? 'https:' : window.location.protocol;
+  const link = protocol + '//' + window.location.host + window.location.pathname + '?room=' + roomCode;
   const text = `⚽ *Simulador de Árbitro VAR*\nEntra na minha sala para jogarmos em tempo real!\n\n👉 *Clica no link para entrar:* ${link}\n\nCódigo da Sala: *${roomCode}*`;
   window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
 }
 
-/* REPRODUÇÃO TÁTICA (SVG) */
 function toX(px) { return 20 + (560 * px / 100); }
 function toY(py) { return 20 + (340 * py / 100); }
 
@@ -748,19 +742,15 @@ function renderTacticalPitchSVG(scenario) {
 
       ${vector}
 
-      <!-- GR -->
       <circle cx="${gkX}" cy="${gkY}" r="9" fill="#64748B" stroke="#FFF" stroke-width="1.5"/>
       <text x="${gkX}" y="${gkY+3}" font-family="Inter" font-size="9" font-weight="800" fill="#FFF" text-anchor="middle">GR</text>
 
-      <!-- Defesa -->
       <circle cx="${defX}" cy="${defY}" r="11" fill="#2563EB" stroke="#FFF" stroke-width="1.5"/>
       <text x="${defX}" y="${defY+4}" font-family="Inter" font-size="10" font-weight="800" fill="#FFF" text-anchor="middle">${t.defender.label}</text>
 
-      <!-- Avançado -->
       <circle cx="${attX}" cy="${attY}" r="11" fill="#DC2626" stroke="#FFF" stroke-width="1.5"/>
       <text x="${attX}" y="${attY+4}" font-family="Inter" font-size="10" font-weight="800" fill="#FFF" text-anchor="middle">${t.attacker.label}</text>
 
-      <!-- Bola -->
       <circle cx="${ballX}" cy="${ballY}" r="6" fill="#FFFFFF" stroke="#000" stroke-width="1"/>
     </svg>
   `;
