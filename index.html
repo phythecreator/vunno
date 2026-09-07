@@ -15,6 +15,8 @@
   --panel-border: #E2E8F0;
   --primary: #0284C7;
   --primary-hover: #0369A1;
+  --whatsapp: #25D366;
+  --whatsapp-hover: #1DA851;
   --accent-gold: #D97706;
   --accent-green: #10B981;
   --accent-red: #EF4444;
@@ -92,6 +94,13 @@ button {
 .btn-primary { width: 100%; background: var(--primary); color: #FFF; font-weight: 700; padding: 10px; }
 .btn-primary:hover { background: var(--primary-hover); }
 
+.btn-whatsapp {
+  width: 100%; background: var(--whatsapp); color: #FFF; font-weight: 700;
+  padding: 10px; border-radius: 8px; margin-top: 10px; border: none;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-whatsapp:hover { background: var(--whatsapp-hover); }
+
 .btn-secondary {
   width: 100%; background: #F1F5F9; color: var(--text-main);
   font-weight: 700; padding: 10px; border: 1px solid var(--panel-border); margin-top: 8px;
@@ -119,7 +128,7 @@ button {
 .chat-msg { line-height: 1.3; word-break: break-word; }
 .chat-msg.system { color: var(--accent-red); font-weight: 700; }
 
-/* PUBLICIDADE IMAGEM */
+/* PUBLICIDADE IMAGEM NA SIDEBAR */
 .ad-card {
   background: #FFFFFF; border: 1px solid var(--panel-border); border-radius: 12px;
   padding: 10px; text-align: center; position: relative;
@@ -133,6 +142,26 @@ button {
   background: #E2E8F0; display: flex; align-items: center; justify-content: center;
 }
 .ad-img-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* MODAL CENTRAL DE IMAGEM A CADA 80 SEGUNDOS */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(4px); z-index: 10000;
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.modal-content {
+  background: #FFFFFF; border-radius: 16px; padding: 20px;
+  max-width: 500px; width: 100%; text-align: center; position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); border: 2px solid var(--primary);
+}
+.modal-content img {
+  width: 100%; max-height: 60vh; object-fit: contain; border-radius: 8px; margin-top: 10px;
+}
+.close-modal-btn {
+  position: absolute; top: 10px; right: 10px; background: #EF4444; color: #FFF;
+  border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 16px;
+  font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
 
 /* LEADERBOARD SIDEBAR */
 .leaderboard-title {
@@ -167,6 +196,16 @@ button {
 </style>
 </head>
 <body>
+
+<!-- MODAL CENTRAL DE PUBLICIDADE (IMAGE.PNG A CADA 80s) -->
+<div id="image-modal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <button class="close-modal-btn" onclick="closeAdModal()">✕</button>
+    <span class="field-label" style="margin: 0;">Publicidade em Destaque</span>
+    <img id="modal-ad-img" src="image.png" alt="Publicidade Central" onerror="this.src='https://via.placeholder.com/400x300?text=Imagem+image.png+N%C3%A3o+Encontrada'">
+    <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; font-weight: 700;">Exibido automaticamente a cada 80 segundos</div>
+  </div>
+</div>
 
 <div class="app-wrapper">
   <header class="brand-header">
@@ -215,12 +254,17 @@ button {
         <button class="btn-secondary" onclick="joinRoomOnline()">Conectar</button>
       </div>
 
-      <!-- ÉCRÃ 3: LOBBY -->
+      <!-- ÉCRÃ 3: LOBBY DE ESPERA -->
       <div id="screen-lobby" class="card hidden">
         <span class="field-label">Código da Sala</span>
         <div style="font-family:'Teko'; font-size:36px; text-align:center; color:var(--primary);" id="lobby-code">-----</div>
         
-        <span class="field-label">Árbitros Conectados</span>
+        <!-- BOTÃO PARTILHAR NO WHATSAPP -->
+        <button class="btn-whatsapp" onclick="shareWhatsApp()">
+          📲 Partilhar Código no WhatsApp
+        </button>
+
+        <span class="field-label" style="margin-top: 16px;">Árbitros Conectados</span>
         <div id="lobby-player-list"></div>
 
         <div id="host-controls" style="margin-top:14px;">
@@ -283,13 +327,13 @@ button {
         <input type="text" id="chat-input" placeholder="Mensagem ou /admin remove Nome" onkeydown="if(event.key==='Enter') sendChatMessage()">
       </div>
 
-      <!-- PUBLICIDADE AUTOMÁTICA COM IMAGE.PNG A CADA 1 MINUTO -->
+      <!-- PUBLICIDADE LATERAL -->
       <div class="ad-card">
         <span class="ad-badge">PUB</span>
         <div class="ad-img-frame">
           <img id="ad-image" src="image.png" alt="Publicidade" onerror="this.style.display='none'; this.parentNode.innerHTML='<span style=\'font-size:12px; color:#64748B;\'>imagem image.png carregada</span>'">
         </div>
-        <div style="font-size:11px; color:var(--text-muted); margin-top:6px; font-weight:700;">Atualizado a cada 60s</div>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:6px; font-weight:700;">Atualizado a cada 80s</div>
       </div>
 
     </aside>
@@ -298,13 +342,13 @@ button {
 </div>
 
 <script>
-// NOVOS EXERCÍCIOS COMPLEXOS E DE DIFÍCIL INTERPRETAÇÃO (REGRAS IFAB)
+// CASOS COMPLEXOS IFAB
 const SCENARIOS = [
   { 
     id: 1, 
     correct: 'penalti', 
     text: 'Avançado é rasteirado na grande área quando se isolava. O defesa tenta claramente jogar a bola, mas falha a trajetória por milímetros e derruba o atacante.', 
-    expl: 'Penálti (Com Amarelo). Segundo a lei da Dupla Penalização (DOGSO), se o falta ocorrer dentro da área e houver uma tentativa genuína de disputar a bola, a sanção disciplinar é reduzida de Vermelho para Cartão Amarelo.', 
+    expl: 'Penálti (Com Amarelo). Segundo a lei da Dupla Penalização (DOGSO), se a falta ocorrer dentro da área e houver uma tentativa genuína de disputar a bola, a sanção disciplinar é reduzida de Vermelho para Cartão Amarelo.', 
     tactics: { att: {x:80,y:45,l:'A'}, def: {x:78,y:47,l:'D'}, ball: {x:82,y:45} } 
   },
   { 
@@ -318,7 +362,7 @@ const SCENARIOS = [
     id: 3, 
     correct: 'nada', 
     text: 'Remate à baliza atinge o braço do defesa. O defesa estava a fazer um carrinho e o braço atingido era o braço de apoio que tocava no relvado para amparar a queda.', 
-    expl: 'Sem Infração (Segue jogo). O braço usado como apoio na queda de forma natural não aumenta a volumetria de forma não natural segundo as diretrizes da IFAB.', 
+    expl: 'Sem Infração (Segue jogo). O braço usado como apoio na queda de forma natural não aumenta a volumetria do corpo de forma não natural segundo as diretrizes da IFAB.', 
     tactics: { att: {x:72,y:30,l:'A'}, def: {x:76,y:32,l:'D'}, ball: {x:75,y:31} } 
   },
   { 
@@ -362,13 +406,35 @@ let state = {
   warningText: ''
 };
 
-// Rotação da imagem image.png a cada 1 minuto (60000ms)
+// POP-UP NO MEIO DA TELA A CADA 80 SEGUNDOS (80000 ms)
 setInterval(() => {
-  const img = document.getElementById('ad-image');
-  if (img) {
-    img.src = 'image.png?t=' + Date.now();
+  showAdModal();
+}, 80000);
+
+function showAdModal() {
+  const modal = document.getElementById('image-modal');
+  const img = document.getElementById('modal-ad-img');
+  const adImg = document.getElementById('ad-image');
+  
+  if (modal && img) {
+    const timestamp = Date.now();
+    img.src = 'image.png?t=' + timestamp;
+    if (adImg) adImg.src = 'image.png?t=' + timestamp;
+    modal.classList.remove('hidden');
   }
-}, 60000);
+}
+
+function closeAdModal() {
+  const modal = document.getElementById('image-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+// PARTILHA NO WHATSAPP
+function shareWhatsApp() {
+  if (!roomCode) return alert('Nenhuma sala ativa.');
+  const text = encodeURIComponent(`Junta-te à minha sala de arbitragem no Simulador VAR PRO!\nCódigo da Sala: ${roomCode}`);
+  window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+}
 
 function selectAvatar(emoji, el) {
   selectedAvatar = emoji;
