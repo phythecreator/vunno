@@ -1,631 +1,946 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Clean Chat - Expandido</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Simulador de Árbitro - EA FC Style</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@600;700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-/* CSS MINIMALISTA APPLE-LIKE CORRIGIDO */
-@import url('https://fonts.googleapis.com/css?family=Inter:wght@300;400;500;600&display=swap');
 :root {
-    --bg-color: #f5f5f7;
-    --card-bg: #ffffff;
-    --text-main: #1d1d1f;
-    --text-muted: #86868b;
-    --border-color: rgba(60, 60, 67, 0.12);
-    --primary: #007aff;
-    --user-bubble: #007aff;
-    --bot-bubble: #e9e9eb;
-    --hover-bg: #f5f5f7;
-    --share-bg: #34c759;
+  --ea-bg: #090c12;
+  --ea-card: #121824;
+  --ea-card-border: rgba(255, 255, 255, 0.12);
+  --ea-green: #00ff87;
+  --ea-green-dark: #00b359;
+  --ea-cyan: #00e5ff;
+  --ea-gold: #f3d053;
+  --ea-red: #ff3355;
+  --ea-text: #ffffff;
+  --ea-text-dim: #8c9b32;
+  --paper-shadow: 0 20px 50px rgba(0,0,0,0.6);
 }
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-    -webkit-tap-highlight-color: transparent;
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--ea-text);
+  background: var(--ea-bg);
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(0, 255, 135, 0.15) 0%, transparent 60%),
+    linear-gradient(135deg, #05070a 0%, #0d131d 100%);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 14px 40px;
 }
-body, html {
-    background-color: var(--bg-color);
-    color: var(--text-main);
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
+
+.app {
+  width: 100%;
+  max-width: 460px;
 }
-#app-container {
-    width: 100%;
-    height: 100%;
-    background-color: var(--card-bg);
-    display: flex;
-    flex-direction: column;
-    position: relative;
+
+h1, h2, h3 {
+  font-family: 'Teko', sans-serif;
+  text-transform: uppercase;
+  margin: 0;
+  letter-spacing: .05em;
+  line-height: 0.95;
 }
-#selection-screen {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 50px 20px 30px;
-    overflow-y: auto;
-    background: var(--bg-color);
+
+.hero {
+  text-align: center;
+  margin-bottom: 20px;
 }
-.header {
-    text-align: center;
-    margin-bottom: 40px;
+
+.hero .whistle {
+  font-size: 48px;
+  display: inline-block;
+  filter: drop-shadow(0 0 12px rgba(0,255,135,0.4));
 }
-.header h1 {
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: -0.5px;
-    margin-bottom: 8px;
+
+.hero h1 {
+  color: var(--ea-text);
+  font-size: 42px;
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 4px;
+  text-shadow: 0 0 20px rgba(0, 255, 135, 0.3);
 }
-.lang-toggle {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    background: rgba(118, 118, 128, 0.12);
-    padding: 4px;
-    border-radius: 9px;
-    width: fit-content;
-    margin: 0 auto 30px auto;
+
+.hero p {
+  color: #a0aec0;
+  font-size: 14px;
+  margin: 4px 0 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
-.lang-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-main);
-    padding: 6px 16px;
-    border-radius: 7px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 13px;
-    transition: all 0.2s ease;
+
+.notebook {
+  background: var(--ea-card);
+  border-radius: 12px;
+  box-shadow: var(--paper-shadow);
+  padding: 24px;
+  position: relative;
+  border: 1px solid var(--ea-card-border);
+  backdrop-filter: blur(10px);
 }
-.lang-btn.active {
-    background: var(--card-bg);
-    box-shadow: 0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);
+
+.notebook::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--ea-green), var(--ea-cyan));
+  border-radius: 12px 12px 0 0;
 }
-.character-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    flex-grow: 1;
-    max-width: 600px;
-    margin: 0 auto;
-    width: 100%;
+
+.field-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ea-green);
+  margin-bottom: 6px;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
-.char-card {
-    background: var(--card-bg);
-    border-radius: 20px;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    cursor: pointer;
-    transition: transform 0.2s ease, background 0.2s;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+
+input[type=text], select {
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: #0a0e17;
+  color: var(--ea-text);
+  margin-bottom: 16px;
+  transition: all 0.2s;
 }
-.char-card:active {
-    transform: scale(0.97);
-    background: var(--hover-bg);
+
+input[type=text]:focus, select:focus {
+  outline: none;
+  border-color: var(--ea-green);
+  box-shadow: 0 0 10px rgba(0,255,135,0.3);
 }
-.char-img {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid var(--border-color);
+
+button {
+  font-family: 'Teko', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  transition: all .15s ease;
 }
-.char-info h2 {
-    font-size: 17px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    letter-spacing: -0.3px;
+
+.btn-primary {
+  width: 100%;
+  background: var(--ea-green);
+  color: #000;
+  font-weight: 700;
+  padding: 12px;
+  box-shadow: 0 0 15px rgba(0, 255, 135, 0.3);
 }
-.char-info p {
-    font-size: 14px;
-    color: var(--text-muted);
-    line-height: 1.4;
+
+.btn-primary:hover {
+  background: #1aff96;
+  transform: translateY(-1px);
 }
-#chat-screen {
-    display: none;
-    flex-direction: column;
-    height: 100%;
-    background: var(--card-bg);
+
+.btn-primary:disabled {
+  background: #2a3848;
+  color: #6c7a89;
+  cursor: not-allowed;
+  box-shadow: none;
 }
-.chat-header {
-    display: flex;
-    align-items: center;
-    padding: 12px 20px;
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-color);
-    gap: 12px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    height: 70px;
+
+.btn-secondary {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  color: var(--ea-text);
+  font-weight: 600;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  margin-top: 10px;
 }
-.back-btn {
-    background: none;
-    border: none;
-    color: var(--primary);
-    font-size: 16px;
-    font-weight: 400;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-} 
-.back-btn svg { width: 22px; height: 22px; }
-.chat-header-img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
+
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: var(--ea-green);
 }
-.chat-header-info {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+
+.btn-row { display: flex; gap: 10px; margin-top: 10px; }
+.btn-row > button { flex: 1; margin-top: 0; }
+
+.room-code {
+  font-family: 'Teko', sans-serif;
+  font-size: 42px;
+  letter-spacing: .15em;
+  text-align: center;
+  color: var(--ea-gold);
+  background: #080c14;
+  border: 1px solid var(--ea-gold);
+  border-radius: 8px;
+  padding: 8px;
+  margin: 8px 0;
+  text-shadow: 0 0 10px rgba(243, 208, 83, 0.3);
 }
-.chat-header-info h2 {
-    font-size: 15px;
-    font-weight: 600;
+
+.hint {
+  font-size: 12px;
+  color: #8c9ba5;
+  text-align: center;
+  margin-bottom: 16px;
+  line-height: 1.4;
 }
-.chat-header-info p {
-    font-size: 12px;
-    color: var(--text-muted);
+
+.player-list { list-style: none; margin: 0 0 18px; padding: 0; }
+.player-list li {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 14px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 8px;
+  border: 1px solid rgba(255,255,255,0.08); font-weight: 600; font-size: 14px;
 }
-.share-btn {
-    background: var(--share-bg);
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 14px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
+
+.player-list .tag {
+  font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: #000; background: var(--ea-gold); padding: 2px 6px; border-radius: 4px;
 }
-.share-btn:active { opacity: 0.7; }
-.chat-messages {
-    flex-grow: 1;
-    padding: 24px 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 16px; 
-    background: var(--card-bg);
-    scroll-behavior: smooth;
+
+.round-head {
+  display: flex; justify-content: space-between; align-items: center;
+  color: var(--ea-text); margin-bottom: 12px; padding: 0 4px;
 }
-.message {
-    max-width: 75%;
-    padding: 10px 16px;
-    border-radius: 18px;
-    font-size: 15px;
-    line-height: 1.4;
-    animation: fadeIn 0.3s ease;
-    word-wrap: break-word;
-    white-space: pre-wrap;
+
+.round-head .r {
+  font-family: 'Teko', sans-serif; font-size: 24px; letter-spacing: .05em; color: var(--ea-green);
 }
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+
+.timer {
+  font-family: 'Teko', sans-serif; font-size: 22px; color: var(--ea-text);
+  background: rgba(0,0,0,0.6); padding: 2px 12px; border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.2);
 }
-.msg-bot {
-    background: var(--bot-bubble);
-    color: var(--text-main);
-    align-self: flex-start;
-    border-bottom-left-radius: 4px;
+
+.timer.low { color: var(--ea-red); border-color: var(--ea-red); }
+
+.pitch-wrap {
+  background: #0b1a10;
+  border-radius: 8px;
+  padding: 6px;
+  border: 1px solid var(--ea-card-border);
+  margin-bottom: 14px;
 }
-.msg-user {
-    background: var(--user-bubble);
-    color: white;
-    align-self: flex-end;
-    border-bottom-right-radius: 4px;
+
+.pitch-wrap svg { display: block; width: 100%; height: auto; border-radius: 6px; }
+
+.scenario-text {
+  font-size: 14px; line-height: 1.5; color: #d0d7de;
+  background: #0d131d; border-radius: 8px; padding: 14px;
+  margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.1);
 }
-.typing-indicator {
-    display: none;
-    align-self: flex-start;
-    background: var(--bot-bubble);
-    padding: 14px 18px;
-    border-radius: 18px;
-    border-bottom-left-radius: 4px;
-    width: fit-content;
+
+.decision-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px;
 }
-.dots-container { display: flex; align-items: center; gap: 4px; }
-.dot {
-    width: 7px; height: 7px; background-color: #8e8e93; border-radius: 50%;
-    animation: bounce 1.4s infinite ease-in-out both; 
+
+.decision-btn {
+  padding: 12px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04); font-weight: 700; font-size: 16px; color: var(--ea-text);
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
 }
-.dot:nth-child(1) { animation-delay: -0.32s; }
-.dot:nth-child(2) { animation-delay: -0.16s; }
-@keyframes bounce {
-    0%, 80%, 100% { transform: scale(0); }
-    40% { transform: scale(1); }
+
+.decision-btn .emoji { font-size: 20px; }
+.decision-btn:hover { background: rgba(0, 255, 135, 0.15); border-color: var(--ea-green); }
+.decision-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.decision-btn.chosen { background: var(--ea-green); color: #000; border-color: var(--ea-green); }
+
+.waiting-note { text-align: center; color: var(--ea-gold); font-size: 13px; margin-top: 10px; }
+
+.correct-banner {
+  background: rgba(0, 255, 135, 0.1); border: 1px solid var(--ea-green); color: var(--ea-text);
+  border-radius: 8px; padding: 14px; margin-bottom: 14px; text-align: center;
 }
-.chat-input-area {
-    padding: 12px 20px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    display: flex;
-    gap: 10px;
-    border-top: 1px solid var(--border-color);
-    align-items: center;
-    padding-bottom: env(safe-area-inset-bottom, 12px);
+
+.correct-banner .emoji { font-size: 28px; display: block; margin-bottom: 4px; }
+.correct-banner .label { font-family: 'Teko', sans-serif; font-size: 26px; color: var(--ea-green); }
+.correct-banner .expl { font-size: 13px; color: #a0aec0; margin-top: 6px; line-height: 1.4; }
+
+.answer-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 12px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
 }
-#user-input {
-    flex-grow: 1;
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
-    padding: 10px 16px;
-    border-radius: 20px;
-    outline: none;
-    font-size: 15px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+
+.answer-row.correct { border-color: var(--ea-green); background: rgba(0,255,135,0.08); }
+.answer-row.wrong { border-color: var(--ea-red); background: rgba(255,51,85,0.08); }
+.answer-row .who { font-weight: 700; font-size: 13px; }
+.answer-row .said { font-size: 12px; color: #a0aec0; }
+.answer-row .mark { font-weight: 900; font-size: 16px; }
+
+.score-line {
+  display: flex; justify-content: space-between; padding: 10px 12px;
+  background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 6px;
+  border: 1px solid rgba(255,255,255,0.08); font-weight: 700; font-size: 14px; align-items: center;
 }
-#user-input:focus { border-color: var(--primary); }
-#send-btn {
-    background: var(--primary);
-    border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-} 
-#send-btn svg { width: 16px; height: 16px; fill: currentColor; }
-.footer-warning {
-    text-align: center;
-    padding: 16px;
-    font-size: 11px;
-    color: var(--text-muted);
-    line-height: 1.5;
-    max-width: 600px;
-    margin: 0 auto;
+
+.score-line .pts { font-family: 'Teko', sans-serif; font-size: 22px; color: var(--ea-green); }
+.score-line.leader { border-color: var(--ea-gold); background: rgba(243, 208, 83, 0.08); }
+
+.hidden { display: none !important; }
+
+@keyframes markerPulse {
+  0% { r: 9; opacity: .9; }
+  70% { r: 20; opacity: 0; }
+  100% { r: 9; opacity: 0; }
 }
+.marker-pulse { animation: markerPulse 1.6s ease-out infinite; transform-origin: center; }
 </style>
 </head>
 <body>
-<div id="app-container">
-    <div id="selection-screen">
-        <div class="lang-toggle">
-            <button class="lang-btn active" onclick="setLang('pt')" id="btn-pt">Português</button>
-        </div>
-        <div class="header">
-            <h1 id="ui-title">Iniciar Conversa</h1>
-            <p id="ui-choose" style="color: var(--text-muted); font-size: 15px;">Seleciona uma personagem para falar</p>
-        </div>
-        
-        <div class="character-list">
-            <div class="char-card" onclick="openChat('tung')">
-                <img src="tugntugnsahur.jpg" alt="Tung Tung Sahur" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Tung&background=f1f1f4&color=1d1d1f'">
-                <div class="char-info">
-                    <h2>Tung Tung Sahur</h2>
-                    <p id="desc-tung">Estética Gen Z e conversas caóticas e profundas.</p>
-                </div>
-            </div>
-            <div class="char-card" onclick="openChat('noob')">
-                <img src="noob.png" alt="Roblox Noob" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Noob&background=f1f1f4&color=1d1d1f'">
-                <div class="char-info">
-                    <h2>Roblox Noob</h2>
-                    <p id="desc-noob">Oof! Sempre com lag, sempre a sobreviver.</p>
-                </div>
-            </div>
-            <div class="char-card" onclick="openChat('luffy')">
-                <img src="odUtj (1).jpg" alt="Luffy" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Luffy&background=f1f1f4&color=1d1d1f'">
-                <div class="char-info">
-                    <h2>Monkey D. Luffy</h2>
-                    <p id="desc-luffy">Futuro Rei dos Piratas. Adora carne.</p>
-                </div>
-            </div>
-            <!-- NOVAS PERSONAGENS ADICIONADAS -->
-            <div class="char-card" onclick="openChat('xmarcelo')">
-                <img src="image.png" alt="xMarcelo" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=xMarcelo&background=f1f1f4&color=1d1d1f'">
-                <div class="char-info">
-                    <h2>xMarcelo</h2>
-                    <p id="desc-xmarcelo">Youtuber de Roblox. Preparado para um quiz?</p>
-                </div>
-            </div>
-            <div class="char-card" onclick="openChat('wikipetan')">
-                <img src="Wikipe-tan_full_length.png" alt="Wikipe-tan" class="char-img" onerror="this.src='https://ui-avatars.com/api/?name=Wikipe-tan&background=f1f1f4&color=1d1d1f'">
-                <div class="char-info">
-                    <h2>Wikipe-tan</h2>
-                    <p id="desc-wikipetan">Especialista e fã incondicional de Animes e Mangás.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div style="flex-grow: 1;"></div>
-        <div class="footer-warning" id="copyright-warning">
-            As imagens são geradas por IA ou desenho do criador e não retiradas da internet de modo a infringir direitos de autor. Para além disso avisamos que não pretendemos copiar o design de ninguém e que é apenas um site minimalista.
-        </div>
-    </div>
+<div class="app">
 
-    <div id="chat-screen">
-        <div class="chat-header">
-            <button class="back-btn" onclick="closeChat()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            </button>
-            <img id="chat-header-img" src="" alt="Char" class="chat-header-img">
-            <div class="chat-header-info">
-                <h2 id="chat-header-name">Name</h2>
-                <p id="chat-header-status">Online</p>
-            </div>
-            <button class="share-btn" onclick="shareSite()" id="share-btn-ui">Partilhar</button>
-        </div>
-        <div class="chat-messages" id="chat-messages">
-            <div class="typing-indicator" id="typing">
-                <div class="dots-container">
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                </div>
-            </div>
-        </div>
-        <div class="chat-input-area">
-            <input type="text" id="user-input" placeholder="Mensagem..." onkeypress="handleEnter(event)">
-            <button id="send-btn" onclick="sendMessage()">
-                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10 15 2 15 2z"></path></svg>
-            </button>
-        </div>
+  <!-- SCREEN: NAME -->
+  <div id="screen-name">
+    <div class="hero">
+      <span class="whistle">⚽</span>
+      <h1>Simulador de Árbitro</h1>
+      <p>EA FC Match Official Edition</p>
     </div>
+    <div class="notebook">
+      <span class="field-label">Nome do Árbitro</span>
+      <input type="text" id="input-name" maxlength="16" placeholder="Ex: Árbitro Silva" autocomplete="off">
+      <button class="btn-primary" onclick="goToLobbyChoice()">Continuar</button>
+    </div>
+  </div>
+
+  <!-- SCREEN: CREATE OR JOIN -->
+  <div id="screen-choice" class="hidden">
+    <div class="hero">
+      <span class="whistle">🎮</span>
+      <h1>Nova Partida</h1>
+      <p id="choice-greeting">Cria uma sala ou junta-te a uma</p>
+    </div>
+    <div class="notebook">
+      <span class="field-label">Número de rondas (se fores criar)</span>
+      <select id="input-rounds">
+        <option value="5">5 rondas - Jogo Rápido</option>
+        <option value="8" selected>8 rondas - Normal</option>
+        <option value="12">12 rondas - Longo</option>
+      </select>
+      <button class="btn-primary" onclick="createRoom()">Criar Sala</button>
+      
+      <div style="height:20px;"></div>
+      
+      <span class="field-label">Ou entra com um código</span>
+      <input type="text" id="input-joincode" maxlength="5" placeholder="Ex: A7K2M" autocomplete="off" style="text-transform:uppercase;">
+      <button class="btn-secondary" onclick="joinRoomFlow()">Entrar na Sala</button>
+    </div>
+  </div>
+
+  <!-- SCREEN: LOBBY -->
+  <div id="screen-lobby" class="hidden">
+    <div class="hero">
+      <span class="whistle">🟨</span>
+      <h1>Sala de Espera</h1>
+      <p>Partilha o código ou o link direto com amigos</p>
+    </div>
+    <div class="notebook">
+      <span class="field-label">Código da sala</span>
+      <div class="room-code" id="lobby-code">-----</div>
+      
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="copyCode()" id="copy-btn">Copiar Código</button>
+        <button class="btn-secondary" onclick="copyLink()" id="copy-link-btn">Copiar Link</button>
+      </div>
+
+      <p class="hint" style="margin-top:10px;">Até 4 jogadores na mesma partida.</p>
+
+      <span class="field-label">Árbitros Conectados</span>
+      <ul class="player-list" id="lobby-players"></ul>
+
+      <div id="lobby-host-controls">
+        <button class="btn-primary" id="start-btn" onclick="startGame()">Iniciar Jogo</button>
+        <p class="hint" id="host-wait-hint" style="margin-top:8px;">É preciso pelo menos 2 jogadores para começar.</p>
+      </div>
+      <div id="lobby-guest-note" class="hidden">
+        <p class="hint">À espera que o Árbitro-Chefe inicie a partida...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: GAME (ROUND) -->
+  <div id="screen-game" class="hidden">
+    <div class="round-head">
+      <span class="r" id="round-counter">RONDA 1/8</span>
+      <span class="timer" id="round-timer">30s</span>
+    </div>
+    <div class="pitch-wrap" id="pitch-holder"></div>
+    <div class="scenario-text" id="scenario-text"></div>
+    <div id="decision-area">
+      <div class="decision-grid">
+        <button class="decision-btn" data-d="nada" onclick="submitAnswer('nada')"><span class="emoji">⚪</span>Sem Infração</button>
+        <button class="decision-btn" data-d="falta" onclick="submitAnswer('falta')"><span class="emoji">🔵</span>Falta</button>
+        <button class="decision-btn" data-d="amarelo" onclick="submitAnswer('amarelo')"><span class="emoji">🟨</span>Cartão Amarelo</button>
+        <button class="decision-btn" data-d="vermelho" onclick="submitAnswer('vermelho')"><span class="emoji">🟥</span>Cartão Vermelho</button>
+        <button class="decision-btn" data-d="penalti" onclick="submitAnswer('penalti')"><span class="emoji">🎯</span>Grande Penalidade</button>
+        <button class="decision-btn" data-d="golo" onclick="submitAnswer('golo')"><span class="emoji">⚽</span>Golo Válido</button>
+      </div>
+    </div>
+    <div class="waiting-note" id="waiting-note"></div>
+  </div>
+
+  <!-- SCREEN: REVEAL -->
+  <div id="screen-reveal" class="hidden">
+    <div class="round-head">
+      <span class="r" id="reveal-round-counter">DECISÃO DA RONDA</span>
+    </div>
+    <div class="notebook">
+      <div class="correct-banner">
+        <span class="emoji" id="reveal-emoji">⚽</span>
+        <div class="label" id="reveal-label">GOLO VÁLIDO</div>
+        <div class="expl" id="reveal-expl"></div>
+      </div>
+
+      <span class="field-label">Decisões da Equipa de Arbitragem</span>
+      <div id="reveal-answers"></div>
+
+      <div style="height:12px;"></div>
+      <span class="field-label">Classificação Atual</span>
+      <div id="reveal-scores"></div>
+
+      <div id="reveal-host-controls" style="margin-top:14px;">
+        <button class="btn-primary" id="next-round-btn" onclick="hostNextRound()">Próxima Ronda</button>
+      </div>
+      <div id="reveal-guest-note" class="hidden">
+        <p class="hint" style="margin-top:10px;">À espera que o Árbitro-Chefe avance...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: FINAL -->
+  <div id="screen-final" class="hidden">
+    <div class="hero">
+      <span class="whistle">🏆</span>
+      <h1>Fim de Jogo</h1>
+      <p>Classificação Final da Partida</p>
+    </div>
+    <div class="notebook">
+      <div id="final-scores"></div>
+      <button class="btn-primary" onclick="location.href=location.pathname" style="margin-top:10px;">Nova Partida</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
-let currentLang = 'pt';
-let currentChar = '';
-let xmarceloState = 'q1'; // Estado inicial para o xmarcelo
+/* ESTADO LOCAL */
+const playerId = 'p_' + Math.random().toString(36).slice(2, 10);
+let playerName = '';
+let roomCode = '';
+let isHost = false;
+let myScore = 0;
+let totalRounds = 8;
+let lastKnownMeta = null;
+let currentRoundIndex = -1;
+let hasSubmittedThisRound = false;
+let revealedRounds = new Set();
+let scoredRounds = new Set();
+let pollTimer = null;
+let countdownTimer = null;
+let scenarioOrderCache = null;
 
-const charsInfo = {
-    tung: { name: "Tung Tung Sahur", img: "tugntugnsahur.jpg" },
-    noob: { name: "Roblox Noob", img: "noob.png" },
-    luffy: { name: "Monkey D. Luffy", img: "odUtj (1).jpg" },
-    xmarcelo: { name: "xMarcelo", img: "image.png" },
-    wikipetan: { name: "Wikipe-tan", img: "Wikipe-tan_full_length.png" }
+const SCENARIOS = [
+  { id:1, x:50, y:50, goalSide:null, shot:false, correct:'nada', text:'O defesa central desarma a bola de forma limpa antes de tocar no adversário.', expl:'Contacto normal de jogo, a bola foi tocada primeiro. Não há qualquer infração.' },
+  { id:2, x:82, y:55, goalSide:'right', shot:false, correct:'penalti', text:'Dentro da grande área, o defesa agarra a camisola do avançado, impedindo-o de rematar.', expl:'Falta cometida dentro da própria área é sancionada com grande penalidade.' },
+  { id:3, x:45, y:35, goalSide:null, shot:false, correct:'vermelho', text:'A meio-campo, o médio entra com os pitons em cima da canela do adversário com força excessiva.', expl:'Entrada violenta com perigo para a integridade física: cartão vermelho direto.' },
+  { id:4, x:55, y:65, goalSide:null, shot:false, correct:'amarelo', text:'O lateral trava um contra-ataque promissor puxando a camisola do avançado a meio-campo.', expl:'Interromper um ataque promissor é sancionado com cartão amarelo.' },
+  { id:5, x:12, y:45, goalSide:'left', shot:true, correct:'golo', text:'O avançado recebe na área, ajeita e remata cruzado para o fundo das redes.', expl:'Lance limpo, sem faltas nem posição irregular: o golo é validado.' },
+  { id:6, x:28, y:52, goalSide:null, shot:false, correct:'vermelho', text:'O guarda-redes sai da área e trava com a mão um passe que isolava o avançado.', expl:'Mão deliberada fora da área a impedir uma oportunidade manifesta de golo (DOGSO): expulsão.' },
+  { id:7, x:50, y:25, goalSide:null, shot:false, correct:'falta', text:'O defesa comete uma falta tática simples a meio-campo, sem perigo iminente.', expl:'Infração simples: apenas livre direto, sem cartão.' },
+  { id:8, x:60, y:70, goalSide:null, shot:false, correct:'nada', text:'Dois jogadores disputam a bola pelo ar ombro a ombro e caem no relvado.', expl:'Disputa física normal e legal pela bola. Sem infração.' },
+  { id:9, x:85, y:50, goalSide:'right', shot:false, correct:'amarelo', text:'Dentro da área, o avançado simula uma falta atirando-se para o chão sem contacto.', expl:'Simulação é punida com cartão amarelo.' },
+  { id:10, x:15, y:60, goalSide:'left', shot:false, correct:'penalti', text:'Dentro da área, o defesa pontapeia o tornozelo do avançado sem atingir a bola.', expl:'Falta clara dentro da grande área: grande penalidade.' }
+];
+
+const DECISION_META = {
+  nada: { emoji:'⚪', label: 'Sem Infração' },
+  falta: { emoji:'🔵', label: 'Falta' },
+  amarelo: { emoji:'🟨', label: 'Cartão Amarelo' },
+  vermelho: { emoji:'🟥', label: 'Cartão Vermelho' },
+  penalti: { emoji:'🎯', label: 'Grande Penalidade' },
+  golo: { emoji:'⚽', label: 'Golo Válido' }
 };
 
-const fallbackMsg = {
-    pt: {
-        tung: [
-            "Literalmente sem ideia do que estás a dizer, mas slay.",
-            "Isso é sequer uma cena? Vou só beber o meu iced coffee em silêncio.",
-            "Perdi o fio à meada, repete lá isso mas com mais aesthetic.",
-            "Bestie, juro que não percebi. Traduz para linguagem Gen Z?",
-            "Vou fingir que entendi para manter a vibe intacta."
-        ],
-        noob: [
-            "OOF! Não percebi nada, o meu jogo está com bué lag!",
-            "Podes repetir? Um bacon hair acabou de me atirar uma bomba e eu não li!",
-            "Não sei o que isso significa... tens Robux grátis para mim?",
-            "O meu ping está a 9999, o chat bugou, podes dizer de novo?",
-            "Oof... acho que caí do mapa enquanto tentava ler isso."
-        ],
-        luffy: [
-            "Hã? Não percebi! Isso é algum tipo de carne?",
-            "Seja o que for que disseste, vamos mas é comer!",
-            "Estás a falar do One Piece? É que eu não percebi nada do que disseste!",
-            "Desculpa, estava a dormir de olhos abertos. O que dizias?",
-            "Isso parece complicado! Pergunta ao Robin, ela é que é inteligente!"
-        ],
-        xmarcelo: [
-            "Mano, não percebi nada do que disseste. Fala aí de novo!",
-            "Buguei agora. Estás a falar de que jogo?",
-            "Deixa lá isso, o importante é deixares o like no vídeo! Mas o que dizias?",
-            "Não entendi bem... estavas a falar de Roblox?",
-            "Isso dava um bom vídeo, mas não percebi a ideia."
-        ],
-        wikipetan: [
-            "Nani?! Desculpa, não consegui compreender o que escreveste.",
-            "Isso não soa a japonês nem a anime... podes explicar?",
-            "Gomen nasai (desculpa)! O meu vocabulário otaku falhou-me agora.",
-            "Não entendi, estavas a falar do último episódio de algum anime?",
-            "Hmm... vou pesquisar isso no MyAnimeList porque fiquei sem resposta."
-        ]
-    }
-};
+const ROUND_DURATION_S = 30;
 
-// BASE DE DADOS EXPANDIDA (5X MAIOR PARA UM CHAT SUPER FLUIDO EM PORTUGUÊS)
-const brain = {
-    pt: {
-        tung: [
-            { keys: ["oi", "ola", "olá", "boas", "viva", "hey", "alo", "alô", "bom dia"], ans: "Olá bestie! Como estão as vibes hoje?" },
-            { keys: ["tudo bem", "como tas", "como estás", "como andas"], ans: "Tudo top, super aesthetic. E contigo?" },
-            { keys: ["bom", "bem", "otimo", "ótimo", "fixe", "top", "perfeito"], ans: "Amo isso para ti! Eu estou só a tentar manter o aesthetic do meu dia." },
-            { keys: ["aesthetic", "vibe", "estilo", "look", "roupa", "outfit"], ans: "Isso é tão aesthetic, juro estou obcecada." },
-            { keys: ["cafe", "café", "iced", "drink", "beber", "starbucks"], ans: "Espera, deixa-me dar um gole no meu iced coffee matcha latte." },
-            { keys: ["mal", "triste", "trauma", "chorar", "deprimido"], ans: "Sinceramente, foca-te em ti bestie, afasta essa energia negativa." },
-            { keys: ["slay", "rainha", "tiktok", "viral", "trend"], ans: "Slay! Vamos um momento de main character para o TikTok!" },
-            { keys: ["cancelar", "toxico", "tóxico", "drama", "toxicidade", "fofoca"], ans: "Não precisamos dessa energia tóxica aqui, dá só block e segue." },
-            { keys: ["namorado", "ex", "relacionamento", "amor", "crush"], ans: "Se ele não combina com o teu outfit, não vale a pena, cancelado." },
-            { keys: ["compras", "shopping", "zara", "shein", "maquilhagem"], ans: "Fazer compras é literalmente a minha terapia, adoro." },
-            { keys: ["tchau", "adeus", "fui", "ate logo", "baza"], ans: "Já vais? Mantém a tua vibe impecável. Fica bem!" }
-        ],
-        noob: [
-            { keys: ["oi", "ola", "olá", "boas", "hey", "alo", "alô", "lobby"], ans: "OOF! Olá player, ainda bem que entraste neste servidor." },
-            { keys: ["robux", "dinheiro", "rico", "comprar", "robux gratis"], ans: "Robux?! Onde?! Eu vejo sempre jogos de Robux grátis mas é scam..." },
-            { keys: ["obby", "saltar", "parkour", "terror", "tycoon", "jogar"], ans: "OOF! Acabei de cair do obby! O meu botão de saltar encravou!" },
-            { keys: ["hacker", "ban", "admin", "reportar", "hack"], ans: "És um hacker?! Por favor não me dês ban, eu sou só um noob pacífico!" },
-            { keys: ["lag", "ping", "glitch", "bug", "net", "lento"], ans: "O meu ping está a 9999, o meu boneco encravou no chão! Socorro!" },
-            { keys: ["tycoon", "construir", "dropper", "upgrade"], ans: "Estou a tentar construir o meu Tycoon mas tenho zero dinheiro..." },
-            { keys: ["bacon", "guest", "noob", "pro", "tryhard"], ans: "Os bacon hairs são bué injustiçados, só tentamos sobreviver aos pros!" },
-            { keys: ["ganhar", "vitoria", "vencer", "primeiro"], ans: "Vocês ganham partidas? Eu sou sempre eliminado no início, oof." },
-            { keys: ["adopt me", "pets", "pet simulator", "trocar", "trade"], ans: "Alguém quer fazer trade de um pet lendário? Eu só tenho um cão comum!" },
-            { keys: ["brookhaven", "casa", "carro", "rp", "roleplay"], ans: "No Brookhaven as pessoas não param de me atropelar na passadeira!" },
-            { keys: ["tchau", "adeus", "fui", "sair", "quitar"], ans: "Vais sair do jogo? Vê lá se não perdes o save! Tchau!" }
-        ],
-        luffy: [
-            { keys: ["oi", "ola", "olá", "boas", "pirata", "mugiwara", "nakama"], ans: "Yo! Eu sou o Monkey D. Luffy, o homem que vai ser o Rei dos Piratas! Shishishi!" },
-            { keys: ["carne", "comida", "fome", "almoco", "jantar", "cozinhar"], ans: "ALGUÉM DISSE CARNE?! Eu consigo comer carne o dia todo! Onde está?!" },
-            { keys: ["sonho", "rei", "one piece", "tesouro", "grand line"], ans: "Eu vou encontrar o One Piece! Ninguém me vai parar!" },
-            { keys: ["sanji", "cozinheiro", "cozinha"], ans: "Sanji!!! Estou a morrer de fome! Faz-me aquela carne de monstro gigante!" },
-            { keys: ["zoro", "perdido", "espadachim", "marimo"], ans: "O Zoro deve ter-se perdido outra vez... Viste um gajo de cabelo verde?" },
-            { keys: ["nami", "navegadora", "mapa", "dinheiro", "berries"], ans: "A Nami vai bater-me se eu gastar o nosso dinheiro todo em carne..." },
-            { keys: ["chopper", "medico", "rena", "algodao", "doce"], ans: "O Chopper adora algodão doce! Mas ele é um ótimo médico!" },
-            { keys: ["gear", "haki", "luta", "soco", "batalha"], ans: "Gomu Gomu no... PISTOLA! Shishishi, vou derrotar qualquer inimigo!" },
-            { keys: ["marinha", "almirante", "akainu", "kizaru", "garp"], ans: "A Marinha? Não tenho medo deles! Eu enfrento qualquer marinheiro!" },
-            { keys: ["amigo", "entrar", "bando", "tripulacao"], ans: "Queres ser meu nakama?! Vamos ter aventuras incríveis no mar!" },
-            { keys: ["tchau", "adeus", "fui", "ilha", "ancora"], ans: "Shishishi! Vamos para a próxima ilha! Continua a seguir os teus sonhos!" }
-        ],
-        xmarcelo: [
-            { keys: ["youtube", "video", "canal", "subs", "inscritos", "likes"], ans: "Muito obrigado por acompanhares o canal! Já deixaste o like no vídeo de hoje?" },
-            { keys: ["jogar", "roblox", "minecraft", "gta", "roleplay"], ans: "Adoro jogar um pouco de tudo, mas os meus vídeos de Roblox costumam ser os mais épicos!" },
-            { keys: ["gravacao", "editar", "setup", "pc", "teclado"], ans: "Gravar vídeos dá trabalho, mas a edição e os memes valem a pena no final!" },
-            { keys: ["engracado", "rir", "piada", "meme", "risada"], ans: "Ahaha, tento sempre trazer aquele conteúdo para o pessoal se rir. É esse o espírito!" },
-            { keys: ["jogos", "preferido", "qual jogo"], ans: "Depende muito da vibe, mas vocês sabem que estou sempre pronto para grandes aventuras." },
-            { keys: ["rosto", "face reveal", "cara"], ans: "Isso é um segredo bem guardado! Quem sabe um dia, num marco muito especial de inscritos?" },
-            { keys: ["oi", "ola", "olá", "boas", "hey", "fala ai"], ans: "Boas! Tudo tranquilo por aí? Prontos para mais um dia cheio de vitórias?" },
-            { keys: ["tchau", "adeus", "fui", "vou dormir"], ans: "Fica bem! Vêmos-nos no próximo vídeo. Fui!" }
-        ],
-        wikipetan: [
-            { keys: ["oi", "ola", "olá", "boas", "konnichiwa", "ohayo"], ans: "Konnichiwa! Sou a Wikipe-tan, a tua assistente e deusa dos animes! Qual é o teu anime favorito?" },
-            { keys: ["anime", "manga", "mangá", "otaku", "waifu"], ans: "Eu amo a cultura otaku! Sabias que existem milhares de animes e mangás incríveis por explorar?" },
-            { keys: ["naruto", "ninja", "hokage", "sasuke", "sakura", "konoha"], ans: "Naruto é um clássico absoluto dos shounen! Dattebayo! A história de superação dele é fantástica." },
-            { keys: ["one piece", "luffy", "pirata", "zoro", "oda"], ans: "One Piece! A obra mestre de Eiichiro Oda. A construção de mundo (worldbuilding) é simplesmente inigualável." },
-            { keys: ["dragon ball", "goku", "vegeta", "kakaroto", "super saiyajin"], ans: "Dragon Ball definiu o género shounen moderno! O poder do Kamehameha marcou gerações inteiras." },
-            { keys: ["attack on titan", "shingeki", "eren", "mikasa", "levy", "tita"], ans: "Shingeki no Kyojin... Uma verdadeira montanha-russa de emoções. 'Shinzou wo Sasageyo!'" },
-            { keys: ["demon slayer", "kimetsu", "tanjiro", "nezuko", "hashira"], ans: "Kimetsu no Yaiba tem a melhor animação que o estúdio Ufotable já produziu. As cenas de luta são arte pura." },
-            { keys: ["isekai", "re zero", "sword art online", "sao", "mundo paralelo"], ans: "Ah, o género Isekai! Ser transportado para outro mundo é o sonho de qualquer otaku, não achas?" },
-            { keys: ["studio ghibli", "miyazaki", "totoro", "chihiro", "mononoke"], ans: "O Studio Ghibli cria as histórias mais mágicas e relaxantes de sempre. A Viagem de Chihiro é uma obra de arte." },
-            { keys: ["recomendar", "recomendacao", "diz um", "que anime"], ans: "Recomendo fortemente 'Fullmetal Alchemist: Brotherhood' se queres uma história perfeita, ou 'Spy x Family' para dar umas boas risadas!" },
-            { keys: ["tchau", "adeus", "fui", "sayonara", "mata ne"], ans: "Sayonara! Tem cuidado e não te esqueças de ver pelo menos um episódio antes de dormir!" }
-        ]
-    }
-};
-
-function setLang(lang) {
-    // Nesta versão expandida, o foco é em Português
+/* UI HELPERS */
+function show(id) {
+  ['screen-name', 'screen-choice', 'screen-lobby', 'screen-game', 'screen-reveal', 'screen-final']
+    .forEach(s => document.getElementById(s).classList.toggle('hidden', s !== id));
 }
 
-function openChat(charId) {
-    currentChar = charId;
-    document.getElementById('selection-screen').style.display = 'none';
-    document.getElementById('chat-screen').style.display = 'flex';
-    document.getElementById('chat-header-img').src = charsInfo[charId].img;
-    document.getElementById('chat-header-name').innerText = charsInfo[charId].name;
-    const chatMessages = document.getElementById('chat-messages');
-    chatMessages.innerHTML = `
-        <div class="typing-indicator" id="typing">
-            <div class="dots-container">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
-        </div>
-    `;
-    
-    // Reset estado do xmarcelo
-    xmarceloState = 'q1';
-
-    setTimeout(() => {
-        const initialMsg = {
-            tung: "Oi bestie! Como é que estão as vibes hoje?",
-            noob: "OOF! Olá! Estás pronto para jogar Roblox?!",
-            luffy: "YOO! Sou o Luffy! Tens carne para mim?!",
-            xmarcelo: "Boas pessoal! Para começar, um desafio: Qual é o jogo que eu mais jogo?\nA) Minecraft\nB) Roblox\nC) GTA V\nD) Fortnite",
-            wikipetan: "Konnichiwa! Prontos para falar sobre os melhores animes e mangás do momento?"
-        };
-        appendMessage('bot', initialMsg[currentChar]);
-    }, 800);
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function closeChat() {
-    document.getElementById('chat-screen').style.display = 'none';
-    document.getElementById('selection-screen').style.display = 'flex';
+function randomCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let out = '';
+  for(let i=0; i<5; i++) out += chars[Math.floor(Math.random()*chars.length)];
+  return out;
 }
 
-function shareSite() {
-    if (navigator.share) {
-        navigator.share({
-            title: document.title,
-            text: 'Vem conversar com o Tung, o Noob, o Luffy, o xMarcelo e a Wikipe-tan!',
-            url: window.location.href
-        }).catch(console.error);
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function shuffledScenarios(seed) {
+  if (scenarioOrderCache && scenarioOrderCache.seed === seed) return scenarioOrderCache.order;
+  const rng = mulberry32(seed);
+  const arr = SCENARIOS.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  scenarioOrderCache = { seed, order: arr };
+  return arr;
+}
+
+function scenarioForRound(seed, roundIdx) {
+  const order = shuffledScenarios(seed);
+  return order[roundIdx % order.length];
+}
+
+/* LOCALSTORAGE STORAGE API ENGINE */
+async function storageGet(key) {
+  try {
+    const res = localStorage.getItem(key);
+    return res ? JSON.parse(res) : null;
+  } catch(e) { return null; }
+}
+
+async function storageSet(key, obj) {
+  try {
+    localStorage.setItem(key, JSON.stringify(obj));
+    return true;
+  } catch(e) { return false; }
+}
+
+async function storageListPrefix(prefix) {
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith(prefix)) keys.push(k);
+  }
+  return keys;
+}
+
+async function getAllPlayers() {
+  const keys = await storageListPrefix(`refsim:${roomCode}:player:`);
+  const players = [];
+  for (const k of keys) {
+    const val = await storageGet(k);
+    if (val) players.push(val);
+  }
+  players.sort((a,b) => a.joinedAt - b.joinedAt);
+  return players;
+}
+
+async function getRoundAnswers(roundIdx) {
+  const keys = await storageListPrefix(`refsim:${roomCode}:answer:${roundIdx}:`);
+  const answers = [];
+  for (const k of keys) {
+    const val = await storageGet(k);
+    if (val) answers.push(val);
+  }
+  return answers;
+}
+
+/* VERIFICAÇÃO DE URL PARA ENTRADA DIRETA */
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const roomParam = params.get('room');
+  if (roomParam) {
+    document.getElementById('input-joincode').value = roomParam.toUpperCase();
+  }
+});
+
+/* FLUXO DE NAVEGAÇÃO */
+function goToLobbyChoice() {
+  const val = document.getElementById('input-name').value.trim();
+  if (!val) { alert('Escreve o teu nome de árbitro primeiro!'); return; }
+  playerName = val.slice(0, 16);
+  document.getElementById('choice-greeting').textContent = `Boa sorte, ${playerName}!`;
+  show('screen-choice');
+}
+
+async function createRoom() {
+  roomCode = randomCode();
+  totalRounds = parseInt(document.getElementById('input-rounds').value, 10);
+  isHost = true;
+  myScore = 0;
+
+  const meta = {
+    hostId: playerId,
+    started: false,
+    finished: false,
+    currentRound: 0,
+    totalRounds: totalRounds,
+    scenarioSeed: Math.floor(Math.random() * 1e9),
+    roundStartedAt: null
+  };
+
+  const ok = await storageSet(`refsim:${roomCode}:meta`, meta);
+  if(!ok) { alert('Erro ao criar a sala.'); return; }
+
+  await storageSet(`refsim:${roomCode}:player:${playerId}`, {
+    id: playerId, name: playerName, score: 0, joinedAt: Date.now()
+  });
+
+  document.getElementById('lobby-code').textContent = roomCode;
+  document.getElementById('lobby-host-controls').classList.remove('hidden');
+  document.getElementById('lobby-guest-note').classList.add('hidden');
+  show('screen-lobby');
+  startLobbyPolling();
+}
+
+async function joinRoomFlow() {
+  const code = document.getElementById('input-joincode').value.trim().toUpperCase();
+  if (code.length < 4) { alert('Escreve um código de sala válido.'); return; }
+  roomCode = code;
+
+  const meta = await storageGet(`refsim:${roomCode}:meta`);
+  if (!meta) { alert('Sala não encontrada! Confirma o código.'); return; }
+  if (meta.started) { alert('Essa partida já começou.'); return; }
+
+  const players = await getAllPlayers();
+  if (players.length >= 4) { alert('A sala já está cheia (máx. 4 jogadores).'); return; }
+
+  isHost = (meta.hostId === playerId);
+  totalRounds = meta.totalRounds;
+  myScore = 0;
+
+  await storageSet(`refsim:${roomCode}:player:${playerId}`, {
+    id: playerId, name: playerName, score: 0, joinedAt: Date.now()
+  });
+
+  document.getElementById('lobby-code').textContent = roomCode;
+  document.getElementById('lobby-host-controls').classList.add('hidden');
+  document.getElementById('lobby-guest-note').classList.remove('hidden');
+  show('screen-lobby');
+  startLobbyPolling();
+}
+
+function copyCode() {
+  navigator.clipboard.writeText(roomCode).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copiado!';
+    setTimeout(() => btn.textContent = 'Copiar Código', 1500);
+  });
+}
+
+function copyLink() {
+  const link = window.location.origin + window.location.pathname + '?room=' + roomCode;
+  navigator.clipboard.writeText(link).then(() => {
+    const btn = document.getElementById('copy-link-btn');
+    btn.textContent = 'Link Copiado!';
+    setTimeout(() => btn.textContent = 'Copiar Link', 1500);
+  });
+}
+
+/* LOBBY POLLING */
+function startLobbyPolling() {
+  clearInterval(pollTimer);
+  pollTimer = setInterval(pollLobby, 1000);
+  pollLobby();
+}
+
+async function pollLobby() {
+  const meta = await storageGet(`refsim:${roomCode}:meta`);
+  if (!meta) return;
+  lastKnownMeta = meta;
+
+  if (meta.started) {
+    clearInterval(pollTimer);
+    enterGameLoop();
+    return;
+  }
+
+  const players = await getAllPlayers();
+  const list = document.getElementById('lobby-players');
+  list.innerHTML = players.map(p => `
+    <li>
+      <span>${escapeHtml(p.name)}</span>
+      ${p.id === meta.hostId ? '<span class="tag">Árbitro-Chefe</span>' : ''}
+    </li>
+  `).join('');
+
+  if (isHost) {
+    const startBtn = document.getElementById('start-btn');
+    const hint = document.getElementById('host-wait-hint');
+    if (players.length >= 2) {
+      startBtn.disabled = false;
+      hint.textContent = `${players.length} jogadores na sala. Pronto para começar!`;
     } else {
-        alert('A partilha nativa não é suportada neste browser. Copia o link da página para partilhares!');
+      startBtn.disabled = true;
+      hint.textContent = 'É preciso pelo menos 2 jogadores para começar.';
     }
+  }
 }
 
-function handleEnter(e) {
-    if (e.key === 'Enter') sendMessage();
+async function startGame() {
+  const meta = await storageGet(`refsim:${roomCode}:meta`);
+  if (!meta) return;
+  meta.started = true;
+  meta.currentRound = 0;
+  meta.roundStartedAt = Date.now();
+  await storageSet(`refsim:${roomCode}:meta`, meta);
 }
 
-function sendMessage() {
-    const input = document.getElementById('user-input');
-    const text = input.value.trim();
-    if (!text) return;
-    appendMessage('user', text);
-    input.value = '';
-    showTypingIndicator();
-    
-    setTimeout(() => {
-        const reply = getBotResponse(text);
-        appendMessage('bot', reply);
-        hideTypingIndicator();
-    }, 1000 + Math.random() * 1000);
+/* CICLO DE JOGO */
+function enterGameLoop() {
+  currentRoundIndex = -1;
+  clearInterval(pollTimer);
+  pollTimer = setInterval(pollGame, 1000);
+  pollGame();
 }
 
-function appendMessage(sender, text) {
-    const chatMessages = document.getElementById('chat-messages');
-    const typingIndicator = document.getElementById('typing');
-    const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message', sender === 'user' ? 'msg-user' : 'msg-bot');
-    msgDiv.innerText = text;
-    chatMessages.insertBefore(msgDiv, typingIndicator);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
+async function pollGame() {
+  const meta = await storageGet(`refsim:${roomCode}:meta`);
+  if (!meta) return;
+  lastKnownMeta = meta;
+  totalRounds = meta.totalRounds;
 
-function showTypingIndicator() {
-    document.getElementById('typing').style.display = 'flex';
-    document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
-}
+  if (meta.finished) {
+    clearInterval(pollTimer);
+    clearInterval(countdownTimer);
+    await showFinalScreen();
+    return;
+  }
 
-function hideTypingIndicator() {
-    document.getElementById('typing').style.display = 'none';
-}
+  if (meta.currentRound !== currentRoundIndex) {
+    currentRoundIndex = meta.currentRound;
+    hasSubmittedThisRound = false;
+    enterRound(meta);
+    return;
+  }
 
-function getBotResponse(text) {
-    const cleanText = text.toLowerCase().replace(/[?!.,]/g, "");
+  if (!revealedRounds.has(currentRoundIndex)) {
+    const players = await getAllPlayers();
+    const answers = await getRoundAnswers(currentRoundIndex);
+    const elapsed = Date.now() - (meta.roundStartedAt || Date.now());
+    const timeUp = elapsed >= ROUND_DURATION_S * 1000;
+    const allAnswered = players.length > 0 && answers.length >= players.length;
 
-    // Lógica especial de Quiz para o xmarcelo
-    if (currentChar === 'xmarcelo') {
-        if (xmarceloState === 'q1') {
-            if (cleanText.includes('b') || cleanText.includes('roblox')) {
-                xmarceloState = 'normal';
-                return "Parabéns! Acertaste em cheio. \nO que achas do meu conteúdo e dos meus vídeos no canal?";
-            } else {
-                xmarceloState = 'q2';
-                return "Erraste! Vamos tentar outra.\nEm que plataforma eu faço os meus vídeos principais?\nA) Twitch\nB) YouTube\nC) TikTok\nD) Kick";
-            }
-        } else if (xmarceloState === 'q2') {
-            xmarceloState = 'normal';
-            if (cleanText.includes('b') || cleanText.includes('youtube')) {
-                return "Boa! YouTube é a resposta. \nMas bem, o que queres falar comigo agora?";
-            } else {
-                return "Ah, não! A resposta certa era YouTube. \nMas tranquilo, diz-me lá, queres falar sobre o quê?";
-            }
-        }
+    if (timeUp || allAnswered) {
+      revealedRounds.add(currentRoundIndex);
+      clearInterval(countdownTimer);
+      await revealRound(meta, players, answers);
     }
-
-    // Procura na base de dados normal
-    const charBrain = brain['pt'][currentChar] || [];
-    for (let i = 0; i < charBrain.length; i++) {
-        if (charBrain[i].keys.some(k => cleanText.includes(k))) {
-            return charBrain[i].ans;
-        }
-    }
-    
-    // Fallback
-    const fallbacks = fallbackMsg['pt'][currentChar];
-    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+  }
 }
+
+function enterRound(meta) {
+  show('screen-game');
+  const scenario = scenarioForRound(meta.scenarioSeed, currentRoundIndex);
+  document.getElementById('round-counter').textContent = `RONDA ${currentRoundIndex+1}/${meta.totalRounds}`;
+  document.getElementById('scenario-text').textContent = scenario.text;
+  document.getElementById('pitch-holder').innerHTML = renderPitchSVG(scenario);
+  document.getElementById('waiting-note').textContent = '';
+  
+  document.querySelectorAll('.decision-btn').forEach(btn => {
+    btn.disabled = false;
+    btn.classList.remove('chosen');
+  });
+
+  startCountdown(meta.roundStartedAt);
+}
+
+function startCountdown(roundStartedAt) {
+  clearInterval(countdownTimer);
+  const timerEl = document.getElementById('round-timer');
+  function tick() {
+    const elapsed = Date.now() - (roundStartedAt || Date.now());
+    const remaining = Math.max(0, ROUND_DURATION_S - Math.floor(elapsed/1000));
+    timerEl.textContent = remaining + 's';
+    timerEl.classList.toggle('low', remaining <= 10);
+    if (remaining <= 0) clearInterval(countdownTimer);
+  }
+  tick();
+  countdownTimer = setInterval(tick, 500);
+}
+
+async function submitAnswer(decision) {
+  if (hasSubmittedThisRound) return;
+  hasSubmittedThisRound = true;
+
+  document.querySelectorAll('.decision-btn').forEach(btn => {
+    btn.disabled = true;
+    btn.classList.toggle('chosen', btn.dataset.d === decision);
+  });
+
+  document.getElementById('waiting-note').textContent = 'Decisão registada! À espera dos outros árbitros...';
+
+  await storageSet(`refsim:${roomCode}:answer:${currentRoundIndex}:${playerId}`, {
+    playerId, name: playerName, decision, answeredAt: Date.now()
+  });
+}
+
+async function revealRound(meta, players, answers) {
+  const scenario = scenarioForRound(meta.scenarioSeed, currentRoundIndex);
+  const dm = DECISION_META[scenario.correct];
+
+  document.getElementById('reveal-round-counter').textContent = `RONDA ${currentRoundIndex+1}/${meta.totalRounds} - DECISÃO`;
+  document.getElementById('reveal-emoji').textContent = dm.emoji;
+  document.getElementById('reveal-label').textContent = dm.label.toUpperCase();
+  document.getElementById('reveal-expl').textContent = scenario.expl;
+
+  const answerByPlayer = {};
+  answers.forEach(a => answerByPlayer[a.playerId] = a.decision);
+
+  const rowsHtml = players.map(p => {
+    const given = answerByPlayer[p.id];
+    const correct = given === scenario.correct;
+    const givenMeta = given ? DECISION_META[given] : null;
+
+    return `
+      <div class="answer-row ${given ? (correct ? 'correct' : 'wrong') : ''}">
+        <div>
+          <div class="who">${escapeHtml(p.name)}${p.id === playerId ? ' (Tu)' : ''}</div>
+          <div class="said">${given ? (givenMeta.emoji + ' ' + givenMeta.label) : 'Não respondeu a tempo'}</div>
+        </div>
+        <div class="mark">${given ? (correct ? '✓ (+3)' : '✗ (0)') : '✗'}</div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('reveal-answers').innerHTML = rowsHtml;
+
+  if (!scoredRounds.has(currentRoundIndex)) {
+    scoredRounds.add(currentRoundIndex);
+    const myAnswer = answerByPlayer[playerId];
+    if (myAnswer === scenario.correct) {
+      myScore += 3;
+      const meRecord = await storageGet(`refsim:${roomCode}:player:${playerId}`);
+      if (meRecord) {
+        meRecord.score = myScore;
+        await storageSet(`refsim:${roomCode}:player:${playerId}`, meRecord);
+      }
+    }
+  }
+
+  await refreshRevealScores();
+
+  document.getElementById('reveal-host-controls').classList.toggle('hidden', !isHost);
+  document.getElementById('reveal-guest-note').classList.toggle('hidden', isHost);
+
+  const isLastRound = (currentRoundIndex + 1) >= meta.totalRounds;
+  document.getElementById('next-round-btn').textContent = isLastRound ? 'Ver Resultado Final' : 'Próxima Ronda';
+
+  show('screen-reveal');
+}
+
+async function refreshRevealScores() {
+  const players = await getAllPlayers();
+  const sorted = players.slice().sort((a,b) => b.score - a.score);
+  const topScore = sorted.length ? sorted[0].score : 0;
+
+  document.getElementById('reveal-scores').innerHTML = sorted.map(p => `
+    <div class="score-line ${p.score === topScore && topScore > 0 ? 'leader' : ''}">
+      <span>${p.score === topScore && topScore > 0 ? '👑 ' : ''}${escapeHtml(p.name)}${p.id === playerId ? ' (Tu)' : ''}</span>
+      <span class="pts">${p.score} PTS</span>
+    </div>
+  `).join('');
+}
+
+async function hostNextRound() {
+  const meta = await storageGet(`refsim:${roomCode}:meta`);
+  if (!meta) return;
+
+  const nextIdx = meta.currentRound + 1;
+  if (nextIdx >= meta.totalRounds) {
+    meta.finished = true;
+  } else {
+    meta.currentRound = nextIdx;
+    meta.roundStartedAt = Date.now();
+  }
+  await storageSet(`refsim:${roomCode}:meta`, meta);
+}
+
+async function showFinalScreen() {
+  const players = await getAllPlayers();
+  const sorted = players.slice().sort((a,b) => b.score - a.score);
+  const medals = ['🥇', '🥈', '🥉', '4º'];
+
+  document.getElementById('final-scores').innerHTML = sorted.map((p, i) => `
+    <div class="score-line ${i === 0 ? 'leader' : ''}">
+      <span>${medals[i] || ''} ${escapeHtml(p.name)}${p.id === playerId ? ' (Tu)' : ''}</span>
+      <span class="pts">${p.score} PTS</span>
+    </div>
+  `).join('');
+
+  show('screen-final');
+}
+
+/* DESENHO DO CAMPO (SVG) */
+function toX(px) { return 20 + (560 * px / 100); }
+function toY(py) { return 20 + (340 * py / 100); }
+
+function renderPitchSVG(scenario) {
+  const mx = toX(scenario.x);
+  const my = toY(scenario.y);
+  let shotLine = '';
+
+  if (scenario.shot) {
+    const goalX = scenario.goalSide === 'left' ? 22 : 578;
+    shotLine = `
+      <line x1="${mx}" y1="${my}" x2="${goalX}" y2="190" stroke="#00ff87" stroke-width="2" stroke-dasharray="6,4" opacity="0.9"/>
+      <circle cx="${goalX}" cy="190" r="5" fill="#00ff87"/>
+    `;
+  }
+
+  return `
+    <svg viewBox="0 0 600 380" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="600" height="380" rx="8" fill="#091a10"/>
+      <rect x="10" y="10" width="580" height="360" rx="4" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4"/>
+      <line x1="300" y1="10" x2="300" y2="370" stroke="#ffffff" stroke-width="2" opacity="0.4"/>
+      <circle cx="300" cy="190" r="46" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4"/>
+      <circle cx="300" cy="190" r="3" fill="#ffffff" opacity="0.6"/>
+      
+      <!-- Baliza + Área Esquerda -->
+      <rect x="10" y="90" width="100" height="200" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4"/>
+      <rect x="10" y="145" width="40" height="90" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4"/>
+      
+      <!-- Baliza + Área Direita -->
+      <rect x="490" y="90" width="100" height="200" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4"/>
+      <rect x="550" y="145" width="40" height="90" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4"/>
+      
+      ${shotLine}
+      
+      <!-- Marcador da Jogada -->
+      <circle cx="${mx}" cy="${my}" r="9" fill="#ff3355" opacity="0.85"/>
+      <circle class="marker-pulse" cx="${mx}" cy="${my}" r="9" fill="#ff3355"/>
+      <circle cx="${mx-12}" cy="${my+8}" r="7" fill="#f3d053" stroke="#000" stroke-width="1.5"/>
+      <circle cx="${mx+12}" cy="${my-6}" r="7" fill="#00e5ff" stroke="#000" stroke-width="1.5"/>
+    </svg>
+  `;
+}
+
+/* ATALHOS TECLADO */
+document.getElementById('input-name').addEventListener('keydown', e => { if (e.key === 'Enter') goToLobbyChoice(); });
+document.getElementById('input-joincode').addEventListener('keydown', e => { if (e.key === 'Enter') joinRoomFlow(); });
 </script>
 </body>
 </html>
