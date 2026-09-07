@@ -3,36 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Simulador de Árbitro - EA FC Style</title>
+<title>Simulador de Árbitro - EA FC Matchday</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Teko:wght@600;700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --ea-bg: #090c12;
-  --ea-card: #121824;
-  --ea-card-border: rgba(255, 255, 255, 0.12);
-  --ea-green: #00ff87;
-  --ea-green-dark: #00b359;
-  --ea-cyan: #00e5ff;
-  --ea-gold: #f3d053;
-  --ea-red: #ff3355;
-  --ea-text: #ffffff;
-  --ea-text-dim: #8c9b32;
-  --paper-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  --bg-dark: #0B0E14;
+  --card-bg: #141A24;
+  --card-border: rgba(255, 255, 255, 0.08);
+  --accent-gold: #D4AF37;
+  --accent-green: #22C55E;
+  --accent-blue: #3B82F6;
+  --accent-red: #EF4444;
+  --whatsapp-green: #25D366;
+  --text-main: #FFFFFF;
+  --text-muted: #94A3B8;
+  --pitch-grass: #132E1B;
+  --pitch-lines: rgba(255, 255, 255, 0.6);
 }
 
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
 
 body {
-  margin: 0;
   min-height: 100vh;
   font-family: 'Inter', system-ui, sans-serif;
-  color: var(--ea-text);
-  background: var(--ea-bg);
+  color: var(--text-main);
+  background: var(--bg-dark);
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(0, 255, 135, 0.15) 0%, transparent 60%),
-    linear-gradient(135deg, #05070a 0%, #0d131d 100%);
+    radial-gradient(circle at 50% 0%, rgba(30, 58, 138, 0.25) 0%, transparent 70%),
+    linear-gradient(180deg, #07090E 0%, #0F1520 100%);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -48,7 +48,7 @@ h1, h2, h3 {
   font-family: 'Teko', sans-serif;
   text-transform: uppercase;
   margin: 0;
-  letter-spacing: .05em;
+  letter-spacing: .04em;
   line-height: 0.95;
 }
 
@@ -57,52 +57,55 @@ h1, h2, h3 {
   margin-bottom: 20px;
 }
 
-.hero .whistle {
-  font-size: 48px;
+.hero .icon-badge {
   display: inline-block;
-  filter: drop-shadow(0 0 12px rgba(0,255,135,0.4));
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid var(--accent-gold);
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  line-height: 54px;
+  font-size: 26px;
+  margin-bottom: 8px;
 }
 
 .hero h1 {
-  color: var(--ea-text);
-  font-size: 42px;
+  color: var(--text-main);
+  font-size: 38px;
   font-weight: 700;
-  font-style: italic;
-  margin-top: 4px;
-  text-shadow: 0 0 20px rgba(0, 255, 135, 0.3);
-}
-
-.hero p {
-  color: #a0aec0;
-  font-size: 14px;
-  margin: 4px 0 0;
-  font-weight: 600;
-  text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
+.hero p {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin: 4px 0 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 .notebook {
-  background: var(--ea-card);
+  background: var(--card-bg);
   border-radius: 12px;
-  box-shadow: var(--paper-shadow);
-  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  padding: 22px;
   position: relative;
-  border: 1px solid var(--ea-card-border);
-  backdrop-filter: blur(10px);
+  border: 1px solid var(--card-border);
 }
 
 .notebook::before {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--ea-green), var(--ea-cyan));
+  background: linear-gradient(90deg, var(--accent-gold), var(--accent-blue));
   border-radius: 12px 12px 0 0;
 }
 
 .field-label {
   font-size: 11px;
   font-weight: 700;
-  color: var(--ea-green);
+  color: var(--accent-gold);
   margin-bottom: 6px;
   display: block;
   text-transform: uppercase;
@@ -116,22 +119,21 @@ input[type=text], select {
   font-weight: 600;
   padding: 12px 14px;
   border-radius: 6px;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: #0a0e17;
-  color: var(--ea-text);
-  margin-bottom: 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: #0A0D14;
+  color: var(--text-main);
+  margin-bottom: 14px;
   transition: all 0.2s;
 }
 
 input[type=text]:focus, select:focus {
   outline: none;
-  border-color: var(--ea-green);
-  box-shadow: 0 0 10px rgba(0,255,135,0.3);
+  border-color: var(--accent-gold);
 }
 
 button {
   font-family: 'Teko', sans-serif;
-  font-size: 20px;
+  font-size: 21px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   cursor: pointer;
@@ -142,165 +144,177 @@ button {
 
 .btn-primary {
   width: 100%;
-  background: var(--ea-green);
+  background: var(--accent-gold);
   color: #000;
   font-weight: 700;
-  padding: 12px;
-  box-shadow: 0 0 15px rgba(0, 255, 135, 0.3);
+  padding: 10px;
 }
 
-.btn-primary:hover {
-  background: #1aff96;
-  transform: translateY(-1px);
+.btn-primary:hover { background: #e0be47; }
+.btn-primary:disabled { background: #2A3444; color: #5A697B; cursor: not-allowed; }
+
+.btn-whatsapp {
+  width: 100%;
+  background: var(--whatsapp-green);
+  color: #FFFFFF;
+  font-weight: 700;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
 }
 
-.btn-primary:disabled {
-  background: #2a3848;
-  color: #6c7a89;
-  cursor: not-allowed;
-  box-shadow: none;
-}
+.btn-whatsapp:hover { background: #20bd5a; }
 
 .btn-secondary {
   width: 100%;
   background: rgba(255,255,255,0.05);
-  color: var(--ea-text);
+  color: var(--text-main);
   font-weight: 600;
-  padding: 12px;
-  border: 1px solid rgba(255,255,255,0.15);
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
   margin-top: 10px;
 }
 
-.btn-secondary:hover {
-  background: rgba(255,255,255,0.1);
-  border-color: var(--ea-green);
-}
+.btn-secondary:hover { background: rgba(255,255,255,0.08); }
 
-.btn-row { display: flex; gap: 10px; margin-top: 10px; }
+.btn-row { display: flex; gap: 8px; margin-top: 8px; }
 .btn-row > button { flex: 1; margin-top: 0; }
 
 .room-code {
   font-family: 'Teko', sans-serif;
-  font-size: 42px;
+  font-size: 40px;
   letter-spacing: .15em;
   text-align: center;
-  color: var(--ea-gold);
-  background: #080c14;
-  border: 1px solid var(--ea-gold);
+  color: var(--accent-gold);
+  background: #090C12;
+  border: 1px solid rgba(212, 175, 55, 0.4);
   border-radius: 8px;
-  padding: 8px;
+  padding: 6px;
   margin: 8px 0;
-  text-shadow: 0 0 10px rgba(243, 208, 83, 0.3);
 }
 
 .hint {
   font-size: 12px;
-  color: #8c9ba5;
+  color: var(--text-muted);
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   line-height: 1.4;
 }
 
-.player-list { list-style: none; margin: 0 0 18px; padding: 0; }
+.player-list { list-style: none; margin: 0 0 16px; padding: 0; }
 .player-list li {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 14px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 8px;
-  border: 1px solid rgba(255,255,255,0.08); font-weight: 600; font-size: 14px;
+  padding: 10px 12px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 6px;
+  border: 1px solid rgba(255,255,255,0.06); font-weight: 600; font-size: 14px;
 }
 
 .player-list .tag {
-  font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
-  color: #000; background: var(--ea-gold); padding: 2px 6px; border-radius: 4px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  color: #000; background: var(--accent-gold); padding: 2px 6px; border-radius: 4px;
 }
 
 .round-head {
   display: flex; justify-content: space-between; align-items: center;
-  color: var(--ea-text); margin-bottom: 12px; padding: 0 4px;
+  color: var(--text-main); margin-bottom: 10px; padding: 0 2px;
 }
 
 .round-head .r {
-  font-family: 'Teko', sans-serif; font-size: 24px; letter-spacing: .05em; color: var(--ea-green);
+  font-family: 'Teko', sans-serif; font-size: 24px; color: var(--accent-gold);
 }
 
 .timer {
-  font-family: 'Teko', sans-serif; font-size: 22px; color: var(--ea-text);
-  background: rgba(0,0,0,0.6); padding: 2px 12px; border-radius: 4px;
-  border: 1px solid rgba(255,255,255,0.2);
+  font-family: 'Teko', sans-serif; font-size: 22px; color: var(--text-main);
+  background: rgba(0,0,0,0.5); padding: 2px 10px; border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.15);
 }
 
-.timer.low { color: var(--ea-red); border-color: var(--ea-red); }
+.timer.low { color: var(--accent-red); border-color: var(--accent-red); }
 
 .pitch-wrap {
-  background: #0b1a10;
+  background: var(--pitch-grass);
   border-radius: 8px;
   padding: 6px;
-  border: 1px solid var(--ea-card-border);
-  margin-bottom: 14px;
+  border: 1px solid var(--card-border);
+  margin-bottom: 12px;
 }
 
 .pitch-wrap svg { display: block; width: 100%; height: auto; border-radius: 6px; }
 
 .scenario-text {
-  font-size: 14px; line-height: 1.5; color: #d0d7de;
-  background: #0d131d; border-radius: 8px; padding: 14px;
-  margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.1);
+  font-size: 14px; line-height: 1.45; color: #E2E8F0;
+  background: #0D121B; border-radius: 8px; padding: 12px 14px;
+  margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.08);
 }
 
 .decision-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px;
 }
 
 .decision-btn {
-  padding: 12px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.04); font-weight: 700; font-size: 16px; color: var(--ea-text);
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 10px 6px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04); font-weight: 700; font-size: 15px; color: var(--text-main);
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
 }
 
-.decision-btn .emoji { font-size: 20px; }
-.decision-btn:hover { background: rgba(0, 255, 135, 0.15); border-color: var(--ea-green); }
+.decision-btn .emoji { font-size: 18px; }
+.decision-btn:hover { background: rgba(212, 175, 55, 0.15); border-color: var(--accent-gold); }
 .decision-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.decision-btn.chosen { background: var(--ea-green); color: #000; border-color: var(--ea-green); }
+.decision-btn.chosen { background: var(--accent-gold); color: #000; border-color: var(--accent-gold); }
 
-.waiting-note { text-align: center; color: var(--ea-gold); font-size: 13px; margin-top: 10px; }
+.waiting-note { text-align: center; color: var(--accent-gold); font-size: 13px; margin-top: 8px; }
 
 .correct-banner {
-  background: rgba(0, 255, 135, 0.1); border: 1px solid var(--ea-green); color: var(--ea-text);
-  border-radius: 8px; padding: 14px; margin-bottom: 14px; text-align: center;
+  background: rgba(34, 197, 94, 0.1); border: 1px solid var(--accent-green); color: var(--text-main);
+  border-radius: 8px; padding: 12px; margin-bottom: 12px; text-align: center;
 }
 
-.correct-banner .emoji { font-size: 28px; display: block; margin-bottom: 4px; }
-.correct-banner .label { font-family: 'Teko', sans-serif; font-size: 26px; color: var(--ea-green); }
-.correct-banner .expl { font-size: 13px; color: #a0aec0; margin-top: 6px; line-height: 1.4; }
+.correct-banner .emoji { font-size: 26px; display: block; margin-bottom: 2px; }
+.correct-banner .label { font-family: 'Teko', sans-serif; font-size: 26px; color: var(--accent-green); }
+.correct-banner .expl { font-size: 13px; color: var(--text-muted); margin-top: 4px; line-height: 1.35; }
 
 .answer-row {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 12px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 8px;
-  border: 1px solid rgba(255,255,255,0.08);
+  padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 6px;
+  border: 1px solid rgba(255,255,255,0.06);
 }
 
-.answer-row.correct { border-color: var(--ea-green); background: rgba(0,255,135,0.08); }
-.answer-row.wrong { border-color: var(--ea-red); background: rgba(255,51,85,0.08); }
+.answer-row.correct { border-color: var(--accent-green); background: rgba(34,197,94,0.08); }
+.answer-row.wrong { border-color: var(--accent-red); background: rgba(239,68,68,0.08); }
 .answer-row .who { font-weight: 700; font-size: 13px; }
-.answer-row .said { font-size: 12px; color: #a0aec0; }
-.answer-row .mark { font-weight: 900; font-size: 16px; }
+.answer-row .said { font-size: 12px; color: var(--text-muted); }
+.answer-row .mark { font-weight: 800; font-size: 15px; }
 
 .score-line {
-  display: flex; justify-content: space-between; padding: 10px 12px;
+  display: flex; justify-content: space-between; padding: 8px 12px;
   background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 6px;
-  border: 1px solid rgba(255,255,255,0.08); font-weight: 700; font-size: 14px; align-items: center;
+  border: 1px solid rgba(255,255,255,0.06); font-weight: 700; font-size: 14px; align-items: center;
 }
 
-.score-line .pts { font-family: 'Teko', sans-serif; font-size: 22px; color: var(--ea-green); }
-.score-line.leader { border-color: var(--ea-gold); background: rgba(243, 208, 83, 0.08); }
+.score-line .pts { font-family: 'Teko', sans-serif; font-size: 22px; color: var(--accent-gold); }
+.score-line.leader { border-color: var(--accent-gold); background: rgba(212, 175, 55, 0.08); }
+
+.auto-join-banner {
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid var(--accent-blue);
+  color: #93C5FD;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  text-align: center;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
 
 .hidden { display: none !important; }
 
-@keyframes markerPulse {
-  0% { r: 9; opacity: .9; }
-  70% { r: 20; opacity: 0; }
-  100% { r: 9; opacity: 0; }
+@keyframes pulseImpact {
+  0% { r: 6; opacity: .9; }
+  100% { r: 22; opacity: 0; }
 }
-.marker-pulse { animation: markerPulse 1.6s ease-out infinite; transform-origin: center; }
+.pulse-impact { animation: pulseImpact 1.5s ease-out infinite; transform-origin: center; }
 </style>
 </head>
 <body>
@@ -309,12 +323,15 @@ button {
   <!-- SCREEN: NAME -->
   <div id="screen-name">
     <div class="hero">
-      <span class="whistle">⚽</span>
-      <h1>Simulador de Árbitro</h1>
-      <p>EA FC Match Official Edition</p>
+      <div class="icon-badge">⚽</div>
+      <h1>SIMULADOR DE ÁRBITRO</h1>
+      <p>Match Official VAR Simulator</p>
     </div>
     <div class="notebook">
-      <span class="field-label">Nome do Árbitro</span>
+      <div id="invite-notice" class="auto-join-banner hidden">
+        Convite de partida detetado! Escreve o teu nome para entrares automaticamente.
+      </div>
+      <span class="field-label">O teu Nome de Árbitro</span>
       <input type="text" id="input-name" maxlength="16" placeholder="Ex: Árbitro Silva" autocomplete="off">
       <button class="btn-primary" onclick="goToLobbyChoice()">Continuar</button>
     </div>
@@ -323,22 +340,22 @@ button {
   <!-- SCREEN: CREATE OR JOIN -->
   <div id="screen-choice" class="hidden">
     <div class="hero">
-      <span class="whistle">🎮</span>
-      <h1>Nova Partida</h1>
+      <div class="icon-badge">📋</div>
+      <h1>NOVA PARTIDA</h1>
       <p id="choice-greeting">Cria uma sala ou junta-te a uma</p>
     </div>
     <div class="notebook">
-      <span class="field-label">Número de rondas (se fores criar)</span>
+      <span class="field-label">Duração do Jogo (Se fores Criar)</span>
       <select id="input-rounds">
-        <option value="5">5 rondas - Jogo Rápido</option>
-        <option value="8" selected>8 rondas - Normal</option>
-        <option value="12">12 rondas - Longo</option>
+        <option value="5">5 Rondas - Rápido</option>
+        <option value="8" selected>8 Rondas - Normal</option>
+        <option value="12">12 Rondas - Completo</option>
       </select>
-      <button class="btn-primary" onclick="createRoom()">Criar Sala</button>
+      <button class="btn-primary" onclick="createRoom()">Criar Nova Sala</button>
       
-      <div style="height:20px;"></div>
+      <div style="height:18px;"></div>
       
-      <span class="field-label">Ou entra com um código</span>
+      <span class="field-label">Ou Entra com Código</span>
       <input type="text" id="input-joincode" maxlength="5" placeholder="Ex: A7K2M" autocomplete="off" style="text-transform:uppercase;">
       <button class="btn-secondary" onclick="joinRoomFlow()">Entrar na Sala</button>
     </div>
@@ -347,30 +364,34 @@ button {
   <!-- SCREEN: LOBBY -->
   <div id="screen-lobby" class="hidden">
     <div class="hero">
-      <span class="whistle">🟨</span>
-      <h1>Sala de Espera</h1>
-      <p>Partilha o código ou o link direto com amigos</p>
+      <div class="icon-badge">🟨</div>
+      <h1>SALA DE ESPERA</h1>
+      <p>Convida a tua equipa de arbitragem</p>
     </div>
     <div class="notebook">
-      <span class="field-label">Código da sala</span>
+      <span class="field-label">Código da Sala</span>
       <div class="room-code" id="lobby-code">-----</div>
       
+      <button class="btn-whatsapp" onclick="shareWhatsApp()">
+        <span>💬</span> Partilhar no WhatsApp
+      </button>
+
       <div class="btn-row">
         <button class="btn-secondary" onclick="copyCode()" id="copy-btn">Copiar Código</button>
         <button class="btn-secondary" onclick="copyLink()" id="copy-link-btn">Copiar Link</button>
       </div>
 
-      <p class="hint" style="margin-top:10px;">Até 4 jogadores na mesma partida.</p>
+      <p class="hint" style="margin-top:10px;">Quem clicar no link do WhatsApp entra diretamente na tua sala!</p>
 
-      <span class="field-label">Árbitros Conectados</span>
+      <span class="field-label">Árbitros Ligados</span>
       <ul class="player-list" id="lobby-players"></ul>
 
       <div id="lobby-host-controls">
-        <button class="btn-primary" id="start-btn" onclick="startGame()">Iniciar Jogo</button>
-        <p class="hint" id="host-wait-hint" style="margin-top:8px;">É preciso pelo menos 2 jogadores para começar.</p>
+        <button class="btn-primary" id="start-btn" onclick="startGame()">Iniciar Partida</button>
+        <p class="hint" id="host-wait-hint" style="margin-top:6px;">É preciso pelo menos 2 jogadores para começar.</p>
       </div>
       <div id="lobby-guest-note" class="hidden">
-        <p class="hint">À espera que o Árbitro-Chefe inicie a partida...</p>
+        <p class="hint">À espera que o Árbitro-Chefe inicie o jogo...</p>
       </div>
     </div>
   </div>
@@ -389,7 +410,7 @@ button {
         <button class="decision-btn" data-d="falta" onclick="submitAnswer('falta')"><span class="emoji">🔵</span>Falta</button>
         <button class="decision-btn" data-d="amarelo" onclick="submitAnswer('amarelo')"><span class="emoji">🟨</span>Cartão Amarelo</button>
         <button class="decision-btn" data-d="vermelho" onclick="submitAnswer('vermelho')"><span class="emoji">🟥</span>Cartão Vermelho</button>
-        <button class="decision-btn" data-d="penalti" onclick="submitAnswer('penalti')"><span class="emoji">🎯</span>Grande Penalidade</button>
+        <button class="decision-btn" data-d="penalti" onclick="submitAnswer('penalti')"><span class="emoji">🎯</span>Penálti</button>
         <button class="decision-btn" data-d="golo" onclick="submitAnswer('golo')"><span class="emoji">⚽</span>Golo Válido</button>
       </div>
     </div>
@@ -399,7 +420,7 @@ button {
   <!-- SCREEN: REVEAL -->
   <div id="screen-reveal" class="hidden">
     <div class="round-head">
-      <span class="r" id="reveal-round-counter">DECISÃO DA RONDA</span>
+      <span class="r" id="reveal-round-counter">DECISÃO VAR</span>
     </div>
     <div class="notebook">
       <div class="correct-banner">
@@ -408,18 +429,18 @@ button {
         <div class="expl" id="reveal-expl"></div>
       </div>
 
-      <span class="field-label">Decisões da Equipa de Arbitragem</span>
+      <span class="field-label">Decisões Registadas</span>
       <div id="reveal-answers"></div>
 
-      <div style="height:12px;"></div>
-      <span class="field-label">Classificação Atual</span>
+      <div style="height:10px;"></div>
+      <span class="field-label">Tabela de Pontuação</span>
       <div id="reveal-scores"></div>
 
-      <div id="reveal-host-controls" style="margin-top:14px;">
-        <button class="btn-primary" id="next-round-btn" onclick="hostNextRound()">Próxima Ronda</button>
+      <div id="reveal-host-controls" style="margin-top:12px;">
+        <button class="btn-primary" id="next-round-btn" onclick="hostNextRound()">Próxima Jogada</button>
       </div>
       <div id="reveal-guest-note" class="hidden">
-        <p class="hint" style="margin-top:10px;">À espera que o Árbitro-Chefe avance...</p>
+        <p class="hint" style="margin-top:8px;">À espera que o Árbitro-Chefe avance...</p>
       </div>
     </div>
   </div>
@@ -427,9 +448,9 @@ button {
   <!-- SCREEN: FINAL -->
   <div id="screen-final" class="hidden">
     <div class="hero">
-      <span class="whistle">🏆</span>
-      <h1>Fim de Jogo</h1>
-      <p>Classificação Final da Partida</p>
+      <div class="icon-badge">🏆</div>
+      <h1>FIM DE JOGO</h1>
+      <p>Classificação Final do Painel de Arbitragem</p>
     </div>
     <div class="notebook">
       <div id="final-scores"></div>
@@ -444,6 +465,7 @@ button {
 const playerId = 'p_' + Math.random().toString(36).slice(2, 10);
 let playerName = '';
 let roomCode = '';
+let autoJoinCode = null;
 let isHost = false;
 let myScore = 0;
 let totalRounds = 8;
@@ -456,22 +478,111 @@ let pollTimer = null;
 let countdownTimer = null;
 let scenarioOrderCache = null;
 
+/* CENÁRIOS COM DADOS VISUAIS TÁTICOS (Atacantes, Defesas, Bola e Ação) */
 const SCENARIOS = [
-  { id:1, x:50, y:50, goalSide:null, shot:false, correct:'nada', text:'O defesa central desarma a bola de forma limpa antes de tocar no adversário.', expl:'Contacto normal de jogo, a bola foi tocada primeiro. Não há qualquer infração.' },
-  { id:2, x:82, y:55, goalSide:'right', shot:false, correct:'penalti', text:'Dentro da grande área, o defesa agarra a camisola do avançado, impedindo-o de rematar.', expl:'Falta cometida dentro da própria área é sancionada com grande penalidade.' },
-  { id:3, x:45, y:35, goalSide:null, shot:false, correct:'vermelho', text:'A meio-campo, o médio entra com os pitons em cima da canela do adversário com força excessiva.', expl:'Entrada violenta com perigo para a integridade física: cartão vermelho direto.' },
-  { id:4, x:55, y:65, goalSide:null, shot:false, correct:'amarelo', text:'O lateral trava um contra-ataque promissor puxando a camisola do avançado a meio-campo.', expl:'Interromper um ataque promissor é sancionado com cartão amarelo.' },
-  { id:5, x:12, y:45, goalSide:'left', shot:true, correct:'golo', text:'O avançado recebe na área, ajeita e remata cruzado para o fundo das redes.', expl:'Lance limpo, sem faltas nem posição irregular: o golo é validado.' },
-  { id:6, x:28, y:52, goalSide:null, shot:false, correct:'vermelho', text:'O guarda-redes sai da área e trava com a mão um passe que isolava o avançado.', expl:'Mão deliberada fora da área a impedir uma oportunidade manifesta de golo (DOGSO): expulsão.' },
-  { id:7, x:50, y:25, goalSide:null, shot:false, correct:'falta', text:'O defesa comete uma falta tática simples a meio-campo, sem perigo iminente.', expl:'Infração simples: apenas livre direto, sem cartão.' },
-  { id:8, x:60, y:70, goalSide:null, shot:false, correct:'nada', text:'Dois jogadores disputam a bola pelo ar ombro a ombro e caem no relvado.', expl:'Disputa física normal e legal pela bola. Sem infração.' },
-  { id:9, x:85, y:50, goalSide:'right', shot:false, correct:'amarelo', text:'Dentro da área, o avançado simula uma falta atirando-se para o chão sem contacto.', expl:'Simulação é punida com cartão amarelo.' },
-  { id:10, x:15, y:60, goalSide:'left', shot:false, correct:'penalti', text:'Dentro da área, o defesa pontapeia o tornozelo do avançado sem atingir a bola.', expl:'Falta clara dentro da grande área: grande penalidade.' }
+  { 
+    id:1, 
+    correct:'nada', 
+    text:'O defesa central desarma a bola de forma limpa com um carrinho antes de haver qualquer contacto com o avançado.', 
+    expl:'Contacto legal de jogo. A bola foi tocada claramente em primeiro lugar. Não há infração.',
+    tactics: {
+      ball: {x: 62, y: 50},
+      attacker: {x: 65, y: 48, label: 'A'},
+      defender: {x: 60, y: 52, label: 'D'},
+      gk: {x: 92, y: 50},
+      actionType: 'clean_tackle',
+      vector: {x1: 65, y1: 48, x2: 55, y2: 35}
+    }
+  },
+  { 
+    id:2, 
+    correct:'penalti', 
+    text:'Dentro da grande área, o defesa agarra ruidosamente a camisola do avançado impedindo o remate à baliza.', 
+    expl:'Falta clara cometida dentro da grande área. Sancionada obrigatoriamente com Grande Penalidade.',
+    tactics: {
+      ball: {x: 82, y: 45},
+      attacker: {x: 80, y: 45, label: 'A'},
+      defender: {x: 82, y: 47, label: 'D'},
+      gk: {x: 95, y: 50},
+      actionType: 'foul_zone',
+      vector: {x1: 80, y1: 45, x2: 88, y2: 48}
+    }
+  },
+  { 
+    id:3, 
+    correct:'vermelho', 
+    text:'A meio-campo, o médio entra de sola com os pitons diretamente na canela do adversário com força excessiva.', 
+    expl:'Entrada violenta com perigo grave para a integridade física do adversário: Cartão Vermelho direto.',
+    tactics: {
+      ball: {x: 48, y: 35},
+      attacker: {x: 52, y: 35, label: 'A'},
+      defender: {x: 46, y: 35, label: 'D'},
+      gk: {x: 92, y: 50},
+      actionType: 'hard_foul',
+      vector: {x1: 46, y1: 35, x2: 50, y2: 35}
+    }
+  },
+  { 
+    id:4, 
+    correct:'amarelo', 
+    text:'O lateral corta um contra-ataque promissor puxando deliberadamente o braço do avançado a meio-campo.', 
+    expl:'Interrupção deliberada de um ataque promissor (SPA) é sancionada com Cartão Amarelo.',
+    tactics: {
+      ball: {x: 55, y: 68},
+      attacker: {x: 58, y: 68, label: 'A'},
+      defender: {x: 52, y: 66, label: 'D'},
+      gk: {x: 92, y: 50},
+      actionType: 'foul_zone',
+      vector: {x1: 52, y1: 66, x2: 56, y2: 68}
+    }
+  },
+  { 
+    id:5, 
+    correct:'golo', 
+    text:'O avançado recebe o passe na área em posição regular e desfere um remate forte para o fundo das redes.', 
+    expl:'Lance totalmente limpo, sem fora de jogo nem faltas. O golo é válido.',
+    tactics: {
+      ball: {x: 94, y: 50},
+      attacker: {x: 75, y: 55, label: 'A'},
+      defender: {x: 78, y: 40, label: 'D'},
+      gk: {x: 92, y: 54},
+      actionType: 'shot_goal',
+      vector: {x1: 75, y1: 55, x2: 95, y2: 50}
+    }
+  },
+  { 
+    id:6, 
+    correct:'vermelho', 
+    text:'O guarda-redes sai da grande área e corta intencionalmente com a mão a bola que ia isolar o avançado.', 
+    expl:'Mão deliberada fora da área a anular uma oportunidade manifesta de golo (DOGSO): Cartão Vermelho.',
+    tactics: {
+      ball: {x: 28, y: 50},
+      attacker: {x: 24, y: 52, label: 'A'},
+      defender: {x: 28, y: 48, label: 'GR'},
+      gk: {x: 8, y: 50},
+      actionType: 'hard_foul',
+      vector: {x1: 24, y1: 52, x2: 32, y2: 48}
+    }
+  },
+  { 
+    id:7, 
+    correct:'penalti', 
+    text:'Cruzamento para a área e o defesa central salta desamparado esticando o braço e cortando a bola com a mão.', 
+    expl:'Mão em posição não natural a volumetrizar o corpo dentro da área: Grande Penalidade.',
+    tactics: {
+      ball: {x: 84, y: 38},
+      attacker: {x: 80, y: 35, label: 'A'},
+      defender: {x: 84, y: 38, label: 'D'},
+      gk: {x: 92, y: 50},
+      actionType: 'foul_zone',
+      vector: {x1: 70, y1: 20, x2: 84, y2: 38}
+    }
+  }
 ];
 
 const DECISION_META = {
   nada: { emoji:'⚪', label: 'Sem Infração' },
-  falta: { emoji:'🔵', label: 'Falta' },
+  falta: { emoji:'🔵', label: 'Falta Direta' },
   amarelo: { emoji:'🟨', label: 'Cartão Amarelo' },
   vermelho: { emoji:'🟥', label: 'Cartão Vermelho' },
   penalti: { emoji:'🎯', label: 'Grande Penalidade' },
@@ -480,50 +591,7 @@ const DECISION_META = {
 
 const ROUND_DURATION_S = 30;
 
-/* UI HELPERS */
-function show(id) {
-  ['screen-name', 'screen-choice', 'screen-lobby', 'screen-game', 'screen-reveal', 'screen-final']
-    .forEach(s => document.getElementById(s).classList.toggle('hidden', s !== id));
-}
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-function randomCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let out = '';
-  for(let i=0; i<5; i++) out += chars[Math.floor(Math.random()*chars.length)];
-  return out;
-}
-
-function mulberry32(seed) {
-  return function() {
-    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
-    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
-    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  };
-}
-
-function shuffledScenarios(seed) {
-  if (scenarioOrderCache && scenarioOrderCache.seed === seed) return scenarioOrderCache.order;
-  const rng = mulberry32(seed);
-  const arr = SCENARIOS.slice();
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  scenarioOrderCache = { seed, order: arr };
-  return arr;
-}
-
-function scenarioForRound(seed, roundIdx) {
-  const order = shuffledScenarios(seed);
-  return order[roundIdx % order.length];
-}
-
-/* LOCALSTORAGE STORAGE API ENGINE */
+/* ENGINE DE ARMAZENAMENTO (LOCALSTORAGE ROBUSTO) */
 async function storageGet(key) {
   try {
     const res = localStorage.getItem(key);
@@ -568,20 +636,72 @@ async function getRoundAnswers(roundIdx) {
   return answers;
 }
 
-/* VERIFICAÇÃO DE URL PARA ENTRADA DIRETA */
+/* CARREGAMENTO DE LINK COM PARAMETRO ?room=XXXXX */
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const roomParam = params.get('room');
   if (roomParam) {
-    document.getElementById('input-joincode').value = roomParam.toUpperCase();
+    autoJoinCode = roomParam.toUpperCase();
+    document.getElementById('input-joincode').value = autoJoinCode;
+    document.getElementById('invite-notice').classList.remove('hidden');
   }
 });
 
-/* FLUXO DE NAVEGAÇÃO */
-function goToLobbyChoice() {
+/* NAVEGAÇÃO E FLUXOS DA INTERFACE */
+function show(id) {
+  ['screen-name', 'screen-choice', 'screen-lobby', 'screen-game', 'screen-reveal', 'screen-final']
+    .forEach(s => document.getElementById(s).classList.toggle('hidden', s !== id));
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function randomCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let out = '';
+  for(let i=0; i<5; i++) out += chars[Math.floor(Math.random()*chars.length)];
+  return out;
+}
+
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function shuffledScenarios(seed) {
+  if (scenarioOrderCache && scenarioOrderCache.seed === seed) return scenarioOrderCache.order;
+  const rng = mulberry32(seed);
+  const arr = SCENARIOS.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  scenarioOrderCache = { seed, order: arr };
+  return arr;
+}
+
+function scenarioForRound(seed, roundIdx) {
+  const order = shuffledScenarios(seed);
+  return order[roundIdx % order.length];
+}
+
+async function goToLobbyChoice() {
   const val = document.getElementById('input-name').value.trim();
-  if (!val) { alert('Escreve o teu nome de árbitro primeiro!'); return; }
+  if (!val) { alert('Por favor introduz o teu nome de árbitro!'); return; }
   playerName = val.slice(0, 16);
+
+  // Se veio por link direto do WhatsApp, entra diretamente na sala
+  if (autoJoinCode) {
+    document.getElementById('input-joincode').value = autoJoinCode;
+    await joinRoomFlow();
+    return;
+  }
+
   document.getElementById('choice-greeting').textContent = `Boa sorte, ${playerName}!`;
   show('screen-choice');
 }
@@ -602,9 +722,7 @@ async function createRoom() {
     roundStartedAt: null
   };
 
-  const ok = await storageSet(`refsim:${roomCode}:meta`, meta);
-  if(!ok) { alert('Erro ao criar a sala.'); return; }
-
+  await storageSet(`refsim:${roomCode}:meta`, meta);
   await storageSet(`refsim:${roomCode}:player:${playerId}`, {
     id: playerId, name: playerName, score: 0, joinedAt: Date.now()
   });
@@ -618,15 +736,15 @@ async function createRoom() {
 
 async function joinRoomFlow() {
   const code = document.getElementById('input-joincode').value.trim().toUpperCase();
-  if (code.length < 4) { alert('Escreve um código de sala válido.'); return; }
+  if (code.length < 4) { alert('Introduz um código de sala válido.'); return; }
   roomCode = code;
 
   const meta = await storageGet(`refsim:${roomCode}:meta`);
-  if (!meta) { alert('Sala não encontrada! Confirma o código.'); return; }
-  if (meta.started) { alert('Essa partida já começou.'); return; }
+  if (!meta) { alert('Sala não encontrada! Verifica o código ou pede novo link.'); return; }
+  if (meta.started) { alert('Esta partida já está a decorrer.'); return; }
 
   const players = await getAllPlayers();
-  if (players.length >= 4) { alert('A sala já está cheia (máx. 4 jogadores).'); return; }
+  if (players.length >= 4) { alert('A sala já atingiu o limite de 4 jogadores.'); return; }
 
   isHost = (meta.hostId === playerId);
   totalRounds = meta.totalRounds;
@@ -643,6 +761,18 @@ async function joinRoomFlow() {
   startLobbyPolling();
 }
 
+/* COMPARTILHAMENTO WHATSAPP E LINK DIRETO */
+function getDirectLink() {
+  return window.location.origin + window.location.pathname + '?room=' + roomCode;
+}
+
+function shareWhatsApp() {
+  const link = getDirectLink();
+  const text = `⚽ *Simulador de Árbitro (VAR)*\nEntra na minha sala para jogarmos!\n\n👉 *Clica para entrar:* ${link}\n\nCódigo da Sala: *${roomCode}*`;
+  const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+  window.open(waUrl, '_blank');
+}
+
 function copyCode() {
   navigator.clipboard.writeText(roomCode).then(() => {
     const btn = document.getElementById('copy-btn');
@@ -652,8 +782,7 @@ function copyCode() {
 }
 
 function copyLink() {
-  const link = window.location.origin + window.location.pathname + '?room=' + roomCode;
-  navigator.clipboard.writeText(link).then(() => {
+  navigator.clipboard.writeText(getDirectLink()).then(() => {
     const btn = document.getElementById('copy-link-btn');
     btn.textContent = 'Link Copiado!';
     setTimeout(() => btn.textContent = 'Copiar Link', 1500);
@@ -692,7 +821,7 @@ async function pollLobby() {
     const hint = document.getElementById('host-wait-hint');
     if (players.length >= 2) {
       startBtn.disabled = false;
-      hint.textContent = `${players.length} jogadores na sala. Pronto para começar!`;
+      hint.textContent = `${players.length} árbitros na sala. Pronto para começar!`;
     } else {
       startBtn.disabled = true;
       hint.textContent = 'É preciso pelo menos 2 jogadores para começar.';
@@ -709,7 +838,7 @@ async function startGame() {
   await storageSet(`refsim:${roomCode}:meta`, meta);
 }
 
-/* CICLO DE JOGO */
+/* CICLO DE JOGO DA PARTIDA */
 function enterGameLoop() {
   currentRoundIndex = -1;
   clearInterval(pollTimer);
@@ -757,7 +886,7 @@ function enterRound(meta) {
   const scenario = scenarioForRound(meta.scenarioSeed, currentRoundIndex);
   document.getElementById('round-counter').textContent = `RONDA ${currentRoundIndex+1}/${meta.totalRounds}`;
   document.getElementById('scenario-text').textContent = scenario.text;
-  document.getElementById('pitch-holder').innerHTML = renderPitchSVG(scenario);
+  document.getElementById('pitch-holder').innerHTML = renderTacticalPitchSVG(scenario);
   document.getElementById('waiting-note').textContent = '';
   
   document.querySelectorAll('.decision-btn').forEach(btn => {
@@ -791,7 +920,7 @@ async function submitAnswer(decision) {
     btn.classList.toggle('chosen', btn.dataset.d === decision);
   });
 
-  document.getElementById('waiting-note').textContent = 'Decisão registada! À espera dos outros árbitros...';
+  document.getElementById('waiting-note').textContent = 'Decisão gravada! À espera dos outros árbitros...';
 
   await storageSet(`refsim:${roomCode}:answer:${currentRoundIndex}:${playerId}`, {
     playerId, name: playerName, decision, answeredAt: Date.now()
@@ -802,7 +931,7 @@ async function revealRound(meta, players, answers) {
   const scenario = scenarioForRound(meta.scenarioSeed, currentRoundIndex);
   const dm = DECISION_META[scenario.correct];
 
-  document.getElementById('reveal-round-counter').textContent = `RONDA ${currentRoundIndex+1}/${meta.totalRounds} - DECISÃO`;
+  document.getElementById('reveal-round-counter').textContent = `DECISÃO RONDA ${currentRoundIndex+1}/${meta.totalRounds}`;
   document.getElementById('reveal-emoji').textContent = dm.emoji;
   document.getElementById('reveal-label').textContent = dm.label.toUpperCase();
   document.getElementById('reveal-expl').textContent = scenario.expl;
@@ -819,9 +948,9 @@ async function revealRound(meta, players, answers) {
       <div class="answer-row ${given ? (correct ? 'correct' : 'wrong') : ''}">
         <div>
           <div class="who">${escapeHtml(p.name)}${p.id === playerId ? ' (Tu)' : ''}</div>
-          <div class="said">${given ? (givenMeta.emoji + ' ' + givenMeta.label) : 'Não respondeu a tempo'}</div>
+          <div class="said">${given ? (givenMeta.emoji + ' ' + givenMeta.label) : 'Fora de tempo'}</div>
         </div>
-        <div class="mark">${given ? (correct ? '✓ (+3)' : '✗ (0)') : '✗'}</div>
+        <div class="mark">${given ? (correct ? '✓ (+3 PTS)' : '✗ (0 PTS)') : '✗'}</div>
       </div>
     `;
   }).join('');
@@ -847,7 +976,7 @@ async function revealRound(meta, players, answers) {
   document.getElementById('reveal-guest-note').classList.toggle('hidden', isHost);
 
   const isLastRound = (currentRoundIndex + 1) >= meta.totalRounds;
-  document.getElementById('next-round-btn').textContent = isLastRound ? 'Ver Resultado Final' : 'Próxima Ronda';
+  document.getElementById('next-round-btn').textContent = isLastRound ? 'Ver Resultado Final' : 'Próxima Jogada';
 
   show('screen-reveal');
 }
@@ -894,51 +1023,90 @@ async function showFinalScreen() {
   show('screen-final');
 }
 
-/* DESENHO DO CAMPO (SVG) */
+/* DESENHO DO RELVADO E ELEMENTOS TÁTICOS (SVG) */
 function toX(px) { return 20 + (560 * px / 100); }
 function toY(py) { return 20 + (340 * py / 100); }
 
-function renderPitchSVG(scenario) {
-  const mx = toX(scenario.x);
-  const my = toY(scenario.y);
-  let shotLine = '';
+function renderTacticalPitchSVG(scenario) {
+  const t = scenario.tactics;
+  const ballX = toX(t.ball.x);
+  const ballY = toY(t.ball.y);
+  const attX = toX(t.attacker.x);
+  const attY = toY(t.attacker.y);
+  const defX = toX(t.defender.x);
+  const defY = toY(t.defender.y);
+  const gkX = toX(t.gk.x);
+  const gkY = toY(t.gk.y);
 
-  if (scenario.shot) {
-    const goalX = scenario.goalSide === 'left' ? 22 : 578;
-    shotLine = `
-      <line x1="${mx}" y1="${my}" x2="${goalX}" y2="190" stroke="#00ff87" stroke-width="2" stroke-dasharray="6,4" opacity="0.9"/>
-      <circle cx="${goalX}" cy="190" r="5" fill="#00ff87"/>
+  let vectorLine = '';
+  if (t.vector) {
+    const vX1 = toX(t.vector.x1);
+    const vY1 = toY(t.vector.y1);
+    const vX2 = toX(t.vector.x2);
+    const vY2 = toY(t.vector.y2);
+    vectorLine = `<line x1="${vX1}" y1="${vY1}" x2="${vX2}" y2="${vY2}" stroke="#D4AF37" stroke-width="2.5" stroke-dasharray="5,4"/>`;
+  }
+
+  let actionHighlight = '';
+  if (t.actionType === 'foul_zone' || t.actionType === 'hard_foul') {
+    actionHighlight = `
+      <circle cx="${ballX}" cy="${ballY}" r="14" fill="#EF4444" opacity="0.25"/>
+      <circle class="pulse-impact" cx="${ballX}" cy="${ballY}" r="8" fill="#EF4444"/>
+    `;
+  } else if (t.actionType === 'shot_goal') {
+    actionHighlight = `
+      <circle cx="${ballX}" cy="${ballY}" r="14" fill="#22C55E" opacity="0.25"/>
     `;
   }
 
   return `
     <svg viewBox="0 0 600 380" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="0" width="600" height="380" rx="8" fill="#091a10"/>
-      <rect x="10" y="10" width="580" height="360" rx="4" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4"/>
-      <line x1="300" y1="10" x2="300" y2="370" stroke="#ffffff" stroke-width="2" opacity="0.4"/>
-      <circle cx="300" cy="190" r="46" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4"/>
-      <circle cx="300" cy="190" r="3" fill="#ffffff" opacity="0.6"/>
+      <!-- Fundo do Relvado -->
+      <rect x="0" y="0" width="600" height="380" rx="8" fill="#112617"/>
       
-      <!-- Baliza + Área Esquerda -->
-      <rect x="10" y="90" width="100" height="200" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4"/>
-      <rect x="10" y="145" width="40" height="90" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4"/>
+      <!-- Listras do Relvado -->
+      <rect x="60" y="10" width="60" height="360" fill="#142B1A" opacity="0.5"/>
+      <rect x="180" y="10" width="60" height="360" fill="#142B1A" opacity="0.5"/>
+      <rect x="300" y="10" width="60" height="360" fill="#142B1A" opacity="0.5"/>
+      <rect x="420" y="10" width="60" height="360" fill="#142B1A" opacity="0.5"/>
+
+      <!-- Linhas de Campo -->
+      <rect x="10" y="10" width="580" height="360" rx="4" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+      <line x1="300" y1="10" x2="300" y2="370" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+      <circle cx="300" cy="190" r="46" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+      <circle cx="300" cy="190" r="3" fill="#ffffff"/>
       
-      <!-- Baliza + Área Direita -->
-      <rect x="490" y="90" width="100" height="200" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4"/>
-      <rect x="550" y="145" width="40" height="90" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.4"/>
+      <!-- Área Esquerda -->
+      <rect x="10" y="90" width="90" height="200" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+      <rect x="10" y="145" width="35" height="90" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
       
-      ${shotLine}
-      
-      <!-- Marcador da Jogada -->
-      <circle cx="${mx}" cy="${my}" r="9" fill="#ff3355" opacity="0.85"/>
-      <circle class="marker-pulse" cx="${mx}" cy="${my}" r="9" fill="#ff3355"/>
-      <circle cx="${mx-12}" cy="${my+8}" r="7" fill="#f3d053" stroke="#000" stroke-width="1.5"/>
-      <circle cx="${mx+12}" cy="${my-6}" r="7" fill="#00e5ff" stroke="#000" stroke-width="1.5"/>
+      <!-- Área Direita -->
+      <rect x="500" y="90" width="90" height="200" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+      <rect x="555" y="145" width="35" height="90" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+
+      <!-- Trajetórias / Vetores -->
+      ${vectorLine}
+      ${actionHighlight}
+
+      <!-- Guarda-Redes (Cinza) -->
+      <circle cx="${gkX}" cy="${gkY}" r="9" fill="#64748B" stroke="#FFFFFF" stroke-width="1.5"/>
+      <text x="${gkX}" y="${gkY+3}" font-family="Inter" font-size="9" font-weight="800" fill="#FFF" text-anchor="middle">GR</text>
+
+      <!-- Defesa (Azul) -->
+      <circle cx="${defX}" cy="${defY}" r="11" fill="#2563EB" stroke="#FFFFFF" stroke-width="1.5"/>
+      <text x="${defX}" y="${defY+4}" font-family="Inter" font-size="10" font-weight="800" fill="#FFF" text-anchor="middle">${t.defender.label}</text>
+
+      <!-- Avançado (Vermelho) -->
+      <circle cx="${attX}" cy="${attY}" r="11" fill="#DC2626" stroke="#FFFFFF" stroke-width="1.5"/>
+      <text x="${attX}" y="${attY+4}" font-family="Inter" font-size="10" font-weight="800" fill="#FFF" text-anchor="middle">${t.attacker.label}</text>
+
+      <!-- Bola -->
+      <circle cx="${ballX}" cy="${ballY}" r="6" fill="#FFFFFF" stroke="#000000" stroke-width="1"/>
     </svg>
   `;
 }
 
-/* ATALHOS TECLADO */
+/* TECLA ENTER NOS INPUTS */
 document.getElementById('input-name').addEventListener('keydown', e => { if (e.key === 'Enter') goToLobbyChoice(); });
 document.getElementById('input-joincode').addEventListener('keydown', e => { if (e.key === 'Enter') joinRoomFlow(); });
 </script>
