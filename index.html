@@ -3,9 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Simulador de Árbitro - EA FC Matchday</title>
+<title>Simulador de Árbitro VAR - Multi-Jogador Online</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Teko:wght@600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<!-- Biblioteca para conexão online P2P em tempo real entre telemóveis -->
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
 <style>
 :root {
   --bg-dark: #0B0E14;
@@ -19,7 +22,6 @@
   --text-main: #FFFFFF;
   --text-muted: #94A3B8;
   --pitch-grass: #132E1B;
-  --pitch-lines: rgba(255, 255, 255, 0.6);
 }
 
 * { box-sizing: border-box; }
@@ -39,10 +41,7 @@ body {
   padding: 20px 14px 40px;
 }
 
-.app {
-  width: 100%;
-  max-width: 460px;
-}
+.app { width: 100%; max-width: 460px; }
 
 h1, h2, h3 {
   font-family: 'Teko', sans-serif;
@@ -52,38 +51,16 @@ h1, h2, h3 {
   line-height: 0.95;
 }
 
-.hero {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
+.hero { text-align: center; margin-bottom: 20px; }
 .hero .icon-badge {
   display: inline-block;
   background: rgba(212, 175, 55, 0.1);
   border: 1px solid var(--accent-gold);
   border-radius: 50%;
-  width: 56px;
-  height: 56px;
-  line-height: 54px;
-  font-size: 26px;
-  margin-bottom: 8px;
+  width: 56px; height: 56px; line-height: 54px; font-size: 26px; margin-bottom: 8px;
 }
-
-.hero h1 {
-  color: var(--text-main);
-  font-size: 38px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-}
-
-.hero p {
-  color: var(--text-muted);
-  font-size: 13px;
-  margin: 4px 0 0;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
+.hero h1 { font-size: 36px; font-weight: 700; }
+.hero p { color: var(--text-muted); font-size: 13px; font-weight: 600; text-transform: uppercase; margin-top: 4px; }
 
 .notebook {
   background: var(--card-bg);
@@ -95,114 +72,53 @@ h1, h2, h3 {
 }
 
 .notebook::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 3px;
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
   background: linear-gradient(90deg, var(--accent-gold), var(--accent-blue));
   border-radius: 12px 12px 0 0;
 }
 
 .field-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--accent-gold);
-  margin-bottom: 6px;
-  display: block;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font-size: 11px; font-weight: 700; color: var(--accent-gold);
+  margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.1em;
 }
 
 input[type=text], select {
-  width: 100%;
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  padding: 12px 14px;
-  border-radius: 6px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: #0A0D14;
-  color: var(--text-main);
-  margin-bottom: 14px;
-  transition: all 0.2s;
+  width: 100%; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600;
+  padding: 12px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.12);
+  background: #0A0D14; color: var(--text-main); margin-bottom: 14px;
 }
 
-input[type=text]:focus, select:focus {
-  outline: none;
-  border-color: var(--accent-gold);
-}
+input[type=text]:focus, select:focus { outline: none; border-color: var(--accent-gold); }
 
 button {
-  font-family: 'Teko', sans-serif;
-  font-size: 21px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  cursor: pointer;
-  border: none;
-  border-radius: 6px;
-  transition: all .15s ease;
+  font-family: 'Teko', sans-serif; font-size: 21px; letter-spacing: 0.05em;
+  text-transform: uppercase; cursor: pointer; border: none; border-radius: 6px; transition: all .15s ease;
 }
 
-.btn-primary {
-  width: 100%;
-  background: var(--accent-gold);
-  color: #000;
-  font-weight: 700;
-  padding: 10px;
-}
-
+.btn-primary { width: 100%; background: var(--accent-gold); color: #000; font-weight: 700; padding: 10px; }
 .btn-primary:hover { background: #e0be47; }
 .btn-primary:disabled { background: #2A3444; color: #5A697B; cursor: not-allowed; }
 
 .btn-whatsapp {
-  width: 100%;
-  background: var(--whatsapp-green);
-  color: #FFFFFF;
-  font-weight: 700;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 10px;
+  width: 100%; background: var(--whatsapp-green); color: #FFFFFF; font-weight: 700;
+  padding: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px;
 }
-
-.btn-whatsapp:hover { background: #20bd5a; }
 
 .btn-secondary {
-  width: 100%;
-  background: rgba(255,255,255,0.05);
-  color: var(--text-main);
-  font-weight: 600;
-  padding: 10px;
-  border: 1px solid rgba(255,255,255,0.12);
-  margin-top: 10px;
+  width: 100%; background: rgba(255,255,255,0.05); color: var(--text-main);
+  font-weight: 600; padding: 10px; border: 1px solid rgba(255,255,255,0.12); margin-top: 10px;
 }
-
-.btn-secondary:hover { background: rgba(255,255,255,0.08); }
 
 .btn-row { display: flex; gap: 8px; margin-top: 8px; }
 .btn-row > button { flex: 1; margin-top: 0; }
 
 .room-code {
-  font-family: 'Teko', sans-serif;
-  font-size: 40px;
-  letter-spacing: .15em;
-  text-align: center;
-  color: var(--accent-gold);
-  background: #090C12;
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  border-radius: 8px;
-  padding: 6px;
-  margin: 8px 0;
+  font-family: 'Teko', sans-serif; font-size: 40px; letter-spacing: .15em; text-align: center;
+  color: var(--accent-gold); background: #090C12; border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 8px; padding: 6px; margin: 8px 0;
 }
 
-.hint {
-  font-size: 12px;
-  color: var(--text-muted);
-  text-align: center;
-  margin-bottom: 14px;
-  line-height: 1.4;
-}
+.hint { font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 14px; line-height: 1.4; }
 
 .player-list { list-style: none; margin: 0 0 16px; padding: 0; }
 .player-list li {
@@ -211,67 +127,38 @@ button {
   border: 1px solid rgba(255,255,255,0.06); font-weight: 600; font-size: 14px;
 }
 
-.player-list .tag {
-  font-size: 10px; font-weight: 700; text-transform: uppercase;
-  color: #000; background: var(--accent-gold); padding: 2px 6px; border-radius: 4px;
-}
-
-.round-head {
-  display: flex; justify-content: space-between; align-items: center;
-  color: var(--text-main); margin-bottom: 10px; padding: 0 2px;
-}
-
-.round-head .r {
-  font-family: 'Teko', sans-serif; font-size: 24px; color: var(--accent-gold);
-}
+.round-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.round-head .r { font-family: 'Teko', sans-serif; font-size: 24px; color: var(--accent-gold); }
 
 .timer {
   font-family: 'Teko', sans-serif; font-size: 22px; color: var(--text-main);
-  background: rgba(0,0,0,0.5); padding: 2px 10px; border-radius: 4px;
-  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.5); padding: 2px 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.15);
 }
-
 .timer.low { color: var(--accent-red); border-color: var(--accent-red); }
 
-.pitch-wrap {
-  background: var(--pitch-grass);
-  border-radius: 8px;
-  padding: 6px;
-  border: 1px solid var(--card-border);
-  margin-bottom: 12px;
-}
-
+.pitch-wrap { background: var(--pitch-grass); border-radius: 8px; padding: 6px; border: 1px solid var(--card-border); margin-bottom: 12px; }
 .pitch-wrap svg { display: block; width: 100%; height: auto; border-radius: 6px; }
 
 .scenario-text {
-  font-size: 14px; line-height: 1.45; color: #E2E8F0;
-  background: #0D121B; border-radius: 8px; padding: 12px 14px;
-  margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.08);
+  font-size: 14px; line-height: 1.45; color: #E2E8F0; background: #0D121B;
+  border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.08);
 }
 
-.decision-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px;
-}
-
+.decision-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px; }
 .decision-btn {
   padding: 10px 6px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);
   background: rgba(255,255,255,0.04); font-weight: 700; font-size: 15px; color: var(--text-main);
   display: flex; flex-direction: column; align-items: center; gap: 2px;
 }
-
-.decision-btn .emoji { font-size: 18px; }
 .decision-btn:hover { background: rgba(212, 175, 55, 0.15); border-color: var(--accent-gold); }
 .decision-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .decision-btn.chosen { background: var(--accent-gold); color: #000; border-color: var(--accent-gold); }
 
-.waiting-note { text-align: center; color: var(--accent-gold); font-size: 13px; margin-top: 8px; }
-
 .correct-banner {
-  background: rgba(34, 197, 94, 0.1); border: 1px solid var(--accent-green); color: var(--text-main);
+  background: rgba(34, 197, 94, 0.1); border: 1px solid var(--accent-green);
   border-radius: 8px; padding: 12px; margin-bottom: 12px; text-align: center;
 }
-
-.correct-banner .emoji { font-size: 26px; display: block; margin-bottom: 2px; }
+.correct-banner .emoji { font-size: 26px; display: block; }
 .correct-banner .label { font-family: 'Teko', sans-serif; font-size: 26px; color: var(--accent-green); }
 .correct-banner .expl { font-size: 13px; color: var(--text-muted); margin-top: 4px; line-height: 1.35; }
 
@@ -280,123 +167,98 @@ button {
   padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 6px;
   border: 1px solid rgba(255,255,255,0.06);
 }
-
 .answer-row.correct { border-color: var(--accent-green); background: rgba(34,197,94,0.08); }
 .answer-row.wrong { border-color: var(--accent-red); background: rgba(239,68,68,0.08); }
-.answer-row .who { font-weight: 700; font-size: 13px; }
-.answer-row .said { font-size: 12px; color: var(--text-muted); }
-.answer-row .mark { font-weight: 800; font-size: 15px; }
 
 .score-line {
   display: flex; justify-content: space-between; padding: 8px 12px;
   background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 6px;
   border: 1px solid rgba(255,255,255,0.06); font-weight: 700; font-size: 14px; align-items: center;
 }
-
 .score-line .pts { font-family: 'Teko', sans-serif; font-size: 22px; color: var(--accent-gold); }
 .score-line.leader { border-color: var(--accent-gold); background: rgba(212, 175, 55, 0.08); }
 
-.auto-join-banner {
-  background: rgba(59, 130, 246, 0.15);
-  border: 1px solid var(--accent-blue);
-  color: #93C5FD;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  text-align: center;
-  margin-bottom: 12px;
-  font-weight: 600;
+.status-toast {
+  background: rgba(59, 130, 246, 0.15); border: 1px solid var(--accent-blue);
+  color: #93C5FD; padding: 8px 12px; border-radius: 6px; font-size: 12px;
+  text-align: center; margin-bottom: 12px; font-weight: 600;
 }
 
 .hidden { display: none !important; }
-
-@keyframes pulseImpact {
-  0% { r: 6; opacity: .9; }
-  100% { r: 22; opacity: 0; }
-}
-.pulse-impact { animation: pulseImpact 1.5s ease-out infinite; transform-origin: center; }
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- SCREEN: NAME -->
+  <!-- ECRA 1: NOME DO ÁRBITRO -->
   <div id="screen-name">
     <div class="hero">
       <div class="icon-badge">⚽</div>
-      <h1>SIMULADOR DE ÁRBITRO</h1>
-      <p>Match Official VAR Simulator</p>
+      <h1>PAINEL DE ARBITRAGEM</h1>
+      <p>Simulador VAR Multi-Jogador Online</p>
     </div>
     <div class="notebook">
-      <div id="invite-notice" class="auto-join-banner hidden">
-        Convite de partida detetado! Escreve o teu nome para entrares automaticamente.
-      </div>
+      <div id="status-box" class="status-toast hidden"></div>
       <span class="field-label">O teu Nome de Árbitro</span>
       <input type="text" id="input-name" maxlength="16" placeholder="Ex: Árbitro Silva" autocomplete="off">
-      <button class="btn-primary" onclick="goToLobbyChoice()">Continuar</button>
+      <button class="btn-primary" onclick="goToChoice()">Continuar</button>
     </div>
   </div>
 
-  <!-- SCREEN: CREATE OR JOIN -->
+  <!-- ECRA 2: CRIAR OU ENTRAR -->
   <div id="screen-choice" class="hidden">
     <div class="hero">
       <div class="icon-badge">📋</div>
-      <h1>NOVA PARTIDA</h1>
-      <p id="choice-greeting">Cria uma sala ou junta-te a uma</p>
+      <h1>SALA DE JOGO</h1>
+      <p id="choice-greeting"></p>
     </div>
     <div class="notebook">
-      <span class="field-label">Duração do Jogo (Se fores Criar)</span>
+      <span class="field-label">Número de Rondas</span>
       <select id="input-rounds">
-        <option value="5">5 Rondas - Rápido</option>
-        <option value="8" selected>8 Rondas - Normal</option>
-        <option value="12">12 Rondas - Completo</option>
+        <option value="5">5 Rondas</option>
+        <option value="8" selected>8 Rondas</option>
+        <option value="12">12 Rondas</option>
       </select>
-      <button class="btn-primary" onclick="createRoom()">Criar Nova Sala</button>
+      <button class="btn-primary" onclick="createRoomOnline()">Criar Nova Sala Online</button>
       
       <div style="height:18px;"></div>
       
-      <span class="field-label">Ou Entra com Código</span>
-      <input type="text" id="input-joincode" maxlength="5" placeholder="Ex: A7K2M" autocomplete="off" style="text-transform:uppercase;">
-      <button class="btn-secondary" onclick="joinRoomFlow()">Entrar na Sala</button>
+      <span class="field-label">Ou Entra com Código da Sala</span>
+      <input type="text" id="input-joincode" maxlength="5" placeholder="Ex: A7K2M" style="text-transform:uppercase;">
+      <button class="btn-secondary" onclick="joinRoomOnline()">Entrar na Sala</button>
     </div>
   </div>
 
-  <!-- SCREEN: LOBBY -->
+  <!-- ECRA 3: LOBBY -->
   <div id="screen-lobby" class="hidden">
     <div class="hero">
       <div class="icon-badge">🟨</div>
-      <h1>SALA DE ESPERA</h1>
-      <p>Convida a tua equipa de arbitragem</p>
+      <h1>SALA DE ESPERA ONLINE</h1>
+      <p>A aguardar equipa de arbitragem</p>
     </div>
     <div class="notebook">
       <span class="field-label">Código da Sala</span>
       <div class="room-code" id="lobby-code">-----</div>
       
       <button class="btn-whatsapp" onclick="shareWhatsApp()">
-        <span>💬</span> Partilhar no WhatsApp
+        <span>💬</span> Convidar no WhatsApp
       </button>
 
-      <div class="btn-row">
-        <button class="btn-secondary" onclick="copyCode()" id="copy-btn">Copiar Código</button>
-        <button class="btn-secondary" onclick="copyLink()" id="copy-link-btn">Copiar Link</button>
-      </div>
+      <p class="hint" style="margin-top:10px;">Os teus amigos só precisam de clicar no link para entrar na sala!</p>
 
-      <p class="hint" style="margin-top:10px;">Quem clicar no link do WhatsApp entra diretamente na tua sala!</p>
-
-      <span class="field-label">Árbitros Ligados</span>
+      <span class="field-label">Árbitros Conectados</span>
       <ul class="player-list" id="lobby-players"></ul>
 
-      <div id="lobby-host-controls">
-        <button class="btn-primary" id="start-btn" onclick="startGame()">Iniciar Partida</button>
-        <p class="hint" id="host-wait-hint" style="margin-top:6px;">É preciso pelo menos 2 jogadores para começar.</p>
+      <div id="host-controls">
+        <button class="btn-primary" id="start-btn" onclick="startMatch()">Iniciar Partida</button>
       </div>
-      <div id="lobby-guest-note" class="hidden">
-        <p class="hint">À espera que o Árbitro-Chefe inicie o jogo...</p>
+      <div id="guest-note" class="hidden">
+        <p class="hint">A aguardar que o criador inicie a partida...</p>
       </div>
     </div>
   </div>
 
-  <!-- SCREEN: GAME (ROUND) -->
+  <!-- ECRA 4: JOGO / DECISÃO -->
   <div id="screen-game" class="hidden">
     <div class="round-head">
       <span class="r" id="round-counter">RONDA 1/8</span>
@@ -406,21 +268,21 @@ button {
     <div class="scenario-text" id="scenario-text"></div>
     <div id="decision-area">
       <div class="decision-grid">
-        <button class="decision-btn" data-d="nada" onclick="submitAnswer('nada')"><span class="emoji">⚪</span>Sem Infração</button>
-        <button class="decision-btn" data-d="falta" onclick="submitAnswer('falta')"><span class="emoji">🔵</span>Falta</button>
-        <button class="decision-btn" data-d="amarelo" onclick="submitAnswer('amarelo')"><span class="emoji">🟨</span>Cartão Amarelo</button>
-        <button class="decision-btn" data-d="vermelho" onclick="submitAnswer('vermelho')"><span class="emoji">🟥</span>Cartão Vermelho</button>
-        <button class="decision-btn" data-d="penalti" onclick="submitAnswer('penalti')"><span class="emoji">🎯</span>Penálti</button>
-        <button class="decision-btn" data-d="golo" onclick="submitAnswer('golo')"><span class="emoji">⚽</span>Golo Válido</button>
+        <button class="decision-btn" data-d="nada" onclick="submitDecision('nada')"><span>⚪</span>Sem Infração</button>
+        <button class="decision-btn" data-d="falta" onclick="submitDecision('falta')"><span>🔵</span>Falta</button>
+        <button class="decision-btn" data-d="amarelo" onclick="submitDecision('amarelo')"><span>🟨</span>Cartão Amarelo</button>
+        <button class="decision-btn" data-d="vermelho" onclick="submitDecision('vermelho')"><span>🟥</span>Cartão Vermelho</button>
+        <button class="decision-btn" data-d="penalti" onclick="submitDecision('penalti')"><span>🎯</span>Penálti</button>
+        <button class="decision-btn" data-d="golo" onclick="submitDecision('golo')"><span>⚽</span>Golo Válido</button>
       </div>
     </div>
-    <div class="waiting-note" id="waiting-note"></div>
+    <div class="hint" id="waiting-note" style="margin-top:8px;"></div>
   </div>
 
-  <!-- SCREEN: REVEAL -->
+  <!-- ECRA 5: REVELAÇÃO DA DECISÃO DO VAR -->
   <div id="screen-reveal" class="hidden">
     <div class="round-head">
-      <span class="r" id="reveal-round-counter">DECISÃO VAR</span>
+      <span class="r" id="reveal-round-counter">DECISÃO OFICIAL DO VAR</span>
     </div>
     <div class="notebook">
       <div class="correct-banner">
@@ -429,23 +291,23 @@ button {
         <div class="expl" id="reveal-expl"></div>
       </div>
 
-      <span class="field-label">Decisões Registadas</span>
+      <span class="field-label">Decisão de Cada Árbitro</span>
       <div id="reveal-answers"></div>
 
       <div style="height:10px;"></div>
-      <span class="field-label">Tabela de Pontuação</span>
+      <span class="field-label">Tabela de Classificação</span>
       <div id="reveal-scores"></div>
 
       <div id="reveal-host-controls" style="margin-top:12px;">
-        <button class="btn-primary" id="next-round-btn" onclick="hostNextRound()">Próxima Jogada</button>
+        <button class="btn-primary" id="next-round-btn" onclick="nextRound()">Próxima Jogada</button>
       </div>
       <div id="reveal-guest-note" class="hidden">
-        <p class="hint" style="margin-top:8px;">À espera que o Árbitro-Chefe avance...</p>
+        <p class="hint" style="margin-top:8px;">A aguardar a próxima jogada...</p>
       </div>
     </div>
   </div>
 
-  <!-- SCREEN: FINAL -->
+  <!-- ECRA 6: FINAL DO JOGO -->
   <div id="screen-final" class="hidden">
     <div class="hero">
       <div class="icon-badge">🏆</div>
@@ -454,129 +316,50 @@ button {
     </div>
     <div class="notebook">
       <div id="final-scores"></div>
-      <button class="btn-primary" onclick="location.href=location.pathname" style="margin-top:10px;">Nova Partida</button>
+      <button class="btn-primary" onclick="location.href=location.pathname" style="margin-top:12px;">Nova Partida</button>
     </div>
   </div>
 
 </div>
 
 <script>
-/* ESTADO LOCAL */
-const playerId = 'p_' + Math.random().toString(36).slice(2, 10);
-let playerName = '';
-let roomCode = '';
-let autoJoinCode = null;
-let isHost = false;
-let myScore = 0;
-let totalRounds = 8;
-let lastKnownMeta = null;
-let currentRoundIndex = -1;
-let hasSubmittedThisRound = false;
-let revealedRounds = new Set();
-let scoredRounds = new Set();
-let pollTimer = null;
-let countdownTimer = null;
-let scenarioOrderCache = null;
-
-/* CENÁRIOS COM DADOS VISUAIS TÁTICOS (Atacantes, Defesas, Bola e Ação) */
+/* SCENARIOS TÁTICOS */
 const SCENARIOS = [
   { 
-    id:1, 
-    correct:'nada', 
+    id:1, correct:'nada', 
     text:'O defesa central desarma a bola de forma limpa com um carrinho antes de haver qualquer contacto com o avançado.', 
-    expl:'Contacto legal de jogo. A bola foi tocada claramente em primeiro lugar. Não há infração.',
-    tactics: {
-      ball: {x: 62, y: 50},
-      attacker: {x: 65, y: 48, label: 'A'},
-      defender: {x: 60, y: 52, label: 'D'},
-      gk: {x: 92, y: 50},
-      actionType: 'clean_tackle',
-      vector: {x1: 65, y1: 48, x2: 55, y2: 35}
-    }
+    expl:'Contacto legal. A bola foi cortada de forma limpa. Sem infração.',
+    tactics: { ball: {x:62, y:50}, attacker: {x:65, y:48, label:'A'}, defender: {x:60, y:52, label:'D'}, gk: {x:92, y:50}, actionType:'clean', vector:{x1:65, y1:48, x2:55, y2:35} }
   },
   { 
-    id:2, 
-    correct:'penalti', 
+    id:2, correct:'penalti', 
     text:'Dentro da grande área, o defesa agarra ruidosamente a camisola do avançado impedindo o remate à baliza.', 
-    expl:'Falta clara cometida dentro da grande área. Sancionada obrigatoriamente com Grande Penalidade.',
-    tactics: {
-      ball: {x: 82, y: 45},
-      attacker: {x: 80, y: 45, label: 'A'},
-      defender: {x: 82, y: 47, label: 'D'},
-      gk: {x: 95, y: 50},
-      actionType: 'foul_zone',
-      vector: {x1: 80, y1: 45, x2: 88, y2: 48}
-    }
+    expl:'Falta clara cometida dentro da grande área: Grande Penalidade.',
+    tactics: { ball: {x:82, y:45}, attacker: {x:80, y:45, label:'A'}, defender: {x:82, y:47, label:'D'}, gk: {x:95, y:50}, actionType:'foul', vector:{x1:80, y1:45, x2:88, y2:48} }
   },
   { 
-    id:3, 
-    correct:'vermelho', 
+    id:3, correct:'vermelho', 
     text:'A meio-campo, o médio entra de sola com os pitons diretamente na canela do adversário com força excessiva.', 
-    expl:'Entrada violenta com perigo grave para a integridade física do adversário: Cartão Vermelho direto.',
-    tactics: {
-      ball: {x: 48, y: 35},
-      attacker: {x: 52, y: 35, label: 'A'},
-      defender: {x: 46, y: 35, label: 'D'},
-      gk: {x: 92, y: 50},
-      actionType: 'hard_foul',
-      vector: {x1: 46, y1: 35, x2: 50, y2: 35}
-    }
+    expl:'Entrada violenta a colocar em risco a integridade física: Cartão Vermelho direto.',
+    tactics: { ball: {x:48, y:35}, attacker: {x:52, y:35, label:'A'}, defender: {x:46, y:35, label:'D'}, gk: {x:92, y:50}, actionType:'foul', vector:{x1:46, y1:35, x2:50, y2:35} }
   },
   { 
-    id:4, 
-    correct:'amarelo', 
+    id:4, correct:'amarelo', 
     text:'O lateral corta um contra-ataque promissor puxando deliberadamente o braço do avançado a meio-campo.', 
-    expl:'Interrupção deliberada de um ataque promissor (SPA) é sancionada com Cartão Amarelo.',
-    tactics: {
-      ball: {x: 55, y: 68},
-      attacker: {x: 58, y: 68, label: 'A'},
-      defender: {x: 52, y: 66, label: 'D'},
-      gk: {x: 92, y: 50},
-      actionType: 'foul_zone',
-      vector: {x1: 52, y1: 66, x2: 56, y2: 68}
-    }
+    expl:'Interrupção intencional de um ataque promissor: Cartão Amarelo.',
+    tactics: { ball: {x:55, y:68}, attacker: {x:58, y:68, label:'A'}, defender: {x:52, y:66, label:'D'}, gk: {x:92, y:50}, actionType:'foul', vector:{x1:52, y1:66, x2:56, y2:68} }
   },
   { 
-    id:5, 
-    correct:'golo', 
-    text:'O avançado recebe o passe na área em posição regular e desfere um remate forte para o fundo das redes.', 
-    expl:'Lance totalmente limpo, sem fora de jogo nem faltas. O golo é válido.',
-    tactics: {
-      ball: {x: 94, y: 50},
-      attacker: {x: 75, y: 55, label: 'A'},
-      defender: {x: 78, y: 40, label: 'D'},
-      gk: {x: 92, y: 54},
-      actionType: 'shot_goal',
-      vector: {x1: 75, y1: 55, x2: 95, y2: 50}
-    }
+    id:5, correct:'golo', 
+    text:'O avançado recebe o passe em posição regular na área e desfere um remate forte para o fundo das redes.', 
+    expl:'Sem fora de jogo e sem qualquer infração. Golo Válido.',
+    tactics: { ball: {x:94, y:50}, attacker: {x:75, y:55, label:'A'}, defender: {x:78, y:40, label:'D'}, gk: {x:92, y:54}, actionType:'goal', vector:{x1:75, y1:55, x2:95, y2:50} }
   },
   { 
-    id:6, 
-    correct:'vermelho', 
-    text:'O guarda-redes sai da grande área e corta intencionalmente com a mão a bola que ia isolar o avançado.', 
-    expl:'Mão deliberada fora da área a anular uma oportunidade manifesta de golo (DOGSO): Cartão Vermelho.',
-    tactics: {
-      ball: {x: 28, y: 50},
-      attacker: {x: 24, y: 52, label: 'A'},
-      defender: {x: 28, y: 48, label: 'GR'},
-      gk: {x: 8, y: 50},
-      actionType: 'hard_foul',
-      vector: {x1: 24, y1: 52, x2: 32, y2: 48}
-    }
-  },
-  { 
-    id:7, 
-    correct:'penalti', 
-    text:'Cruzamento para a área e o defesa central salta desamparado esticando o braço e cortando a bola com a mão.', 
-    expl:'Mão em posição não natural a volumetrizar o corpo dentro da área: Grande Penalidade.',
-    tactics: {
-      ball: {x: 84, y: 38},
-      attacker: {x: 80, y: 35, label: 'A'},
-      defender: {x: 84, y: 38, label: 'D'},
-      gk: {x: 92, y: 50},
-      actionType: 'foul_zone',
-      vector: {x1: 70, y1: 20, x2: 84, y2: 38}
-    }
+    id:6, correct:'vermelho', 
+    text:'O guarda-redes sai da grande área e corta intencionalmente a bola com a mão para impedir o golo.', 
+    expl:'Mão deliberada fora da área a anular oportunidade clara de golo (DOGSO): Cartão Vermelho.',
+    tactics: { ball: {x:28, y:50}, attacker: {x:24, y:52, label:'A'}, defender: {x:28, y:48, label:'GR'}, gk: {x:8, y:50}, actionType:'foul', vector:{x1:24, y1:52, x2:32, y2:48} }
   }
 ];
 
@@ -589,65 +372,40 @@ const DECISION_META = {
   golo: { emoji:'⚽', label: 'Golo Válido' }
 };
 
-const ROUND_DURATION_S = 30;
+/* ESTADO GLOBAL DO JOGO */
+const myPlayerId = 'p_' + Math.random().toString(36).slice(2, 9);
+let playerName = '';
+let roomCode = '';
+let isHost = false;
+let peer = null;
+let hostConn = null;
+let guestConnections = [];
+let autoJoinCode = null;
 
-/* ENGINE DE ARMAZENAMENTO (LOCALSTORAGE ROBUSTO) */
-async function storageGet(key) {
-  try {
-    const res = localStorage.getItem(key);
-    return res ? JSON.parse(res) : null;
-  } catch(e) { return null; }
-}
+let state = {
+  status: 'LOBBY', // LOBBY, PLAYING, REVEAL, FINAL
+  totalRounds: 8,
+  currentRound: 0,
+  roundStartedAt: 0,
+  players: [], // { id, name, score }
+  answers: {}  // { roundIdx: { playerId: decision } }
+};
 
-async function storageSet(key, obj) {
-  try {
-    localStorage.setItem(key, JSON.stringify(obj));
-    return true;
-  } catch(e) { return false; }
-}
+let roundTimerInterval = null;
 
-async function storageListPrefix(prefix) {
-  const keys = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if (k && k.startsWith(prefix)) keys.push(k);
-  }
-  return keys;
-}
-
-async function getAllPlayers() {
-  const keys = await storageListPrefix(`refsim:${roomCode}:player:`);
-  const players = [];
-  for (const k of keys) {
-    const val = await storageGet(k);
-    if (val) players.push(val);
-  }
-  players.sort((a,b) => a.joinedAt - b.joinedAt);
-  return players;
-}
-
-async function getRoundAnswers(roundIdx) {
-  const keys = await storageListPrefix(`refsim:${roomCode}:answer:${roundIdx}:`);
-  const answers = [];
-  for (const k of keys) {
-    const val = await storageGet(k);
-    if (val) answers.push(val);
-  }
-  return answers;
-}
-
-/* CARREGAMENTO DE LINK COM PARAMETRO ?room=XXXXX */
+/* DETETA LINK DO WHATSAPP DO TIPO ?room=ABCDE */
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
-  const roomParam = params.get('room');
-  if (roomParam) {
-    autoJoinCode = roomParam.toUpperCase();
+  const code = params.get('room');
+  if (code) {
+    autoJoinCode = code.toUpperCase();
     document.getElementById('input-joincode').value = autoJoinCode;
-    document.getElementById('invite-notice').classList.remove('hidden');
+    const toast = document.getElementById('status-box');
+    toast.textContent = 'Convite recebido! Introduz o teu nome para entrares na sala.';
+    toast.classList.remove('hidden');
   }
 });
 
-/* NAVEGAÇÃO E FLUXOS DA INTERFACE */
 function show(id) {
   ['screen-name', 'screen-choice', 'screen-lobby', 'screen-game', 'screen-reveal', 'screen-final']
     .forEach(s => document.getElementById(s).classList.toggle('hidden', s !== id));
@@ -657,458 +415,356 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function randomCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let out = '';
-  for(let i=0; i<5; i++) out += chars[Math.floor(Math.random()*chars.length)];
-  return out;
-}
+function goToChoice() {
+  const name = document.getElementById('input-name').value.trim();
+  if (!name) return alert('Por favor escreve o teu nome!');
+  playerName = name.slice(0, 16);
 
-function mulberry32(seed) {
-  return function() {
-    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
-    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
-    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  };
-}
-
-function shuffledScenarios(seed) {
-  if (scenarioOrderCache && scenarioOrderCache.seed === seed) return scenarioOrderCache.order;
-  const rng = mulberry32(seed);
-  const arr = SCENARIOS.slice();
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  scenarioOrderCache = { seed, order: arr };
-  return arr;
-}
-
-function scenarioForRound(seed, roundIdx) {
-  const order = shuffledScenarios(seed);
-  return order[roundIdx % order.length];
-}
-
-async function goToLobbyChoice() {
-  const val = document.getElementById('input-name').value.trim();
-  if (!val) { alert('Por favor introduz o teu nome de árbitro!'); return; }
-  playerName = val.slice(0, 16);
-
-  // Se veio por link direto do WhatsApp, entra diretamente na sala
   if (autoJoinCode) {
-    document.getElementById('input-joincode').value = autoJoinCode;
-    await joinRoomFlow();
+    joinRoomOnline();
     return;
   }
 
-  document.getElementById('choice-greeting').textContent = `Boa sorte, ${playerName}!`;
+  document.getElementById('choice-greeting').textContent = `Bem-vindo, Árbitro ${playerName}`;
   show('screen-choice');
 }
 
-async function createRoom() {
-  roomCode = randomCode();
-  totalRounds = parseInt(document.getElementById('input-rounds').value, 10);
+/* CRIAR SALA ONLINE VIA PEERJS */
+function createRoomOnline() {
   isHost = true;
-  myScore = 0;
+  roomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
+  state.totalRounds = parseInt(document.getElementById('input-rounds').value, 10);
+  state.players = [{ id: myPlayerId, name: playerName, score: 0 }];
 
-  const meta = {
-    hostId: playerId,
-    started: false,
-    finished: false,
-    currentRound: 0,
-    totalRounds: totalRounds,
-    scenarioSeed: Math.floor(Math.random() * 1e9),
-    roundStartedAt: null
-  };
+  // Peer ID único para a sala
+  const peerId = 'refsim2026-' + roomCode;
+  peer = new Peer(peerId);
 
-  await storageSet(`refsim:${roomCode}:meta`, meta);
-  await storageSet(`refsim:${roomCode}:player:${playerId}`, {
-    id: playerId, name: playerName, score: 0, joinedAt: Date.now()
+  peer.on('open', () => {
+    document.getElementById('lobby-code').textContent = roomCode;
+    document.getElementById('host-controls').classList.remove('hidden');
+    document.getElementById('guest-note').classList.add('hidden');
+    renderLobby();
+    show('screen-lobby');
   });
 
-  document.getElementById('lobby-code').textContent = roomCode;
-  document.getElementById('lobby-host-controls').classList.remove('hidden');
-  document.getElementById('lobby-guest-note').classList.add('hidden');
-  show('screen-lobby');
-  startLobbyPolling();
+  peer.on('connection', (conn) => {
+    guestConnections.push(conn);
+    conn.on('data', (data) => handleHostMessage(conn, data));
+    conn.on('close', () => {
+      guestConnections = guestConnections.filter(c => c !== conn);
+    });
+  });
+
+  peer.on('error', (err) => {
+    if (err.type === 'unavailable-id') {
+      createRoomOnline(); // Tenta outro código se houver colisão
+    } else {
+      alert('Erro de rede: ' + err.message);
+    }
+  });
 }
 
-async function joinRoomFlow() {
-  const code = document.getElementById('input-joincode').value.trim().toUpperCase();
-  if (code.length < 4) { alert('Introduz um código de sala válido.'); return; }
+/* ENTRAR NA SALA ONLINE */
+function joinRoomOnline() {
+  isHost = false;
+  const code = (autoJoinCode || document.getElementById('input-joincode').value).trim().toUpperCase();
+  if (code.length < 4) return alert('Código de sala inválido!');
   roomCode = code;
 
-  const meta = await storageGet(`refsim:${roomCode}:meta`);
-  if (!meta) { alert('Sala não encontrada! Verifica o código ou pede novo link.'); return; }
-  if (meta.started) { alert('Esta partida já está a decorrer.'); return; }
+  peer = new Peer();
+  peer.on('open', () => {
+    const targetPeerId = 'refsim2026-' + roomCode;
+    hostConn = peer.connect(targetPeerId);
 
-  const players = await getAllPlayers();
-  if (players.length >= 4) { alert('A sala já atingiu o limite de 4 jogadores.'); return; }
+    hostConn.on('open', () => {
+      hostConn.send({ type: 'JOIN', playerId: myPlayerId, name: playerName });
+    });
 
-  isHost = (meta.hostId === playerId);
-  totalRounds = meta.totalRounds;
-  myScore = 0;
+    hostConn.on('data', (data) => {
+      if (data.type === 'STATE_SYNC') {
+        state = data.state;
+        syncUI();
+      }
+    });
 
-  await storageSet(`refsim:${roomCode}:player:${playerId}`, {
-    id: playerId, name: playerName, score: 0, joinedAt: Date.now()
+    hostConn.on('close', () => {
+      alert('O criador da sala fechou o jogo.');
+    });
   });
 
-  document.getElementById('lobby-code').textContent = roomCode;
-  document.getElementById('lobby-host-controls').classList.add('hidden');
-  document.getElementById('lobby-guest-note').classList.remove('hidden');
-  show('screen-lobby');
-  startLobbyPolling();
-}
-
-/* COMPARTILHAMENTO WHATSAPP E LINK DIRETO */
-function getDirectLink() {
-  return window.location.origin + window.location.pathname + '?room=' + roomCode;
-}
-
-function shareWhatsApp() {
-  const link = getDirectLink();
-  const text = `⚽ *Simulador de Árbitro (VAR)*\nEntra na minha sala para jogarmos!\n\n👉 *Clica para entrar:* ${link}\n\nCódigo da Sala: *${roomCode}*`;
-  const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-  window.open(waUrl, '_blank');
-}
-
-function copyCode() {
-  navigator.clipboard.writeText(roomCode).then(() => {
-    const btn = document.getElementById('copy-btn');
-    btn.textContent = 'Copiado!';
-    setTimeout(() => btn.textContent = 'Copiar Código', 1500);
+  peer.on('error', () => {
+    alert('Sala não encontrada! Confirma se o criador já tem a sala aberta.');
   });
 }
 
-function copyLink() {
-  navigator.clipboard.writeText(getDirectLink()).then(() => {
-    const btn = document.getElementById('copy-link-btn');
-    btn.textContent = 'Link Copiado!';
-    setTimeout(() => btn.textContent = 'Copiar Link', 1500);
-  });
-}
-
-/* LOBBY POLLING */
-function startLobbyPolling() {
-  clearInterval(pollTimer);
-  pollTimer = setInterval(pollLobby, 1000);
-  pollLobby();
-}
-
-async function pollLobby() {
-  const meta = await storageGet(`refsim:${roomCode}:meta`);
-  if (!meta) return;
-  lastKnownMeta = meta;
-
-  if (meta.started) {
-    clearInterval(pollTimer);
-    enterGameLoop();
-    return;
+/* PROCESSAMENTO NO HOST (CRIADOR DA SALA) */
+function handleHostMessage(conn, data) {
+  if (data.type === 'JOIN') {
+    if (!state.players.find(p => p.id === data.playerId)) {
+      state.players.push({ id: data.playerId, name: data.name, score: 0 });
+    }
+    broadcastState();
   }
 
-  const players = await getAllPlayers();
+  if (data.type === 'SUBMIT_DECISION') {
+    if (!state.answers[state.currentRound]) state.answers[state.currentRound] = {};
+    state.answers[state.currentRound][data.playerId] = data.decision;
+    
+    // Se todos responderem, revela logo a decisão
+    if (Object.keys(state.answers[state.currentRound]).length >= state.players.length) {
+      calculateScoresAndReveal();
+    } else {
+      broadcastState();
+    }
+  }
+}
+
+function broadcastState() {
+  if (isHost) {
+    guestConnections.forEach(conn => conn.send({ type: 'STATE_SYNC', state }));
+    syncUI();
+  }
+}
+
+/* SINCRONIZAÇÃO DA INTERFACE COM O ESTADO */
+function syncUI() {
+  if (state.status === 'LOBBY') {
+    document.getElementById('lobby-code').textContent = roomCode;
+    document.getElementById('host-controls').classList.toggle('hidden', !isHost);
+    document.getElementById('guest-note').classList.toggle('hidden', isHost);
+    renderLobby();
+    show('screen-lobby');
+  } 
+  else if (state.status === 'PLAYING') {
+    renderGameRound();
+    show('screen-game');
+  } 
+  else if (state.status === 'REVEAL') {
+    renderReveal();
+    show('screen-reveal');
+  } 
+  else if (state.status === 'FINAL') {
+    renderFinal();
+    show('screen-final');
+  }
+}
+
+function renderLobby() {
   const list = document.getElementById('lobby-players');
-  list.innerHTML = players.map(p => `
+  list.innerHTML = state.players.map(p => `
     <li>
-      <span>${escapeHtml(p.name)}</span>
-      ${p.id === meta.hostId ? '<span class="tag">Árbitro-Chefe</span>' : ''}
+      <span>${escapeHtml(p.name)} ${p.id === myPlayerId ? '(Tu)' : ''}</span>
+      <span style="color:var(--accent-gold)">Árbitro</span>
     </li>
   `).join('');
 
   if (isHost) {
-    const startBtn = document.getElementById('start-btn');
-    const hint = document.getElementById('host-wait-hint');
-    if (players.length >= 2) {
-      startBtn.disabled = false;
-      hint.textContent = `${players.length} árbitros na sala. Pronto para começar!`;
-    } else {
-      startBtn.disabled = true;
-      hint.textContent = 'É preciso pelo menos 2 jogadores para começar.';
-    }
+    document.getElementById('start-btn').disabled = state.players.length < 2;
   }
 }
 
-async function startGame() {
-  const meta = await storageGet(`refsim:${roomCode}:meta`);
-  if (!meta) return;
-  meta.started = true;
-  meta.currentRound = 0;
-  meta.roundStartedAt = Date.now();
-  await storageSet(`refsim:${roomCode}:meta`, meta);
+function startMatch() {
+  if (!isHost) return;
+  state.status = 'PLAYING';
+  state.currentRound = 0;
+  state.roundStartedAt = Date.now();
+  broadcastState();
 }
 
-/* CICLO DE JOGO DA PARTIDA */
-function enterGameLoop() {
-  currentRoundIndex = -1;
-  clearInterval(pollTimer);
-  pollTimer = setInterval(pollGame, 1000);
-  pollGame();
-}
-
-async function pollGame() {
-  const meta = await storageGet(`refsim:${roomCode}:meta`);
-  if (!meta) return;
-  lastKnownMeta = meta;
-  totalRounds = meta.totalRounds;
-
-  if (meta.finished) {
-    clearInterval(pollTimer);
-    clearInterval(countdownTimer);
-    await showFinalScreen();
-    return;
-  }
-
-  if (meta.currentRound !== currentRoundIndex) {
-    currentRoundIndex = meta.currentRound;
-    hasSubmittedThisRound = false;
-    enterRound(meta);
-    return;
-  }
-
-  if (!revealedRounds.has(currentRoundIndex)) {
-    const players = await getAllPlayers();
-    const answers = await getRoundAnswers(currentRoundIndex);
-    const elapsed = Date.now() - (meta.roundStartedAt || Date.now());
-    const timeUp = elapsed >= ROUND_DURATION_S * 1000;
-    const allAnswered = players.length > 0 && answers.length >= players.length;
-
-    if (timeUp || allAnswered) {
-      revealedRounds.add(currentRoundIndex);
-      clearInterval(countdownTimer);
-      await revealRound(meta, players, answers);
-    }
-  }
-}
-
-function enterRound(meta) {
-  show('screen-game');
-  const scenario = scenarioForRound(meta.scenarioSeed, currentRoundIndex);
-  document.getElementById('round-counter').textContent = `RONDA ${currentRoundIndex+1}/${meta.totalRounds}`;
+function renderGameRound() {
+  const scenario = SCENARIOS[state.currentRound % SCENARIOS.length];
+  document.getElementById('round-counter').textContent = `RONDA ${state.currentRound + 1}/${state.totalRounds}`;
   document.getElementById('scenario-text').textContent = scenario.text;
   document.getElementById('pitch-holder').innerHTML = renderTacticalPitchSVG(scenario);
-  document.getElementById('waiting-note').textContent = '';
+
+  const myAnswer = state.answers[state.currentRound]?.[myPlayerId];
   
   document.querySelectorAll('.decision-btn').forEach(btn => {
-    btn.disabled = false;
-    btn.classList.remove('chosen');
+    btn.disabled = !!myAnswer;
+    btn.classList.toggle('chosen', btn.dataset.d === myAnswer);
   });
 
-  startCountdown(meta.roundStartedAt);
-}
-
-function startCountdown(roundStartedAt) {
-  clearInterval(countdownTimer);
-  const timerEl = document.getElementById('round-timer');
-  function tick() {
-    const elapsed = Date.now() - (roundStartedAt || Date.now());
-    const remaining = Math.max(0, ROUND_DURATION_S - Math.floor(elapsed/1000));
-    timerEl.textContent = remaining + 's';
-    timerEl.classList.toggle('low', remaining <= 10);
-    if (remaining <= 0) clearInterval(countdownTimer);
+  const waitingNote = document.getElementById('waiting-note');
+  if (myAnswer) {
+    waitingNote.textContent = 'Decisão gravada! A aguardar a votação dos outros árbitros...';
+  } else {
+    waitingNote.textContent = '';
   }
-  tick();
-  countdownTimer = setInterval(tick, 500);
+
+  startTimer();
 }
 
-async function submitAnswer(decision) {
-  if (hasSubmittedThisRound) return;
-  hasSubmittedThisRound = true;
+function startTimer() {
+  clearInterval(roundTimerInterval);
+  const timerEl = document.getElementById('round-timer');
+  
+  function updateTimer() {
+    const elapsed = Math.floor((Date.now() - state.roundStartedAt) / 1000);
+    const remain = Math.max(0, 30 - elapsed);
+    timerEl.textContent = remain + 's';
+    timerEl.classList.toggle('low', remain <= 10);
 
-  document.querySelectorAll('.decision-btn').forEach(btn => {
-    btn.disabled = true;
-    btn.classList.toggle('chosen', btn.dataset.d === decision);
-  });
+    if (remain <= 0 && isHost && state.status === 'PLAYING') {
+      calculateScoresAndReveal();
+    }
+  }
 
-  document.getElementById('waiting-note').textContent = 'Decisão gravada! À espera dos outros árbitros...';
-
-  await storageSet(`refsim:${roomCode}:answer:${currentRoundIndex}:${playerId}`, {
-    playerId, name: playerName, decision, answeredAt: Date.now()
-  });
+  updateTimer();
+  roundTimerInterval = setInterval(updateTimer, 1000);
 }
 
-async function revealRound(meta, players, answers) {
-  const scenario = scenarioForRound(meta.scenarioSeed, currentRoundIndex);
-  const dm = DECISION_META[scenario.correct];
+function submitDecision(decision) {
+  if (state.answers[state.currentRound]?.[myPlayerId]) return;
 
-  document.getElementById('reveal-round-counter').textContent = `DECISÃO RONDA ${currentRoundIndex+1}/${meta.totalRounds}`;
-  document.getElementById('reveal-emoji').textContent = dm.emoji;
-  document.getElementById('reveal-label').textContent = dm.label.toUpperCase();
+  if (isHost) {
+    if (!state.answers[state.currentRound]) state.answers[state.currentRound] = {};
+    state.answers[state.currentRound][myPlayerId] = decision;
+    
+    if (Object.keys(state.answers[state.currentRound]).length >= state.players.length) {
+      calculateScoresAndReveal();
+    } else {
+      broadcastState();
+    }
+  } else {
+    hostConn.send({ type: 'SUBMIT_DECISION', playerId: myPlayerId, decision });
+  }
+}
+
+function calculateScoresAndReveal() {
+  clearInterval(roundTimerInterval);
+  const scenario = SCENARIOS[state.currentRound % SCENARIOS.length];
+  const roundAnswers = state.answers[state.currentRound] || {};
+
+  // Atualiza a pontuação (+3 pontos por decisão correta)
+  state.players.forEach(p => {
+    if (roundAnswers[p.id] === scenario.correct) {
+      p.score += 3;
+    }
+  });
+
+  state.status = 'REVEAL';
+  broadcastState();
+}
+
+function renderReveal() {
+  const scenario = SCENARIOS[state.currentRound % SCENARIOS.length];
+  const meta = DECISION_META[scenario.correct];
+
+  document.getElementById('reveal-round-counter').textContent = `DECISÃO RONDA ${state.currentRound + 1}/${state.totalRounds}`;
+  document.getElementById('reveal-emoji').textContent = meta.emoji;
+  document.getElementById('reveal-label').textContent = meta.label.toUpperCase();
   document.getElementById('reveal-expl').textContent = scenario.expl;
 
-  const answerByPlayer = {};
-  answers.forEach(a => answerByPlayer[a.playerId] = a.decision);
+  const roundAnswers = state.answers[state.currentRound] || {};
 
-  const rowsHtml = players.map(p => {
-    const given = answerByPlayer[p.id];
-    const correct = given === scenario.correct;
+  document.getElementById('reveal-answers').innerHTML = state.players.map(p => {
+    const given = roundAnswers[p.id];
+    const isCorrect = given === scenario.correct;
     const givenMeta = given ? DECISION_META[given] : null;
 
     return `
-      <div class="answer-row ${given ? (correct ? 'correct' : 'wrong') : ''}">
+      <div class="answer-row ${given ? (isCorrect ? 'correct' : 'wrong') : ''}">
         <div>
-          <div class="who">${escapeHtml(p.name)}${p.id === playerId ? ' (Tu)' : ''}</div>
-          <div class="said">${given ? (givenMeta.emoji + ' ' + givenMeta.label) : 'Fora de tempo'}</div>
+          <div style="font-weight:700;">${escapeHtml(p.name)} ${p.id === myPlayerId ? '(Tu)' : ''}</div>
+          <div style="font-size:12px; color:var(--text-muted);">${given ? (givenMeta.emoji + ' ' + givenMeta.label) : 'Sem resposta'}</div>
         </div>
-        <div class="mark">${given ? (correct ? '✓ (+3 PTS)' : '✗ (0 PTS)') : '✗'}</div>
+        <div style="font-weight:800;">${given ? (isCorrect ? '✓ (+3 PTS)' : '✗ (0 PTS)') : '✗'}</div>
       </div>
     `;
   }).join('');
 
-  document.getElementById('reveal-answers').innerHTML = rowsHtml;
-
-  if (!scoredRounds.has(currentRoundIndex)) {
-    scoredRounds.add(currentRoundIndex);
-    const myAnswer = answerByPlayer[playerId];
-    if (myAnswer === scenario.correct) {
-      myScore += 3;
-      const meRecord = await storageGet(`refsim:${roomCode}:player:${playerId}`);
-      if (meRecord) {
-        meRecord.score = myScore;
-        await storageSet(`refsim:${roomCode}:player:${playerId}`, meRecord);
-      }
-    }
-  }
-
-  await refreshRevealScores();
+  const sorted = state.players.slice().sort((a,b) => b.score - a.score);
+  document.getElementById('reveal-scores').innerHTML = sorted.map(p => `
+    <div class="score-line ${p.score === sorted[0].score && sorted[0].score > 0 ? 'leader' : ''}">
+      <span>${escapeHtml(p.name)} ${p.id === myPlayerId ? '(Tu)' : ''}</span>
+      <span class="pts">${p.score} PTS</span>
+    </div>
+  `).join('');
 
   document.getElementById('reveal-host-controls').classList.toggle('hidden', !isHost);
   document.getElementById('reveal-guest-note').classList.toggle('hidden', isHost);
 
-  const isLastRound = (currentRoundIndex + 1) >= meta.totalRounds;
-  document.getElementById('next-round-btn').textContent = isLastRound ? 'Ver Resultado Final' : 'Próxima Jogada';
-
-  show('screen-reveal');
+  const isLast = state.currentRound + 1 >= state.totalRounds;
+  document.getElementById('next-round-btn').textContent = isLast ? 'Ver Resultado Final' : 'Próxima Jogada';
 }
 
-async function refreshRevealScores() {
-  const players = await getAllPlayers();
-  const sorted = players.slice().sort((a,b) => b.score - a.score);
-  const topScore = sorted.length ? sorted[0].score : 0;
+function nextRound() {
+  if (!isHost) return;
 
-  document.getElementById('reveal-scores').innerHTML = sorted.map(p => `
-    <div class="score-line ${p.score === topScore && topScore > 0 ? 'leader' : ''}">
-      <span>${p.score === topScore && topScore > 0 ? '👑 ' : ''}${escapeHtml(p.name)}${p.id === playerId ? ' (Tu)' : ''}</span>
-      <span class="pts">${p.score} PTS</span>
-    </div>
-  `).join('');
-}
-
-async function hostNextRound() {
-  const meta = await storageGet(`refsim:${roomCode}:meta`);
-  if (!meta) return;
-
-  const nextIdx = meta.currentRound + 1;
-  if (nextIdx >= meta.totalRounds) {
-    meta.finished = true;
+  if (state.currentRound + 1 >= state.totalRounds) {
+    state.status = 'FINAL';
   } else {
-    meta.currentRound = nextIdx;
-    meta.roundStartedAt = Date.now();
+    state.currentRound++;
+    state.status = 'PLAYING';
+    state.roundStartedAt = Date.now();
   }
-  await storageSet(`refsim:${roomCode}:meta`, meta);
+  broadcastState();
 }
 
-async function showFinalScreen() {
-  const players = await getAllPlayers();
-  const sorted = players.slice().sort((a,b) => b.score - a.score);
+function renderFinal() {
+  const sorted = state.players.slice().sort((a,b) => b.score - a.score);
   const medals = ['🥇', '🥈', '🥉', '4º'];
 
   document.getElementById('final-scores').innerHTML = sorted.map((p, i) => `
     <div class="score-line ${i === 0 ? 'leader' : ''}">
-      <span>${medals[i] || ''} ${escapeHtml(p.name)}${p.id === playerId ? ' (Tu)' : ''}</span>
+      <span>${medals[i] || ''} ${escapeHtml(p.name)} ${p.id === myPlayerId ? '(Tu)' : ''}</span>
       <span class="pts">${p.score} PTS</span>
     </div>
   `).join('');
-
-  show('screen-final');
 }
 
-/* DESENHO DO RELVADO E ELEMENTOS TÁTICOS (SVG) */
+function shareWhatsApp() {
+  const link = window.location.origin + window.location.pathname + '?room=' + roomCode;
+  const text = `⚽ *Simulador de Árbitro VAR*\nEntra na minha sala para jogarmos em tempo real!\n\n👉 *Clica no link para entrar:* ${link}\n\nCódigo da Sala: *${roomCode}*`;
+  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+/* REPRODUÇÃO TÁTICA (SVG) */
 function toX(px) { return 20 + (560 * px / 100); }
 function toY(py) { return 20 + (340 * py / 100); }
 
 function renderTacticalPitchSVG(scenario) {
   const t = scenario.tactics;
-  const ballX = toX(t.ball.x);
-  const ballY = toY(t.ball.y);
-  const attX = toX(t.attacker.x);
-  const attY = toY(t.attacker.y);
-  const defX = toX(t.defender.x);
-  const defY = toY(t.defender.y);
-  const gkX = toX(t.gk.x);
-  const gkY = toY(t.gk.y);
+  const ballX = toX(t.ball.x), ballY = toY(t.ball.y);
+  const attX = toX(t.attacker.x), attY = toY(t.attacker.y);
+  const defX = toX(t.defender.x), defY = toY(t.defender.y);
+  const gkX = toX(t.gk.x), gkY = toY(t.gk.y);
 
-  let vectorLine = '';
+  let vector = '';
   if (t.vector) {
-    const vX1 = toX(t.vector.x1);
-    const vY1 = toY(t.vector.y1);
-    const vX2 = toX(t.vector.x2);
-    const vY2 = toY(t.vector.y2);
-    vectorLine = `<line x1="${vX1}" y1="${vY1}" x2="${vX2}" y2="${vY2}" stroke="#D4AF37" stroke-width="2.5" stroke-dasharray="5,4"/>`;
-  }
-
-  let actionHighlight = '';
-  if (t.actionType === 'foul_zone' || t.actionType === 'hard_foul') {
-    actionHighlight = `
-      <circle cx="${ballX}" cy="${ballY}" r="14" fill="#EF4444" opacity="0.25"/>
-      <circle class="pulse-impact" cx="${ballX}" cy="${ballY}" r="8" fill="#EF4444"/>
-    `;
-  } else if (t.actionType === 'shot_goal') {
-    actionHighlight = `
-      <circle cx="${ballX}" cy="${ballY}" r="14" fill="#22C55E" opacity="0.25"/>
-    `;
+    vector = `<line x1="${toX(t.vector.x1)}" y1="${toY(t.vector.y1)}" x2="${toX(t.vector.x2)}" y2="${toY(t.vector.y2)}" stroke="#D4AF37" stroke-width="2.5" stroke-dasharray="5,4"/>`;
   }
 
   return `
     <svg viewBox="0 0 600 380" xmlns="http://www.w3.org/2000/svg">
-      <!-- Fundo do Relvado -->
       <rect x="0" y="0" width="600" height="380" rx="8" fill="#112617"/>
+      <rect x="10" y="10" width="580" height="360" rx="4" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+      <line x1="300" y1="10" x2="300" y2="370" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+      <circle cx="300" cy="190" r="46" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
       
-      <!-- Listras do Relvado -->
-      <rect x="60" y="10" width="60" height="360" fill="#142B1A" opacity="0.5"/>
-      <rect x="180" y="10" width="60" height="360" fill="#142B1A" opacity="0.5"/>
-      <rect x="300" y="10" width="60" height="360" fill="#142B1A" opacity="0.5"/>
-      <rect x="420" y="10" width="60" height="360" fill="#142B1A" opacity="0.5"/>
+      <rect x="10" y="90" width="90" height="200" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+      <rect x="500" y="90" width="90" height="200" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
 
-      <!-- Linhas de Campo -->
-      <rect x="10" y="10" width="580" height="360" rx="4" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
-      <line x1="300" y1="10" x2="300" y2="370" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
-      <circle cx="300" cy="190" r="46" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
-      <circle cx="300" cy="190" r="3" fill="#ffffff"/>
-      
-      <!-- Área Esquerda -->
-      <rect x="10" y="90" width="90" height="200" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
-      <rect x="10" y="145" width="35" height="90" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
-      
-      <!-- Área Direita -->
-      <rect x="500" y="90" width="90" height="200" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
-      <rect x="555" y="145" width="35" height="90" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+      ${vector}
 
-      <!-- Trajetórias / Vetores -->
-      ${vectorLine}
-      ${actionHighlight}
-
-      <!-- Guarda-Redes (Cinza) -->
-      <circle cx="${gkX}" cy="${gkY}" r="9" fill="#64748B" stroke="#FFFFFF" stroke-width="1.5"/>
+      <!-- GR -->
+      <circle cx="${gkX}" cy="${gkY}" r="9" fill="#64748B" stroke="#FFF" stroke-width="1.5"/>
       <text x="${gkX}" y="${gkY+3}" font-family="Inter" font-size="9" font-weight="800" fill="#FFF" text-anchor="middle">GR</text>
 
-      <!-- Defesa (Azul) -->
-      <circle cx="${defX}" cy="${defY}" r="11" fill="#2563EB" stroke="#FFFFFF" stroke-width="1.5"/>
+      <!-- Defesa -->
+      <circle cx="${defX}" cy="${defY}" r="11" fill="#2563EB" stroke="#FFF" stroke-width="1.5"/>
       <text x="${defX}" y="${defY+4}" font-family="Inter" font-size="10" font-weight="800" fill="#FFF" text-anchor="middle">${t.defender.label}</text>
 
-      <!-- Avançado (Vermelho) -->
-      <circle cx="${attX}" cy="${attY}" r="11" fill="#DC2626" stroke="#FFFFFF" stroke-width="1.5"/>
+      <!-- Avançado -->
+      <circle cx="${attX}" cy="${attY}" r="11" fill="#DC2626" stroke="#FFF" stroke-width="1.5"/>
       <text x="${attX}" y="${attY+4}" font-family="Inter" font-size="10" font-weight="800" fill="#FFF" text-anchor="middle">${t.attacker.label}</text>
 
       <!-- Bola -->
-      <circle cx="${ballX}" cy="${ballY}" r="6" fill="#FFFFFF" stroke="#000000" stroke-width="1"/>
+      <circle cx="${ballX}" cy="${ballY}" r="6" fill="#FFFFFF" stroke="#000" stroke-width="1"/>
     </svg>
   `;
 }
-
-/* TECLA ENTER NOS INPUTS */
-document.getElementById('input-name').addEventListener('keydown', e => { if (e.key === 'Enter') goToLobbyChoice(); });
-document.getElementById('input-joincode').addEventListener('keydown', e => { if (e.key === 'Enter') joinRoomFlow(); });
 </script>
 </body>
 </html>
