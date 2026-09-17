@@ -3,164 +3,517 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Alexa Web</title>
+    <title>A.I. Voice Assistant - Ultra Modern</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --bg-color: #05050d;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary-cyan: #00f2fe;
+            --primary-blue: #4facfe;
+            --accent-pink: #ff007f;
+            --text-color: #ffffff;
+            --subtext-color: #a0a0c0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #1a1a2e;
-            color: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Fundos e Luzes de Néon Ambientais */
+        .ambient-light {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.35;
+            z-index: 0;
+            animation: float 10s infinite alternate ease-in-out;
+        }
+        .light-1 { background: var(--primary-cyan); top: -100px; left: -100px; }
+        .light-2 { background: var(--accent-pink); bottom: -100px; right: -100px; animation-delay: -5s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 50px) scale(1.2); }
+        }
+
+        /* Container Principal em Glassmorphism */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 460px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 30px;
+            padding: 40px 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .card {
-            background-color: #16213e;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
             text-align: center;
-            max-width: 400px;
-            width: 90%;
         }
-        button {
-            background-color: #00fff0;
-            color: #0f3460;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 20px;
-        }
-        button:hover {
-            background-color: #00bfff;
-        }
-        .status {
-            margin-top: 15px;
+
+        /* Header */
+        .brand {
             font-size: 14px;
-            color: #888;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--primary-cyan);
+            font-weight: 600;
+            margin-bottom: 5px;
         }
-        .box {
-            background: #0f3460;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 10px;
-            min-height: 40px;
+
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, #fff 30%, var(--subtext-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ORBE NÉON ANIMADO (Visualizador de voz) */
+        .orb-wrapper {
+            position: relative;
+            width: 170px;
+            height: 170px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .orb {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-blue));
+            box-shadow: 0 0 40px var(--primary-blue), inset 0 0 20px rgba(255,255,255,0.8);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 2;
+        }
+
+        .orb-ring {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 2px dashed rgba(0, 242, 254, 0.4);
+            animation: spin 12s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Estados do Orbe */
+        /* A ouvir... */
+        .state-listening .orb {
+            background: linear-gradient(135deg, #00ff87, #60efff);
+            box-shadow: 0 0 60px #00ff87;
+            transform: scale(1.15);
+            animation: pulse-listen 1.2s infinite alternate;
+        }
+
+        /* A pensar/processar... */
+        .state-thinking .orb {
+            background: linear-gradient(135deg, var(--accent-pink), #7928ca);
+            box-shadow: 0 0 60px var(--accent-pink);
+            transform: scale(0.95);
+        }
+        .state-thinking .orb-ring {
+            border-color: var(--accent-pink);
+            animation: spin 1.5s linear infinite;
+        }
+
+        /* A falar... */
+        .state-speaking .orb {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            box-shadow: 0 0 70px #ff416c;
+            animation: speak-wave 0.4s infinite alternate;
+        }
+
+        @keyframes pulse-listen {
+            0% { box-shadow: 0 0 30px #00ff87; }
+            100% { box-shadow: 0 0 80px #00ff87, 0 0 100px rgba(0, 255, 135, 0.4); }
+        }
+
+        @keyframes speak-wave {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.18); }
+        }
+
+        /* Badge de Status */
+        .status-badge {
+            margin-top: 15px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            font-size: 13px;
+            color: var(--subtext-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #888;
+        }
+
+        .state-listening .status-dot { background: #00ff87; box-shadow: 0 0 10px #00ff87; }
+        .state-thinking .status-dot { background: var(--accent-pink); box-shadow: 0 0 10px var(--accent-pink); }
+        .state-speaking .status-dot { background: #ff416c; box-shadow: 0 0 10px #ff416c; }
+
+        /* Área de Texto / Resposta */
+        .display-box {
+            width: 100%;
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-card {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--card-border);
+            padding: 14px 18px;
+            border-radius: 16px;
             text-align: left;
-            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.5;
+            min-height: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .chat-card span {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--subtext-color);
+            margin-bottom: 4px;
+        }
+
+        /* Botões de Controlo */
+        .controls {
+            margin-top: 25px;
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-main {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-blue));
+            color: #000;
+            box-shadow: 0 10px 20px rgba(0, 242, 254, 0.25);
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(0, 242, 254, 0.4);
+        }
+
+        .btn-mode {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid var(--card-border);
+            flex: 0.4;
+        }
+
+        .btn-mode.active {
+            border-color: var(--primary-cyan);
+            color: var(--primary-cyan);
+            background: rgba(0, 242, 254, 0.1);
         }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>Mini Alexa Web</h2>
-    <p>Clica no botão e fala comigo!</p>
-    
-    <button id="btnOuvir">Falar</button>
-    <div class="status" id="status">Status: Inativo</div>
+    <!-- Fundos Luminosos -->
+    <div class="ambient-light light-1"></div>
+    <div class="ambient-light light-2"></div>
 
-    <p style="margin-top: 20px; text-align: left;"><strong>Tu disseste:</strong></p>
-    <div class="box" id="textoOuvido">-</div>
+    <!-- Card Principal -->
+    <div class="container" id="appContainer">
+        <div class="brand">Assistente IA</div>
+        <h1>A.I. Voice Assistant</h1>
 
-    <p style="text-align: left;"><strong>Resposta da Alexa:</strong></p>
-    <div class="box" id="respostaAlexa">-</div>
-</div>
+        <!-- Visualizador Central -->
+        <div class="orb-wrapper">
+            <div class="orb-ring"></div>
+            <div class="orb"></div>
+        </div>
+
+        <div class="status-badge">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">Aguardando...</span>
+        </div>
+
+        <!-- Caixas de Transcrição -->
+        <div class="display-box">
+            <div class="chat-card">
+                <span>Tu disseste</span>
+                <div id="userSpeech" style="color: #fff;">Clique em "Falar" ou ative o Modo Mãos-Livres.</div>
+            </div>
+            <div class="chat-card">
+                <span>Resposta</span>
+                <div id="aiResponse" style="color: var(--primary-cyan);">Pronta para responder às tuas perguntas.</div>
+            </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="controls">
+            <button class="btn btn-main" id="btnMic">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="20" y1="23" x2="4" y2="23"></line></svg>
+                Falar
+            </button>
+            <button class="btn btn-mode" id="btnContinuous" title="Modo Mãos-Livres (Conversa Contínua)">
+                ∞ Continuous
+            </button>
+        </div>
+    </div>
 
 <script>
-    // Verificar se o navegador suporta o Reconhecimento de Voz
+    // Seleção de Elementos DOM
+    const appContainer = document.getElementById('appContainer');
+    const statusText = document.getElementById('statusText');
+    const userSpeech = document.getElementById('userSpeech');
+    const aiResponse = document.getElementById('aiResponse');
+    const btnMic = document.getElementById('btnMic');
+    const btnContinuous = document.getElementById('btnContinuous');
+
+    let continuousMode = false;
+
+    // Configuração do Reconhecimento de Voz (Web Speech API)
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-        alert("O teu navegador não suporta reconhecimento de voz. Experimenta usar o Google Chrome ou Microsoft Edge.");
+        alert("O teu navegador não suporta a Web Speech API. Utiliza o Google Chrome ou Microsoft Edge.");
     } else {
         const recognition = new SpeechRecognition();
-        
-        // Define o idioma para Português de Portugal (podes mudar para 'pt-BR' se preferires)
-        recognition.lang = 'pt-PT';
+        recognition.lang = 'pt-PT'; // Idioma Português
         recognition.interimResults = false;
 
-        const btnOuvir = document.getElementById('btnOuvir');
-        const statusText = document.getElementById('status');
-        const textoOuvido = document.getElementById('textoOuvido');
-        const respostaAlexa = document.getElementById('respostaAlexa');
-
-        // Evento de clique no botão
-        btnOuvir.addEventListener('click', () => {
-            recognition.start();
-            statusText.innerText = "Status: A ouvir...";
-            btnOuvir.style.backgroundColor = "#ff4757";
-        });
-
-        // Quando o navegador reconhece o que falaste
-        recognition.onresult = (event) => {
-            const comando = event.results[0][0].transcript.toLowerCase();
-            textoOuvido.innerText = comando;
-            statusText.innerText = "Status: A processar...";
+        // Gestão de Estados Visuais
+        function setUIState(state) {
+            appContainer.classList.remove('state-listening', 'state-thinking', 'state-speaking');
             
-            // Processa a resposta adequada
-            processarComando(comando);
-        };
-
-        // Quando paras de falar
-        recognition.onspeechend = () => {
-            recognition.stop();
-            btnOuvir.style.backgroundColor = "#00fff0";
-        };
-
-        // Em caso de erro
-        recognition.onerror = (event) => {
-            statusText.innerText = "Erro ao ouvir: " + event.error;
-            btnOuvir.style.backgroundColor = "#00fff0";
-        };
-
-        // Lógica de Perguntas e Respostas
-        function processarComando(comando) {
-            let resposta = "";
-
-            if (comando.includes("olá") || comando.includes("oi")) {
-                resposta = "Olá! Como posso ajudar-te hoje?";
-            } 
-            else if (comando.includes("quem és tu") || comando.includes("qual é o teu nome")) {
-                resposta = "Eu sou a tua assistente de voz criada em HTML e JavaScript!";
-            } 
-            else if (comando.includes("horas") || comando.includes("que horas são")) {
-                const agora = new Date();
-                resposta = `Agora são ${agora.getHours()} horas e ${agora.getMinutes()} minutos.`;
-            } 
-            else if (comando.includes("tudo bem") || comando.includes("como estás")) {
-                resposta = "Comigo está tudo ótimo, obrigado por perguntares!";
-            } 
-            else if (comando.includes("piada") || comando.includes("conta uma piada")) {
-                resposta = "O que é que o código disse para o programador? Deixa-me em paz, estou cheio de bugs!";
-            } 
-            else {
-                resposta = "Desculpa, ainda não aprendi a responder a essa pergunta.";
+            if (state === 'listening') {
+                appContainer.classList.add('state-listening');
+                statusText.innerText = "A ouvir a tua voz...";
+            } else if (state === 'thinking') {
+                appContainer.classList.add('state-thinking');
+                statusText.innerText = "A procurar resposta...";
+            } else if (state === 'speaking') {
+                appContainer.classList.add('state-speaking');
+                statusText.innerText = "A responder...";
+            } else {
+                statusText.innerText = continuousMode ? "Modo Mãos-Livres Ativo" : "Aguardando...";
             }
-
-            respostaAlexa.innerText = resposta;
-            falar(resposta);
         }
 
-        // Função de Sintetizador de Voz (Text-to-Speech)
-        function falar(texto) {
-            const synth = window.speechSynthesis;
-            const utterance = new SpeechSynthesisUtterance(texto);
-            utterance.lang = 'pt-PT'; // Idioma da voz
+        // Iniciar escuta ao clicar no botão
+        btnMic.addEventListener('click', () => {
+            startListening();
+        });
+
+        // Alternar modo contínuo (Mãos-Livres)
+        btnContinuous.addEventListener('click', () => {
+            continuousMode = !continuousMode;
+            btnContinuous.classList.toggle('active', continuousMode);
+            if (continuousMode) {
+                startListening();
+            }
+        });
+
+        function startListening() {
+            try {
+                recognition.start();
+                setUIState('listening');
+            } catch (e) {
+                // Já está a ouvir
+            }
+        }
+
+        // Quando a fala é capturada
+        recognition.onresult = async (event) => {
+            const query = event.results[0][0].transcript.trim();
+            userSpeech.innerText = `"${query}"`;
+            setUIState('thinking');
+
+            // Processar a pergunta e obter resposta inteligente
+            const resposta = await gerarRespostaInteligente(query);
             
-            utterance.onend = () => {
-                statusText.innerText = "Status: Inativo";
+            aiResponse.innerText = resposta;
+            falar(resposta);
+        };
+
+        recognition.onerror = (e) => {
+            console.error("Erro no reconhecimento:", e);
+            setUIState('idle');
+            if (continuousMode) setTimeout(startListening, 2000);
+        };
+
+        recognition.onend = () => {
+            // Caso não esteja a falar, volta ao estado inativo
+            if (!appContainer.classList.contains('state-speaking')) {
+                setUIState('idle');
+            }
+        };
+
+        // Motor de Resposta Inteligente (Combina Regras, Matemática e Wikipédia)
+        async function gerarRespostaInteligente(pergunta) {
+            const queryLower = pergunta.toLowerCase();
+
+            // 1. Respostas Básicas e Conversação
+            if (queryLower.includes("olá") || queryLower.includes("oi")) {
+                return "Olá! Em que te posso ajudar neste momento?";
+            }
+            if (queryLower.includes("quem és tu") || queryLower.includes("teu nome")) {
+                return "Eu sou a tua assistente de voz futurista desenvolvida em HTML e JavaScript.";
+            }
+            if (queryLower.includes("como estás") || queryLower.includes("tudo bem")) {
+                return "Estou a funcionar no meu desempenho máximo! E contigo, como vai tudo?";
+            }
+            if (queryLower.includes("horas") || queryLower.includes("que horas são")) {
+                const agora = new Date();
+                return `Neste momento são ${agora.getHours()} horas e ${agora.getMinutes()} minutos.`;
+            }
+            if (queryLower.includes("dia é hoje") || queryLower.includes("data")) {
+                const hoje = new Date().toLocaleDateString('pt-PT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                return `Hoje é ${hoje}.`;
+            }
+
+            // 2. Operações Matemáticas (ex: "quanto é 25 vezes 4")
+            if (queryLower.startsWith("quanto é") || queryLower.startsWith("calcula")) {
+                try {
+                    let expressao = queryLower
+                        .replace("quanto é", "")
+                        .replace("calcula", "")
+                        .replace(/vezes/g, "*")
+                        .replace(/mais/g, "+")
+                        .replace(/menos/g, "-")
+                        .replace(/a dividir por/g, "/")
+                        .replace(/por/g, "/")
+                        .trim();
+                    
+                    // Avalia a expressão matemática simples
+                    const resultado = eval(expressao);
+                    if (!isNaN(resultado)) {
+                        return `O resultado da conta é ${resultado}.`;
+                    }
+                } catch (err) {
+                    // Ignora erro e tenta procurar na wikipédia
+                }
+            }
+
+            // 3. Pesquisa em Tempo Real na Wikipédia (Para responder a QUALQUER pergunta de conhecimento geral)
+            try {
+                // Limpa o termo de pesquisa tirando palavras de comando comuns
+                let termoPesquisa = queryLower
+                    .replace("o que é", "")
+                    .replace("quem foi", "")
+                    .replace("quem é", "")
+                    .replace("fala-me sobre", "")
+                    .replace("pesquisa sobre", "")
+                    .replace("define", "")
+                    .trim();
+
+                if (!termoPesquisa) termoPesquisa = pergunta;
+
+                const url = `https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(termoPesquisa)}`;
+                const response = await fetch(url);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.extract) {
+                        // Limita a resposta a 2 frases para ser concisa e agradável
+                        const frases = data.extract.split('. ');
+                        const resumo = frases.slice(0, 2).join('. ') + '.';
+                        return resumo;
+                    }
+                }
+            } catch (error) {
+                console.error("Erro na busca da Wikipédia:", error);
+            }
+
+            // Resposta Padrão de Recuo
+            return "Desculpa, não consegui encontrar uma resposta exata para isso na minha base de dados.";
+        }
+
+        // Função Text-to-Speech (Sintetizador de Voz)
+        function falar(texto) {
+            window.speechSynthesis.cancel(); // Cancela falas anteriores
+            
+            const utterance = new SpeechSynthesisUtterance(texto);
+            utterance.lang = 'pt-PT';
+            utterance.rate = 1.05; // Velocidade da fala
+            utterance.pitch = 1.0;
+
+            // Selecionar voz em português se disponível
+            const voices = window.speechSynthesis.getVoices();
+            const ptVoice = voices.find(v => v.lang.includes('pt'));
+            if (ptVoice) utterance.voice = ptVoice;
+
+            utterance.onstart = () => {
+                setUIState('speaking');
             };
 
-            synth.speak(utterance);
+            utterance.onend = () => {
+                setUIState('idle');
+                // Se o modo contínuo (mãos-livres) estiver ligado, volta a ouvir automaticamente!
+                if (continuousMode) {
+                    setTimeout(() => {
+                        startListening();
+                    }, 500);
+                }
+            };
+
+            window.speechSynthesis.speak(utterance);
         }
     }
 </script>
-
 </body>
 </html>
