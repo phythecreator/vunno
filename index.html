@@ -1,519 +1,450 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A.I. Voice Assistant - Ultra Modern</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-color: #05050d;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --primary-cyan: #00f2fe;
-            --primary-blue: #4facfe;
-            --accent-pink: #ff007f;
-            --text-color: #ffffff;
-            --subtext-color: #a0a0c0;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* Fundos e Luzes de Néon Ambientais */
-        .ambient-light {
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.35;
-            z-index: 0;
-            animation: float 10s infinite alternate ease-in-out;
-        }
-        .light-1 { background: var(--primary-cyan); top: -100px; left: -100px; }
-        .light-2 { background: var(--accent-pink); bottom: -100px; right: -100px; animation-delay: -5s; }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(50px, 50px) scale(1.2); }
-        }
-
-        /* Container Principal em Glassmorphism */
-        .container {
-            position: relative;
-            z-index: 10;
-            width: 90%;
-            max-width: 460px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-radius: 30px;
-            padding: 40px 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-            text-align: center;
-        }
-
-        /* Header */
-        .brand {
-            font-size: 14px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--primary-cyan);
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        h1 {
-            font-size: 26px;
-            font-weight: 800;
-            margin-bottom: 25px;
-            background: linear-gradient(135deg, #fff 30%, var(--subtext-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* ORBE NÉON ANIMADO (Visualizador de voz) */
-        .orb-wrapper {
-            position: relative;
-            width: 170px;
-            height: 170px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-        }
-
-        .orb {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-blue));
-            box-shadow: 0 0 40px var(--primary-blue), inset 0 0 20px rgba(255,255,255,0.8);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            z-index: 2;
-        }
-
-        .orb-ring {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 2px dashed rgba(0, 242, 254, 0.4);
-            animation: spin 12s linear infinite;
-        }
-
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Estados do Orbe */
-        /* A ouvir... */
-        .state-listening .orb {
-            background: linear-gradient(135deg, #00ff87, #60efff);
-            box-shadow: 0 0 60px #00ff87;
-            transform: scale(1.15);
-            animation: pulse-listen 1.2s infinite alternate;
-        }
-
-        /* A pensar/processar... */
-        .state-thinking .orb {
-            background: linear-gradient(135deg, var(--accent-pink), #7928ca);
-            box-shadow: 0 0 60px var(--accent-pink);
-            transform: scale(0.95);
-        }
-        .state-thinking .orb-ring {
-            border-color: var(--accent-pink);
-            animation: spin 1.5s linear infinite;
-        }
-
-        /* A falar... */
-        .state-speaking .orb {
-            background: linear-gradient(135deg, #ff416c, #ff4b2b);
-            box-shadow: 0 0 70px #ff416c;
-            animation: speak-wave 0.4s infinite alternate;
-        }
-
-        @keyframes pulse-listen {
-            0% { box-shadow: 0 0 30px #00ff87; }
-            100% { box-shadow: 0 0 80px #00ff87, 0 0 100px rgba(0, 255, 135, 0.4); }
-        }
-
-        @keyframes speak-wave {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.18); }
-        }
-
-        /* Badge de Status */
-        .status-badge {
-            margin-top: 15px;
-            padding: 6px 16px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--card-border);
-            font-size: 13px;
-            color: var(--subtext-color);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #888;
-        }
-
-        .state-listening .status-dot { background: #00ff87; box-shadow: 0 0 10px #00ff87; }
-        .state-thinking .status-dot { background: var(--accent-pink); box-shadow: 0 0 10px var(--accent-pink); }
-        .state-speaking .status-dot { background: #ff416c; box-shadow: 0 0 10px #ff416c; }
-
-        /* Área de Texto / Resposta */
-        .display-box {
-            width: 100%;
-            margin-top: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .chat-card {
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid var(--card-border);
-            padding: 14px 18px;
-            border-radius: 16px;
-            text-align: left;
-            font-size: 14px;
-            line-height: 1.5;
-            min-height: 50px;
-            transition: all 0.3s ease;
-        }
-
-        .chat-card span {
-            display: block;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--subtext-color);
-            margin-bottom: 4px;
-        }
-
-        /* Botões de Controlo */
-        .controls {
-            margin-top: 25px;
-            display: flex;
-            gap: 12px;
-            width: 100%;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 16px;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-main {
-            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-blue));
-            color: #000;
-            box-shadow: 0 10px 20px rgba(0, 242, 254, 0.25);
-        }
-
-        .btn-main:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 25px rgba(0, 242, 254, 0.4);
-        }
-
-        .btn-mode {
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            border: 1px solid var(--card-border);
-            flex: 0.4;
-        }
-
-        .btn-mode.active {
-            border-color: var(--primary-cyan);
-            color: var(--primary-cyan);
-            background: rgba(0, 242, 254, 0.1);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AuditSEO — Analisa qualquer site em segundos</title>
+<style>
+:root{
+  --bg:#f4f5f7; --card:#ffffff; --ink:#1a162b; --muted:#6b7280;
+  --green:#22c55e; --green-d:#16a34a; --blue:#076fe5; --red:#ef4444;
+  --orange:#f59e0b; --purple:#8b5cf6; --line:#e9eaf0; --dark:#1a162b;
+  --radius:18px; --shadow:0 12px 40px rgba(26,22,43,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden}
+a{color:inherit}
+/* ===== TOP NAV (inspirado print 1) ===== */
+.topnav{background:var(--dark);color:#fff;display:flex;align-items:center;gap:6px;padding:10px 18px;position:sticky;top:0;z-index:50}
+.topnav .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;margin-right:14px}
+.logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#22c55e,#076fe5);display:grid;place-items:center;font-size:18px;box-shadow:0 6px 18px rgba(34,197,94,.4)}
+.nav-pills{display:flex;gap:2px;flex-wrap:wrap}
+.nav-pills span{padding:8px 14px;border-radius:999px;font-size:13.5px;opacity:.75;transition:.25s}
+.nav-pills span.active{background:rgba(255,255,255,.12);opacity:1}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.global-search{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 14px;font-size:13px;color:#ddd;min-width:170px}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ef4444);display:grid;place-items:center;font-weight:800}
+/* ===== HERO ===== */
+.hero{position:relative;overflow:hidden;background:radial-gradient(900px 400px at 15% 10%,rgba(34,197,94,.14),transparent),radial-gradient(900px 420px at 85% 15%,rgba(7,111,229,.14),transparent),#fff;border-bottom:1px solid var(--line)}
+.blobs i{position:absolute;border-radius:50%;filter:blur(60px);opacity:.35;animation:drift 12s ease-in-out infinite alternate}
+.blobs i:nth-child(1){width:420px;height:420px;background:#bbf7d0;left:-120px;top:-120px}
+.blobs i:nth-child(2){width:380px;height:380px;background:#bfdbfe;right:-100px;top:-80px;animation-delay:-4s}
+.blobs i:nth-child(3){width:260px;height:260px;background:#ddd6fe;left:40%;bottom:-140px;animation-delay:-8s}
+@keyframes drift{to{transform:translate(40px,30px) scale(1.08)}}
+.hero-inner{position:relative;max-width:1080px;margin:0 auto;padding:64px 22px 54px;text-align:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;font-size:12.5px;font-weight:700;padding:7px 14px;border-radius:999px;letter-spacing:.02em;animation:fadeUp .7s both}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 6px rgba(34,197,94,.18);animation:pulse 1.8s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 10px rgba(34,197,94,.08)}}
+h1{font-size:clamp(32px,5vw,56px);line-height:1.02;margin:18px 0 12px;letter-spacing:-.04em}
+h1 .grad{background:linear-gradient(90deg,#16a34a,#076fe5);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);font-size:clamp(15px,2vw,18px);max-width:640px;margin:0 auto 28px}
+/* search bar */
+.search-wrap{max-width:680px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:10px;display:flex;gap:10px;align-items:center;animation:fadeUp .7s .1s both}
+.search-wrap .icon{font-size:20px;margin-left:8px}
+#siteInput{flex:1;border:0;outline:0;font-size:16px;padding:14px 6px;background:transparent;color:var(--ink)}
+.btn{border:0;cursor:pointer;border-radius:14px;padding:14px 22px;font-weight:800;font-size:15px;transition:.25s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:var(--green);color:#fff;box-shadow:0 10px 24px rgba(34,197,94,.35)}
+.btn-primary:hover{background:var(--green-d);transform:translateY(-2px)}
+.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.btn-ghost:hover{border-color:#cbd5e1;transform:translateY(-2px)}
+.quick{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px;font-size:13px;color:var(--muted)}
+.quick button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 13px;cursor:pointer;font-size:13px;transition:.2s}
+.quick button:hover{border-color:var(--green);color:var(--green-d);transform:translateY(-1px)}
+.hint{font-size:12.5px;color:#9ca3af;margin-top:12px}
+/* network strip (inspirado print 2) */
+.net{display:flex;align-items:center;justify-content:center;gap:0;margin:26px auto 0;max-width:700px;opacity:.9}
+.node{width:52px;height:52px;border-radius:50%;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);display:grid;place-items:center;font-size:22px;position:relative;animation:float 4s ease-in-out infinite}
+.node.center{width:76px;height:76px;font-size:32px;background:linear-gradient(135deg,#fff,#eff6ff);border:2px solid #bfdbfe}
+.node small{position:absolute;bottom:-18px;font-size:10px;color:var(--muted);white-space:nowrap;font-weight:700}
+.link{height:2px;width:56px;background:linear-gradient(90deg,#bfdbfe,#22c55e);position:relative;overflow:hidden}
+.link::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,#076fe5,transparent);animation:flow 1.8s linear infinite}
+@keyframes flow{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+@keyframes float{50%{transform:translateY(-7px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+/* ===== LAYOUT ===== */
+.wrap{max-width:1080px;margin:0 auto;padding:26px 22px 80px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:860px){.g2,.g3{grid-template-columns:1fr}.nav-pills{display:none}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;position:relative;overflow:hidden;animation:fadeUp .6s both}
+.card h3{margin:0 0 4px;font-size:16px;letter-spacing:-.01em}
+.card p.desc{margin:0 0 14px;color:var(--muted);font-size:13.5px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;padding:5px 11px;border-radius:999px}
+.p-ok{background:#dcfce7;color:#15803d}.p-warn{background:#fef3c7;color:#b45309}.p-bad{background:#fee2e2;color:#b91c1c}.p-info{background:#e0e7ff;color:#3730a3}.p-gray{background:#f1f5f9;color:#475569}
+.bar{height:8px;background:#f1f5f9;border-radius:99px;overflow:hidden;margin:10px 0 4px}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#22c55e,#076fe5);width:0;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.rowline{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-top:1px dashed var(--line);font-size:14px}
+.rowline:first-of-type{border-top:0}
+.fix{font-size:12.5px;color:#475569;background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px}
+.fix b{color:var(--ink)}
+.mini-btn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:800;cursor:pointer;transition:.2s;white-space:nowrap}
+.mini-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mini-btn.green{background:var(--green);border-color:var(--green);color:#fff}
+.mini-btn.green:hover{background:var(--green-d)}
+.score-ring{width:150px;height:150px;margin:6px auto}
+.score-num{font-size:44px;font-weight:900;letter-spacing:-.05em;text-align:center;line-height:1}
+.score-sub{text-align:center;color:var(--muted);font-size:13px;margin-top:4px}
+.kw{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:13.5px}
+.kw .t{min-width:120px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kw .b{flex:1;height:8px;background:#f1f5f9;border-radius:99px;overflow:hidden}
+.kw .b i{display:block;height:100%;background:linear-gradient(90deg,#8b5cf6,#076fe5);border-radius:99px}
+.tagcloud{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tagcloud span{background:#f8fafc;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12.5px}
+.check{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:12px;margin:8px 0;font-size:13.5px;background:#fff;transition:.2s;cursor:pointer}
+.check:hover{border-color:var(--green)}
+.check.done{background:#f0fdf4;border-color:#bbf7d0;text-decoration:line-through;color:#15803d}
+pre.code{background:#0f172a;color:#e2e8f0;border-radius:14px;padding:16px;font-size:12.5px;overflow:auto;max-height:320px;line-height:1.55}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,80px);background:var(--ink);color:#fff;padding:13px 20px;border-radius:999px;font-size:14px;font-weight:700;opacity:0;transition:.35s;z-index:200;box-shadow:0 16px 40px rgba(0,0,0,.3)}
+.toast.show{transform:translate(-50%,0);opacity:1}
+.hidden{display:none!important}
+/* ===== LOADER OVERLAY (código Uiverse pedido) ===== */
+#loaderOverlay{position:fixed;inset:0;background:rgba(244,245,247,.86);backdrop-filter:blur(10px);z-index:100;display:grid;place-items:center}
+.loader-box{text-align:center;position:relative;width:min(480px,90vw);background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:70px 30px 30px}
+.loader{position:absolute;top:0;bottom:0;left:0;right:0}
+.jimu-primary-loading:before,.jimu-primary-loading:after{position:absolute;top:0;content:''}
+.jimu-primary-loading:before{left:-19.992px}
+.jimu-primary-loading:after{left:19.992px;-webkit-animation-delay:.32s!important;animation-delay:.32s!important}
+.jimu-primary-loading:before,.jimu-primary-loading:after,.jimu-primary-loading{background:#076fe5;-webkit-animation:loading-keys-app-loading .8s infinite ease-in-out;animation:loading-keys-app-loading .8s infinite ease-in-out;width:13.6px;height:32px}
+.jimu-primary-loading{text-indent:-9999em;margin:auto;position:absolute;right:calc(50% - 6.8px);top:26px;-webkit-animation-delay:.16s!important;animation-delay:.16s!important}
+@-webkit-keyframes loading-keys-app-loading{0%,80%,100%{opacity:.75;box-shadow:0 0 #076fe5;height:32px}40%{opacity:1;box-shadow:0 -8px #076fe5;height:40px}}
+@keyframes loading-keys-app-loading{0%,80%,100%{opacity:.75;box-shadow:0 0 #076fe5;height:32px}40%{opacity:1;box-shadow:0 -8px #076fe5;height:40px}}
+#loadStep{font-weight:800;font-size:17px;margin:0}
+#loadDetail{color:var(--muted);font-size:13.5px;margin:8px 0 16px;min-height:20px}
+.load-progress{height:8px;background:#eef2ff;border-radius:99px;overflow:hidden}
+.load-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#22c55e,#076fe5);transition:width .5s}
+footer{color:#9ca3af;text-align:center;font-size:12.5px;padding:30px}
+kbd{background:#f1f5f9;border:1px solid #e2e8f0;border-bottom-width:2px;border-radius:6px;padding:1px 7px;font-size:12px}
+</style>
 </head>
 <body>
 
-    <!-- Fundos Luminosos -->
-    <div class="ambient-light light-1"></div>
-    <div class="ambient-light light-2"></div>
+<nav class="topnav">
+  <div class="logo"><div class="logo-mark">◈</div> AuditSEO</div>
+  <div class="nav-pills"><span>Visão geral</span><span class="active">Auditoria</span><span>Palavras-chave</span><span>Social</span><span>Reputação</span><span>Ranking</span><span>Melhorias</span></div>
+  <div class="nav-right"><div class="global-search">⌕ Pesquisa global…</div><div class="avatar">F</div></div>
+</nav>
 
-    <!-- Card Principal -->
-    <div class="container" id="appContainer">
-        <div class="brand">Assistente IA</div>
-        <h1>A.I. Voice Assistant</h1>
-
-        <!-- Visualizador Central -->
-        <div class="orb-wrapper">
-            <div class="orb-ring"></div>
-            <div class="orb"></div>
-        </div>
-
-        <div class="status-badge">
-            <div class="status-dot" id="statusDot"></div>
-            <span id="statusText">Aguardando...</span>
-        </div>
-
-        <!-- Caixas de Transcrição -->
-        <div class="display-box">
-            <div class="chat-card">
-                <span>Tu disseste</span>
-                <div id="userSpeech" style="color: #fff;">Clique em "Falar" ou ative o Modo Mãos-Livres.</div>
-            </div>
-            <div class="chat-card">
-                <span>Resposta</span>
-                <div id="aiResponse" style="color: var(--primary-cyan);">Pronta para responder às tuas perguntas.</div>
-            </div>
-        </div>
-
-        <!-- Botões de Ação -->
-        <div class="controls">
-            <button class="btn btn-main" id="btnMic">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="20" y1="23" x2="4" y2="23"></line></svg>
-                Falar
-            </button>
-            <button class="btn btn-mode" id="btnContinuous" title="Modo Mãos-Livres (Conversa Contínua)">
-                ∞ Continuous
-            </button>
-        </div>
+<header class="hero">
+  <div class="blobs"><i></i><i></i><i></i></div>
+  <div class="hero-inner">
+    <div class="eyebrow"><span class="dot"></span> AUDITORIA SEO • SOCIAL • REPUTAÇÃO • 100% NO NAVEGADOR</div>
+    <h1>Cola o nome do site.<br><span class="grad">Nós dissecamos tudo.</span></h1>
+    <p class="sub">Instagram, Facebook, críticas, ranking, patrocínios, palavras-chave e SEO técnico — nota de 0 a 10 e um plano de correção que aplicas com 1 clique.</p>
+    <div class="search-wrap">
+      <span class="icon">🌐</span>
+      <input id="siteInput" placeholder="ex: nomesite.com  ou  instagram.com/nome  ou  a tua loja…" autocomplete="off">
+      <button class="btn btn-primary" id="goBtn">✨ Analisar</button>
     </div>
+    <div class="quick">
+      <span style="align-self:center">Experimenta:</span>
+      <button data-s="wikipedia.org">wikipedia.org</button>
+      <button data-s="github.com">github.com</button>
+      <button data-s="spotify.com">spotify.com</button>
+      <button data-s="sapo.pt">sapo.pt</button>
+    </div>
+    <div class="hint">Funciona sem chave API: lê o HTML real do site via proxy público + Wikipedia + heurísticas SEO. Prime <kbd>Enter</kbd> para começar.</div>
+    <div class="net" aria-hidden="true">
+      <div class="node">◈<small>o teu site</small></div><div class="link"></div>
+      <div class="node">📸<small>instagram</small></div><div class="link"></div>
+      <div class="node center">◎<small>auditoria</small></div><div class="link"></div>
+      <div class="node">G<small>google</small></div><div class="link"></div>
+      <div class="node">★<small>ranking</small></div>
+    </div>
+  </div>
+</header>
+
+<!-- LOADER -->
+<div id="loaderOverlay" class="hidden">
+  <div class="loader-box">
+    <div class="loader"><div class="jimu-primary-loading">loading</div></div>
+    <p id="loadStep">A ligar ao site…</p>
+    <p id="loadDetail">A resolver o domínio</p>
+    <div class="load-progress"><i id="loadBar"></i></div>
+  </div>
+</div>
+
+<main class="wrap hidden" id="results">
+  <div class="grid g3" style="margin-bottom:16px">
+    <div class="card" style="grid-column:span 2">
+      <div style="display:flex;gap:14px;align-items:center">
+        <img id="fav" width="48" height="48" style="border-radius:12px;border:1px solid var(--line)" alt="favicon">
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <h3 id="siteTitle" style="font-size:19px;margin:0">—</h3>
+            <span class="pill p-ok" id="httpsPill">🔒 HTTPS</span>
+          </div>
+          <div style="color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><a id="siteUrl" href="#" target="_blank" rel="noopener">—</a> • <span id="loadTime">—</span> • <span id="htmlSize">—</span></div>
+        </div>
+        <button class="btn btn-ghost" id="reBtn" style="padding:10px 16px">↻ Nova</button>
+      </div>
+      <p class="desc" id="metaDescLine" style="margin:12px 0 0"></p>
+      <div class="tagcloud" id="techTags"></div>
+    </div>
+    <div class="card" style="text-align:center">
+      <h3>Nota SEO global</h3>
+      <p class="desc">0 = crítico • 10 = excelente</p>
+      <svg class="score-ring" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="#eef2f7" stroke-width="12"/>
+        <circle id="ring" cx="60" cy="60" r="52" fill="none" stroke="url(#g)" stroke-width="12" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7" transform="rotate(-90 60 60)" style="transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)"/>
+        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22c55e"/><stop offset="1" stop-color="#076fe5"/></linearGradient></defs>
+      </svg>
+      <div class="score-num"><span id="scoreNum">0</span><span style="font-size:20px;color:var(--muted)">/10</span></div>
+      <div class="score-sub" id="scoreLabel">A calcular…</div>
+      <div class="bar"><i id="scoreBar"></i></div>
+      <button class="btn btn-primary" id="magicBtn" style="width:100%;justify-content:center;margin-top:10px">⚡ Melhorar tudo (1 clique)</button>
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card"><h3>🧩 SEO técnico</h3><p class="desc">O que o Google vê primeiro. Clica em <b>Melhorar</b> para gerar a correção.</p><div id="techList"></div></div>
+    <div class="card"><h3>🔑 Palavras-chave & conteúdo</h3><p class="desc">Temas reais extraídos do texto do site.</p><div id="kwList"></div><div class="tagcloud" id="kwCloud"></div><div class="fix" id="kwFix"></div></div>
+  </div>
+
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card"><h3>📸 Social — Instagram & Facebook</h3><p class="desc">Ligações encontradas no código + pesquisa real.</p><div id="socialList"></div></div>
+    <div class="card"><h3>⭐ Reputação & críticas</h3><p class="desc">Wikipedia + onde ler queixas reais.</p><div id="repList"></div></div>
+    <div class="card"><h3>📈 Ranking & patrocínios</h3><p class="desc">Performance, autoridade estimada e ads detetados.</p><div id="rankList"></div></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div style="flex:1;min-width:220px"><h3>🛠️ Laboratório de melhorias</h3><p class="desc" style="margin:0">Marca cada correção como feita — a nota projetada sobe em direto. Copia o <kbd>&lt;head&gt;</kbd> otimizado para o teu site.</p></div>
+      <span class="pill p-info" id="projPill">Nota projetada: —</span>
+      <button class="mini-btn" id="copyBtn">📋 Copiar &lt;head&gt;</button>
+      <button class="mini-btn" id="dlBtn">⬇ Descarregar</button>
+    </div>
+    <div class="grid g2" style="margin-top:12px">
+      <div><h3 style="font-size:14px">Checklist interativa</h3><div id="checkList"></div></div>
+      <div><h3 style="font-size:14px">Código gerado (cola no teu site)</h3><pre class="code" id="codeOut">&lt;!-- corre a análise primeiro --&gt;</pre></div>
+    </div>
+  </div>
+</main>
+
+<main class="wrap" id="empty">
+  <div class="grid g3">
+    <div class="card"><span class="pill p-ok">LIVE</span><h3 style="margin-top:10px">Leitura real do HTML</h3><p class="desc">Título, meta description, H1, imagens sem alt, OG tags, viewport, canonical, tempo de resposta e tamanho — tudo medido a sério.</p></div>
+    <div class="card"><span class="pill p-info">SOCIAL + REVIEWS</span><h3 style="margin-top:10px">Instagram, Facebook, críticas</h3><p class="desc">Deteta os perfis ligados no site e abre a pesquisa real no Google, Trustpilot e ReclameAqui com 1 clique.</p></div>
+    <div class="card"><span class="pill p-warn">1-CLIQUE FIX</span><h3 style="margin-top:10px">Gera o código corrigido</h3><p class="desc">Emite o &lt;head&gt; perfeito, descrições, alts e títulos reescritos — pronto a colar. A nota sobe à medida que aplicas.</p></div>
+  </div>
+</main>
+
+<footer>Feito num único <b>index.html</b> • sem backend • sem chaves • os teus dados nunca saem do navegador exceto o fetch público ao site analisado.</footer>
+<div class="toast" id="toast"></div>
 
 <script>
-    // Seleção de Elementos DOM
-    const appContainer = document.getElementById('appContainer');
-    const statusText = document.getElementById('statusText');
-    const userSpeech = document.getElementById('userSpeech');
-    const aiResponse = document.getElementById('aiResponse');
-    const btnMic = document.getElementById('btnMic');
-    const btnContinuous = document.getElementById('btnContinuous');
+const $=s=>document.querySelector(s);
+const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2600)};
+const STOP=new Set(("de,a,o,que,e,do,da,em,um,para,é,com,não,os,as,se,na,no,por,mais,mas,como,foi,ao,ele,das,dos,ou,seu,sua,isto,isso,este,esta,tem,para,com,the,and,for,with,you,that,this,from,are,was,have,not,but,all,your,can,has,our,their,will,its,about,into,there,when,which,site,page,here,more,home,contact,cookies,privacy,terms,menu,search,login,sign,click,sobre,como,para,entre,todos,todas,muito,pode,ser,são,está,estão".split(",")));
+let STATE={domain:"",url:"",score:0,issues:[],checks:[],checksDone:new Set(),kw:[],fixes:{}};
 
-    let continuousMode = false;
+document.querySelectorAll(".quick button").forEach(b=>b.onclick=()=>{$("#siteInput").value=b.dataset.s;run()});
+$("#siteInput").addEventListener("keydown",e=>{if(e.key==="Enter")run()});
+$("#goBtn").onclick=run;
+$("#reBtn").onclick=()=>{$("#results").classList.add("hidden");$("#empty").classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"});$("#siteInput").focus()};
+$("#magicBtn").onclick=()=>{document.querySelectorAll(".check").forEach(c=>{if(!c.classList.contains("done"))c.click()});toast("⚡ Todas as melhorias aplicadas na projeção! Copia o código abaixo.");document.querySelector("#projPill").scrollIntoView({behavior:"smooth",block:"center"})};
+$("#copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText($("#codeOut").textContent);toast("📋 Head otimizado copiado!")}catch{toast("Seleciona o código e copia manualmente")}} ;
+$("#dlBtn").onclick=()=>{const b=new Blob([$("#codeOut").textContent],{type:"text/html"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="head-otimizado.html";a.click()};
 
-    // Configuração do Reconhecimento de Voz (Web Speech API)
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-        alert("O teu navegador não suporta a Web Speech API. Utiliza o Google Chrome ou Microsoft Edge.");
-    } else {
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'pt-PT'; // Idioma Português
-        recognition.interimResults = false;
-
-        // Gestão de Estados Visuais
-        function setUIState(state) {
-            appContainer.classList.remove('state-listening', 'state-thinking', 'state-speaking');
-            
-            if (state === 'listening') {
-                appContainer.classList.add('state-listening');
-                statusText.innerText = "A ouvir a tua voz...";
-            } else if (state === 'thinking') {
-                appContainer.classList.add('state-thinking');
-                statusText.innerText = "A procurar resposta...";
-            } else if (state === 'speaking') {
-                appContainer.classList.add('state-speaking');
-                statusText.innerText = "A responder...";
-            } else {
-                statusText.innerText = continuousMode ? "Modo Mãos-Livres Ativo" : "Aguardando...";
-            }
-        }
-
-        // Iniciar escuta ao clicar no botão
-        btnMic.addEventListener('click', () => {
-            startListening();
-        });
-
-        // Alternar modo contínuo (Mãos-Livres)
-        btnContinuous.addEventListener('click', () => {
-            continuousMode = !continuousMode;
-            btnContinuous.classList.toggle('active', continuousMode);
-            if (continuousMode) {
-                startListening();
-            }
-        });
-
-        function startListening() {
-            try {
-                recognition.start();
-                setUIState('listening');
-            } catch (e) {
-                // Já está a ouvir
-            }
-        }
-
-        // Quando a fala é capturada
-        recognition.onresult = async (event) => {
-            const query = event.results[0][0].transcript.trim();
-            userSpeech.innerText = `"${query}"`;
-            setUIState('thinking');
-
-            // Processar a pergunta e obter resposta inteligente
-            const resposta = await gerarRespostaInteligente(query);
-            
-            aiResponse.innerText = resposta;
-            falar(resposta);
-        };
-
-        recognition.onerror = (e) => {
-            console.error("Erro no reconhecimento:", e);
-            setUIState('idle');
-            if (continuousMode) setTimeout(startListening, 2000);
-        };
-
-        recognition.onend = () => {
-            // Caso não esteja a falar, volta ao estado inativo
-            if (!appContainer.classList.contains('state-speaking')) {
-                setUIState('idle');
-            }
-        };
-
-        // Motor de Resposta Inteligente (Combina Regras, Matemática e Wikipédia)
-        async function gerarRespostaInteligente(pergunta) {
-            const queryLower = pergunta.toLowerCase();
-
-            // 1. Respostas Básicas e Conversação
-            if (queryLower.includes("olá") || queryLower.includes("oi")) {
-                return "Olá! Em que te posso ajudar neste momento?";
-            }
-            if (queryLower.includes("quem és tu") || queryLower.includes("teu nome")) {
-                return "Eu sou a tua assistente de voz futurista desenvolvida em HTML e JavaScript.";
-            }
-            if (queryLower.includes("como estás") || queryLower.includes("tudo bem")) {
-                return "Estou a funcionar no meu desempenho máximo! E contigo, como vai tudo?";
-            }
-            if (queryLower.includes("horas") || queryLower.includes("que horas são")) {
-                const agora = new Date();
-                return `Neste momento são ${agora.getHours()} horas e ${agora.getMinutes()} minutos.`;
-            }
-            if (queryLower.includes("dia é hoje") || queryLower.includes("data")) {
-                const hoje = new Date().toLocaleDateString('pt-PT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                return `Hoje é ${hoje}.`;
-            }
-
-            // 2. Operações Matemáticas (ex: "quanto é 25 vezes 4")
-            if (queryLower.startsWith("quanto é") || queryLower.startsWith("calcula")) {
-                try {
-                    let expressao = queryLower
-                        .replace("quanto é", "")
-                        .replace("calcula", "")
-                        .replace(/vezes/g, "*")
-                        .replace(/mais/g, "+")
-                        .replace(/menos/g, "-")
-                        .replace(/a dividir por/g, "/")
-                        .replace(/por/g, "/")
-                        .trim();
-                    
-                    // Avalia a expressão matemática simples
-                    const resultado = eval(expressao);
-                    if (!isNaN(resultado)) {
-                        return `O resultado da conta é ${resultado}.`;
-                    }
-                } catch (err) {
-                    // Ignora erro e tenta procurar na wikipédia
-                }
-            }
-
-            // 3. Pesquisa em Tempo Real na Wikipédia (Para responder a QUALQUER pergunta de conhecimento geral)
-            try {
-                // Limpa o termo de pesquisa tirando palavras de comando comuns
-                let termoPesquisa = queryLower
-                    .replace("o que é", "")
-                    .replace("quem foi", "")
-                    .replace("quem é", "")
-                    .replace("fala-me sobre", "")
-                    .replace("pesquisa sobre", "")
-                    .replace("define", "")
-                    .trim();
-
-                if (!termoPesquisa) termoPesquisa = pergunta;
-
-                const url = `https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(termoPesquisa)}`;
-                const response = await fetch(url);
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.extract) {
-                        // Limita a resposta a 2 frases para ser concisa e agradável
-                        const frases = data.extract.split('. ');
-                        const resumo = frases.slice(0, 2).join('. ') + '.';
-                        return resumo;
-                    }
-                }
-            } catch (error) {
-                console.error("Erro na busca da Wikipédia:", error);
-            }
-
-            // Resposta Padrão de Recuo
-            return "Desculpa, não consegui encontrar uma resposta exata para isso na minha base de dados.";
-        }
-
-        // Função Text-to-Speech (Sintetizador de Voz)
-        function falar(texto) {
-            window.speechSynthesis.cancel(); // Cancela falas anteriores
-            
-            const utterance = new SpeechSynthesisUtterance(texto);
-            utterance.lang = 'pt-PT';
-            utterance.rate = 1.05; // Velocidade da fala
-            utterance.pitch = 1.0;
-
-            // Selecionar voz em português se disponível
-            const voices = window.speechSynthesis.getVoices();
-            const ptVoice = voices.find(v => v.lang.includes('pt'));
-            if (ptVoice) utterance.voice = ptVoice;
-
-            utterance.onstart = () => {
-                setUIState('speaking');
-            };
-
-            utterance.onend = () => {
-                setUIState('idle');
-                // Se o modo contínuo (mãos-livres) estiver ligado, volta a ouvir automaticamente!
-                if (continuousMode) {
-                    setTimeout(() => {
-                        startListening();
-                    }, 500);
-                }
-            };
-
-            window.speechSynthesis.speak(utterance);
-        }
-    }
+function setLoad(p,step,detail){$("#loadBar").style.width=p+"%";if(step)$("#loadStep").textContent=step;if(detail)$("#loadDetail").textContent=detail}
+function norm(input){
+  input=(input||"").trim().toLowerCase();if(!input)return null;
+  input=input.replace(/^https?:\/\//,"").replace(/^www\./,"").split("/")[0].split("?")[0].split("#")[0].split("@").pop();
+  if(!input.includes(".")){ // "nike" -> nike.com ; permite instagram.com/nome colado
+    if(input.includes("instagram")||input.includes("facebook"))return input;
+    input=input+".com";
+  }
+  return input;
+}
+async function run(){
+  const raw=$("#siteInput").value;const domain=norm(raw);
+  if(!domain){toast("Escreve o nome do site primeiro 🙂");return}
+  $("#loaderOverlay").classList.remove("hidden");
+  $("#empty").classList.add("hidden");$("#results").classList.add("hidden");
+  const steps=[["8%","A ligar ao site…","A resolver "+domain],["30%","A descarregar o HTML…","Via proxy público (contorna CORS)"],["55%","A analisar SEO técnico…","Título, metas, H1, imagens, OG"],["72%","A ler redes sociais…","Instagram, Facebook, TikTok, YouTube"],["86%","A medir reputação & ranking…","Wikipedia + performance + ads"],["96%","A gerar o plano de correção…","A escrever o teu <head> perfeito"]];
+  for(const [p,s,d] of steps){setLoad(parseInt(p),s,d);await new Promise(r=>setTimeout(r,420));}
+  try{await analyze(domain)}
+  catch(e){console.error(e);$("#loaderOverlay").classList.add("hidden");$("#empty").classList.remove("hidden");toast("⚠️ Não consegui ler esse site ("+(e.message||"bloqueado")+"). Tenta com www ou outro domínio.")}
+}
+async function analyze(domain){
+  const url="https://"+domain;const t0=performance.now();
+  const proxy="https://api.allorigins.win/get?url="+encodeURIComponent(url);
+  const r=await fetch(proxy);if(!r.ok)throw new Error("HTTP "+r.status);
+  const j=await r.json();const html=j.contents||"";if(!html||html.length<300)throw new Error("resposta vazia");
+  const ms=Math.round(performance.now()-t0);
+  const doc=new DOMParser().parseFromString(html,"text/html");
+  const txt=(doc.body?doc.body.innerText:"").replace(/\s+/g," ").trim();
+  const words=txt.toLowerCase().match(/[a-zà-ú0-9-]{3,}/g)||[];
+  STATE={domain,url,score:0,issues:[],checks:[],checksDone:new Set(),kw:[],fixes:{},html,doc,txt,words,ms};
+  buildAnalysis();render();
+  $("#loaderOverlay").classList.add("hidden");
+  $("#results").classList.remove("hidden");
+  $("#results").scrollIntoView({behavior:"smooth"});
+  // entrada animada das barras
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{document.querySelectorAll(".bar i").forEach(b=>b.style.width=b.dataset.w||"0")}));
+  // Wikipedia (CORS ok) em paralelo, sem bloquear
+  wikiLookup(domain).then(w=>{STATE.wiki=w;renderRep();}).catch(()=>{});
+}
+function val(sel,attr){const el=STATE.doc.querySelector(sel);return el?(attr?el.getAttribute(attr):el.textContent.trim()):""}
+function buildAnalysis(){
+  const d=STATE.doc,html=STATE.html;let score=10;const C=[];
+  const add=(name,ok,level,detail,fix,fixCode)=>{
+    if(level==="bad")score-=1.2;else if(level==="warn")score-=0.6;
+    C.push({name,ok,level,detail,fix});if(fix)STATE.issues.push({name,fix});
+  };
+  const title=(val("title")||"").trim();
+  STATE.title=title||STATE.domain;
+  const md=(d.querySelector('meta[name="description"]')||{}).content||"";
+  STATE.md=md;
+  if(!title)add("Título <title>",false,"bad","Em falta — o Google mostra URL crua nos resultados.","Escreve um título 30–60 caracteres com a palavra-chave + marca.",null);
+  else if(title.length<30)add("Título <title>",false,"warn",`"${title}" — só ${title.length} caracteres (ideal 30–60).`,"Expande com benefício + palavra-chave. Ex: acrescenta “| Preços, Opiniões e Guia 2026”.",null);
+  else if(title.length>62)add("Título <title>",false,"warn",`"${title.slice(0,60)}…" — ${title.length} caracteres, vai ser cortado.`,"Corta para ~55 caracteres mantendo a keyword à esquerda.",null);
+  else add("Título <title>",true,"ok",`"${title}" — ${title.length} caracteres. Perfeito.`,"",null);
+  if(!md)add("Meta description",false,"bad","Em falta — o Google inventa o snippet e o CTR cai.","Cria 140–155 caracteres com verbo + benefício + CTA. Gero uma abaixo automaticamente.",null);
+  else if(md.length<110)add("Meta description",false,"warn",`${md.length} caracteres — curta (ideal 140–155).`,"Expande com prova social ou portes grátis / avaliação ★.",null);
+  else if(md.length>165)add("Meta description",false,"warn",`${md.length} caracteres — longa, será truncada.`,"Corta para ~150 caracteres; põe o essencial nos primeiros 120.",null);
+  else add("Meta description",true,"ok",`${md.length} caracteres. Boa.`,"",null);
+  const h1s=[...d.querySelectorAll("h1")];
+  if(!h1s.length)add("Heading H1",false,"bad","Sem <h1> — o Google não sabe qual é o tema principal.","Adiciona um H1 único com a keyword principal (gero sugestão).",null);
+  else if(h1s.length>1)add("Heading H1",false,"warn",`${h1s.length} H1s — dilui o tema.`,"Deixa 1 H1; converte os restantes em H2.",null);
+  else add("Heading H1",true,"ok",`1 H1: “${h1s[0].textContent.trim().slice(0,80)}”.`,"",null);
+  const vp=!!d.querySelector('meta[name="viewport"]');
+  add("Mobile (viewport)",vp,vp?"ok":"bad",vp?"Meta viewport presente — mobile OK.":"Sem viewport — o site parte no telemóvel e perde ranking mobile.",vp?"":"Adiciona <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">.",null);
+  const lang=d.documentElement.getAttribute("lang")||"";
+  add("Idioma (lang)",!!lang,lang?"ok":"warn",lang?`lang="${lang}" — ajuda SEO local.`:"Sem atributo lang — mau para SEO internacional/local.",lang?"":'Adiciona lang="pt-PT" (ou pt-BR) na tag <html>.',null);
+  const can=(d.querySelector('link[rel="canonical"]')||{}).href||"";
+  add("Canonical",!!can,can?"ok":"warn",can?"Canonical definido — evita conteúdo duplicado.":"Sem canonical — risco de duplicação www/non-www.",can?"":`Adiciona <link rel="canonical" href="${STATE.url}/">.`,null);
+  const og=d.querySelector('meta[property="og:title"]'),tw=d.querySelector('meta[name="twitter:card"]');
+  add("Open Graph / partilha",!!(og&&tw),og&&tw?"ok":"warn",og&&tw?"OG + Twitter cards OK — bonito no Instagram/Facebook/WhatsApp.":"Falhas em OG/Twitter — partilhas ficam feias e com menos cliques.","Adiciona og:title, og:description, og:image 1200×630 e twitter:card=summary_large_image (gero tudo).",null);
+  const imgs=[...d.querySelectorAll("img")];const noAlt=imgs.filter(i=>!i.getAttribute("alt"));
+  add("Imagens & ALT",imgs.length?(noAlt.length/imgs.length<.3):true,(!imgs.length||noAlt.length/imgs.length<.3)?"ok":(noAlt.length/imgs.length<.7?"warn":"bad"),!imgs.length?"Sem <img> detetadas no HTML inicial.":`${noAlt.length}/${imgs.length} imagens sem alt (${Math.round(noAlt.length/Math.max(imgs.length,1)*100)}%).`,noAlt.length?`Preenche os alt com descrição + keyword (ex: “${STATE.domain} — …”). Gero exemplos abaixo.`:"",null);
+  const https=STATE.url.startsWith("https://");
+  add("HTTPS",https,https?"ok":"bad",https?"Ligações seguras — sinal positivo.":"Sem HTTPS — Chrome marca “Não seguro” e o ranking cai.","Instala certificado gratuito (Let's Encrypt / Cloudflare) e força redirect http→https.",null);
+  add("Velocidade (proxy)",STATE.ms<2500,STATE.ms<2500?"ok":(STATE.ms<5000?"warn":"bad"),`Resposta via proxy em ${STATE.ms}ms (inclui proxy; real é menor).${STATE.ms>2500?" — lento, otimiza imagens e cache.":" — bom."}`,"Comprime imagens (WebP), ativa cache + lazy-load e minimiza JS.",null);
+  const sizeKB=Math.round(new Blob([html]).size/1024);
+  STATE.sizeKB=sizeKB;
+  add("Peso do HTML",sizeKB<220,sizeKB<220?"ok":(sizeKB<500?"warn":"bad"),`${sizeKB} KB de HTML.${sizeKB>220?" — pesado, corta scripts e inline CSS.":" — leve e rápido."}`,"Remove trackers duplicados e adia scripts com defer.",null);
+  const links=[...d.querySelectorAll("a[href]")];const ints=links.filter(a=>(a.getAttribute("href")||"").startsWith("/")||(a.href||"").includes(STATE.domain)).length;
+  add("Ligações internas",ints>=8,ints>=8?"ok":"warn",`${ints} internas / ${links.length} totais. ${ints>=8?"Boa malha interna.":"Poucas — o Google descobre menos páginas."}`,"Adiciona 3–5 links internos contextuais por página com âncoras descritivas.",null);
+  const wc=STATE.words.length;STATE.wc=wc;
+  add("Conteúdo",wc>300,wc>300?"ok":(wc>120?"warn":"bad"),`${wc} palavras detetadas.${wc>300?" Conteúdo suficiente.":" — fino; páginas finas rankeiam mal."}`,"Sobe para 600–1200 palavras úteis: FAQ, guia, opiniões e dados originais.",null);
+  // sociais
+  const hrefs=links.map(a=>a.href||"").join(" ").toLowerCase();
+  STATE.socials={instagram:(html.match(/instagram\.com\/[a-z0-9_.]+/gi)||[])[0]||(hrefs.includes("instagram.com")?"instagram.com (link genérico)":null),
+    facebook:(html.match(/facebook\.com\/[a-z0-9_.]+/gi)||[])[0]||(hrefs.includes("facebook.com")?"facebook.com (link genérico)":null),
+    tiktok:hrefs.includes("tiktok.com"),youtube:hrefs.includes("youtube.com"),linkedin:hrefs.includes("linkedin.com"),x:hrefs.includes("x.com")||hrefs.includes("twitter.com")};
+  // keywords
+  const freq={};STATE.words.forEach(w=>{if(!STOP.has(w)&&w.length>2)freq[w]=(freq[w]||0)+1});
+  STATE.kw=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,12);
+  const topKW=STATE.kw.slice(0,3).map(k=>k[0]).join(", ")||"o teu produto";
+  STATE.topKW=topKW;
+  // ads / patrocínios
+  const A=[];const has=s=>html.toLowerCase().includes(s);
+  if(has("googletagmanager")||has("google-analytics")||has("gtag"))A.push("Google Analytics / Tag Manager");
+  if(has("adsense")||has("doubleclick")||has("googlesyndication"))A.push("Google AdSense / DoubleClick");
+  if(has("connect.facebook.net")||has("fbq("))A.push("Meta (Facebook) Pixel");
+  if(has("tiktok"))A.push("TikTok Pixel/SDK");
+  if(has("taboola")||has("outbrain")||has("criteo"))A.push("Rede nativa (Taboola/Outbrain/Criteo)");
+  STATE.ads=A;
+  STATE.checks=C;STATE.score=Math.max(1,Math.min(10,Math.round(score*10)/10));
+  // fixes para o laboratório
+  const brand=STATE.domain.split(".")[0];
+  const descGen=`${cap(topKW)} ao melhor preço em ${STATE.domain} ★ Opiniões reais, envio rápido e suporte em português. Descobre por que somos a escolha nº1.`.slice(0,154);
+  STATE.fixes={title:`${cap(topKW)} | ${cap(brand)} — Guia, Preços e Opiniões 2026`.slice(0,60),desc:descGen,
+    h1:`${cap(topKW)}: tudo o que precisas de saber em 2026`,
+    head:`<!-- HEAD OTIMIZADO gerado pelo AuditSEO para ${STATE.domain} -->\n<title>${cap(topKW)} | ${cap(brand)} — Guia, Preços e Opiniões 2026</title>\n<meta name="description" content="${descGen}">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<html lang="pt-PT"> <!-- põe no <html> -->\n<link rel="canonical" href="${STATE.url}/">\n<meta property="og:type" content="website">\n<meta property="og:title" content="${cap(topKW)} | ${cap(brand)}">\n<meta property="og:description" content="${descGen}">\n<meta property="og:image" content="${STATE.url}/og-cover.jpg"> <!-- 1200x630 -->\n<meta property="og:url" content="${STATE.url}/">\n<meta name="twitter:card" content="summary_large_image">\n<!-- ALT exemplo: <img src="produto.jpg" alt="${topKW} — ${brand}" loading="lazy"> -->\n<!-- Performance: comprime imagens para WebP, usa defer nos scripts e ativa cache -->`};
+}
+const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
+async function wikiLookup(domain){
+  const brand=domain.split(".")[0].replace(/[-_]/g," ");
+  for(const lang of ["pt","en"]){
+    try{const r=await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(brand)}`);
+    if(r.ok){const j=await r.json();if(j&&j.title&&!j.title.includes("Not found"))return{title:j.title,desc:j.extract,url:j.content_urls?.desktop?.page,thumb:j.thumbnail?.source}}}catch{}
+  }return null;
+}
+function pill(l){return l==="ok"?'<span class="pill p-ok">✓ bom</span>':l==="warn"?'<span class="pill p-warn">⚠ melhorar</span>':'<span class="pill p-bad">✕ crítico</span>'}
+function render(){
+  $("#fav").src=`https://www.google.com/s2/favicons?domain=${STATE.domain}&sz=128`;
+  $("#siteTitle").textContent=STATE.title;
+  $("#siteUrl").textContent=STATE.url;$("#siteUrl").href=STATE.url;
+  $("#loadTime").textContent=STATE.ms+"ms via proxy";$("#htmlSize").textContent=STATE.sizeKB+" KB • "+STATE.wc+" palavras";
+  $("#metaDescLine").textContent=STATE.md?("“"+STATE.md+"”"):("Sem meta description — o Google vai inventar o snippet. Gerei uma otimizada no Laboratório.");
+  $("#techTags").innerHTML=[`<span class="pill p-gray">📄 ${STATE.doc.querySelectorAll("h1").length} H1</span>`,`<span class="pill p-gray">🖼️ ${STATE.doc.querySelectorAll("img").length} imgs</span>`,`<span class="pill p-gray">🔗 ${STATE.doc.querySelectorAll("a[href]").length} links</span>`,`<span class="pill p-info">🔑 ${STATE.topKW}</span>`].join("");
+  // score
+  const s=STATE.score;$("#scoreNum").textContent=s.toFixed(1);
+  $("#scoreLabel").textContent=s>=8?"Excelente — afina os detalhes.":s>=6?"Bom — 2–3 correções e dispara.":s>=4?"Médio — há trabalho rápido com grande retorno.":"Crítico — aplica o plano abaixo por ordem.";
+  requestAnimationFrame(()=>{$("#ring").style.strokeDashoffset=326.7*(1-s/10);$("#scoreBar").dataset.w=(s*10)+"%";$("#scoreBar").style.width=(s*10)+"%"});
+  // tech list
+  $("#techList").innerHTML=STATE.checks.map((c,i)=>`<div class="rowline"><div style="flex:1"><b>${c.name}</b><div style="color:var(--muted);font-size:12.5px">${c.detail}</div>${c.fix?`<div class="fix">💡 <b>Como melhorar:</b> ${c.fix}</div>`:""}</div><div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">${pill(c.level)}${c.fix?`<button class="mini-btn" data-fix="${i}">✨ Melhorar</button>`:""}</div></div>`).join("");
+  document.querySelectorAll("[data-fix]").forEach(b=>b.onclick=()=>{const c=STATE.checks[+b.dataset.fix];applyChecklistItem(c.name+" — "+c.fix);toast("✨ Correção enviada para o Laboratório!")});
+  // keywords
+  const max=Math.max(1,...STATE.kw.map(k=>k[1]));
+  $("#kwList").innerHTML=STATE.kw.length?STATE.kw.map(([w,n])=>`<div class="kw"><span class="t">${w}</span><span class="b"><i style="width:${Math.round(n/max*100)}%"></i></span><b>${n}×</b></div>`).join(""):"<p class='desc'>Pouco texto detetado (site em JS ou bloqueio). Reforça o conteúdo visível.</p>";
+  $("#kwCloud").innerHTML=STATE.kw.map(([w])=>`<span>#${w}</span>`).join("");
+  $("#kwFix").innerHTML=`💡 <b>Estratégia:</b> cria 1 página por keyword (<b>${STATE.topKW}</b>), repete-a no título + H1 + primeiros 100 caracteres + 2–3 vezes no texto + 1 alt de imagem. Adiciona FAQ com perguntas reais (“preço?”, “é fiável?”, “como funciona?”).`;
+  renderSocial();renderRep();renderRank();renderLab();
+}
+function extLink(label,url){return `<a href="${url}" target="_blank" rel="noopener" style="text-decoration:none"><button class="mini-btn">↗ ${label}</button></a>`}
+function renderSocial(){
+  const S=STATE.socials,q=encodeURIComponent(STATE.domain+" "+STATE.domain.split(".")[0]);
+  const row=(icon,name,found,searchUrl)=>`<div class="rowline"><div><b>${icon} ${name}</b><div style="color:var(--muted);font-size:12.5px">${found?"Ligação encontrada: <b>"+found+"</b>":"Sem link direto no código."}</div></div><div style="display:flex;gap:6px">${found&&found.includes("http")?extLink("Abrir",found.startsWith("http")?found:"https://"+found):""}${extLink("Pesquisar",searchUrl)}</div></div>`;
+  $("#socialList").innerHTML=
+    row("📸","Instagram",S.instagram,`https://www.google.com/search?q=site:instagram.com+${q}`)+
+    row("📘","Facebook",S.facebook,`https://www.google.com/search?q=site:facebook.com+${q}`)+
+    row("🎵","TikTok",S.tiktok?"detetado no código":null,`https://www.google.com/search?q=site:tiktok.com+${q}`)+
+    row("▶️","YouTube",S.youtube?"detetado no código":null,`https://www.google.com/search?q=site:youtube.com+${q}`)+
+    `<div class="fix">💡 <b>Como melhorar:</b> adiciona ícones sociais no rodapé + OG image 1080×1080 para o Instagram. Publica 3×/semana com a keyword <b>${STATE.topKW}</b> na bio e usa o mesmo nome em todas as redes.</div>`;
+}
+function renderRep(){
+  const brand=STATE.domain.split(".")[0];const w=STATE.wiki;
+  $("#repList").innerHTML=
+    (w?`<div class="rowline"><div><b>📖 ${w.title}</b><div style="color:var(--muted);font-size:12.5px">${(w.desc||"").slice(0,180)}…</div></div>${w.url?extLink("Wiki",w.url):""}</div>`:`<div class="rowline"><div><b>📖 Wikipedia</b><div style="color:var(--muted);font-size:12.5px">Sem artigo — normal em marcas pequenas. Ganha notoriedade (imprensa + prémios).</div></div>${extLink("Criar?",`https://pt.wikipedia.org/wiki/${encodeURIComponent(brand)}`)}</div>`)+
+    `<div class="rowline"><div><b>⭐ Reviews Google</b><div style="color:var(--muted);font-size:12.5px">Onde 90% lê críticas antes de comprar.</div></div>${extLink("Ver",`https://www.google.com/search?q=${encodeURIComponent(STATE.domain+" opiniões reviews")}`)}</div>`+
+    `<div class="rowline"><div><b>🛡️ Trustpilot</b><div style="color:var(--muted);font-size:12.5px">Reclama o perfil e responde a tudo.</div></div>${extLink("Ver",`https://www.trustpilot.com/search?query=${encodeURIComponent(STATE.domain)}`)}</div>`+
+    `<div class="rowline"><div><b>📣 ReclameAqui / Portal Queixa</b><div style="color:var(--muted);font-size:12.5px">Essencial em PT/BR.</div></div>${extLink("Ver",`https://www.google.com/search?q=${encodeURIComponent(STATE.domain+" reclameaqui OR portal queixa")}`)}</div>`+
+    `<div class="fix">💡 <b>Como melhorar:</b> pede review a cada venda (QR + email pós-compra), responde em &lt;24h e marca as páginas com <b>Review schema</b> para ganhar ★★★★★ no Google.</div>`;
+}
+function renderRank(){
+  const auth=Math.min(95,Math.round(20+STATE.checks.filter(c=>c.level==="ok").length*7+(STATE.socials.instagram?8:0)+(STATE.socials.facebook?8:0)+(STATE.wiki?15:0)));
+  $("#rankList").innerHTML=
+    `<div class="rowline"><div><b>⚡ Performance</b><div style="color:var(--muted);font-size:12.5px">${STATE.ms}ms • ${STATE.sizeKB} KB</div></div>${extLink("PageSpeed",`https://pagespeed.web.dev/analysis?url=${encodeURIComponent(STATE.url)}`)}</div>`+
+    `<div class="rowline"><div><b>🏆 Autoridade estimada</b><div style="color:var(--muted);font-size:12.5px">Modelo local (sinais técnicos + sociais + wiki).</div></div><b>${auth}/100</b></div><div class="bar"><i data-w="${auth}%" style="width:${auth}%"></i></div>`+
+    `<div class="rowline"><div><b>🌍 Tráfego (SimilarWeb)</b><div style="color:var(--muted);font-size:12.5px">Ranking real de visitas.</div></div>${extLink("Ver",`https://www.similarweb.com/website/${STATE.domain}/`)}</div>`+
+    `<div class="rowline"><div><b>💰 Patrocínios detetados</b><div style="color:var(--muted);font-size:12.5px">${STATE.ads.length?STATE.ads.join(" • "):"Nenhum tracker de ads no HTML — provavelmente sem campanhas ativas ou tudo em JS."}</div></div>${extLink("Ads Library",`https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=PT&q=${encodeURIComponent(STATE.domain.split(".")[0])}`)}</div>`+
+    `<div class="fix">💡 <b>Como melhorar:</b> ${STATE.ads.length?"Escala o que já corre e cria landing por campanha (Quality Score sobe, CPC desce).":"Começa com 1 campanha Google Brand + 1 remarketing Meta de 5€/dia para a keyword <b>"+STATE.topKW+"</b>. Sem tráfego pago inicial, o SEO demora 3–6 meses."}</div>`;
+}
+function labItems(){
+  return [
+    ["Título reescrito (55 chars)",STATE.fixes.title],
+    ["Meta description nova (150 chars)",STATE.fixes.desc],
+    ["H1 único com keyword",STATE.fixes.h1],
+    ["Viewport + lang + canonical",'<meta name="viewport" content="width=device-width, initial-scale=1"> + lang + canonical'],
+    ["OG/Twitter cards + capa 1200×630",STATE.url+"/og-cover.jpg"],
+    ["Alts em todas as imagens + lazy-load",'alt="keyword — descrição" loading="lazy"'],
+    ["Conteúdo 600+ palavras + FAQ",STATE.wc+" → 800 palavras sobre "+STATE.topKW],
+    ["Links sociais no rodapé","Instagram + Facebook + TikTok com mesmo @"],
+    ["Pedir 20 reviews + schema ★","email pós-compra + Review JSON-LD"],
+    ["Performance: WebP + defer + cache","−50% peso, LCP < 2.5s"]
+  ];
+}
+function renderLab(){
+  $("#codeOut").textContent=STATE.fixes.head;
+  $("#checkList").innerHTML=labItems().map(([t,d],i)=>`<div class="check" data-i="${i}"><span style="font-size:18px">☐</span><div><b>${t}</b><div style="color:var(--muted);font-size:12.5px">${d}</div></div></div>`).join("");
+  updateProj();
+  document.querySelectorAll(".check").forEach(c=>c.onclick=()=>{c.classList.toggle("done");c.querySelector("span").textContent=c.classList.contains("done")?"☑":"☐";updateProj()});
+}
+function applyChecklistItem(label){
+  const els=[...document.querySelectorAll(".check")];
+  const el=els.find(e=>e.textContent.toLowerCase().includes(label.split(" ")[0].toLowerCase().replace(/[<>/]/g,"")))||els.find(e=>!e.classList.contains("done"));
+  if(el&&!el.classList.contains("done"))el.click();
+}
+function updateProj(){
+  const done=document.querySelectorAll(".check.done").length,total=document.querySelectorAll(".check").length;
+  const proj=Math.min(10,STATE.score+(total?done/total*(10-STATE.score):0));
+  $("#projPill").textContent=`Nota projetada: ${proj.toFixed(1)}/10 (${done}/${total} feitas)`;
+  $("#projPill").className="pill "+(proj>=8?"p-ok":proj>=6?"p-info":"p-warn");
+}
 </script>
 </body>
 </html>
