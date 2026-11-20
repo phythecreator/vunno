@@ -537,7 +537,7 @@ function autoGrow() {
 
 async function sendMessage(userText) {
   if (sending) return;
-  if (OPENROUTER_API_KEY.includes('COLA-A-TUA-CHAVE')) {
+  if (OPENROUTER_API_KEY.includes('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')) {
     alert('⚠️ Mete a tua chave OpenRouter na constante OPENROUTER_API_KEY.');
     return;
   }
@@ -567,7 +567,7 @@ async function sendMessage(userText) {
     const res = await fetch(API_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer $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}`,
+        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
         'HTTP-Referer': location.origin || 'https://vunno.eu',
         'X-Title': 'Vunno',
         'Content-Type': 'application/json',
